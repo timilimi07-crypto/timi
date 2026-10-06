@@ -125,6 +125,17 @@ label.tick.on{border-color:var(--accent);background:var(--accent-soft)}
 .pill{font-size:.7rem;font-weight:700;padding:1px 7px;border-radius:5px;text-transform:uppercase;letter-spacing:.05em}
 .pill.long{background:var(--good-bg);color:var(--good)} .pill.short{background:var(--bad-bg);color:var(--bad)}
 .pill.ex{background:var(--warn-bg);color:var(--warn)}
+.pill.imp{background:var(--accent-soft);color:var(--accent)}
+.import{display:flex;flex-direction:column;gap:14px}
+.import ol{margin:0;padding-left:1.2rem;display:flex;flex-direction:column;gap:4px;font-size:.88rem}
+.import .hint{font-size:.82rem;color:var(--muted);margin:0}
+.dropzone{border:2px dashed var(--line);border-radius:var(--r);padding:22px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;background:var(--surface-2);cursor:pointer}
+.dropzone.over{border-color:var(--accent);background:var(--accent-soft)}
+.dropzone input{display:none}
+.limits{display:flex;flex-direction:column;gap:14px}
+.limit-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:baseline}
+.limit-row .track{grid-column:1/-1;height:10px;border-radius:5px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
+.limit-row .track i{display:block;height:100%}
 .close-box{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:10px}
 .empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:28px 20px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
 .empty p{margin:0;color:var(--muted);max-width:52ch}
@@ -213,6 +224,9 @@ details.settings summary{cursor:pointer;font-weight:600;font-size:.9rem}
             <div class="field"><label for="maxRisk">Max. Risiko pro Trade %</label><input id="maxRisk" class="num" inputmode="decimal"></div>
             <div class="field"><label for="minRR">Mindest-CRV</label><input id="minRR" class="num" inputmode="decimal"></div>
             <div class="field"><label for="currency">Währung</label><input id="currency"></div>
+            <div class="field"><label for="ftmoDaily">FTMO max. Tagesverlust %</label><input id="ftmoDaily" class="num" inputmode="decimal"></div>
+            <div class="field"><label for="ftmoMax">FTMO max. Gesamtverlust %</label><input id="ftmoMax" class="num" inputmode="decimal"></div>
+            <div class="field"><label for="ftmoTarget">FTMO Gewinnziel %</label><input id="ftmoTarget" class="num" inputmode="decimal"></div>
             <div class="field" style="grid-column:1/-1"><label for="setups">Meine Setups (mit Komma getrennt)</label><input id="setups"></div>
           </div>
         </details>
@@ -267,7 +281,28 @@ details.settings summary{cursor:pointer;font-weight:600;font-size:.9rem}
           <button type="button" data-v="closed" aria-pressed="false">Geschlossen</button>
           <button type="button" data-v="skipped" aria-pressed="false">Nicht genommen</button>
         </div>
-        <div class="row" id="exampleTools"></div>
+        <div class="row"><span class="row" id="exampleTools"></span><button type="button" class="btn small primary" id="importToggle">FTMO / MetaTrader importieren</button></div>
+      </div>
+      <div class="panel import" id="importPanel" hidden>
+        <div class="panel-head"><h2>Trades aus deinem FTMO-Konto übernehmen</h2><button type="button" class="btn small" id="importClose">Schließen</button></div>
+        <p class="hint">FTMO hat keine offene Schnittstelle, deshalb läuft die Übernahme über den Kontoverlauf aus deiner Handelsplattform. Gib dein FTMO-Passwort nirgends ein, auch nicht hier.</p>
+        <div class="two">
+          <div><h3>MetaTrader 5</h3><ol>
+            <li>Werkzeugkasten öffnen (Strg+T), Tab <b>Verlauf</b>.</li>
+            <li>Rechtsklick → Zeitraum auf den ganzen Verlauf stellen.</li>
+            <li>Rechtsklick → <b>Bericht</b> → <b>HTML</b> und Datei speichern.</li></ol></div>
+          <div><h3>MetaTrader 4</h3><ol>
+            <li>Terminal öffnen (Strg+T), Tab <b>Kontoverlauf</b>.</li>
+            <li>Rechtsklick → <b>Gesamte Historie</b>.</li>
+            <li>Rechtsklick → <b>Als detaillierten Bericht speichern</b>.</li></ol></div>
+        </div>
+        <p class="hint">cTrader, DXtrade oder Match-Trader: Verlauf als CSV exportieren. Die Spalten werden automatisch erkannt.</p>
+        <label class="dropzone" id="dropzone" for="importFile">
+          <strong>Bericht hier ablegen oder klicken</strong>
+          <span class="hint">.html, .htm oder .csv</span>
+          <input type="file" id="importFile" accept=".html,.htm,.csv,.txt">
+        </label>
+        <div id="importPreview"></div>
       </div>
       <div class="trades" id="tradeList"></div>
     </div>
@@ -295,7 +330,7 @@ const CHECKS = [
   {k:"mind",    t:"Kein FOMO, kein Revenge-Trade, kein Langeweile-Trade", crit:true},
   {k:"limit",   t:"Tageslimit (Verlust / Anzahl Trades) ist noch nicht erreicht", crit:true}
 ];
-const DEFAULTS = {account:10000, riskPct:1, maxRisk:1, minRR:2, currency:"€", setups:["Breakout","Pullback","Reversal","Range","Liquidity Sweep","Trendfortsetzung"]};
+const DEFAULTS = {account:10000, riskPct:1, maxRisk:1, minRR:2, currency:"€", ftmoDaily:5, ftmoMax:10, ftmoTarget:10, setups:["Breakout","Pullback","Reversal","Range","Liquidity Sweep","Trendfortsetzung"]};
 const EXAMPLE_FORM = {instrument:"EURUSD", dir:"long", timeframe:"M15", setup:"Pullback", session:"London", entry:"1.0850", sl:"1.0830", tp:"1.0910",
   checks:{htf:true,level:true,confirm:true,target:true,sl_logic:true,session:true,news:true,plan:true,mind:true,limit:true}, emotion:4, confidence:4,
   notes:"H4 Aufwärtstrend, Pullback in die Demand-Zone, M15 Struktur-Bruch nach oben. Ungültig unter 1.0830."};
@@ -307,9 +342,9 @@ const S = {settings:{...DEFAULTS}, trades:[], mode:"local", db:null, tradesCol:n
 /* ---------- helpers ---------- */
 const num = v => { if (v==null) return NaN; const n = parseFloat(String(v).replace(/\s/g,"").replace(",", ".")); return isFinite(n)?n:NaN; };
 const decimals = s => { const m = String(s||"").replace(",",".").split(".")[1]; return m? Math.min(m.length,8):2; };
-const money = n => isFinite(n)? n.toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+S.settings.currency : "–";
-const fmt = (n,d=2) => isFinite(n)? n.toLocaleString("de-DE",{minimumFractionDigits:d,maximumFractionDigits:d}) : "–";
-const sR = n => isFinite(n)? (n>0?"+":"")+fmt(n,2)+" R" : "–";
+const money = n => Number.isFinite(n)? n.toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+S.settings.currency : "–";
+const fmt = (n,d=2) => Number.isFinite(n)? n.toLocaleString("de-DE",{minimumFractionDigits:d,maximumFractionDigits:d}) : "–";
+const sR = n => Number.isFinite(n)? (n>0?"+":"")+fmt(n,2)+" R" : "–";
 const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const lsGet = (k,f) => { try{ const v = localStorage.getItem(k); return v? JSON.parse(v): f; }catch(e){ return f; } };
@@ -370,7 +405,7 @@ function applySettingsToForm(){
   if (S.form.setup) $("#setup").value=S.form.setup;
   if (document.activeElement!==$("#account")) $("#account").value = s.account;
   if (document.activeElement!==$("#riskPct")) $("#riskPct").value = s.riskPct;
-  $("#maxRisk").value=s.maxRisk; $("#minRR").value=s.minRR; $("#currency").value=s.currency; $("#setups").value=s.setups.join(", ");
+  $("#maxRisk").value=s.maxRisk; $("#minRR").value=s.minRR; $("#currency").value=s.currency; $("#ftmoDaily").value=s.ftmoDaily; $("#ftmoMax").value=s.ftmoMax; $("#ftmoTarget").value=s.ftmoTarget; $("#setups").value=s.setups.join(", ");
   updateVerdict();
 }
 function fillForm(f){
@@ -501,11 +536,11 @@ function renderJournal(){
     const res = t.status==="open"? `<span class="muted">offen</span>` : t.status==="skipped"? `<small>nicht genommen</small>` :
       `<span class="${t.resultR>0?"pos":t.resultR<0?"neg":""}">${sR(t.resultR)}</span><small>${money(t.pnl)}</small>`;
     const ticked=CHECKS.filter(c=>t.checks&&t.checks[c.k]).map(c=>c.k);
-    const missing=CHECKS.filter(c=>!ticked.includes(c.k));
+    const missing=t.noCheck?[]:CHECKS.filter(c=>!ticked.includes(c.k));
     return `<details class="trade ${tradeClass(t)}" data-id="${t.id}"${S.openId===t.id?" open":""}>
       <summary>
-        <span class="mini-grade grade ${gradeClass(t.grade)}">${t.grade==="NO-GO"?"NO":esc(t.grade)}</span>
-        <span class="t-main"><strong>${esc(t.instrument)} <span class="pill ${t.dir}">${t.dir}</span>${t.example?' <span class="pill ex">Beispiel</span>':""}${t.ruleBreak?' <span class="pill short">Regelbruch</span>':""}</strong>
+        <span class="mini-grade grade ${gradeClass(t.grade)}">${t.grade==="NO-GO"?"NO":t.grade==="OHNE"?"–":esc(t.grade)}</span>
+        <span class="t-main"><strong>${esc(t.instrument)} <span class="pill ${t.dir}">${t.dir}</span>${t.example?' <span class="pill ex">Beispiel</span>':""}${t.imported?' <span class="pill imp">Import</span>':""}${t.ruleBreak?' <span class="pill short">Regelbruch</span>':""}</strong>
           <span>${d.toLocaleDateString("de-DE")} ${d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})} · ${esc(t.setup)} · ${esc(t.timeframe)} · CRV ${t.rr??"–"}</span></span>
         <span class="t-res">${res}</span>
       </summary>
@@ -513,7 +548,9 @@ function renderJournal(){
         <div class="calc">
           <div><span class="label">Entry</span><b>${p(t.entry)}</b></div><div><span class="label">SL</span><b>${p(t.sl)}</b></div>
           <div><span class="label">TP</span><b>${p(t.tp)}</b></div><div><span class="label">Risiko</span><b>${money(t.riskAmt)}</b></div>
-          <div><span class="label">Score</span><b>${t.score} %</b></div>
+          ${t.exitPrice!=null?`<div><span class="label">Exit</span><b>${p(t.exitPrice)}</b></div>`:""}
+          ${t.volume?`<div><span class="label">Lots</span><b>${fmt(t.volume,2)}</b></div>`:""}
+          <div><span class="label">Score</span><b>${t.score==null?"ohne Check":t.score+" %"}</b></div>
         </div>
         ${t.notes?`<div><div class="label">Begründung</div><div>${esc(t.notes)}</div></div>`:""}
         ${missing.length?`<div><div class="label">Nicht erfüllt</div><div class="muted" style="font-size:.85rem">${missing.map(c=>esc(c.t)).join(" · ")}</div></div>`:""}
@@ -588,6 +625,169 @@ async function clearExamples(){
   toast("Beispieldaten entfernt");
 }
 
+/* ---------- import (MT4 / MT5 / CSV) ---------- */
+async function readFileText(file){
+  const buf=await file.arrayBuffer(), u=new Uint8Array(buf);
+  if (u[0]===0xFF&&u[1]===0xFE) return new TextDecoder("utf-16le").decode(buf.slice(2));
+  if (u[0]===0xFE&&u[1]===0xFF) return new TextDecoder("utf-16be").decode(buf.slice(2));
+  if (u.length>3 && u[1]===0 && u[3]===0) return new TextDecoder("utf-16le").decode(buf);
+  return new TextDecoder("utf-8").decode(buf);
+}
+function mapHeader(cells){
+  const H=cells.map(x=>String(x).toLowerCase().replace(/\s+/g," ").trim()), used=new Set();
+  const find=preds=>{ for (const pr of preds){ for (let i=0;i<H.length;i++){ if(used.has(i)||!H[i]) continue; if (typeof pr==="string"? H[i]===pr : pr.test(H[i])){ used.add(i); return i; } } } return -1; };
+  const m={};
+  m.openTime=find([/^open(ing)? ?(time|date)/,/^entry ?(time|date)/,"time"]);
+  m.closeTime=find([/^clos(e|ing) ?(time|date)/,/^exit ?(time|date)/,"time"]);
+  m.symbol=find(["symbol","item","instrument",/symbol/]);
+  m.type=find(["type","direction","side",/direction/,"action"]);
+  m.volume=find(["volume","size","lots",/volume|lots|quantity/]);
+  m.openPrice=find([/^open(ing)? ?price/,/^entry ?price/,"price"]);
+  m.closePrice=find([/^clos(e|ing) ?price/,/^exit ?price/,"price"]);
+  m.sl=find(["s / l","s/l","sl",/stop ?loss/]);
+  m.tp=find(["t / p","t/p","tp",/take ?profit/]);
+  m.commission=find([/commission/]);
+  m.swap=find([/swap/]);
+  m.profit=find([/^net ?profit/,"profit",/^p ?\/ ?l$/,/pnl/,/profit/]);
+  m.ticket=find(["position","ticket",/position ?id/,/^id$/,/ticket/,"order"]);
+  m.ok = m.symbol>=0 && m.type>=0 && m.openPrice>=0 && m.closePrice>=0 && m.profit>=0;
+  return m;
+}
+const pnum = v => num(String(v??"").replace(/[^\d.,\-]/g,"").replace(/,(?=\d{3}(\D|$))/g,""));
+function ptime(v){
+  const m=String(v||"").match(/(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})[ T]+(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+  if (m) return new Date(+m[1],m[2]-1,+m[3],+m[4],+m[5],+(m[6]||0)).getTime();
+  const m2=String(v||"").match(/(\d{1,2})[.\/](\d{1,2})[.\/](\d{4})[ T]+(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+  if (m2) return new Date(+m2[3],m2[2]-1,+m2[1],+m2[4],+m2[5],+(m2[6]||0)).getTime();
+  const t=Date.parse(v); return isFinite(t)?t:NaN;
+}
+function rowToPos(cells,m){
+  const g=i=>i>=0?String(cells[i]??"").trim():"";
+  const type=g(m.type).toLowerCase();
+  if (!/^(buy|sell|long|short)$/.test(type)) return null;
+  const open=pnum(g(m.openPrice)), close=pnum(g(m.closePrice)), profit=pnum(g(m.profit));
+  if (!isFinite(open)||!isFinite(close)||!isFinite(profit)||!g(m.symbol)) return null;
+  const sl=pnum(g(m.sl)), tp=pnum(g(m.tp)), com=pnum(g(m.commission)), swap=pnum(g(m.swap));
+  const openTime=ptime(g(m.openTime)), closeTime=ptime(g(m.closeTime));
+  return { ticket:g(m.ticket)||[g(m.symbol),g(m.openTime),g(m.openPrice)].join("|"), symbol:g(m.symbol), dir:/buy|long/.test(type)?"long":"short",
+    volume:pnum(g(m.volume)), open, close, sl:sl>0?sl:null, tp:tp>0?tp:null, openTime, closeTime: isFinite(closeTime)?closeTime:openTime,
+    net:+(profit+(isFinite(com)?com:0)+(isFinite(swap)?swap:0)).toFixed(2), dec:decimals(g(m.openPrice).replace(/\s/g,"")) };
+}
+function parseRows(rows){
+  const out=[]; let m=null;
+  for (const cells of rows){
+    const filled=cells.filter(c=>String(c).trim()!=="");
+    if (filled.length<=1){ m=null; continue; }
+    const hm=mapHeader(cells);
+    if (hm.ok && !cells.some(c=>/^\s*(buy|sell)\s*$/i.test(c))){ m=hm; continue; }
+    if (!m) continue;
+    const p=rowToPos(cells,m); if (p) out.push(p);
+  }
+  return out;
+}
+function parseHTML(text){
+  const doc=new DOMParser().parseFromString(text,"text/html"), rows=[];
+  doc.querySelectorAll("tr").forEach(tr=>{
+    const cells=[]; tr.querySelectorAll("td,th").forEach(td=>{ const cs=Math.max(1,+td.getAttribute("colspan")||1); cells.push(td.textContent.replace(/ /g," ").trim()); for(let i=1;i<cs;i++) cells.push(""); });
+    rows.push(cells);
+  });
+  return parseRows(rows);
+}
+function parseCSV(text){
+  const first=text.split(/\r?\n/).find(l=>l.trim())||"";
+  const delim=[";","\t",","].map(d=>[d,first.split(d).length]).sort((a,b)=>b[1]-a[1])[0][0];
+  const rows=[]; let row=[], cur="", q=false;
+  for (let i=0;i<text.length;i++){
+    const c=text[i];
+    if (q){ if (c==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=c; }
+    else if (c==='"') q=true; else if (c===delim){ row.push(cur); cur=""; }
+    else if (c==="\n"||c==="\r"){ if(c==="\r"&&text[i+1]==="\n") i++; row.push(cur); rows.push(row); row=[]; cur=""; }
+    else cur+=c;
+  }
+  if (cur||row.length){ row.push(cur); rows.push(row); }
+  const hdr=rows.findIndex(r=>mapHeader(r).ok);
+  if (hdr<0) return [];
+  const m=mapHeader(rows[hdr]);
+  return rows.slice(hdr+1).map(r=>rowToPos(r,m)).filter(Boolean);
+}
+const ALIAS={NAS100:"US100",NDX:"US100",USTEC:"US100",NQ:"US100",DJ30:"US30",DOW:"US30",DAX:"GER40",DAX40:"GER40",GER30:"GER40",DE40:"GER40",SPX500:"US500",SP500:"US500",SPX:"US500",GOLD:"XAUUSD",XAU:"XAUUSD",BTC:"BTCUSD",ETH:"ETHUSD",UK100:"UK100",FTSE:"UK100"};
+function normSym(s){ let x=String(s||"").toUpperCase().replace(/\.(CASH|PRO|ECN|RAW|M|I)$/,"").replace(/[^A-Z0-9]/g,"").replace(/(CASH)$/,""); return ALIAS[x]||x; }
+function sessionOf(ms){ const h=new Date(ms).getHours(); return h<8?"Asien":h<13?"London":h<17?"London/NY Overlap":h<22?"New York":"Außerhalb"; }
+function buildImportPlan(positions){
+  const known=new Set(S.trades.filter(t=>t.ticket).map(t=>String(t.ticket)));
+  const fresh=positions.filter(p=>!known.has(String(p.ticket))).sort((a,b)=>a.openTime-b.openTime);
+  const openChecks=S.trades.filter(t=>t.status==="open"&&!t.ticket&&!t.example), taken=new Set(), plan=[];
+  const defRisk=S.settings.account*S.settings.riskPct/100;
+  for (const p of fresh){
+    let best=null, bestD=Infinity;
+    for (const c of openChecks){
+      if (taken.has(c.id)||c.dir!==p.dir||normSym(c.instrument)!==normSym(p.symbol)) continue;
+      const d=p.openTime-c.createdAt; if (d< -3*36e5 || d>12*36e5) continue;
+      if (Math.abs(d)<bestD){ bestD=Math.abs(d); best=c; }
+    }
+    const sign=p.dir==="long"?1:-1;
+    if (best){
+      taken.add(best.id);
+      let r = best.riskAmt>0 ? p.net/best.riskAmt : (best.sl!=null&&best.entry!==best.sl ? (p.close-p.open)*sign/Math.abs(best.entry-best.sl) : NaN);
+      plan.push({kind:"match", p, trade:{...best, status:"closed", ticket:String(p.ticket), imported:true, resultR:+(+r).toFixed(2), pnl:p.net, exitPrice:p.close, actualEntry:p.open, volume:p.volume, closedAt:p.closeTime}});
+    } else {
+      const slDist = p.sl!=null ? (p.open-p.sl)*sign : NaN;
+      let r = slDist>0 ? (p.close-p.open)*sign/slDist : (defRisk>0 ? p.net/defRisk : NaN);
+      const rr = slDist>0 && p.tp!=null ? +(((p.tp-p.open)*sign)/slDist).toFixed(2) : null;
+      plan.push({kind:"new", p, trade:{ id:"imp_"+String(p.ticket).replace(/[^A-Za-z0-9_\-.~:@+]/g,"_").slice(0,80), ticket:String(p.ticket), imported:true, noCheck:true,
+        createdAt:p.openTime, closedAt:p.closeTime, instrument:p.symbol.toUpperCase(), dir:p.dir, timeframe:"–", setup:"Ohne Check", session:sessionOf(p.openTime),
+        entry:p.open, exitPrice:p.close, sl:p.sl, tp:p.tp, dec:p.dec, volume:p.volume, account:S.settings.account, riskPct:null,
+        riskAmt: slDist>0 ? null : defRisk, rr: rr>0?rr:null, checks:{}, emotion:0, confidence:0, score:null, grade:"OHNE", ruleBreak:false,
+        notes:"", status:"closed", resultR:isFinite(r)?+r.toFixed(2):0, pnl:p.net, lesson:"" }});
+    }
+  }
+  return {plan, dupes:positions.length-fresh.length, total:positions.length};
+}
+let pendingPlan=null;
+async function handleImportFile(file){
+  const box=$("#importPreview");
+  if (!file) return;
+  box.innerHTML=`<p class="hint">Lese ${esc(file.name)} …</p>`;
+  let positions=[];
+  try{
+    const text=await readFileText(file);
+    positions = /<t[rd][\s>]/i.test(text) ? parseHTML(text) : parseCSV(text);
+  }catch(e){ positions=[]; }
+  if (!positions.length){
+    box.innerHTML=`<div class="example-note"><span>In dieser Datei wurden keine abgeschlossenen Trades gefunden. Nimm den HTML-Bericht aus dem Verlauf (MT5: Bericht → HTML, MT4: detaillierter Bericht) oder eine CSV mit Spalten für Symbol, Typ, Eröffnungs- und Schlusskurs und Gewinn.</span></div>`;
+    pendingPlan=null; return;
+  }
+  const res=buildImportPlan(positions); pendingPlan=res.plan;
+  const nM=res.plan.filter(x=>x.kind==="match").length, nN=res.plan.length-nM;
+  const sum=res.plan.reduce((a,x)=>a+x.p.net,0);
+  const rows=res.plan.slice(-12).reverse().map(x=>{ const t=x.trade, d=new Date(x.p.openTime);
+    return `<tr><td>${d.toLocaleDateString("de-DE")} ${d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}</td><td>${esc(x.p.symbol)}</td><td><span class="pill ${x.p.dir}">${x.p.dir}</span></td><td class="n">${fmt(x.p.volume,2)}</td><td class="n ${x.p.net>0?"pos":x.p.net<0?"neg":""}">${money(x.p.net)}</td><td class="n">${sR(t.resultR)}</td><td>${x.kind==="match"?`<span class="pill imp">zu Check ${esc(t.grade)}</span>`:`<span class="muted">ohne Check</span>`}</td></tr>`; }).join("");
+  box.innerHTML = res.plan.length ? `
+    <div class="kpis">
+      <div class="kpi"><span class="label">Gefunden</span><b>${res.total}</b><small>${res.dupes} schon im Journal</small></div>
+      <div class="kpi"><span class="label">Mit Check verknüpft</span><b>${nM}</b><small>offene Pre-Trade-Checks</small></div>
+      <div class="kpi"><span class="label">Neu ohne Check</span><b>${nN}</b><small>werden neu angelegt</small></div>
+      <div class="kpi"><span class="label">Netto</span><b class="${sum>=0?"pos":"neg"}">${money(sum)}</b><small>inkl. Kommission & Swap</small></div>
+    </div>
+    <div class="tbl-wrap"><table><thead><tr><th>Eröffnet</th><th>Symbol</th><th></th><th class="n">Lots</th><th class="n">Netto</th><th class="n">R</th><th>Zuordnung</th></tr></thead><tbody>${rows}</tbody></table></div>
+    ${res.plan.length>12?`<p class="hint">Die letzten 12 von ${res.plan.length} Trades werden angezeigt.</p>`:""}
+    <p class="hint">R wird aus deinem geplanten Risiko im Check berechnet. Bei Trades ohne Check aus dem Stop Loss im Bericht, sonst aus Kontogröße × Risiko-% in deinen Regeln. Wurde der Stop nachgezogen, kann R ungenau sein.</p>
+    <button class="btn primary" data-act="doImport">${res.plan.length===1?"1 Trade":res.plan.length+" Trades"} übernehmen</button>`
+    : `<div class="example-note"><span>Alle ${res.total} Trades aus dieser Datei sind schon im Journal.</span></div>`;
+}
+async function doImport(btn){
+  if (!pendingPlan||!pendingPlan.length) return;
+  btn.disabled=true; const list=pendingPlan.map(x=>x.trade); let done=0;
+  if (S.mode==="db"){
+    for (const t of list){ btn.textContent=`Übernehme … ${++done}/${list.length}`; await S.tradesCol.doc(t.id).set(JSON.parse(JSON.stringify(t))); }
+  } else {
+    list.forEach(t=>{ const i=S.trades.findIndex(x=>x.id===t.id); if(i>=0) S.trades[i]=t; else S.trades.push(t); });
+    lsSet("ptc_trades",S.trades); renderAll();
+  }
+  pendingPlan=null; $("#importPreview").innerHTML=""; $("#importFile").value=""; $("#importPanel").hidden=true;
+  toast(list.length===1?"1 Trade übernommen":`${list.length} Trades übernommen`);
+}
+
 /* ---------- stats ---------- */
 function agg(arr){
   const n=arr.length, wins=arr.filter(t=>t.resultR>0.05), losses=arr.filter(t=>t.resultR<-0.05);
@@ -653,7 +853,9 @@ function renderStats(){
   }
   if (rb.length){ const r=agg(rb), o=agg(ok); ins.push([r.total<0?"bad":"", `${rb.length} Trade(s) trotz NO-GO genommen: zusammen ${sR(r.total)}. Trades nach Plan: ${sR(o.avg)} im Schnitt.`]); }
   // checklist item impact
-  const impact=CHECKS.map(c=>{ const y=closed.filter(t=>t.checks&&t.checks[c.k]), n=closed.filter(t=>!(t.checks&&t.checks[c.k])); return {c, y:agg(y), n:agg(n)}; })
+  const withC=closed.filter(t=>!t.noCheck), noC=closed.filter(t=>t.noCheck);
+  if (withC.length>=2 && noC.length>=2){ const a=agg(withC), b=agg(noC); ins.push([a.avg>=b.avg?"good":"bad",`Mit Pre-Trade-Check: ${sR(a.avg)} pro Trade (${a.n}). Ohne Check: ${sR(b.avg)} pro Trade (${b.n}).`]); }
+  const impact=CHECKS.map(c=>{ const y=withC.filter(t=>t.checks&&t.checks[c.k]), n=withC.filter(t=>!(t.checks&&t.checks[c.k])); return {c, y:agg(y), n:agg(n)}; })
     .filter(x=>x.y.n>=2&&x.n.n>=2).map(x=>({...x, diff:x.y.avg-x.n.avg})).sort((a,b)=>b.diff-a.diff);
   if (impact.length){ const b=impact[0]; ins.push(["good",`Wichtigster Punkt für dich: „${b.c.t}“. Mit erfüllt ${sR(b.y.avg)}, ohne ${sR(b.n.avg)} pro Trade.`]); }
   const calm=agg(closed.filter(t=>t.emotion>=4)), tense=agg(closed.filter(t=>t.emotion&&t.emotion<=3));
@@ -661,15 +863,35 @@ function renderStats(){
   if (skipped.length) ins.push(["",`${skipped.length}× hast du einen Trade bewusst nicht genommen. Das ist auch ein Erfolg.`]);
   if (ins.length) html+=`<div class="panel"><h2>Was dir die Daten sagen</h2><ul class="insights">${ins.map(([c,t])=>`<li class="${c}">${esc(t)}</li>`).join("")}</ul></div>`;
 
-  html+=`<div class="two">${groupTable("Nach Bewertung",closed,t=>t.grade,["A+","A","B","C","NO-GO"])}${groupTable("Nach Setup",closed,t=>t.setup)}</div>`;
+  html+=ftmoPanel(closed);
+  html+=`<div class="two">${groupTable("Nach Bewertung",closed,t=>t.grade==="OHNE"?"Ohne Check":t.grade,["A+","A","B","C","NO-GO","Ohne Check"])}${groupTable("Nach Setup",closed,t=>t.setup)}</div>`;
   html+=`<div class="two">${groupTable("Nach Instrument",closed,t=>t.instrument)}${groupTable("Nach Session",closed,t=>t.session)}</div>`;
   html+=`<div class="panel"><h2>Checkliste: erfüllt vs. nicht erfüllt</h2><div class="tbl-wrap"><table><thead><tr><th>Punkt</th><th class="n">Erfüllt · Ø R</th><th class="n">Trefferq.</th><th class="n">Nicht erfüllt · Ø R</th><th class="n">Trefferq.</th></tr></thead><tbody>`+
-    CHECKS.map(c=>{ const y=agg(closed.filter(t=>t.checks&&t.checks[c.k])), n=agg(closed.filter(t=>!(t.checks&&t.checks[c.k])));
+    CHECKS.map(c=>{ const y=agg(withC.filter(t=>t.checks&&t.checks[c.k])), n=agg(withC.filter(t=>!(t.checks&&t.checks[c.k])));
       return `<tr><td style="white-space:normal;min-width:220px">${esc(c.t)}</td><td class="n ${y.avg>0?"pos":y.avg<0?"neg":""}">${y.n?sR(y.avg)+" ("+y.n+")":"–"}</td><td class="n">${y.n?fmt(y.wr,0)+" %":"–"}</td><td class="n ${n.avg>0?"pos":n.avg<0?"neg":""}">${n.n?sR(n.avg)+" ("+n.n+")":"–"}</td><td class="n">${n.n?fmt(n.wr,0)+" %":"–"}</td></tr>`; }).join("")+
     `</tbody></table></div></div>`;
   root.innerHTML=html;
 }
 
+function ftmoPanel(closed){
+  const st=S.settings, start=st.account; const withPnl=closed.filter(t=>isFinite(t.pnl)&&t.pnl!==null);
+  if (!withPnl.length||!(start>0)) return "";
+  const byDay={}; let bal=start, low=start;
+  [...withPnl].sort((a,b)=>(a.closedAt||a.createdAt)-(b.closedAt||b.createdAt)).forEach(t=>{
+    const d=new Date(t.closedAt||t.createdAt).toLocaleDateString("de-DE"); byDay[d]=(byDay[d]||0)+t.pnl; bal+=t.pnl; low=Math.min(low,bal); });
+  const worstDay=Object.entries(byDay).sort((a,b)=>a[1]-b[1])[0];
+  const worstPct=Math.min(0,worstDay[1])/start*100, ddPct=(low-start)/start*100, profPct=(bal-start)/start*100;
+  const bar=(lbl,val,lim,sub,isTarget)=>{
+    const used=Math.max(0,Math.min(100, Math.abs(val)/lim*100));
+    const col=isTarget?"--good":used>=80?"--bad":used>=50?"--warn":"--good";
+    return `<div class="limit-row"><span>${lbl}</span><b class="num">${fmt(val,2)} % / ${isTarget?"+":"−"}${fmt(lim,1)} %</b>
+      <div class="track"><i style="width:${isTarget?Math.max(0,profPct)/lim*100>100?100:Math.max(0,profPct)/lim*100:used}%;background:var(${col})"></i></div><small class="muted">${sub}</small></div>`; };
+  return `<div class="panel"><div class="panel-head"><h2>FTMO-Limits</h2><span class="muted" style="font-size:.8rem">Startkapital ${money(start)} · nur geschlossene Trades</span></div><div class="limits">
+    ${bar("Schlechtester Tag",worstPct,st.ftmoDaily,`${worstDay[0]}: ${money(worstDay[1])}`)}
+    ${bar("Tiefster Kontostand",Math.min(0,ddPct),st.ftmoMax,`Tiefster Stand ${money(low)}`)}
+    ${bar("Gewinn",profPct,st.ftmoTarget,`Aktuell ${money(bal)}`,true)}
+  </div><p class="hint" style="margin:0">FTMO rechnet das Tageslimit inklusive offener Positionen. Die Werte hier sind eine Näherung. Startkapital, Limits und Ziel stellst du unter „Meine Regeln“ ein.</p></div>`;
+}
 function renderAll(){ renderJournal(); renderStats(); }
 
 /* ---------- events ---------- */
@@ -689,6 +911,7 @@ $("#tradeForm").addEventListener("input",e=>{
   if (id==="riskPct"){ const v=num(e.target.value); if(isFinite(v)){ st.riskPct=v; persistSettings(); } }
   if (id==="maxRisk"){ const v=num(e.target.value); if(isFinite(v)){ st.maxRisk=v; persistSettings(); } }
   if (id==="minRR"){ const v=num(e.target.value); if(isFinite(v)){ st.minRR=v; persistSettings(); } }
+  if (["ftmoDaily","ftmoMax","ftmoTarget"].includes(id)){ const v=num(e.target.value); if(isFinite(v)){ st[id]=v; persistSettings(); renderStats(); } }
   if (id==="currency"){ st.currency=e.target.value.trim()||"€"; persistSettings(); }
   if (id==="setups"){ const arr=e.target.value.split(",").map(s=>s.trim()).filter(Boolean); if(arr.length){ st.setups=arr; persistSettings(); const cur=$("#setup").value; $("#setup").innerHTML=arr.map(x=>`<option>${esc(x)}</option>`).join("")+`<option>Sonstiges</option>`; if([...arr,"Sonstiges"].includes(cur)) $("#setup").value=cur; } }
   updateVerdict();
@@ -709,12 +932,20 @@ $("#copyBtn").addEventListener("click",async()=>{
   catch(e){ const r=document.createRange(); r.selectNodeContents($("#vSetup")); const s=getSelection(); s.removeAllRanges(); s.addRange(r); toast("Text markiert. Mit Strg/Cmd+C kopieren."); }
 });
 $("#jFilter").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b) return; S.filter=b.dataset.v; document.querySelectorAll("#jFilter button").forEach(x=>x.setAttribute("aria-pressed",x===b)); renderJournal(); });
+$("#importToggle").addEventListener("click",()=>{ const p=$("#importPanel"); p.hidden=!p.hidden; });
+$("#importClose").addEventListener("click",()=>{ $("#importPanel").hidden=true; });
+$("#importFile").addEventListener("change",e=>handleImportFile(e.target.files[0]));
+const dz=$("#dropzone");
+["dragenter","dragover"].forEach(ev=>dz.addEventListener(ev,e=>{ e.preventDefault(); dz.classList.add("over"); }));
+["dragleave","drop"].forEach(ev=>dz.addEventListener(ev,e=>{ e.preventDefault(); dz.classList.remove("over"); }));
+dz.addEventListener("drop",e=>{ const f=e.dataTransfer&&e.dataTransfer.files[0]; if(f) handleImportFile(f); });
 $("#tradeList").addEventListener("toggle",e=>{ if(e.target.open) S.openId=e.target.dataset.id; },true);
 document.addEventListener("click",async e=>{
   const b=e.target.closest("[data-act]"); if(!b) return;
   const id=b.dataset.id, act=b.dataset.act;
   try{
     if (act==="loadEx"){ b.disabled=true; await loadExamples(); }
+    else if (act==="doImport"){ await doImport(b); }
     else if (act==="clearEx"){ b.disabled=true; await clearExamples(); }
     else if (act==="quick"){ await closeTrade(id, num(b.dataset.r)); }
     else if (act==="close"){ await closeTrade(id, NaN); }
@@ -723,7 +954,7 @@ document.addEventListener("click",async e=>{
       if (S.confirmDel===id){ S.confirmDel=null; await removeTrade(id); toast("Trade gelöscht"); }
       else { S.confirmDel=id; S.openId=id; renderJournal(); setTimeout(()=>{ if(S.confirmDel===id){ S.confirmDel=null; renderJournal(); } },4000); }
     }
-  }catch(err){ toast("Das hat nicht geklappt. Bitte erneut versuchen."); b.disabled=false; }
+  }catch(err){ console.error(err); toast("Das hat nicht geklappt. Bitte erneut versuchen."); b.disabled=false; }
 });
 
 /* ---------- boot ---------- */
