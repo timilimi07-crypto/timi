@@ -1,0 +1,170 @@
+{%- comment -%}
+  WEAX Widerrufsbutton – elektronische Widerrufsfunktion („Vertrag widerrufen“).
+  Pflicht für Online-Shops seit 19.06.2026 (EU-Richtlinie 2023/2673).
+  Datei: sections/weax-widerruf.liquid  →  wird von templates/page.widerruf.json benutzt.
+  Seite anlegen: Onlineshop → Seiten → „Vertrag widerrufen“ (Handle: vertrag-widerrufen), Vorlage „widerruf“.
+
+  Ablauf:
+  1. Kunde klickt „Vertrag widerrufen“
+  2. Kunde gibt Name, Bestellnummer, E-Mail an
+  3. Kunde klickt „Widerruf bestätigen“ → Nachricht geht an eure Shop-E-Mail
+  WICHTIG: Ihr müsst dem Kunden danach UNVERZÜGLICH eine Eingangsbestätigung per E-Mail schicken
+  (Inhalt des Widerrufs + Datum und Uhrzeit). Vorlage dafür steht im Leitfaden.
+{%- endcomment -%}
+{% render 'weax-legal-style' %}
+
+{%- assign fid = 'wb-' | append: section.id -%}
+<style>
+  #{{ fid }}-wrap .wb__card {
+    max-width: 640px; margin: 0 auto; padding: clamp(24px, 4vw, 40px); border-radius: 22px; border: 1px solid var(--wl-line);
+    background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.01)); display: grid; gap: 18px;
+  }
+  #{{ fid }}-wrap .wb__lead { font-size: 16px; line-height: 1.75; margin: 0; }
+  #{{ fid }}-wrap .wb__steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; list-style: none; margin: 0; padding: 0; counter-reset: s; }
+  #{{ fid }}-wrap .wb__steps li { counter-increment: s; font-size: 12px; letter-spacing: .06em; line-height: 1.5; padding: 12px; border-radius: 12px; border: 1px solid var(--wl-line); opacity: .55; }
+  #{{ fid }}-wrap .wb__steps li::before { content: counter(s); display: block; font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; color: #fff; margin-bottom: 4px; }
+  #{{ fid }}-wrap .wb__steps li.is-on { opacity: 1; border-color: var(--wl-chrome); }
+  #{{ fid }}-wrap .wb__form { display: grid; gap: 14px; }
+  #{{ fid }}-wrap .wb__form[hidden] { display: none; }
+  #{{ fid }}-wrap label { display: grid; gap: 6px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--wl-chrome); }
+  #{{ fid }}-wrap label small { text-transform: none; letter-spacing: 0; opacity: .6; font-size: 12px; }
+  #{{ fid }}-wrap input, #{{ fid }}-wrap textarea {
+    width: 100%; font: inherit; font-size: 16px; color: #fff; background: rgba(255,255,255,.04); letter-spacing: 0; text-transform: none;
+    border: 1px solid color-mix(in srgb, var(--wl-chrome) 28%, transparent); border-radius: 12px; padding: 13px 14px; outline: 0;
+    transition: border-color .3s, box-shadow .3s;
+  }
+  #{{ fid }}-wrap input:focus, #{{ fid }}-wrap textarea:focus { border-color: var(--wl-chrome); box-shadow: 0 0 24px -8px var(--wl-chrome); }
+  #{{ fid }}-wrap textarea { min-height: 96px; resize: vertical; }
+  #{{ fid }}-wrap .wb__note { font-size: 13px; line-height: 1.6; opacity: .65; margin: 0; }
+  #{{ fid }}-wrap .wb__err { color: #ff9a9a; font-size: 14px; margin: 0; }
+  #{{ fid }}-wrap .wb__ok { display: grid; gap: 12px; }
+  #{{ fid }}-wrap .wb__ok h2 { font-family: 'Cinzel', serif; color: #fff; font-size: 20px; letter-spacing: .1em; text-transform: uppercase; margin: 0; }
+  #{{ fid }}-wrap .wb__ok dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 16px; margin: 0; font-size: 15px; }
+  #{{ fid }}-wrap .wb__ok dt { opacity: .6; }
+  #{{ fid }}-wrap .wb__ok dd { margin: 0; color: #fff; word-break: break-word; }
+  #{{ fid }}-wrap .wb__info { max-width: 640px; margin: 28px auto 0; }
+  @media (max-width: 520px) { #{{ fid }}-wrap .wb__steps { grid-template-columns: minmax(0, 1fr); } }
+</style>
+
+<article class="wl" id="{{ fid }}-wrap">
+  <header class="wl__hero">
+    <span class="wl__eyebrow">Rechtliches</span>
+    <h1 class="wl__title">{{ page.title | default: 'Vertrag widerrufen' }}</h1>
+    <div data-wl-docs></div>
+  </header>
+
+  <div class="wl__layout">
+    <div>
+      <div class="wb__card">
+        {%- form 'contact', id: fid -%}
+          {%- if form.posted_successfully? -%}
+            <div class="wb__ok" data-wb-ok>
+              <h2>✦ Widerruf eingegangen</h2>
+              <p class="wb__lead">Dein Widerruf ist bei uns eingegangen. Du erhältst unverzüglich eine Eingangsbestätigung per E-Mail. Mach dir am besten einen Screenshot dieser Seite.</p>
+              <dl>
+                <dt>Eingang</dt><dd data-wb-time>–</dd>
+                <dt>Name</dt><dd data-wb-name>–</dd>
+                <dt>Bestellung</dt><dd data-wb-order>–</dd>
+                <dt>E-Mail</dt><dd data-wb-mail>–</dd>
+              </dl>
+              <p class="wb__note">Bitte schick die Ware innerhalb von 14 Tagen an die Adresse aus der Widerrufsbelehrung zurück.</p>
+            </div>
+          {%- else -%}
+            <ol class="wb__steps" aria-hidden="true">
+              <li class="is-on" data-step="1">Vertrag widerrufen</li>
+              <li data-step="2">Angaben machen</li>
+              <li data-step="3">Widerruf bestätigen</li>
+            </ol>
+
+            <p class="wb__lead">Du möchtest deine Bestellung widerrufen? Das geht hier in wenigen Sekunden. Du musst keinen Grund angeben.</p>
+
+            {%- if form.errors -%}<p class="wb__err" role="alert">{{ form.errors | default_errors }}</p>{%- endif -%}
+
+            <button type="button" class="wl__btn" data-wb-start {% if form.errors %}hidden{% endif %}>Vertrag widerrufen <span aria-hidden="true">→</span></button>
+
+            <div class="wb__form" data-wb-form {% unless form.errors %}hidden{% endunless %}>
+              <input type="hidden" name="contact[Betreff]" value="WIDERRUF – Vertrag widerrufen">
+              <input type="hidden" name="contact[Eingang]" value="" data-wb-stamp>
+              <label for="{{ fid }}-name">Vollständiger Name
+                <input id="{{ fid }}-name" type="text" name="contact[name]" autocomplete="name" required>
+              </label>
+              <label for="{{ fid }}-order">Bestellnummer <small>(z. B. #1001, steht in deiner Bestellbestätigung)</small>
+                <input id="{{ fid }}-order" type="text" name="contact[Bestellnummer]" required>
+              </label>
+              <label for="{{ fid }}-mail">E-Mail-Adresse <small>(hierhin schicken wir die Bestätigung)</small>
+                <input id="{{ fid }}-mail" type="email" name="contact[email]" autocomplete="email" required>
+              </label>
+              <label for="{{ fid }}-body">Welche Artikel? <small>(freiwillig – leer lassen = ganze Bestellung)</small>
+                <textarea id="{{ fid }}-body" name="contact[body]"></textarea>
+              </label>
+              <button type="submit" class="wl__btn">Widerruf bestätigen <span aria-hidden="true">✓</span></button>
+              <p class="wb__note">Mit dem Klick auf „Widerruf bestätigen“ erklärst du den Widerruf deines Vertrags. Infos zur Verarbeitung deiner Daten findest du in der {% if shop.privacy_policy %}<a href="{{ shop.privacy_policy.url }}" style="color:#fff">Datenschutzerklärung</a>{% else %}Datenschutzerklärung{% endif %}.</p>
+            </div>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+
+      {%- if page.content != blank -%}
+        <div class="wl__content wb__info">{{ page.content }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</article>
+
+<script>
+  (function () {
+    var root = document.getElementById('{{ fid }}-wrap');
+    if (!root) return;
+    var KEY = 'weax-widerruf';
+    var start = root.querySelector('[data-wb-start]'), box = root.querySelector('[data-wb-form]');
+    var steps = root.querySelectorAll('.wb__steps li');
+    function step(n) { steps.forEach(function (li) { li.classList.toggle('is-on', +li.dataset.step <= n); }); }
+
+    if (start && box) {
+      start.addEventListener('click', function () {
+        start.hidden = true; box.hidden = false; step(2);
+        var first = box.querySelector('input:not([type=hidden])'); if (first) first.focus();
+      });
+      if (!box.hidden) step(2);
+      var form = box.closest('form');
+      form.addEventListener('submit', function () {
+        var now = new Date();
+        var stamp = now.toLocaleDateString('de-DE') + ', ' + now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr';
+        root.querySelector('[data-wb-stamp]').value = stamp;
+        step(3);
+        try {
+          sessionStorage.setItem(KEY, JSON.stringify({
+            t: stamp,
+            n: form.querySelector('[name="contact[name]"]').value,
+            o: form.querySelector('[name="contact[Bestellnummer]"]').value,
+            m: form.querySelector('[name="contact[email]"]').value
+          }));
+        } catch (e) {}
+      });
+    }
+
+    var ok = root.querySelector('[data-wb-ok]');
+    if (ok) {
+      var d = null;
+      try { d = JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) {}
+      var now = new Date();
+      ok.querySelector('[data-wb-time]').textContent = (d && d.t) || (now.toLocaleDateString('de-DE') + ', ' + now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr');
+      if (d) {
+        ok.querySelector('[data-wb-name]').textContent = d.n || '–';
+        ok.querySelector('[data-wb-order]').textContent = d.o || '–';
+        ok.querySelector('[data-wb-mail]').textContent = d.m || '–';
+      }
+      ok.scrollIntoView({ block: 'center' });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "WEAX Widerrufsbutton",
+  "tag": "section",
+  "class": "section-weax-widerruf",
+  "settings": [],
+  "presets": [{ "name": "WEAX Widerrufsbutton" }]
+}
+{% endschema %}

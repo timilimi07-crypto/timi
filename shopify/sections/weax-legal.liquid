@@ -1,0 +1,57 @@
+{%- comment -%}
+  WEAX Rechtstext-Seite – für Seiten unter /pages/... (z. B. Impressum).
+  Datei: sections/weax-legal.liquid  →  wird von templates/page.legal.json benutzt.
+  Den Text selbst schreibst du wie gewohnt unter Onlineshop → Seiten.
+{%- endcomment -%}
+{% render 'weax-legal-style' %}
+
+<article class="wl">
+  <header class="wl__hero">
+    <span class="wl__eyebrow">{{ section.settings.eyebrow }}</span>
+    <h1 class="wl__title">{{ page.title }}</h1>
+    {%- if section.settings.show_updated -%}
+      <p class="wl__meta">Stand: {{ page.updated_at | date: '%d.%m.%Y' }}</p>
+    {%- endif -%}
+    <div data-wl-docs></div>
+  </header>
+
+  <div class="wl__layout">
+    <nav class="wl__toc" aria-label="Inhalt" hidden></nav>
+    <div>
+      <div class="wl__content">
+        {{ page.content }}
+      </div>
+
+      {%- if section.settings.show_contact -%}
+        <aside class="wl__contact">
+          <h2>{{ section.settings.contact_heading }}</h2>
+          {%- if section.settings.contact_text != blank -%}<div>{{ section.settings.contact_text }}</div>{%- endif -%}
+          {%- if section.settings.contact_link_text != blank -%}
+            <a class="wl__btn" href="{{ section.settings.contact_link | default: '/pages/contact' }}">
+              {{ section.settings.contact_link_text }} <span aria-hidden="true">→</span>
+            </a>
+          {%- endif -%}
+        </aside>
+      {%- endif -%}
+    </div>
+  </div>
+</article>
+
+{% schema %}
+{
+  "name": "WEAX Rechtstext",
+  "tag": "section",
+  "class": "section-weax-legal",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "Rechtliches" },
+    { "type": "checkbox", "id": "show_updated", "label": "„Stand“-Datum zeigen", "default": true, "info": "Zeigt das Datum der letzten Änderung der Seite." },
+    { "type": "header", "content": "Kontakt-Box unten" },
+    { "type": "checkbox", "id": "show_contact", "label": "Kontakt-Box zeigen", "default": true },
+    { "type": "text", "id": "contact_heading", "label": "Überschrift", "default": "Fragen?" },
+    { "type": "richtext", "id": "contact_text", "label": "Text", "default": "<p>Schreib uns einfach. Wir antworten in der Regel innerhalb von 1–2 Werktagen.</p>" },
+    { "type": "text", "id": "contact_link_text", "label": "Button-Text", "default": "Kontakt" },
+    { "type": "url", "id": "contact_link", "label": "Button-Link" }
+  ],
+  "presets": [{ "name": "WEAX Rechtstext" }]
+}
+{% endschema %}

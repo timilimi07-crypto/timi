@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "main": {
+      "type": "weax-legal",
+      "settings": {
+        "eyebrow": "Rechtliches",
+        "show_updated": true,
+        "show_contact": true,
+        "contact_heading": "Fragen?",
+        "contact_text": "<p>Schreib uns einfach. Wir antworten in der Regel innerhalb von 1–2 Werktagen.</p>",
+        "contact_link_text": "Kontakt",
+        "contact_link": ""
+      }
+    }
+  },
+  "order": ["main"]
+}

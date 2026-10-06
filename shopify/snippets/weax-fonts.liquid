@@ -1,0 +1,15 @@
+{%- comment -%}
+  WEAX Schrift lokal laden (statt von Google) – wichtig für den Datenschutz.
+  Datei: snippets/weax-fonts.liquid
+  Voraussetzung: Die Datei "Cinzel.woff2" liegt unter Assets.
+  Einbinden mit: {% render 'weax-fonts' %}
+{%- endcomment -%}
+<style>
+  @font-face {
+    font-family: 'Cinzel';
+    font-style: normal;
+    font-weight: 400 900;
+    font-display: swap;
+    src: url({{ 'Cinzel.woff2' | asset_url }}) format('woff2');
+  }
+</style>

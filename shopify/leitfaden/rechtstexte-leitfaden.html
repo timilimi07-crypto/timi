@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>WEAX Rechtstexte-Leitfaden</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+  @font-face { font-family: 'Cinzel'; font-weight: 400 900; src: url('../assets/Cinzel.woff2') format('woff2'); }
+  @page { size: A4; margin: 18mm 17mm 20mm; }
+  @page :first { margin: 0; }
+  :root { --ink: #111216; --soft: #5b606a; --line: #d9dce1; --chrome: #dfe3e8; --bg: #050507; --red: #b4232a; --amber: #b7791f; --green: #2f7d4f; --tint: #f4f5f7; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif; font-size: 10.2pt; line-height: 1.55; color: var(--ink); }
+  h1, h2, h3 { font-family: 'Cinzel', 'Times New Roman', serif; font-weight: 700; letter-spacing: .06em; margin: 0; break-after: avoid; }
+  h2 { font-size: 17pt; text-transform: uppercase; margin: 0 0 4mm; padding-top: 2mm; }
+  h2 .no { color: var(--soft); font-size: 11pt; display: block; letter-spacing: .3em; margin-bottom: 1mm; }
+  h3 { font-size: 11.5pt; margin: 6mm 0 2mm; letter-spacing: .08em; text-transform: uppercase; }
+  p { margin: 0 0 2.6mm; }
+  ul, ol { margin: 0 0 3mm; padding-left: 5mm; }
+  li { margin: 0 0 1.2mm; }
+  a { color: inherit; }
+  code { font-family: 'SFMono-Regular', Menlo, Consolas, monospace; font-size: 8.8pt; background: var(--tint); padding: .3mm 1.2mm; border-radius: 1mm; }
+  .chapter { break-before: page; }
+  .small { font-size: 8.8pt; color: var(--soft); }
+
+  /* Deckblatt */
+  .cover {
+    height: 297mm; background: radial-gradient(ellipse at 50% 120%, #2a2c31, var(--bg) 60%); color: var(--chrome);
+    display: grid; align-content: center; justify-items: center; text-align: center; padding: 30mm 25mm; position: relative; overflow: hidden;
+  }
+  .cover .stars { position: absolute; inset: 0; background-image:
+      radial-gradient(1px 1px at 12% 20%, #fff, transparent), radial-gradient(1px 1px at 80% 14%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 30% 72%, #fff, transparent), radial-gradient(1px 1px at 88% 60%, #fff, transparent),
+      radial-gradient(1px 1px at 55% 35%, #fff, transparent), radial-gradient(1.2px 1.2px at 22% 88%, #fff, transparent),
+      radial-gradient(1px 1px at 68% 84%, #fff, transparent), radial-gradient(1px 1px at 8% 50%, #fff, transparent); opacity: .8; }
+  .cover svg { width: 26mm; height: 26mm; margin-bottom: 10mm; position: relative; }
+  .cover .eyebrow { font-size: 9pt; letter-spacing: .5em; text-transform: uppercase; opacity: .6; position: relative; }
+  .cover h1 { font-size: 40pt; line-height: 1.1; margin: 6mm 0 0; letter-spacing: .12em; text-transform: uppercase; position: relative;
+    background: linear-gradient(100deg, #8a9099 0%, #fff 30%, #aab0b8 50%, #fff 70%, #8a9099 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .cover .sub { font-size: 12pt; margin-top: 8mm; max-width: 120mm; opacity: .85; position: relative; }
+  .cover .meta { position: absolute; bottom: 22mm; left: 0; right: 0; font-size: 8.5pt; letter-spacing: .2em; text-transform: uppercase; opacity: .55; }
+
+  /* Boxen */
+  .box { border: 1px solid var(--line); border-radius: 3mm; padding: 4mm 5mm; margin: 0 0 4mm; break-inside: avoid; }
+  .box.warn { border-color: var(--red); background: #fdf3f3; }
+  .box.dark { background: var(--bg); color: var(--chrome); border: 0; }
+  .box.dark strong { color: #fff; }
+  .box .label { font-family: 'Cinzel', serif; font-weight: 700; font-size: 9pt; letter-spacing: .2em; text-transform: uppercase; display: block; margin-bottom: 1.5mm; }
+  .box.warn .label { color: var(--red); }
+  .mono { font-family: 'IBM Plex Sans', sans-serif; white-space: pre-wrap; background: var(--tint); border-radius: 2mm; padding: 4mm 5mm; font-size: 9.4pt; line-height: 1.6; break-inside: avoid; margin: 0 0 4mm; border-left: 3px solid var(--ink); }
+
+  .top5 { counter-reset: t; list-style: none; padding: 0; display: grid; gap: 2.5mm; }
+  .top5 li { counter-increment: t; display: grid; grid-template-columns: 9mm 1fr; gap: 3mm; align-items: start; margin: 0; }
+  .top5 li::before { content: counter(t); font-family: 'Cinzel', serif; font-weight: 700; font-size: 15pt; line-height: 1; color: var(--ink);
+    border: 1px solid var(--ink); border-radius: 50%; width: 9mm; height: 9mm; display: grid; place-items: center; }
+
+  /* Tabelle Befunde */
+  table { width: 100%; border-collapse: collapse; font-size: 8.9pt; margin: 0 0 4mm; }
+  th { text-align: left; font-weight: 600; font-size: 8pt; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); border-bottom: 1.5px solid var(--ink); padding: 2mm 2mm; }
+  td { border-bottom: 1px solid var(--line); padding: 2.2mm 2mm; vertical-align: top; }
+  tr { break-inside: avoid; }
+  td:first-child { width: 13mm; }
+  .pill { display: inline-block; font-size: 7.4pt; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: .6mm 2mm; border-radius: 10mm; color: #fff; white-space: nowrap; }
+  .p-red { background: var(--red); } .p-amber { background: var(--amber); } .p-green { background: var(--green); }
+  td b { font-weight: 600; }
+
+  /* Checklisten */
+  .check { list-style: none; padding: 0; }
+  .check li { position: relative; padding-left: 7mm; }
+  .check li::before { content: ""; position: absolute; left: 0; top: 1mm; width: 3.4mm; height: 3.4mm; border: 1.2px solid var(--ink); border-radius: .8mm; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+  .steps { counter-reset: s; list-style: none; padding: 0; }
+  .steps > li { counter-increment: s; position: relative; padding-left: 9mm; margin-bottom: 2.4mm; }
+  .steps > li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 6mm; height: 6mm; border-radius: 50%; background: var(--ink); color: #fff;
+    font-size: 8pt; font-weight: 600; display: grid; place-items: center; }
+  .path { font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- ============ Deckblatt ============ -->
+<section class="cover">
+  <div class="stars"></div>
+  <svg viewBox="0 0 40 40"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#9aa0a8"/><stop offset="1" stop-color="#fff"/></linearGradient></defs><path fill="url(#g)" d="M20 0 L23 17 L40 20 L23 23 L20 40 L17 23 L0 20 L17 17 Z"/></svg>
+  <span class="eyebrow">WEAX · Intern</span>
+  <h1>Rechtstexte<br>Leitfaden</h1>
+  <p class="sub">So schreibt ihr Impressum, Datenschutz, AGB, Widerruf und Versand richtig. Mit allem, was ich in eurem Shop gefunden habe.</p>
+  <div class="meta">Stand: 6. Oktober 2026 · wearweax.com</div>
+</section>
+
+<!-- ============ 0 ============ -->
+<section class="chapter">
+  <h2><span class="no">Vorweg</span>Bitte zuerst lesen</h2>
+
+  <div class="box warn">
+    <span class="label">Wichtig</span>
+    <p>Dieser Leitfaden ist <strong>keine Rechtsberatung</strong>. Er zeigt euch, was in einen deutschen Online-Shop gehört, und listet die Fehler, die ich in eurem Shop gefunden habe. Gesetze ändern sich oft. Ich kann nicht garantieren, dass alles vollständig und aktuell ist.</p>
+    <p style="margin:0">Der sicherste Schutz vor Abmahnungen ist ein <strong>Rechtstexte-Service mit Abmahnschutz</strong>. Dafür gibt es z. B. den Händlerbund, die IT-Recht Kanzlei, Trusted Shops oder eRecht24. Das kostet etwa 10 bis 25 € im Monat. Ihr bekommt geprüfte Texte, automatische Updates bei neuen Gesetzen und Hilfe, wenn doch eine Abmahnung kommt. Die meisten bieten eine direkte Shopify-Anbindung.</p>
+  </div>
+
+  <h3>Die 5 wichtigsten Punkte</h3>
+  <ol class="top5">
+    <li><div><strong>Alle Platzhalter raus.</strong> Ihr habt live Texte mit „[Name Bruder]“, „[Anschrift]“ und „[X] Werktage“. Ein unvollständiges Impressum ist einer der häufigsten Abmahngründe.</div></li>
+    <li><div><strong>Nur eine Version jedes Textes.</strong> Euer Footer und der Checkout zeigen die Shopify-Richtlinien. Die sind gerade englische Standardvorlagen, z. B. mit „30 Tage Rückgabe“. Eure deutschen Texte unter /pages/ sind gar nicht verlinkt. Die richtigen Texte gehören in <span class="path">Einstellungen → Richtlinien</span>.</div></li>
+    <li><div><strong>Widerrufsbutton einbauen.</strong> Seit dem 19.06.2026 braucht jeder Online-Shop einen Button „Vertrag widerrufen“. Den Code dafür habe ich euch geschrieben.</div></li>
+    <li><div><strong>Google Fonts lokal laden.</strong> Startseite und Footer laden die Schrift direkt von Google. Dafür gab es eine große Abmahnwelle. Der neue Code löst das.</div></li>
+    <li><div><strong>Produktseiten ergänzen:</strong> Materialangabe in Prozent, Herstellerangaben und Lieferzeit.</div></li>
+  </ol>
+</section>
+
+<!-- ============ 1 ============ -->
+<section class="chapter">
+  <h2><span class="no">Kapitel 1</span>Was ich in eurem Shop gefunden habe</h2>
+  <p class="small">Geprüft am 06.10.2026: Seiten, Shopify-Richtlinien, Footer, Produktvorlage. <span class="pill p-red">Sofort</span> = hohes Abmahnrisiko, <span class="pill p-amber">Bald</span> = sollte zeitnah erledigt werden, <span class="pill p-green">Prüfen</span> = kontrollieren.</p>
+
+  <table>
+    <thead><tr><th></th><th>Problem</th><th>Was tun</th></tr></thead>
+    <tbody>
+      <tr><td><span class="pill p-red">Sofort</span></td><td><b>Impressum unvollständig:</b> „[Name Bruder]“, „[Straße und Hausnummer]“, „[PLZ] [Ort]“, „[Telefonnummer]“ stehen live auf der Seite.</td><td>Alle Angaben eintragen (Muster in Kapitel 3).</td></tr>
+      <tr><td><span class="pill p-red">Sofort</span></td><td><b>Platzhalter in AGB, Widerruf, Datenschutz, Versand:</b> „[Anschrift]“, „[Land/Länder ergänzen]“, „[X] Werktage“, „[Betrag] €“, „[Platzhalter: Cookie-Tools]“.</td><td>Echte Angaben einsetzen oder den Satz löschen.</td></tr>
+      <tr><td><span class="pill p-red">Sofort</span></td><td><b>Shopify-Richtlinie „Widerrufsrecht“</b> ist eine übersetzte englische Vorlage („30-tägiges Rückgaberecht“). Sie widerspricht eurer 14-Tage-Belehrung und ist im Footer und im Checkout verlinkt.</td><td>Durch die gesetzliche Widerrufsbelehrung und das Muster-Formular ersetzen (Kapitel 3.3).</td></tr>
+      <tr><td><span class="pill p-red">Sofort</span></td><td><b>Shopify-Richtlinie „AGB“</b> ist eine übersetzte US-Vorlage („Terms of Service“), nicht für deutsches Recht gemacht. Sie widerspricht eurer AGB-Seite.</td><td>Durch eure deutschen AGB ersetzen (Kapitel 3.4).</td></tr>
+      <tr><td><span class="pill p-red">Sofort</span></td><td><b>Shopify-Richtlinie „Datenschutzerklärung“</b> ist die Shopify-Standardvorlage. Euer Verantwortlicher, PayPal, Newsletter usw. fehlen.</td><td>Durch eine vollständige Datenschutzerklärung ersetzen (Kapitel 3.2).</td></tr>
+      <tr><td><span class="pill p-red">Sofort</span></td><td><b>Richtlinie „Impressum“ ist leer.</b> Im Footer erscheint nur „Kontakt“ mit leeren Zeilen „USt-IdNr.:“ und „Gewerbenummer:“.</td><td>In Einstellungen → Richtlinien das Impressum ausfüllen. Leere Zeilen löschen.</td></tr>
+      <tr><td><span class="pill p-red">Sofort</span></td><td><b>Widerrufsbutton fehlt.</b> In der Widerrufsbelehrung steht sogar der interne Hinweis „Seit dem 19.06.2026 muss zusätzlich …“ für alle Kunden sichtbar.</td><td>Hinweis löschen, Seite „Vertrag widerrufen“ mit dem neuen Code anlegen (Kapitel 3.3 und 5).</td></tr>
+      <tr><td><span class="pill p-red">Sofort</span></td><td><b>Google Fonts von Google-Servern</b> in „Star Hero“ und „Star Footer“. Dabei geht die IP-Adresse jedes Besuchers ohne Einwilligung an Google (LG München I, Urteil vom 20.01.2022, Az. 3 O 17493/20).</td><td>Schrift lokal laden: Datei <code>Cinzel.woff2</code> + Snippet <code>weax-fonts</code> (Kapitel 5).</td></tr>
+      <tr><td><span class="pill p-red">Sofort</span></td><td><b>Materialangabe fehlt</b> bei Hoodie und Pullover. „Schweres Fleece“ reicht nicht. Pflicht nach EU-Textilkennzeichnungsverordnung (EU) Nr. 1007/2011, und zwar vor dem Kauf.</td><td>In jede Produktbeschreibung, z. B. „80 % Baumwolle, 20 % Polyester“. Steht auf dem Etikett oder beim Lieferanten.</td></tr>
+      <tr><td><span class="pill p-amber">Bald</span></td><td><b>Herstellerangaben (GPSR) fehlen</b> auf den Produktseiten. Pflicht seit 13.12.2024 nach VO (EU) 2023/988.</td><td>Hersteller mit Name, Postanschrift und E-Mail angeben. Verkauft ihr unter eurer Marke, seid ihr das selbst. Dazu Artikelnummer oder Typ und ggf. Sicherheitshinweise.</td></tr>
+      <tr><td><span class="pill p-amber">Bald</span></td><td><b>Keine Lieferzeit</b> auf den Produktseiten.</td><td>Z. B. „Lieferzeit: 3–5 Werktage“ unter den Preis.</td></tr>
+      <tr><td><span class="pill p-amber">Bald</span></td><td><b>Steuerhinweis:</b> Der Footer zeigt „Alle Preise inkl. MwSt.“, wenn in Shopify „Steuern im Preis enthalten“ aktiv ist. Als Kleinunternehmer stimmt das nicht.</td><td>Steuereinstellungen prüfen. Neben Preise und in den Footer: „Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.“</td></tr>
+      <tr><td><span class="pill p-amber">Bald</span></td><td><b>Bewertungs-Block</b> in der Produktvorlage. Wer Bewertungen zeigt, muss sagen, ob und wie geprüft wird, dass sie von echten Käufern stammen (§ 5b Abs. 3 UWG).</td><td>Ohne Bewertungs-App den Block entfernen. Mit App einen Hinweis zur Prüfung ergänzen.</td></tr>
+      <tr><td><span class="pill p-amber">Bald</span></td><td><b>Newsletter im Footer:</b> Für Werbung per E-Mail braucht ihr eine nachweisbare Einwilligung.</td><td>In Shopify das Double-Opt-In für Marketing-E-Mails einschalten. Newsletter in der Datenschutzerklärung erwähnen.</td></tr>
+      <tr><td><span class="pill p-amber">Bald</span></td><td><b>Verpackungsgesetz:</b> Wer verpackte Ware an Endkunden verschickt, muss vorher im Register LUCID eingetragen sein und die Verpackung bei einem dualen System lizenzieren.</td><td>Kostenlos registrieren auf lucid.verpackungsregister.org, danach Lizenz ab ca. 30–50 € pro Jahr.</td></tr>
+      <tr><td><span class="pill p-green">Prüfen</span></td><td><b>Adresse:</b> In der Richtlinie „Kontakt“ steht „Amselweg 13, 18198 Mundelsheim“. Die PLZ 18198 gehört nicht zu Mundelsheim (74395).</td><td>Korrekte, ladungsfähige Anschrift überall gleich eintragen.</td></tr>
+      <tr><td><span class="pill p-green">Prüfen</span></td><td><b>Drei verschiedene E-Mail-Adressen:</b> ofical.weax@outlook.de (Shop-Absender), offical.weax@outlook.de (Kontakt), TimMartens07@outlook.de (Rechtstexte). Zweimal unterschiedlich geschrieben.</td><td>Testen, ob alle ankommen. Eine Adresse festlegen und überall gleich verwenden.</td></tr>
+      <tr><td><span class="pill p-green">Prüfen</span></td><td><b>Doppelte Texte:</b> Eure deutschen Texte unter /pages/ sind nicht verlinkt, nur die Shopify-Richtlinien.</td><td>Die Seiten auf die Richtlinien weiterleiten (Kapitel 4).</td></tr>
+      <tr><td><span class="pill p-green">Prüfen</span></td><td><b>Bestellbestätigungs-E-Mail:</b> Widerrufsbelehrung und AGB müssen dem Kunden nach dem Kauf auf einem „dauerhaften Datenträger“ zugehen.</td><td>Text von Widerrufsbelehrung, Muster-Formular und AGB in die Bestellbestätigung einfügen (Kapitel 4).</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 2 ============ -->
+<section class="chapter">
+  <h2><span class="no">Kapitel 2</span>Grundregeln</h2>
+  <ul class="check">
+    <li><strong>Eine Quelle.</strong> Jeder Text existiert genau einmal, und zwar in Einstellungen → Richtlinien. Footer und Checkout ziehen ihn dort automatisch.</li>
+    <li><strong>Keine Widersprüche.</strong> Fristen, Versandkosten, Lieferzeiten und Adresse sind in Impressum, AGB, Widerruf, Versand, Produktseite und E-Mails identisch.</li>
+    <li><strong>Keine Platzhalter, keine internen Notizen.</strong> Lieber einen Satz weglassen als „[X]“ stehen lassen.</li>
+    <li><strong>Nicht von anderen Shops kopieren.</strong> Fremde Rechtstexte sind urheberrechtlich geschützt. Das Kopieren kann selbst abgemahnt werden.</li>
+    <li><strong>Einheitliche Ansprache.</strong> Entweder „du“ oder „Sie“, nicht gemischt. Die Widerrufsbelehrung bleibt am besten beim gesetzlichen Muster mit „Sie“.</li>
+    <li><strong>Stand-Datum.</strong> Unter jeden Text „Stand: TT.MM.JJJJ“ setzen und bei jeder Änderung aktualisieren.</li>
+    <li><strong>Erreichbarkeit.</strong> Impressum und Datenschutz müssen von jeder Seite mit höchstens 2 Klicks erreichbar und eindeutig benannt sein. Euer Footer erledigt das.</li>
+    <li><strong>Neue Funktion = Text anpassen.</strong> Wenn ihr eine App, ein Tracking-Tool, eine neue Zahlungsart oder ein neues Versandland hinzufügt, muss die Datenschutzerklärung bzw. die Versandseite angepasst werden.</li>
+  </ul>
+</section>
+
+<!-- ============ 3 ============ -->
+<section class="chapter">
+  <h2><span class="no">Kapitel 3</span>Was in jeden Text gehört</h2>
+
+  <h3>3.1 Impressum (§ 5 DDG)</h3>
+  <div class="two">
+    <ul class="check">
+      <li>Name der GbR und <strong>Vor- und Nachname aller Gesellschafter</strong></li>
+      <li>Ladungsfähige Anschrift (Straße, Hausnummer, PLZ, Ort), kein Postfach</li>
+      <li>E-Mail-Adresse</li>
+      <li>Zweiter schneller Kontaktweg, am besten eine Telefonnummer</li>
+      <li>Vertretungsberechtigte Gesellschafter</li>
+    </ul>
+    <ul class="check">
+      <li>USt-IdNr. nur, wenn ihr eine habt. Sonst die Zeile weglassen, nicht leer lassen.</li>
+      <li>Hinweis zur Kleinunternehmerregelung</li>
+      <li>Verantwortlicher für Inhalte nach § 18 Abs. 2 MStV (ihr habt einen Blog)</li>
+      <li>Hinweis zur Verbraucherschlichtung</li>
+      <li>Kein Link mehr zur EU-Streitschlichtungsplattform. Die wurde am 20.07.2025 abgeschaltet.</li>
+    </ul>
+  </div>
+  <p><strong>Muster</strong> (die Teile in eckigen Klammern durch eure Angaben ersetzen):</p>
+  <div class="mono">Angaben gemäß § 5 DDG
+
+WEAX – Tim Martens &amp; [Vorname Nachname] GbR
+[Straße Hausnummer]
+[PLZ Ort]
+Deutschland
+
+Vertreten durch die Gesellschafter:
+Tim Martens, [Vorname Nachname]
+
+Kontakt
+Telefon: [Nummer]
+E-Mail: [eine einheitliche Adresse]
+
+Umsatzsteuer
+Gemäß § 19 UStG wird keine Umsatzsteuer berechnet (Kleinunternehmerregelung).
+
+Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV
+Tim Martens, Anschrift wie oben
+
+Verbraucherstreitbeilegung
+Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren
+vor einer Verbraucherschlichtungsstelle teilzunehmen.</div>
+
+  <h3>3.2 Datenschutzerklärung (DSGVO)</h3>
+  <p>Am sichersten mit einem Generator oder Rechtstexte-Service erstellen. Diese Punkte müssen auf jeden Fall rein:</p>
+  <div class="two">
+    <ul class="check">
+      <li>Verantwortlicher mit Name, Anschrift und E-Mail (wie im Impressum)</li>
+      <li>Hosting bei Shopify: Shopify International Ltd. (Irland), Übermittlung an Shopify Inc. in Kanada und die USA mit Rechtsgrundlage</li>
+      <li>Server-Logfiles</li>
+      <li>Cookies und Einwilligung über den Cookie-Banner (§ 25 TDDDG)</li>
+      <li>Bestellabwicklung und Kundenkonto</li>
+      <li>Zahlungsanbieter: Shopify Payments und PayPal</li>
+      <li>Versanddienstleister: Weitergabe der Adresse, E-Mail nur mit Einwilligung</li>
+      <li>Kontaktformular und Kontakt per E-Mail</li>
+      <li>Widerrufsformular („Vertrag widerrufen“)</li>
+    </ul>
+    <ul class="check">
+      <li>Newsletter mit Double-Opt-In und Abmeldemöglichkeit</li>
+      <li>Shopify-Analysen bzw. Tracking-Tools, nur mit Einwilligung</li>
+      <li>Links zu Instagram/TikTok (nur Links, keine eingebetteten Inhalte)</li>
+      <li>Schriftarten lokal gehostet</li>
+      <li>Speicherdauer, z. B. Rechnungen 8 Jahre und Bücher 10 Jahre (§ 147 AO)</li>
+      <li>Rechte der Kunden nach Art. 15 bis 21 DSGVO</li>
+      <li>Das <strong>Widerspruchsrecht</strong> (Art. 21) hervorgehoben</li>
+      <li>Widerruf von Einwilligungen jederzeit möglich</li>
+      <li>Beschwerderecht bei der Aufsichtsbehörde (Baden-Württemberg: LfDI BW, falls euer Sitz dort ist)</li>
+    </ul>
+  </div>
+
+  <h3>3.3 Widerrufsbelehrung und Widerrufsbutton</h3>
+  <ul class="check">
+    <li>Das <strong>gesetzliche Muster</strong> verwenden (Anlage 1 zu Art. 246a § 1 Abs. 2 EGBGB) und nur eure Daten einsetzen. Eure aktuelle Seite folgt dem Muster schon, es fehlt nur die Anschrift.</li>
+    <li>Frist 14 Tage ab Erhalt der Ware. Wer die Rücksendekosten trägt, muss klar drinstehen.</li>
+    <li>Das <strong>Muster-Widerrufsformular</strong> (Anlage 2) gehört dazu. Das habt ihr schon.</li>
+    <li>Wenn ihr freiwillig 30 Tage anbieten wollt: als eigenes „freiwilliges Rückgaberecht“ klar getrennt vom gesetzlichen Widerrufsrecht. Sonst die 30 Tage komplett streichen.</li>
+    <li>Ausnahmen nur, wenn sie zutreffen. Bei Kleidung ab Lager gibt es keine. Bei Ware, die nach Kundenwunsch bedruckt wird, ist das Widerrufsrecht ausgeschlossen.</li>
+  </ul>
+  <div class="box">
+    <span class="label">Widerrufsbutton seit 19.06.2026</span>
+    <ul style="margin:0">
+      <li>Ein Button mit der Aufschrift <strong>„Vertrag widerrufen“</strong> (oder gleich eindeutig), gut sichtbar und während der ganzen Widerrufsfrist erreichbar, z. B. im Footer.</li>
+      <li>Danach gibt der Kunde Name, Bestellnummer und E-Mail an.</li>
+      <li>Dann bestätigt er mit <strong>„Widerruf bestätigen“</strong>.</li>
+      <li>Ihr schickt <strong>unverzüglich</strong> eine Eingangsbestätigung per E-Mail mit Inhalt, Datum und Uhrzeit des Widerrufs. Vorlage siehe Kapitel 6.</li>
+    </ul>
+    <p class="small" style="margin:2mm 0 0">Der Code schickt den Widerruf als Kontaktformular an eure Shop-E-Mail. Die Bestätigung an den Kunden müsst ihr selbst senden, also das Postfach täglich prüfen. Viele Rechtstexte-Anbieter haben inzwischen eine App, die das automatisch erledigt.</p>
+  </div>
+
+  <h3>3.4 AGB</h3>
+  <p>AGB sind nicht Pflicht. Wenn ihr welche habt, müssen sie zu eurem Shop passen:</p>
+  <div class="two">
+    <ul class="check">
+      <li>Vertragspartner mit vollständiger Anschrift</li>
+      <li><strong>Vertragsschluss passend zu Shopify:</strong> Wird PayPal oder Karte sofort belastet, kommt der Vertrag spätestens mit der Zahlung zustande. Der Text muss das so beschreiben.</li>
+      <li>Der Name des Bestellbuttons in den AGB entspricht der echten Aufschrift. Bei Shopify heißt er „Jetzt bezahlen“, nicht „Zahlungspflichtig bestellen“.</li>
+      <li>Vertragssprache Deutsch, Speicherung des Vertragstextes</li>
+    </ul>
+    <ul class="check">
+      <li>Liefergebiet, Lieferzeit, Versandkosten (gleich wie Versandseite)</li>
+      <li>Zahlungsarten (gleich wie im Checkout)</li>
+      <li>Gesetzliche Gewährleistung, keine Einschränkungen gegenüber Verbrauchern</li>
+      <li><strong>Unwirksame Klauseln vermeiden,</strong> z. B. „Rückgabe nur in Originalverpackung“ oder „Risiko geht mit Übergabe an DHL über“.</li>
+    </ul>
+  </div>
+
+  <h3>3.5 Versand und Zahlung</h3>
+  <ul class="check">
+    <li>Konkrete Länder, z. B. „Deutschland und alle EU-Länder“</li>
+    <li>Konkrete Versandkosten in Euro pro Land, ggf. ab welchem Betrag versandkostenfrei</li>
+    <li>Lieferzeit als Spanne, z. B. „3–5 Werktage nach Zahlungseingang“</li>
+    <li>Versanddienstleister und Sendungsverfolgung</li>
+    <li>Alle Zahlungsarten, die im Checkout angeboten werden</li>
+  </ul>
+
+  <h3>3.6 Produktseite und Checkout</h3>
+  <div class="two">
+    <ul class="check">
+      <li>Gesamtpreis + „Gemäß § 19 UStG wird keine Umsatzsteuer berechnet“ + Link „zzgl. Versandkosten“</li>
+      <li>Lieferzeit</li>
+      <li>Materialzusammensetzung in Prozent</li>
+      <li>Herstellerangaben (GPSR)</li>
+    </ul>
+    <ul class="check">
+      <li>Wesentliche Eigenschaften: Größen mit Größentabelle, Farbe, Pflege</li>
+      <li>Nur eigene oder lizenzierte Fotos</li>
+      <li>Im Checkout: Links zu AGB, Widerruf und Datenschutz (kommen automatisch aus den Richtlinien)</li>
+      <li>Bewertungen nur mit Hinweis zur Echtheitsprüfung</li>
+    </ul>
+  </div>
+
+  <h3>3.7 Außerhalb der Rechtstexte</h3>
+  <ul class="check">
+    <li>Gewerbe angemeldet (für die GbR) und steuerlich erfasst</li>
+    <li>Kleinunternehmergrenzen im Blick: Vorjahr höchstens 25.000 € Umsatz, laufendes Jahr höchstens 100.000 €</li>
+    <li>LUCID-Registrierung und Verpackungslizenz vor dem ersten Versand</li>
+    <li>Cookie-Banner aktiv. Bei Shopify unter „Datenschutz der Kunden“ das Cookie-Banner für die EU einschalten.</li>
+    <li>Markenrecht: Prüft beim DPMA und beim EUIPO, ob „WEAX“ für Kleidung schon geschützt ist, bevor ihr viel produziert. Eine eigene Anmeldung lohnt sich.</li>
+  </ul>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="chapter">
+  <h2><span class="no">Kapitel 4</span>Wo ihr was in Shopify eintragt</h2>
+  <ol class="steps">
+    <li><span class="path">Einstellungen → Richtlinien:</span> Widerrufsrecht, Datenschutzerklärung, AGB, Versandrichtlinie, Kontaktinformationen und <strong>Impressum</strong> mit den richtigen deutschen Texten füllen. Hier steht dann die einzige gültige Fassung. Footer und Checkout zeigen sie automatisch, und mit dem neuen Code im WEAX-Design.</li>
+    <li><span class="path">Onlineshop → Navigation → URL-Weiterleitungen:</span> Die alten Seiten auf die Richtlinien weiterleiten, damit es keine zweite Fassung gibt. Danach die alten Seiten löschen.
+      <ul style="margin-top:1.5mm">
+        <li><code>/pages/impressum</code> → <code>/policies/legal-notice</code></li>
+        <li><code>/pages/agb</code> → <code>/policies/terms-of-service</code></li>
+        <li><code>/pages/widerrufsbelehrung</code> → <code>/policies/refund-policy</code></li>
+        <li><code>/pages/datenschutzerklaerung</code> → <code>/policies/privacy-policy</code></li>
+        <li><code>/pages/versandbedingungen</code> → <code>/policies/shipping-policy</code></li>
+      </ul>
+      <span class="small">Wichtig: Erst die Seiten löschen, dann die Weiterleitung anlegen. Shopify leitet nur weiter, wenn es die Seite nicht mehr gibt.</span>
+    </li>
+    <li><span class="path">Onlineshop → Seiten → Seite hinzufügen:</span> Titel „Vertrag widerrufen“, rechts bei „Theme-Vorlage“ <code>widerruf</code> auswählen. Den Handle (URL) auf <code>vertrag-widerrufen</code> setzen.</li>
+    <li><span class="path">Star Footer → „Zusätzliche rechtliche Links“:</span> Ein Menü mit dem Link „Vertrag widerrufen“ anlegen und hier auswählen. Die Richtlinien kommen schon automatisch.</li>
+    <li><span class="path">Einstellungen → Benachrichtigungen → Bestellbestätigung:</span> Den Text der Widerrufsbelehrung, das Muster-Formular und die AGB unten in die E-Mail einfügen. Ein Link allein reicht nach überwiegender Meinung nicht.</li>
+    <li><span class="path">Einstellungen → Datenschutz der Kunden:</span> Cookie-Banner für die EU einschalten.</li>
+    <li><span class="path">Einstellungen → Kundenkonten bzw. Marketing:</span> Double-Opt-In für E-Mail-Marketing einschalten.</li>
+    <li><span class="path">Einstellungen → Steuern und Abgaben:</span> Prüfen, dass als Kleinunternehmer keine Umsatzsteuer berechnet oder als „enthalten“ angezeigt wird.</li>
+    <li><span class="path">Produkte:</span> In jede Beschreibung Material in %, Pflegehinweise, Herstellerangaben und Lieferzeit eintragen.</li>
+  </ol>
+</section>
+
+<!-- ============ 5 ============ -->
+<section class="chapter">
+  <h2><span class="no">Kapitel 5</span>Den Code einbauen</h2>
+  <p>Alle Dateien liegen auf GitHub im Ordner <code>shopify/</code>. In Shopify: <span class="path">Onlineshop → Themes → … → Code bearbeiten</span>. Am besten erst eine Kopie des Themes machen (<span class="path">… → Duplizieren</span>) und dort testen.</p>
+
+  <table>
+    <thead><tr><th>Ordner</th><th>Datei</th><th>Was sie macht</th></tr></thead>
+    <tbody>
+      <tr><td>assets</td><td><code>Cinzel.woff2</code></td><td>Die WEAX-Schrift als Datei. Hochladen über „Neues Asset hinzufügen“.</td></tr>
+      <tr><td>snippets</td><td><code>weax-fonts.liquid</code></td><td>Lädt die Schrift von eurem Shop statt von Google</td></tr>
+      <tr><td>snippets</td><td><code>weax-legal-style.liquid</code></td><td>Das Design für alle Rechtstexte: Chrome-Titel, Sterne, Inhaltsverzeichnis</td></tr>
+      <tr><td>sections</td><td><code>weax-legal.liquid</code></td><td>Rechtstext-Seite für eigene Seiten unter /pages/</td></tr>
+      <tr><td>sections</td><td><code>weax-widerruf.liquid</code></td><td>Der Widerrufsbutton mit Formular</td></tr>
+      <tr><td>templates</td><td><code>page.legal.json</code></td><td>Vorlage „legal“ für Seiten</td></tr>
+      <tr><td>templates</td><td><code>page.widerruf.json</code></td><td>Vorlage „widerruf“ für „Vertrag widerrufen“</td></tr>
+      <tr><td>sections</td><td><code>weax-product-story.liquid</code></td><td>Aktualisiert: lädt die Schrift jetzt lokal</td></tr>
+    </tbody>
+  </table>
+
+  <ol class="steps">
+    <li><code>Cinzel.woff2</code> unter <strong>assets</strong> hochladen.</li>
+    <li>Die zwei Snippets, die zwei Sections und die zwei Templates anlegen und den Inhalt einfügen. Der Name muss genau stimmen.</li>
+    <li><strong>layout/theme.liquid</strong> öffnen und direkt vor <code>&lt;/head&gt;</code> diese Zeile einfügen. Damit bekommen die Richtlinien-Seiten das WEAX-Design:
+      <div class="mono" style="margin-top:2mm">{% if request.page_type == 'policy' %}{% render 'weax-legal-style' %}{% endif %}</div></li>
+    <li>In <strong>sections/star-hero.liquid</strong> und <strong>sections/star-footer.liquid</strong> jeweils diese drei Zeilen oben löschen:
+      <div class="mono" style="margin-top:2mm">&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;
+&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;
+&lt;link href="https://fonts.googleapis.com/css2?family=Cinzel..." rel="stylesheet"&gt;</div>
+      Und an ihrer Stelle einfügen: <code>{% render 'weax-fonts' %}</code></li>
+    <li>Dasselbe in <strong>weax-product-story.liquid</strong>, falls ihr die schon eingebaut habt. Oder einfach die neue Version einfügen.</li>
+    <li>Testen: eine Richtlinie öffnen (z. B. <code>/policies/terms-of-service</code>), „Vertrag widerrufen“ einmal selbst ausprobieren und schauen, ob die E-Mail ankommt.</li>
+  </ol>
+</section>
+
+<!-- ============ 6 ============ -->
+<section class="chapter">
+  <h2><span class="no">Kapitel 6</span>Vorlage: Eingangsbestätigung Widerruf</h2>
+  <p>Diese E-Mail schickt ihr sofort, nachdem ein Widerruf über den Button eingegangen ist. Datum und Uhrzeit stehen in der Formular-E-Mail im Feld „Eingang“.</p>
+  <div class="mono">Betreff: Eingangsbestätigung deines Widerrufs – Bestellung [#Nummer]
+
+Hallo [Name],
+
+hiermit bestätigen wir den Eingang deines Widerrufs.
+
+Inhalt: Widerruf des Vertrags über die Bestellung [#Nummer]
+        ([gesamte Bestellung / folgende Artikel: …])
+Eingegangen am: [TT.MM.JJJJ] um [HH:MM] Uhr
+
+Bitte schicke die Ware spätestens 14 Tage nach deinem Widerruf an:
+WEAX – Tim Martens &amp; [Name] GbR, [Straße Hausnummer], [PLZ Ort]
+
+Wir erstatten dir den Betrag einschließlich der ursprünglichen
+Versandkosten innerhalb von 14 Tagen über dasselbe Zahlungsmittel.
+Wir können die Rückzahlung verweigern, bis die Ware bei uns ist
+oder du die Rücksendung nachgewiesen hast.
+
+Viele Grüße
+Dein WEAX-Team</div>
+
+  <h2 style="margin-top:10mm"><span class="no">Kapitel 7</span>Wenn doch eine Abmahnung kommt</h2>
+  <ol class="steps">
+    <li><strong>Nicht ignorieren.</strong> Die Fristen sind kurz, oft nur 7 bis 14 Tage. Wer nicht reagiert, riskiert eine teure einstweilige Verfügung.</li>
+    <li><strong>Nichts ungeprüft unterschreiben</strong> und nicht sofort zahlen. Beigefügte Unterlassungserklärungen sind oft viel zu weit gefasst.</li>
+    <li><strong>Den Fehler sofort beheben,</strong> damit kein weiterer Verstoß dazukommt.</li>
+    <li><strong>Anwalt für IT-Recht oder Wettbewerbsrecht fragen</strong> bzw. euren Rechtstexte-Service, wenn ihr Abmahnschutz habt.</li>
+    <li>Gut zu wissen: Mitbewerber dürfen bei Verstößen gegen Informationspflichten im Internet keine Abmahnkosten verlangen. Bei Datenschutzverstößen gilt das für Firmen mit weniger als 250 Mitarbeitern (§ 13 Abs. 4 UWG). Verbände dürfen Kosten aber trotzdem verlangen, und Betroffene können Schadensersatz fordern.</li>
+  </ol>
+
+  <div class="box dark" style="margin-top:8mm">
+    <span class="label">Kurz gesagt</span>
+    <p style="margin:0">Platzhalter raus, alles in die Shopify-Richtlinien, Widerrufsbutton rein, Schrift lokal, Produktseiten ergänzen. Danach einmal von einem Rechtstexte-Service prüfen lassen. Dann seid ihr auf der sicheren Seite.</p>
+  </div>
+</section>
+
+</body>
+</html>

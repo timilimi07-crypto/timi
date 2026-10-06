@@ -1,0 +1,255 @@
+{%- comment -%}
+  WEAX Rechtstexte – Design für Impressum, Datenschutz, AGB, Widerruf, Versand.
+  Datei: snippets/weax-legal-style.liquid
+
+  Wird an zwei Stellen benutzt:
+  1. In sections/weax-legal.liquid (für Seiten unter /pages/...)
+  2. In layout/theme.liquid für die Shopify-Richtlinien unter /policies/...
+     {% if request.page_type == 'policy' %}{% render 'weax-legal-style' %}{% endif %}
+
+  Macht automatisch:
+  - Chrome-Überschrift im Sternen-Look
+  - Leiste mit allen Rechtstexten (aus Einstellungen → Richtlinien)
+  - Inhaltsverzeichnis aus den Zwischenüberschriften
+  - Fett gedruckte Absatz-Anfänge (z. B. "§ 1 Geltungsbereich") werden zu Überschriften
+{%- endcomment -%}
+{% render 'weax-fonts' %}
+
+<style>
+  :root { --wl-bg: #050507; --wl-chrome: #dfe3e8; --wl-text: #c9ced6; --wl-line: rgba(223, 227, 232, .14); }
+
+  {%- if request.page_type == 'policy' -%}
+  #MainContent, main { background: var(--wl-bg); }
+  {%- endif -%}
+
+  .wl, .shopify-policy__container {
+    background: var(--wl-bg); color: var(--wl-text);
+    max-width: none !important; margin: 0 !important; padding: 0 0 96px !important;
+    position: relative; isolation: isolate; overflow: hidden;
+  }
+
+  /* ---------- Kopf ---------- */
+  .wl__hero, .shopify-policy__title {
+    position: relative; text-align: center; padding: clamp(64px, 10vw, 120px) 20px 48px !important; margin: 0 !important;
+    background:
+      radial-gradient(1px 1px at 12% 28%, #fff, transparent),
+      radial-gradient(1px 1px at 82% 18%, #fff, transparent),
+      radial-gradient(1.4px 1.4px at 30% 72%, #fff, transparent),
+      radial-gradient(1px 1px at 90% 66%, #fff, transparent),
+      radial-gradient(1px 1px at 58% 38%, #fff, transparent),
+      radial-gradient(1.2px 1.2px at 20% 90%, #fff, transparent),
+      radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--wl-chrome) 12%, var(--wl-bg)), var(--wl-bg) 70%);
+    border-bottom: 1px solid var(--wl-line);
+  }
+  .wl__eyebrow { display: block; font-size: 11px; letter-spacing: .4em; text-transform: uppercase; opacity: .55; margin: 0 0 14px; color: var(--wl-chrome); }
+  .wl__title, .shopify-policy__title h1 {
+    font-family: 'Cinzel', 'Times New Roman', serif !important; font-weight: 700 !important;
+    font-size: clamp(30px, 5.5vw, 64px) !important; letter-spacing: .14em; line-height: 1.12; margin: 0 !important;
+    text-transform: uppercase; text-wrap: balance;
+    background: linear-gradient(100deg, #6f757d 0%, #fff 25%, #9aa0a8 45%, #fff 60%, #7b8189 100%);
+    background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent !important;
+    animation: wl-shine 6s linear infinite;
+  }
+  .wl__meta { margin: 16px 0 0; font-size: 13px; letter-spacing: .08em; opacity: .6; color: var(--wl-chrome); }
+
+  /* Leiste mit allen Rechtstexten */
+  .wl__docs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 30px auto 0; max-width: 900px; padding: 0; list-style: none; }
+  .wl__docs a {
+    display: inline-block; padding: 8px 16px; border-radius: 99px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--wl-chrome); text-decoration: none; border: 1px solid color-mix(in srgb, var(--wl-chrome) 25%, transparent);
+    transition: background .3s, border-color .3s, color .3s;
+  }
+  .wl__docs a:hover { border-color: var(--wl-chrome); background: color-mix(in srgb, var(--wl-chrome) 8%, transparent); }
+  .wl__docs a[aria-current="page"] { color: #0b0b0d; background: linear-gradient(180deg, #fff, #c9cdd3 55%, #eef0f2); border-color: transparent; }
+
+  /* ---------- Inhalt ---------- */
+  .wl__layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; max-width: 1120px; margin: 0 auto; padding: 56px 20px 0; }
+  .wl__layout.has-toc { grid-template-columns: 240px minmax(0, 1fr); }
+  .shopify-policy__body { max-width: 760px; margin: 0 auto; padding: 56px 20px 0; }
+  .wl__layout .shopify-policy__body { padding: 0; margin: 0; }
+
+  .wl__toc { position: sticky; top: 100px; align-self: start; font-size: 13px; }
+  .wl__toc-h { font-size: 11px; letter-spacing: .35em; text-transform: uppercase; opacity: .5; margin: 0 0 14px; color: var(--wl-chrome); }
+  .wl__toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; border-left: 1px solid var(--wl-line); }
+  .wl__toc a { display: block; padding: 6px 0 6px 14px; margin-left: -1px; border-left: 1px solid transparent; color: var(--wl-text);
+    text-decoration: none; opacity: .65; line-height: 1.4; transition: opacity .2s, border-color .2s; }
+  .wl__toc a:hover, .wl__toc a.is-active { opacity: 1; border-color: var(--wl-chrome); color: #fff; }
+  .wl__toc details summary { cursor: pointer; list-style: none; }
+  .wl__toc details summary::-webkit-details-marker { display: none; }
+
+  .wl__content, .shopify-policy__body .rte {
+    max-width: 70ch; font-size: 16px; line-height: 1.8; color: var(--wl-text);
+  }
+  .wl__content > * + *, .shopify-policy__body .rte > * + * { margin-top: 1em; }
+  .wl__content h2, .wl__content h3, .wl__content h4,
+  .shopify-policy__body .rte h2, .shopify-policy__body .rte h3, .shopify-policy__body .rte h4 {
+    font-family: 'Cinzel', 'Times New Roman', serif; font-weight: 700; color: #fff; text-wrap: balance;
+    letter-spacing: .08em; line-height: 1.3; scroll-margin-top: 110px;
+  }
+  .wl__content h2, .shopify-policy__body .rte h2 {
+    font-size: 19px; text-transform: uppercase; margin-top: 2.6em; padding-top: 1.6em; border-top: 1px solid var(--wl-line);
+    display: flex; gap: 12px; align-items: baseline;
+  }
+  .wl__content h2::before, .shopify-policy__body .rte h2::before { content: "✦"; font-size: 12px; color: var(--wl-chrome); opacity: .7; }
+  .wl__content > h2:first-child, .shopify-policy__body .rte > h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+  .wl__content h3, .shopify-policy__body .rte h3 { font-size: 16px; margin-top: 2em; }
+  .wl__content h4, .shopify-policy__body .rte h4 { font-size: 14px; margin-top: 1.6em; }
+  .wl__content strong, .shopify-policy__body .rte strong { color: #fff; font-weight: 600; }
+  .wl__content a, .shopify-policy__body .rte a { color: #fff; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--wl-chrome) 45%, transparent); word-break: break-word; }
+  .wl__content a:hover, .shopify-policy__body .rte a:hover { text-decoration-color: #fff; }
+  .wl__content ul, .wl__content ol, .shopify-policy__body .rte ul, .shopify-policy__body .rte ol { padding-left: 1.3em; }
+  .wl__content li + li, .shopify-policy__body .rte li + li { margin-top: .4em; }
+  .wl__content em, .shopify-policy__body .rte em { color: var(--wl-chrome); }
+  .wl__content blockquote, .shopify-policy__body .rte blockquote {
+    margin: 1.6em 0; padding: 18px 22px; border: 1px solid var(--wl-line); border-radius: 14px; background: rgba(255,255,255,.03);
+  }
+  .wl__content table, .shopify-policy__body .rte table { width: 100%; border-collapse: collapse; font-size: 14px; display: block; overflow-x: auto; }
+  .wl__content th, .wl__content td, .shopify-policy__body .rte th, .shopify-policy__body .rte td { border: 1px solid var(--wl-line); padding: 8px 10px; text-align: left; vertical-align: top; }
+
+  /* Kontakt-Box am Ende */
+  .wl__contact {
+    max-width: 70ch; margin-top: 56px; padding: 26px; border-radius: 18px; border: 1px solid var(--wl-line);
+    background: linear-gradient(180deg, rgba(255,255,255,.04), transparent); display: grid; gap: 10px;
+  }
+  .wl__contact h2 { font-family: 'Cinzel', 'Times New Roman', serif; font-size: 16px; letter-spacing: .14em; text-transform: uppercase; color: #fff; margin: 0; }
+  .wl__contact p { margin: 0; font-size: 15px; line-height: 1.7; }
+  .wl__btn {
+    justify-self: start; display: inline-flex; align-items: center; gap: 10px; margin-top: 6px; padding: 14px 28px; border-radius: 99px;
+    text-decoration: none; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; font-size: 12px; color: #0b0b0d;
+    background: linear-gradient(180deg, #fff, #c9cdd3 55%, #eef0f2); border: 0; cursor: pointer; font-family: inherit;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.4) inset, 0 10px 30px -12px var(--wl-chrome); transition: transform .3s, box-shadow .3s;
+  }
+  .wl__btn:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px #fff inset, 0 16px 40px -12px var(--wl-chrome); }
+
+  :where(.wl, .shopify-policy__container) :focus-visible { outline: 2px solid var(--wl-chrome); outline-offset: 3px; border-radius: 4px; }
+
+  @media (max-width: 900px) {
+    .wl__layout.has-toc { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .wl__toc { position: static; border: 1px solid var(--wl-line); border-radius: 14px; padding: 14px 18px; }
+    .wl__toc-h { margin: 0; display: flex; justify-content: space-between; align-items: center; }
+    .wl__toc-h::after { content: "+"; font-size: 18px; letter-spacing: 0; }
+    .wl__toc details[open] .wl__toc-h::after { content: "–"; }
+    .wl__toc details[open] .wl__toc-h { margin-bottom: 12px; }
+  }
+
+  @keyframes wl-shine { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+  @media (prefers-reduced-motion: reduce) { .wl__title, .shopify-policy__title h1 { animation: none; } }
+
+  @media print {
+    .wl, .shopify-policy__container, .wl__hero, .shopify-policy__title { background: #fff !important; color: #000 !important; }
+    .wl__title, .shopify-policy__title h1 { color: #000 !important; background: none; -webkit-text-fill-color: #000; }
+    .wl__docs, .wl__toc, .wl__contact .wl__btn { display: none !important; }
+    .wl__content, .shopify-policy__body .rte, .wl__content strong, .wl__content h2, .wl__content h3 { color: #000 !important; }
+  }
+</style>
+
+{%- comment -%} Liste aller Rechtstexte – wird per Skript in den Kopf eingesetzt {%- endcomment -%}
+{%- assign wl_withdraw = pages['vertrag-widerrufen'] -%}
+<template id="wl-docs-tpl">
+  <ul class="wl__docs" aria-label="Alle Rechtstexte">
+    {%- for policy in shop.policies -%}
+      <li><a href="{{ policy.url }}">{{ policy.title }}</a></li>
+    {%- endfor -%}
+    {%- if wl_withdraw != empty and wl_withdraw.url -%}
+      <li><a href="{{ wl_withdraw.url }}">{{ wl_withdraw.title }}</a></li>
+    {%- endif -%}
+  </ul>
+</template>
+
+<script>
+  (function () {
+    function slug(s, i) {
+      return 'abschnitt-' + (i + 1) + '-' + s.toLowerCase()
+        .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+        .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
+    }
+
+    // Fett gedruckte Absatz-Anfänge ("<p><strong>§ 1 …</strong><br>Text</p>") zu echten Überschriften machen
+    function promoteHeadings(content) {
+      content.querySelectorAll(':scope > p').forEach(function (p) {
+        var first = p.firstElementChild;
+        if (!first || first.tagName !== 'STRONG') return;
+        var before = p.innerHTML.slice(0, p.innerHTML.indexOf('<strong')).trim();
+        if (before) return;
+        var title = first.textContent.trim();
+        if (!title || title.length > 90) return;
+        var h = document.createElement('h2');
+        h.textContent = title;
+        first.remove();
+        while (p.firstChild && (p.firstChild.nodeName === 'BR' || (p.firstChild.nodeType === 3 && !p.firstChild.textContent.trim()))) p.firstChild.remove();
+        p.parentNode.insertBefore(h, p);
+        if (!p.textContent.trim() && !p.querySelector('img')) p.remove();
+      });
+    }
+
+    function buildToc(content, holder) {
+      var hs = content.querySelectorAll('h2');
+      if (hs.length < 3 || !holder) return;
+      var items = '';
+      hs.forEach(function (h, i) {
+        if (!h.id) h.id = slug(h.textContent, i);
+        items += '<li><a href="#' + h.id + '">' + h.textContent.replace(/</g, '&lt;') + '</a></li>';
+      });
+      var open = window.matchMedia('(min-width: 901px)').matches ? ' open' : '';
+      holder.innerHTML = '<details' + open + '><summary class="wl__toc-h">Inhalt</summary><ol>' + items + '</ol></details>';
+      holder.hidden = false;
+      holder.parentElement.classList.add('has-toc');
+
+      if (!('IntersectionObserver' in window)) return;
+      var links = holder.querySelectorAll('a');
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          links.forEach(function (a) { a.classList.toggle('is-active', a.getAttribute('href') === '#' + e.target.id); });
+        });
+      }, { rootMargin: '-20% 0px -70% 0px' });
+      hs.forEach(function (h) { io.observe(h); });
+    }
+
+    function insertDocs(hero) {
+      var tpl = document.getElementById('wl-docs-tpl');
+      if (!tpl || !hero || hero.querySelector('.wl__docs')) return;
+      var list = tpl.content.cloneNode(true);
+      list.querySelectorAll('a').forEach(function (a) {
+        if (a.pathname === location.pathname) a.setAttribute('aria-current', 'page');
+      });
+      hero.appendChild(list);
+    }
+
+    function init() {
+      // Seiten mit der Vorlage "legal"
+      document.querySelectorAll('.wl').forEach(function (root) {
+        var content = root.querySelector('.wl__content');
+        if (content) promoteHeadings(content);
+        insertDocs(root.querySelector('[data-wl-docs]'));
+        buildToc(content, root.querySelector('.wl__toc'));
+      });
+
+      // Shopify-Richtlinien unter /policies/...
+      var pol = document.querySelector('.shopify-policy__container');
+      if (pol && !pol.dataset.wlDone) {
+        pol.dataset.wlDone = '1';
+        var hero = pol.querySelector('.shopify-policy__title');
+        if (hero) {
+          var eb = document.createElement('span');
+          eb.className = 'wl__eyebrow'; eb.textContent = 'Rechtliches';
+          hero.insertBefore(eb, hero.firstChild);
+          insertDocs(hero);
+        }
+        var body = pol.querySelector('.shopify-policy__body');
+        var rte = body && (body.querySelector('.rte') || body);
+        if (rte) {
+          promoteHeadings(rte);
+          var layout = document.createElement('div');
+          layout.className = 'wl__layout';
+          var toc = document.createElement('nav');
+          toc.className = 'wl__toc'; toc.hidden = true; toc.setAttribute('aria-label', 'Inhalt');
+          body.parentNode.insertBefore(layout, body);
+          layout.appendChild(toc); layout.appendChild(body);
+          buildToc(rte, toc);
+        }
+      }
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  })();
+</script>
