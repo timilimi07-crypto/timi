@@ -4,6 +4,7 @@
 
 | Datei | Format | Wofür |
 |---|---|---|
+| `export/weax-logo-swipe-de-1..5.png` / `-en-1..5.png` | 1080×1350 (4:5) | **Neu:** Logo-Karussell DE/EN, Chrome-Linie läuft nahtlos über alle 5 Bilder |
 | `export/weax-reel-das-set.mp4` | 1080×1920, 13 s, 30 fps, ohne Ton | **Neu:** Reel mit Model-Foto + echtem Logo |
 | `export/weax-reel-das-set-cover.jpg` | 1080×1920 | Titelbild fürs Reel (= erster Frame) |
 | `export/weax-reel-origin-drop01.mp4` | 1080×1920, 13 s, 30 fps, ohne Ton | Insta-Reel / TikTok |
@@ -61,6 +62,8 @@
 cd social/src
 NODE_PATH=/opt/node22/lib/node_modules node render.cjs reel-set.html ../export/weax-reel-das-set.mp4 30
 NODE_PATH=/opt/node22/lib/node_modules node render.cjs reel.html ../export/weax-reel-origin-drop01.mp4 30
+NODE_PATH=/opt/node22/lib/node_modules node shoot-pano.cjs carousel-logo.html ../export weax-logo-swipe-de "?lang=de"
+NODE_PATH=/opt/node22/lib/node_modules node shoot-pano.cjs carousel-logo.html ../export weax-logo-swipe-en "?lang=en"
 NODE_PATH=/opt/node22/lib/node_modules node shoot-carousel.cjs carousel.html ../export
 ```
 
