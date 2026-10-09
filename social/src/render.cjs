@@ -10,7 +10,7 @@ const fps = Number(fpsArg || 30);
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
 await page.goto('file://' + path.resolve(html));
-await page.evaluate(() => document.fonts.ready);
+await page.evaluate(() => Promise.all([document.fonts.ready, window.ready]));
 const duration = await page.evaluate(() => window.DURATION);
 const ff = spawn('ffmpeg', ['-y', '-f', 'image2pipe', '-framerate', String(fps), '-i', '-',
   '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '18', '-preset', 'medium', '-movflags', '+faststart', out], { stdio: ['pipe', 'ignore', 'inherit'] });

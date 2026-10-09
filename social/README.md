@@ -4,11 +4,23 @@
 
 | Datei | Format | Wofür |
 |---|---|---|
+| `export/weax-reel-das-set.mp4` | 1080×1920, 13 s, 30 fps, ohne Ton | **Neu:** Reel mit Model-Foto + echtem Logo |
+| `export/weax-reel-das-set-cover.jpg` | 1080×1920 | Titelbild fürs Reel (= erster Frame) |
 | `export/weax-reel-origin-drop01.mp4` | 1080×1920, 13 s, 30 fps, ohne Ton | Insta-Reel / TikTok |
 | `export/weax-karussell-1.png` … `-5.png` | 1080×1350 (4:5) | Insta-Karussell / TikTok-Fotomodus |
 | `src/` | HTML + Render-Skripte | Zum Ändern und neu Rendern |
 
-## Reel – Ablauf
+## Reel „Das Set“ – Ablauf
+
+| Zeit | Bild |
+|---|---|
+| 0–1,5 s | Model-Foto + „Jeder fragt mich: Was ist das für 'ne Marke?“ (steht schon im 1. Frame = Thumbnail) |
+| 1,5–4 s | Blitz → W-Logo im Sternenhimmel, Chrome-Glanz, Stern blitzt, „WEAX“ |
+| 4–7,8 s | Schnelle Zooms: 01 Hoodie → 02 Pants → Das komplette Set |
+| 8–10 s | „Nicht für jeden. Für dich.“ |
+| 10–13 s | Logo, „Drop 01 · Limitiert · Kein Restock“, „Link in Bio“ |
+
+## Reel „Origin“ – Ablauf
 
 | Zeit | Bild | Zweck |
 |---|---|---|
@@ -47,6 +59,7 @@
 
 ```bash
 cd social/src
+NODE_PATH=/opt/node22/lib/node_modules node render.cjs reel-set.html ../export/weax-reel-das-set.mp4 30
 NODE_PATH=/opt/node22/lib/node_modules node render.cjs reel.html ../export/weax-reel-origin-drop01.mp4 30
 NODE_PATH=/opt/node22/lib/node_modules node shoot-carousel.cjs carousel.html ../export
 ```
