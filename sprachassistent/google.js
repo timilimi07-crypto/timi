@@ -1,7 +1,8 @@
-// Google-Kalender-Anbindung
+// Google-Anbindung: Kalender und Gmail
 // Einmalige Anmeldung über OAuth; das Token liegt danach in data/google-token.json.
 
 import { auth, calendar } from "@googleapis/calendar";
+import { gmail } from "@googleapis/gmail";
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -11,6 +12,7 @@ const TOKEN_FILE = path.join(here, "data", "google-token.json");
 const SCOPES = [
   "https://www.googleapis.com/auth/calendar.events",
   "https://www.googleapis.com/auth/calendar.calendarlist.readonly",
+  "https://www.googleapis.com/auth/gmail.modify",
 ];
 
 let oauth = null;
@@ -54,6 +56,14 @@ async function connectedClient() {
 
 export async function googleConnected() {
   return Boolean(await connectedClient());
+}
+
+// Wurden neue Berechtigungen hinzugefügt (z. B. Gmail), muss einmal neu verbunden werden.
+export async function googleNeedsReconnect() {
+  const c = await connectedClient();
+  if (!c) return false;
+  const granted = c.credentials.scope ?? "";
+  return SCOPES.some((s) => !granted.includes(s));
 }
 
 export function authUrl() {
@@ -158,14 +168,156 @@ export const CALENDAR_TOOLS = [
   },
 ];
 
+export const GMAIL_TOOLS = [
+  {
+    name: "mails_suchen",
+    description:
+      "Sucht E-Mails im Gmail-Konto des Nutzers. Ohne Suchanfrage kommen die neuesten Mails aus dem Posteingang. Unterstützt die Gmail-Suchsyntax, z. B. 'is:unread', 'from:anna', 'newer_than:2d'.",
+    input_schema: {
+      type: "object",
+      properties: {
+        suchanfrage: { type: "string" },
+        anzahl: { type: "integer", description: "Wie viele Mails höchstens (Standard 10, maximal 25)" },
+      },
+    },
+  },
+  {
+    name: "mail_lesen",
+    description: "Liest den vollständigen Text einer E-Mail. Die ID stammt aus mails_suchen.",
+    input_schema: { type: "object", properties: { id: { type: "string" } }, required: ["id"] },
+  },
+  {
+    name: "mail_senden",
+    description:
+      "Sendet eine E-Mail im Namen des Nutzers. Vorher IMMER Empfänger, Betreff und Inhalt kurz vorlesen und ausdrücklich bestätigen lassen. Für Antworten antwort_auf_id angeben.",
+    input_schema: {
+      type: "object",
+      properties: {
+        an: { type: "string", description: "E-Mail-Adresse des Empfängers" },
+        betreff: { type: "string" },
+        text: { type: "string" },
+        antwort_auf_id: { type: "string", description: "Optional: ID der Mail, auf die geantwortet wird" },
+      },
+      required: ["an", "betreff", "text"],
+    },
+  },
+];
+
 const NOT_CONNECTED = {
   fehler:
-    "Google Kalender ist nicht verbunden. Der Nutzer soll in der App oben auf 'Kalender verbinden' tippen.",
+    "Google ist nicht verbunden. Der Nutzer soll im Fenster 'Verbindungen' Google verbinden.",
 };
 
-export async function executeCalendarTool(name, input, timeZone) {
+function header(msg, name) {
+  return msg.payload?.headers?.find((h) => h.name.toLowerCase() === name.toLowerCase())?.value ?? "";
+}
+
+function decodeBody(data) {
+  return Buffer.from(data, "base64url").toString("utf8");
+}
+
+// Text aus einer (verschachtelten) MIME-Nachricht holen, Klartext bevorzugt.
+function extractText(part) {
+  if (!part) return "";
+  if (part.mimeType === "text/plain" && part.body?.data) return decodeBody(part.body.data);
+  for (const p of part.parts ?? []) {
+    const t = extractText(p);
+    if (t) return t;
+  }
+  if (part.mimeType === "text/html" && part.body?.data) {
+    return decodeBody(part.body.data)
+      .replace(/<(style|script)[\s\S]*?<\/\1>/gi, "")
+      .replace(/<br\s*\/?>|<\/p>|<\/div>/gi, "\n")
+      .replace(/<[^>]+>/g, "")
+      .replace(/&nbsp;/g, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+  }
+  return "";
+}
+
+// Betreff-Zeilen mit Umlauten müssen kodiert werden.
+function encodeHeader(value) {
+  return /^[\x20-\x7e]*$/.test(value) ? value : `=?UTF-8?B?${Buffer.from(value).toString("base64")}?=`;
+}
+
+async function executeGmail(name, input, c) {
+  const gm = gmail({ version: "v1", auth: c });
+  switch (name) {
+    case "mails_suchen": {
+      const max = Math.min(Math.max(Number(input.anzahl) || 10, 1), 25);
+      const { data } = await gm.users.messages.list({
+        userId: "me",
+        q: input.suchanfrage || undefined,
+        labelIds: input.suchanfrage ? undefined : ["INBOX"],
+        maxResults: max,
+      });
+      const mails = await Promise.all(
+        (data.messages ?? []).map(async (m) => {
+          const { data: msg } = await gm.users.messages.get({
+            userId: "me",
+            id: m.id,
+            format: "metadata",
+            metadataHeaders: ["From", "Subject", "Date"],
+          });
+          return {
+            id: msg.id,
+            von: header(msg, "From"),
+            betreff: header(msg, "Subject"),
+            datum: header(msg, "Date"),
+            vorschau: msg.snippet,
+            ungelesen: msg.labelIds?.includes("UNREAD") ?? false,
+          };
+        }),
+      );
+      return { mails };
+    }
+    case "mail_lesen": {
+      const { data: msg } = await gm.users.messages.get({ userId: "me", id: input.id, format: "full" });
+      const text = extractText(msg.payload);
+      return {
+        id: msg.id,
+        von: header(msg, "From"),
+        an: header(msg, "To"),
+        betreff: header(msg, "Subject"),
+        datum: header(msg, "Date"),
+        text: text.length > 8000 ? text.slice(0, 8000) + "\n[…gekürzt]" : text,
+      };
+    }
+    case "mail_senden": {
+      const lines = [`To: ${input.an}`, `Subject: ${encodeHeader(input.betreff)}`];
+      let threadId;
+      if (input.antwort_auf_id) {
+        const { data: orig } = await gm.users.messages.get({
+          userId: "me",
+          id: input.antwort_auf_id,
+          format: "metadata",
+          metadataHeaders: ["Message-ID"],
+        });
+        const ref = header(orig, "Message-ID");
+        if (ref) lines.push(`In-Reply-To: ${ref}`, `References: ${ref}`);
+        threadId = orig.threadId;
+      }
+      lines.push("Content-Type: text/plain; charset=UTF-8", "MIME-Version: 1.0", "", input.text);
+      const raw = Buffer.from(lines.join("\r\n")).toString("base64url");
+      const { data } = await gm.users.messages.send({ userId: "me", requestBody: { raw, threadId } });
+      return { ok: true, id: data.id };
+    }
+  }
+  return { fehler: `Unbekanntes Werkzeug: ${name}` };
+}
+
+export async function executeGoogleTool(name, input, timeZone) {
   const c = await connectedClient();
   if (!c) return NOT_CONNECTED;
+  if (!name.startsWith("kalender_")) {
+    try {
+      return await executeGmail(name, input, c);
+    } catch (err) {
+      return googleError(err);
+    }
+  }
   const cal = calendar({ version: "v3", auth: c });
 
   try {
@@ -233,11 +385,18 @@ export async function executeCalendarTool(name, input, timeZone) {
       }
     }
   } catch (err) {
-    console.error("Google Kalender:", err.message);
-    if (err.response?.status === 401 || err.message?.includes("invalid_grant")) {
-      return { fehler: "Die Verbindung zu Google ist abgelaufen. Der Nutzer muss den Kalender neu verbinden." };
-    }
-    return { fehler: `Google Kalender meldet einen Fehler: ${err.message}` };
+    return googleError(err);
   }
   return { fehler: `Unbekanntes Werkzeug: ${name}` };
+}
+
+function googleError(err) {
+  console.error("Google:", err.message);
+  if (err.response?.status === 401 || err.message?.includes("invalid_grant")) {
+    return { fehler: "Die Verbindung zu Google ist abgelaufen. Der Nutzer muss Google in den Verbindungen neu verbinden." };
+  }
+  if (err.response?.status === 403) {
+    return { fehler: "Keine Berechtigung. Der Nutzer muss Google in den Verbindungen neu verbinden." };
+  }
+  return { fehler: `Google meldet einen Fehler: ${err.message}` };
 }

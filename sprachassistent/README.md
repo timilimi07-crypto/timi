@@ -1,51 +1,72 @@
-# Timi – dein Sprachassistent
+# T.I.M.I. – dein persönlicher Assistent
 
-Ein persönlicher Sprachassistent, mit dem du dich ganz normal auf Deutsch unterhalten kannst. Er hilft dir bei deinen Aufgaben, merkt sich Dinge über dich und kann im Web nachschauen.
+Ein KI-Assistent im Stil von JARVIS, mit dem du dich ganz normal auf Deutsch unterhältst. Er kennt deinen Kalender, liest und schreibt Mails, verwaltet Aufgaben, merkt sich Dinge über dich, nutzt deine verbundenen Dienste (z. B. Notion) und zeigt alles in holografischen Fenstern an.
 
 ## Was er kann
 
-- **Freie Unterhaltung** per Sprache oder Text. Die Antworten werden vorgelesen, schon während sie entstehen.
-- **Freihändig-Modus**: Nach jeder Antwort hört er automatisch wieder zu, wie bei einem echten Gespräch. Tippst du aufs Mikrofon, während er spricht, unterbrichst du ihn.
-- **Aufgaben**: „Erinnere mich, morgen Mama anzurufen“, „Was steht noch an?“, „Hak das Einkaufen ab“
-- **Gedächtnis**: „Merk dir, dass ich vegetarisch esse“. Diese Notizen bleiben auch nach einem Neustart erhalten.
-- **Google Kalender**: „Was steht heute an?“, „Hab ich Freitag Nachmittag Zeit?“, „Trag mir Dienstag um 15 Uhr Zahnarzt ein“
-- **Websuche** für aktuelle Infos (Wetter, Nachrichten, Öffnungszeiten …)
+- **Sprechen wie mit einem Menschen**: Er hört zu, antwortet laut und unterbricht sich, wenn du auf den Reaktor tippst. Im Modus **Auto** hört er nach jeder Antwort direkt wieder zu. Die **Leertaste** startet ebenfalls das Zuhören.
+- **Fenster**: Kalender, Aufgaben, Gedächtnis, Mails, Protokoll und Dienste. Du öffnest sie über die Leiste links oder einfach per Sprache („Zeig mir meinen Kalender“). Die Fenster lassen sich verschieben und in der Größe ändern, und Timi merkt sich ihre Position. Für längere Infos (Mailtexte, Listen, Pläne) öffnet Timi selbst ein neues Fenster.
+- **Google Kalender**: „Was steht heute an?“, „Trag mir Dienstag um 15 Uhr den Zahnarzt ein“
+- **Gmail**: „Hab ich neue Mails?“, „Lies mir die Mail von Lea vor“, „Antworte ihr, dass ich Montag Zeit habe“. Vor dem Senden fragt er immer nach.
+- **Aufgaben und Gedächtnis**: „Erinnere mich, Mama anzurufen“, „Merk dir, dass ich vegetarisch esse“
+- **Weitere Dienste** wie Notion und Canva, oder jeder andere Dienst mit einer MCP-Schnittstelle
+- **Websuche** für Wetter, Nachrichten, Öffnungszeiten …
 
-## Starten
+## Installieren und starten
 
-Du brauchst [Node.js](https://nodejs.org/) (Version 22 oder neuer) und einen Anthropic-API-Schlüssel.
+Du brauchst [Node.js](https://nodejs.org/) (Version 22 oder neuer) und einen [Anthropic-API-Schlüssel](https://console.anthropic.com/).
 
+**Am einfachsten:** Doppelklick auf
+- **`Timi starten.bat`** (Windows) oder
+- **`Timi starten.command`** (Mac; beim ersten Mal per Rechtsklick → Öffnen)
+
+Beim ersten Start öffnet sich die Datei `.env`. Trag dort deinen API-Schlüssel ein, speichere sie und starte noch einmal. Timi öffnet sich dann als eigenes App-Fenster.
+
+**Oder im Terminal:**
 ```bash
 cd sprachassistent
 npm install
-cp .env.example .env      # dann den API-Schlüssel in .env eintragen
+cp .env.example .env      # API-Schlüssel eintragen
 npm start
 ```
+Dann **http://localhost:3000** in Chrome oder Edge öffnen.
 
-Danach **http://localhost:3000** in **Chrome, Edge oder Safari** öffnen und das Mikrofon erlauben.
+### Als App installieren
 
-## Google Kalender verbinden (einmalig, ca. 10 Minuten)
+In Chrome oder Edge erscheint rechts in der Adresszeile ein **Installieren-Symbol** (⊕). Damit wird Timi zu einer echten App mit eigenem Icon im Startmenü bzw. Dock. Der Server (`Timi starten`) muss dafür laufen.
 
-Damit Timi deine Termine lesen und eintragen darf, brauchst du einen eigenen Google-Zugang. Er gehört nur dir, und die Daten bleiben zwischen deinem Rechner und Google.
+## Dienste verbinden
+
+Öffne das Fenster **Dienste** (Leiste links, oder klick oben rechts auf die Statusanzeigen).
+
+### Notion, Canva und andere
+
+Ein Klick auf **Verbinden**, dann bei dem Dienst anmelden und den Zugriff erlauben. Fertig.
+
+Über **Dienst hinzufügen** lässt sich jeder Dienst mit einer öffentlichen MCP-Adresse anbinden, z. B. Linear (`https://mcp.linear.app/mcp`) oder Asana.
+
+> Spotify, Booking.com, Goodnotes, Shopify und Microsoft 365 sind bei Claude über eigene Integrationen angebunden, die es (noch) nicht als öffentliche Adresse für eigene Apps gibt. Sobald ein Anbieter eine MCP-Adresse veröffentlicht, kannst du sie hier eintragen.
+
+### Google (Kalender und Gmail): einmalig, ca. 10 Minuten
+
+Google lässt eigene Apps nur mit einem eigenen Zugang an deine Daten. Der Zugang gehört nur dir, und die Daten gehen direkt zwischen deinem Rechner und Google hin und her.
 
 1. Öffne die [Google Cloud Console](https://console.cloud.google.com/) und lege oben ein neues Projekt an, zum Beispiel „Timi“.
-2. Gehe zu **APIs & Dienste → Bibliothek**, suche **Google Calendar API** und klicke auf **Aktivieren**.
+2. Gehe zu **APIs & Dienste → Bibliothek** und aktiviere die **Google Calendar API** und die **Gmail API**.
 3. Gehe zu **APIs & Dienste → OAuth-Zustimmungsbildschirm** (bzw. **Google Auth Platform**):
-   - App-Name: „Timi“, Nutzertyp **Extern**, deine E-Mail-Adresse eintragen.
+   - App-Name „Timi“, Nutzertyp **Extern**, deine E-Mail-Adresse eintragen.
    - Unter **Zielgruppe / Testnutzer** deine eigene Gmail-Adresse hinzufügen.
 4. Gehe zu **Anmeldedaten / Clients → Client erstellen → OAuth-Client-ID**:
    - Anwendungstyp: **Webanwendung**
    - Autorisierte Weiterleitungs-URI: `http://localhost:3000/auth/google/callback`
-5. Kopiere **Client-ID** und **Clientschlüssel** in deine `.env`:
+5. Trag **Client-ID** und **Clientschlüssel** in deine `.env` ein:
    ```
    GOOGLE_CLIENT_ID=...apps.googleusercontent.com
    GOOGLE_CLIENT_SECRET=...
    ```
-6. Server neu starten (`npm start`), in der App oben auf **Kalender verbinden** tippen und den Zugriff erlauben. Google warnt dabei, dass die App „nicht überprüft“ ist. Das ist normal, weil es deine eigene App ist: **Erweitert → Weiter zu Timi**.
+6. Starte Timi neu und klick unter **Dienste** bei Google auf **Verbinden**. Google warnt dabei, dass die App „nicht überprüft“ ist. Das ist normal, weil es deine eigene App ist: **Erweitert → Weiter zu Timi**.
 
-Danach bleibt die Verbindung bestehen, auch nach einem Neustart. Ein Klick auf **Kalender ✓** trennt sie wieder.
-
-> Hinweis: Solange die App im Google-Modus „Test“ ist, läuft die Anmeldung nach 7 Tagen ab. Dann einfach neu verbinden, oder auf dem Zustimmungsbildschirm **App veröffentlichen** wählen, dann bleibt sie dauerhaft gültig.
+> Solange die Google-App im Modus „Test“ ist, läuft die Anmeldung nach 7 Tagen ab. Dann einfach neu verbinden, oder auf dem Zustimmungsbildschirm **App veröffentlichen** wählen, dann bleibt sie dauerhaft gültig.
 
 ## Einstellungen (in `.env`)
 
@@ -56,14 +77,14 @@ Danach bleibt die Verbindung bestehen, auch nach einem Neustart. Ein Klick auf *
 | `ASSISTANT_EFFORT` | `low` | Denktiefe (`low` … `max`). Höher heißt gründlicher, aber langsamer |
 | `TZ_USER` | `Europe/Berlin` | Zeitzone für Datum und Uhrzeit |
 | `PORT` | `3000` | Port des Servers |
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | – | Zugang für den Google Kalender (siehe oben) |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | – | Zugang für Google (siehe oben) |
 
 ## Aufbau
 
-- `server.js`: Backend. Spricht mit Claude, hält den API-Schlüssel geheim und stellt die Werkzeuge bereit (Aufgaben, Notizen, Websuche).
-- `public/`: Oberfläche. Spracherkennung und Sprachausgabe laufen über die Web Speech API des Browsers.
-- `google.js`: Anbindung an den Google Kalender.
-- `data/store.json`: Aufgaben und Notizen. Wird automatisch angelegt.
-- `data/google-token.json`: deine Google-Anmeldung. Diese Datei ist geheim, nicht weitergeben.
+- `server.js`: Backend. Führt das Gespräch mit Claude und stellt die Werkzeuge bereit.
+- `google.js`: Google Kalender und Gmail
+- `mcp.js`: weitere Dienste über das Model Context Protocol
+- `public/`: die Oberfläche. Spracherkennung und Sprachausgabe laufen über den Browser.
+- `data/`: deine Aufgaben, Notizen und Anmeldungen. Diese Daten sind **geheim, nicht weitergeben**. Sie werden nicht ins Git-Repository übernommen.
 
-Der Gesprächsverlauf liegt nur im Arbeitsspeicher. Mit „Neu“ beginnst du ein frisches Gespräch, und nach einem Neustart des Servers fängt das Gespräch ebenfalls neu an. Aufgaben und Notizen bleiben erhalten.
+Der Gesprächsverlauf liegt nur im Arbeitsspeicher. **Neu** beginnt ein frisches Gespräch. Aufgaben, Notizen und Verbindungen bleiben erhalten.

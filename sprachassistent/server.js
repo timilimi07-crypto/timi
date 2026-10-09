@@ -1,6 +1,7 @@
 // Sprachassistent – Backend
-// Hält den API-Schlüssel geheim, führt das Gespräch mit Claude und stellt
-// einfache Werkzeuge bereit (Aufgaben, Notizen, Websuche).
+// Hält die Zugangsdaten geheim, führt das Gespräch mit Claude und stellt die
+// Werkzeuge bereit: Aufgaben, Notizen, Google (Kalender, Gmail), verbundene
+// Dienste (Notion, Canva, …), Websuche und die Fenster der Oberfläche.
 
 import express from "express";
 import Anthropic from "@anthropic-ai/sdk";
@@ -10,41 +11,66 @@ import { fileURLToPath } from "url";
 import { randomUUID } from "crypto";
 import {
   CALENDAR_TOOLS,
-  executeCalendarTool,
+  GMAIL_TOOLS,
+  executeGoogleTool,
   googleConfigured,
   googleConnected,
+  googleNeedsReconnect,
   authUrl,
   configureGoogle,
   handleCallback,
   disconnect,
 } from "./google.js";
+import {
+  configureMcp,
+  connectorStatus,
+  startConnect,
+  finishConnect,
+  disconnectConnector,
+  addConnector,
+  removeConnector,
+  mcpTools,
+  isMcpTool,
+  executeMcpTool,
+} from "./mcp.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const DATA_FILE = path.join(here, "data", "store.json");
 const PORT = Number(process.env.PORT ?? 3000);
+const BASE_URL = process.env.BASE_URL ?? `http://localhost:${PORT}`;
 const MODEL = process.env.ASSISTANT_MODEL ?? "claude-opus-5-5";
 // Für ein flüssiges Gespräch zählt Tempo mehr als Tiefe – "low" ist hier der beste Startpunkt.
 const EFFORT = process.env.ASSISTANT_EFFORT ?? "low";
 const NAME = process.env.ASSISTANT_NAME ?? "Timi";
 const TIMEZONE = process.env.TZ_USER ?? "Europe/Berlin";
 
+configureGoogle(process.env.GOOGLE_REDIRECT_URI ?? `${BASE_URL}/auth/google/callback`);
+configureMcp(`${BASE_URL}/auth/mcp/callback`);
+
 const client = new Anthropic();
 
-const SYSTEM_PROMPT = `Du bist ${NAME}, ein persönlicher Sprachassistent. Du sprichst Deutsch, locker und herzlich, wie ein guter Freund, der gleichzeitig sehr hilfsbereit und organisiert ist.
+const SYSTEM_PROMPT = `Du bist ${NAME}, der persönliche KI-Assistent des Nutzers, ein bisschen wie JARVIS: souverän, aufmerksam, vorausdenkend und mit einem trockenen, freundlichen Humor. Du sprichst Deutsch und duzt den Nutzer.
 
 Deine Antworten werden laut vorgelesen. Deshalb:
-- Antworte kurz und natürlich, meist ein bis drei Sätze. Längere Erklärungen nur, wenn ausdrücklich gewünscht.
-- Keine Aufzählungszeichen, keine Überschriften, kein Markdown, keine Emojis, keine Links. Schreib so, wie man spricht.
+- Sprich kurz und natürlich, meist ein bis drei Sätze. Längere Erklärungen nur, wenn ausdrücklich gewünscht.
+- Kein Markdown, keine Aufzählungszeichen, keine Emojis, keine Links im gesprochenen Text.
 - Zahlen, Uhrzeiten und Daten so formulieren, dass sie gut vorlesbar sind.
 
-Du hilfst bei Aufgaben und im Alltag:
-- Aufgaben verwalten: Wenn der Nutzer etwas erledigen muss, biete an, es auf die Aufgabenliste zu setzen, oder tu es direkt, wenn er darum bittet. Bestätige kurz, was du gespeichert hast.
-- Merken: Wenn der Nutzer dir etwas Persönliches erzählt, das später nützlich ist (Vorlieben, Namen, Termine, Ziele), speichere es als Notiz. Schau in deinen Notizen nach, wenn Wissen über den Nutzer helfen würde.
-- Kalender: Du hast Zugriff auf den Google Kalender des Nutzers. Schau nach, wenn er nach Terminen, seinem Tag oder seiner Woche fragt oder wenn ein neuer Termin mit bestehenden kollidieren könnte. Trag Termine ein, wenn er darum bittet, und bestätige kurz Tag und Uhrzeit. Frag vor dem Löschen eines Termins immer nach.
-- Aktuelle Informationen (Wetter, Nachrichten, Öffnungszeiten, Fakten) suchst du im Web.
-- Beim Planen, Brainstormen, Formulieren oder Entscheiden bist du ein ehrlicher Gesprächspartner.
+Die Oberfläche hat Fenster. Nutze sie:
+- Wenn der Nutzer etwas sehen will (Kalender, Aufgaben, Notizen, Mails, Verbindungen, Gesprächsprotokoll), öffne das passende Fenster mit fenster_oeffnen.
+- Wenn du viel Information hast (Listen, Suchergebnisse, Mailtexte, Entwürfe, Pläne, Rezepte), zeig die Details mit anzeigen in einem eigenen Fenster und fasse sie mündlich nur kurz zusammen. Im Fenster darfst du einfache Formatierung nutzen: Zeilen, die mit "- " beginnen, und Überschriften mit "# ".
 
-Jede Nutzernachricht beginnt mit einer Zeitangabe in eckigen Klammern. Nutze sie für Datumsfragen und Fälligkeiten, erwähne sie aber nicht von dir aus.
+Du hilfst bei allem im Alltag:
+- Aufgaben: Biete an, Dinge auf die Aufgabenliste zu setzen, oder tu es direkt, wenn der Nutzer darum bittet.
+- Merken: Speichere Persönliches, das später nützlich ist (Vorlieben, Namen, Ziele), als Notiz. Schau in deine Notizen, wenn Wissen über den Nutzer hilft.
+- Kalender: Schau nach, wenn er nach Terminen, seinem Tag oder seiner Woche fragt oder ein neuer Termin kollidieren könnte. Bestätige neue Termine kurz mit Tag und Uhrzeit.
+- Mails: Fasse Mails kurz zusammen. Bevor du eine Mail sendest, lies Empfänger, Betreff und Kern des Inhalts vor und warte auf ein klares Ja.
+- Verbundene Dienste: Werkzeuge mit einem Dienstnamen in eckigen Klammern gehören zu verbundenen Diensten wie Notion. Nutze sie, wenn es passt.
+- Aktuelles (Wetter, Nachrichten, Öffnungszeiten, Fakten) suchst du im Web.
+- Vor allem, was sich nicht rückgängig machen lässt (löschen, senden, bestellen, veröffentlichen), fragst du kurz nach.
+- Wenn ein Dienst nicht verbunden ist, sag es und schlag vor, ihn im Fenster Verbindungen zu verbinden. Öffne das Fenster dafür.
+
+Jede Nutzernachricht beginnt mit einer Zeitangabe in eckigen Klammern. Nutze sie für Datumsfragen, erwähne sie aber nicht von dir aus.
 Die Spracherkennung macht manchmal Fehler. Wenn etwas komisch klingt, rate sinnvoll oder frag kurz nach.`;
 
 // ---------------------------------------------------------------------------
@@ -67,8 +93,28 @@ async function saveStore(store) {
 // Werkzeuge
 
 const str = { type: "string" };
+const WINDOWS = ["kalender", "aufgaben", "notizen", "mails", "verbindungen", "protokoll"];
 
-const TOOLS = [
+const LOCAL_TOOLS = [
+  {
+    name: "fenster_oeffnen",
+    description: "Öffnet ein Fenster der Oberfläche, damit der Nutzer die Inhalte sieht.",
+    input_schema: {
+      type: "object",
+      properties: { fenster: { type: "string", enum: WINDOWS } },
+      required: ["fenster"],
+    },
+  },
+  {
+    name: "anzeigen",
+    description:
+      "Zeigt Informationen in einem eigenen Fenster an (Listen, Suchergebnisse, Mailtexte, Entwürfe, Pläne). Zeilen mit '- ' werden zu Aufzählungen, Zeilen mit '# ' zu Überschriften.",
+    input_schema: {
+      type: "object",
+      properties: { titel: str, inhalt: str },
+      required: ["titel", "inhalt"],
+    },
+  },
   {
     name: "aufgabe_hinzufuegen",
     description: "Fügt eine Aufgabe zur Aufgabenliste des Nutzers hinzu.",
@@ -86,9 +132,7 @@ const TOOLS = [
     description: "Listet die Aufgaben des Nutzers auf.",
     input_schema: {
       type: "object",
-      properties: {
-        auch_erledigte: { type: "boolean", description: "Auch erledigte Aufgaben anzeigen" },
-      },
+      properties: { auch_erledigte: { type: "boolean", description: "Auch erledigte Aufgaben anzeigen" } },
     },
   },
   {
@@ -116,25 +160,51 @@ const TOOLS = [
     description: "Löscht eine Notiz, die nicht mehr stimmt. Die ID bekommst du über notizen_abrufen.",
     input_schema: { type: "object", properties: { id: str }, required: ["id"] },
   },
-  ...CALENDAR_TOOLS,
-].map((tool) => ({ ...tool, eager_input_streaming: true }));
+];
 
+const BUILTIN_TOOLS = [...LOCAL_TOOLS, ...CALENDAR_TOOLS, ...GMAIL_TOOLS];
 const SERVER_TOOLS = [{ type: "web_search_20260209", name: "web_search", max_uses: 3 }];
 
+// Feste Werkzeuge zuerst, verbundene Dienste sortiert dahinter – so bleibt der
+// Anfang der Anfrage gleich und kann zwischengespeichert werden.
+async function allTools() {
+  const tools = [...BUILTIN_TOOLS, ...(await mcpTools())].map((t) => ({ ...t, eager_input_streaming: true }));
+  return [...tools, ...SERVER_TOOLS];
+}
+
 // Die Eingaben werden gestreamt und vom Server nicht mehr geprüft – daher hier validieren.
-function validateInput(tool, input) {
-  if (typeof input !== "object" || input === null) return false;
-  const schema = TOOLS.find((t) => t.name === tool)?.input_schema;
-  if (!schema) return false;
+function validateInput(name, input) {
+  if (typeof input !== "object" || input === null || Array.isArray(input)) return false;
+  const schema = BUILTIN_TOOLS.find((t) => t.name === name)?.input_schema;
+  if (!schema) return isMcpTool(name);
   for (const key of schema.required ?? []) {
     if (typeof input[key] !== "string" || input[key].trim() === "") return false;
   }
   return true;
 }
 
-async function executeTool(name, input) {
-  if (name.startsWith("kalender_")) return executeCalendarTool(name, input, TIMEZONE);
+async function executeTool(name, input, send) {
+  if (name.startsWith("kalender_") || name.startsWith("mail")) {
+    const result = await executeGoogleTool(name, input, TIMEZONE);
+    if (!result.fehler && name !== "mails_suchen" && name !== "mail_lesen") {
+      send({ type: "refresh", was: name.startsWith("kalender_") ? "kalender" : "mails" });
+    }
+    return result;
+  }
+  if (isMcpTool(name)) return executeMcpTool(name, input);
+
+  switch (name) {
+    case "fenster_oeffnen":
+      if (!WINDOWS.includes(input.fenster)) return { fehler: `Unbekanntes Fenster: ${input.fenster}` };
+      send({ type: "window", fenster: input.fenster });
+      return { ok: true };
+    case "anzeigen":
+      send({ type: "display", titel: input.titel, inhalt: input.inhalt });
+      return { ok: true };
+  }
+
   const store = await loadStore();
+  const changed = (was) => send({ type: "refresh", was });
   switch (name) {
     case "aufgabe_hinzufuegen": {
       const task = {
@@ -146,6 +216,7 @@ async function executeTool(name, input) {
       };
       store.tasks.push(task);
       await saveStore(store);
+      changed("aufgaben");
       return { ok: true, aufgabe: task };
     }
     case "aufgaben_auflisten": {
@@ -157,6 +228,7 @@ async function executeTool(name, input) {
       if (!task) return { fehler: "Keine Aufgabe mit dieser ID gefunden." };
       task.erledigt = true;
       await saveStore(store);
+      changed("aufgaben");
       return { ok: true, aufgabe: task };
     }
     case "aufgabe_loeschen": {
@@ -164,12 +236,14 @@ async function executeTool(name, input) {
       store.tasks = store.tasks.filter((t) => t.id !== input.id);
       if (store.tasks.length === before) return { fehler: "Keine Aufgabe mit dieser ID gefunden." };
       await saveStore(store);
+      changed("aufgaben");
       return { ok: true };
     }
     case "notiz_speichern": {
       const note = { id: randomUUID().slice(0, 8), inhalt: input.inhalt.trim(), erstellt: new Date().toISOString() };
       store.notes.push(note);
       await saveStore(store);
+      changed("notizen");
       return { ok: true, notiz: note };
     }
     case "notizen_abrufen":
@@ -179,6 +253,7 @@ async function executeTool(name, input) {
       store.notes = store.notes.filter((n) => n.id !== input.id);
       if (store.notes.length === before) return { fehler: "Keine Notiz mit dieser ID gefunden." };
       await saveStore(store);
+      changed("notizen");
       return { ok: true };
     }
     default:
@@ -212,9 +287,14 @@ function contentForHistory(content) {
   return content.filter((b, i) => i > lastFallback || !dropBefore.has(b.type));
 }
 
+function toolResultContent(result) {
+  return typeof result === "string" ? result : JSON.stringify(result);
+}
+
 async function runTurn(messages, send) {
+  const tools = await allTools();
   let jsonRetries = 0;
-  for (let step = 0; step < 8; step++) {
+  for (let step = 0; step < 12; step++) {
     const stream = client.beta.messages.stream({
       model: MODEL,
       max_tokens: 16000,
@@ -223,7 +303,7 @@ async function runTurn(messages, send) {
       output_config: { effort: EFFORT },
       cache_control: { type: "ephemeral" },
       system: SYSTEM_PROMPT,
-      tools: [...TOOLS, ...SERVER_TOOLS],
+      tools,
       messages,
     });
 
@@ -250,23 +330,27 @@ async function runTurn(messages, send) {
     const toolUses = message.content.filter((b) => b.type === "tool_use");
     if (message.stop_reason !== "tool_use" || toolUses.length === 0) return;
 
-    const results = [];
-    for (const call of toolUses) {
-      send({ type: "tool", name: call.name });
-      if (!validateInput(call.name, call.input)) {
-        results.push({
+    const results = await Promise.all(
+      toolUses.map(async (call) => {
+        send({ type: "tool", name: call.name });
+        if (!validateInput(call.name, call.input)) {
+          return {
+            type: "tool_result",
+            tool_use_id: call.id,
+            is_error: true,
+            content: "Ungültige oder unvollständige Eingabe. Bitte erneut versuchen.",
+          };
+        }
+        const result = await executeTool(call.name, call.input, send);
+        return {
           type: "tool_result",
           tool_use_id: call.id,
-          is_error: true,
-          content: "Ungültige oder unvollständige Eingabe. Bitte erneut versuchen.",
-        });
-        continue;
-      }
-      const result = await executeTool(call.name, call.input);
-      results.push({ type: "tool_result", tool_use_id: call.id, content: JSON.stringify(result) });
-    }
+          content: toolResultContent(result),
+          ...(result?.fehler ? { is_error: true } : {}),
+        };
+      }),
+    );
     messages.push({ role: "user", content: results });
-    send({ type: "tasks_changed" });
   }
 }
 
@@ -314,12 +398,13 @@ app.post("/api/reset", (req, res) => {
   res.json({ ok: true });
 });
 
-app.get("/api/tasks", async (_req, res) => {
-  const store = await loadStore();
-  res.json(store);
+// Daten für die Fenster
+
+app.get("/api/aufgaben", async (_req, res) => {
+  res.json(await loadStore());
 });
 
-app.post("/api/tasks/:id/toggle", async (req, res) => {
+app.post("/api/aufgaben/:id/umschalten", async (req, res) => {
   const store = await loadStore();
   const task = store.tasks.find((t) => t.id === req.params.id);
   if (!task) return res.status(404).json({ error: "nicht gefunden" });
@@ -328,37 +413,121 @@ app.post("/api/tasks/:id/toggle", async (req, res) => {
   res.json(task);
 });
 
-// Google-Kalender verbinden
+app.delete("/api/notizen/:id", async (req, res) => {
+  const store = await loadStore();
+  store.notes = store.notes.filter((n) => n.id !== req.params.id);
+  await saveStore(store);
+  res.json({ ok: true });
+});
 
-configureGoogle(process.env.GOOGLE_REDIRECT_URI ?? `http://localhost:${PORT}/auth/google/callback`);
+function isoDate(d) {
+  return d.toLocaleDateString("sv-SE", { timeZone: TIMEZONE }); // JJJJ-MM-TT
+}
 
-app.get("/api/google/status", async (_req, res) => {
-  res.json({ configured: googleConfigured(), connected: await googleConnected() });
+app.get("/api/kalender", async (req, res) => {
+  const days = Math.min(Math.max(Number(req.query.tage) || 7, 1), 31);
+  const from = new Date();
+  const to = new Date(from.getTime() + (days - 1) * 86400000);
+  res.json(await executeGoogleTool("kalender_termine_abrufen", { von: isoDate(from), bis: isoDate(to) }, TIMEZONE));
+});
+
+app.get("/api/mails", async (req, res) => {
+  const q = typeof req.query.q === "string" ? req.query.q : "";
+  res.json(await executeGoogleTool("mails_suchen", { suchanfrage: q, anzahl: 20 }, TIMEZONE));
+});
+
+app.get("/api/mails/:id", async (req, res) => {
+  res.json(await executeGoogleTool("mail_lesen", { id: req.params.id }, TIMEZONE));
+});
+
+// Verbindungen
+
+app.get("/api/verbindungen", async (_req, res) => {
+  res.json({
+    google: {
+      configured: googleConfigured(),
+      connected: await googleConnected(),
+      needsReconnect: await googleNeedsReconnect(),
+    },
+    dienste: await connectorStatus(),
+  });
+});
+
+app.post("/api/verbindungen", async (req, res) => {
+  try {
+    const { name, url } = req.body ?? {};
+    if (typeof name !== "string" || !name.trim() || typeof url !== "string") throw new Error("Name und Adresse fehlen.");
+    res.json({ id: await addConnector(name.trim(), url.trim()) });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.delete("/api/verbindungen/:id", async (req, res) => {
+  await removeConnector(req.params.id);
+  res.json({ ok: true });
+});
+
+app.post("/api/verbindungen/:id/trennen", async (req, res) => {
+  await disconnectConnector(req.params.id);
+  res.json({ ok: true });
+});
+
+app.get("/auth/mcp/callback", async (req, res) => {
+  const id = String(req.query.state ?? "");
+  try {
+    if (typeof req.query.code !== "string") throw new Error(String(req.query.error ?? "kein Code erhalten"));
+    await finishConnect(id, req.query.code);
+    res.redirect("/?verbunden=" + encodeURIComponent(id));
+  } catch (err) {
+    console.error(err);
+    res.status(400).send(page("Verbindung fehlgeschlagen", err.message));
+  }
+});
+
+app.get("/auth/mcp/:id", async (req, res) => {
+  try {
+    const result = await startConnect(req.params.id);
+    if (result.authUrl) return res.redirect(result.authUrl);
+    res.redirect("/?verbunden=" + encodeURIComponent(req.params.id));
+  } catch (err) {
+    console.error(err);
+    res.status(400).send(page("Verbindung fehlgeschlagen", err.message));
+  }
 });
 
 app.get("/auth/google", (_req, res) => {
-  if (!googleConfigured()) return res.status(400).send("GOOGLE_CLIENT_ID und GOOGLE_CLIENT_SECRET fehlen in der .env");
+  if (!googleConfigured()) {
+    return res.status(400).send(page("Google ist nicht eingerichtet", "GOOGLE_CLIENT_ID und GOOGLE_CLIENT_SECRET fehlen in der .env. Die Anleitung steht in der README."));
+  }
   res.redirect(authUrl());
 });
 
 app.get("/auth/google/callback", async (req, res) => {
   try {
-    if (typeof req.query.code !== "string") throw new Error(String(req.query.error ?? "kein Code"));
+    if (typeof req.query.code !== "string") throw new Error(String(req.query.error ?? "kein Code erhalten"));
     await handleCallback(req.query.code);
-    res.redirect("/?kalender=verbunden");
+    res.redirect("/?verbunden=google");
   } catch (err) {
     console.error(err);
-    res.status(400).send(`Verbindung mit Google fehlgeschlagen: ${err.message}`);
+    res.status(400).send(page("Verbindung mit Google fehlgeschlagen", err.message));
   }
 });
 
-app.post("/api/google/disconnect", async (_req, res) => {
+app.post("/api/google/trennen", async (_req, res) => {
   await disconnect();
   res.json({ ok: true });
 });
 
+function page(title, text) {
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  return `<!doctype html><meta charset="utf-8"><title>${esc(title)}</title>
+<body style="background:#020b14;color:#bfefff;font-family:system-ui;padding:40px">
+<h1 style="color:#2ee6ff">${esc(title)}</h1><p>${esc(text)}</p><p><a style="color:#2ee6ff" href="/">Zurück</a></p>`;
+}
+
 app.listen(PORT, () => {
-  console.log(`${NAME} hört zu auf http://localhost:${PORT}`);
+  console.log(`${NAME} ist bereit: ${BASE_URL}`);
   if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
     console.warn("Hinweis: Kein ANTHROPIC_API_KEY gesetzt. Trag ihn in die Datei .env ein (siehe .env.example).");
   }
