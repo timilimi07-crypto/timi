@@ -8,6 +8,16 @@ import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import { randomUUID } from "crypto";
+import {
+  CALENDAR_TOOLS,
+  executeCalendarTool,
+  googleConfigured,
+  googleConnected,
+  authUrl,
+  configureGoogle,
+  handleCallback,
+  disconnect,
+} from "./google.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const DATA_FILE = path.join(here, "data", "store.json");
@@ -30,6 +40,7 @@ Deine Antworten werden laut vorgelesen. Deshalb:
 Du hilfst bei Aufgaben und im Alltag:
 - Aufgaben verwalten: Wenn der Nutzer etwas erledigen muss, biete an, es auf die Aufgabenliste zu setzen, oder tu es direkt, wenn er darum bittet. Bestätige kurz, was du gespeichert hast.
 - Merken: Wenn der Nutzer dir etwas Persönliches erzählt, das später nützlich ist (Vorlieben, Namen, Termine, Ziele), speichere es als Notiz. Schau in deinen Notizen nach, wenn Wissen über den Nutzer helfen würde.
+- Kalender: Du hast Zugriff auf den Google Kalender des Nutzers. Schau nach, wenn er nach Terminen, seinem Tag oder seiner Woche fragt oder wenn ein neuer Termin mit bestehenden kollidieren könnte. Trag Termine ein, wenn er darum bittet, und bestätige kurz Tag und Uhrzeit. Frag vor dem Löschen eines Termins immer nach.
 - Aktuelle Informationen (Wetter, Nachrichten, Öffnungszeiten, Fakten) suchst du im Web.
 - Beim Planen, Brainstormen, Formulieren oder Entscheiden bist du ein ehrlicher Gesprächspartner.
 
@@ -105,6 +116,7 @@ const TOOLS = [
     description: "Löscht eine Notiz, die nicht mehr stimmt. Die ID bekommst du über notizen_abrufen.",
     input_schema: { type: "object", properties: { id: str }, required: ["id"] },
   },
+  ...CALENDAR_TOOLS,
 ].map((tool) => ({ ...tool, eager_input_streaming: true }));
 
 const SERVER_TOOLS = [{ type: "web_search_20260209", name: "web_search", max_uses: 3 }];
@@ -121,6 +133,7 @@ function validateInput(tool, input) {
 }
 
 async function executeTool(name, input) {
+  if (name.startsWith("kalender_")) return executeCalendarTool(name, input, TIMEZONE);
   const store = await loadStore();
   switch (name) {
     case "aufgabe_hinzufuegen": {
@@ -313,6 +326,35 @@ app.post("/api/tasks/:id/toggle", async (req, res) => {
   task.erledigt = !task.erledigt;
   await saveStore(store);
   res.json(task);
+});
+
+// Google-Kalender verbinden
+
+configureGoogle(process.env.GOOGLE_REDIRECT_URI ?? `http://localhost:${PORT}/auth/google/callback`);
+
+app.get("/api/google/status", async (_req, res) => {
+  res.json({ configured: googleConfigured(), connected: await googleConnected() });
+});
+
+app.get("/auth/google", (_req, res) => {
+  if (!googleConfigured()) return res.status(400).send("GOOGLE_CLIENT_ID und GOOGLE_CLIENT_SECRET fehlen in der .env");
+  res.redirect(authUrl());
+});
+
+app.get("/auth/google/callback", async (req, res) => {
+  try {
+    if (typeof req.query.code !== "string") throw new Error(String(req.query.error ?? "kein Code"));
+    await handleCallback(req.query.code);
+    res.redirect("/?kalender=verbunden");
+  } catch (err) {
+    console.error(err);
+    res.status(400).send(`Verbindung mit Google fehlgeschlagen: ${err.message}`);
+  }
+});
+
+app.post("/api/google/disconnect", async (_req, res) => {
+  await disconnect();
+  res.json({ ok: true });
 });
 
 app.listen(PORT, () => {

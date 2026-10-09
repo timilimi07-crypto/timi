@@ -205,6 +205,9 @@ function afterReply() {
 }
 
 const TOOL_LABELS = {
+  kalender_termine_abrufen: "Kalender angeschaut",
+  kalender_termin_erstellen: "Termin eingetragen",
+  kalender_termin_loeschen: "Termin gelöscht",
   aufgabe_hinzufuegen: "Aufgabe gespeichert",
   aufgaben_auflisten: "Aufgaben angeschaut",
   aufgabe_erledigen: "Aufgabe abgehakt",
@@ -318,5 +321,27 @@ async function loadTasks() {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Google Kalender
+
+async function loadGoogleStatus() {
+  const btn = $("gcal");
+  const { configured, connected } = await (await fetch("/api/google/status")).json();
+  btn.hidden = !configured;
+  btn.textContent = connected ? "Kalender ✓" : "Kalender verbinden";
+  btn.title = connected ? "Verbunden – klicken zum Trennen" : "Google Kalender verbinden";
+  btn.onclick = async () => {
+    if (!connected) return (location.href = "/auth/google");
+    if (!confirm("Verbindung zum Google Kalender trennen?")) return;
+    await fetch("/api/google/disconnect", { method: "POST" });
+    loadGoogleStatus();
+  };
+}
+
 setMode("idle");
 loadTasks();
+loadGoogleStatus();
+if (location.search.includes("kalender=verbunden")) {
+  history.replaceState(null, "", "/");
+  setStatus("Kalender verbunden! Frag mich zum Beispiel: Was steht heute an?");
+}
