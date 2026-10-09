@@ -12,6 +12,14 @@ import { exec } from "child_process";
 import { APP_DIR, DATA_DIR, IS_PACKAGED, dataPath, loadSettings, saveSettings, SETTING_KEYS } from "./paths.js";
 import { authMiddleware, loginRoutes } from "./auth.js";
 import {
+  PROVIDERS,
+  currentProvider,
+  currentModel,
+  providerReady,
+  providerMessage,
+  runTurnCompatible,
+} from "./providers.js";
+import {
   CALENDAR_TOOLS,
   GMAIL_TOOLS,
   executeGoogleTool,
@@ -58,7 +66,6 @@ const PORT = Number(process.env.PORT ?? 3000);
 const CLOUD = process.env.TIMI_CLOUD === "1";
 const BASE_URL = (process.env.BASE_URL ?? process.env.RENDER_EXTERNAL_URL ?? `http://localhost:${PORT}`).replace(/\/$/, "");
 const SECURE = BASE_URL.startsWith("https://");
-const MODEL = process.env.ASSISTANT_MODEL ?? "claude-opus-5-5";
 // Für ein flüssiges Gespräch zählt Tempo mehr als Tiefe – "low" ist hier der beste Startpunkt.
 const EFFORT = process.env.ASSISTANT_EFFORT ?? "low";
 const NAME = process.env.ASSISTANT_NAME ?? "Timi";
@@ -93,7 +100,7 @@ Du hilfst bei allem im Alltag:
 - Mails: Fasse Mails kurz zusammen. Bevor du eine Mail sendest, lies Empfänger, Betreff und Kern des Inhalts vor und warte auf ein klares Ja.
 - Musik: Über Spotify spielst du Songs, Künstler, Alben und Playlists ab und steuerst die Wiedergabe. Bei Wünschen wie "spiel was zum Entspannen" such eine passende Playlist. Bestätige nur ganz kurz, was läuft, denn die Musik spricht für sich.
 - Verbundene Dienste: Werkzeuge mit einem Dienstnamen in eckigen Klammern gehören zu verbundenen Diensten wie Notion. Nutze sie, wenn es passt.
-- Aktuelles (Wetter, Nachrichten, Öffnungszeiten, Fakten) suchst du im Web.
+- {{WEBSUCHE}}
 - Vor allem, was sich nicht rückgängig machen lässt (löschen, senden, bestellen, veröffentlichen), fragst du kurz nach.
 - Wenn ein Dienst nicht verbunden ist, sag es und schlag vor, ihn im Fenster Verbindungen zu verbinden. Öffne das Fenster dafür.
 
@@ -338,18 +345,50 @@ function toolResultContent(result) {
   return typeof result === "string" ? result : JSON.stringify(result);
 }
 
+// Ein Werkzeug prüfen und ausführen – gemeinsam für alle KI-Anbieter.
+async function runToolCall(name, input, send) {
+  send({ type: "tool", name });
+  if (!validateInput(name, input)) {
+    return { content: "Ungültige oder unvollständige Eingabe. Bitte erneut versuchen.", isError: true };
+  }
+  const result = await executeTool(name, input, send);
+  return { content: toolResultContent(result), isError: Boolean(result?.fehler) };
+}
+
+// Systemanweisung je nach Anbieter: Nur Claude hat eine eingebaute Websuche.
+function systemPrompt(provider) {
+  return SYSTEM_PROMPT.replace(
+    "{{WEBSUCHE}}",
+    provider === "claude"
+      ? "Aktuelles (Wetter, Nachrichten, Öffnungszeiten, Fakten) suchst du im Web."
+      : "Du hast keine Websuche. Bei sehr aktuellen Dingen (Wetter, Nachrichten) sag ehrlich, dass du das gerade nicht nachschauen kannst.",
+  );
+}
+
+async function runConversationTurn(provider, messages, send) {
+  if (provider === "claude") return runTurn(messages, send);
+  return runTurnCompatible({
+    provider,
+    system: systemPrompt(provider),
+    messages,
+    tools: [...BUILTIN_TOOLS, ...(await mcpTools())],
+    send,
+    runTool: (name, input) => runToolCall(name, input, send),
+  });
+}
+
 async function runTurn(messages, send) {
   const tools = await allTools();
   let jsonRetries = 0;
   for (let step = 0; step < 12; step++) {
     const stream = client.beta.messages.stream({
-      model: MODEL,
+      model: currentModel("claude"),
       max_tokens: 16000,
       betas: ["server-side-fallback-2026-07-01"],
       fallbacks: "default",
       output_config: { effort: EFFORT },
       cache_control: { type: "ephemeral" },
-      system: SYSTEM_PROMPT,
+      system: systemPrompt("claude"),
       tools,
       messages,
     });
@@ -379,22 +418,8 @@ async function runTurn(messages, send) {
 
     const results = await Promise.all(
       toolUses.map(async (call) => {
-        send({ type: "tool", name: call.name });
-        if (!validateInput(call.name, call.input)) {
-          return {
-            type: "tool_result",
-            tool_use_id: call.id,
-            is_error: true,
-            content: "Ungültige oder unvollständige Eingabe. Bitte erneut versuchen.",
-          };
-        }
-        const result = await executeTool(call.name, call.input, send);
-        return {
-          type: "tool_result",
-          tool_use_id: call.id,
-          content: toolResultContent(result),
-          ...(result?.fehler ? { is_error: true } : {}),
-        };
+        const { content, isError } = await runToolCall(call.name, call.input, send);
+        return { type: "tool_result", tool_use_id: call.id, content, ...(isError ? { is_error: true } : {}) };
       }),
     );
     messages.push({ role: "user", content: results });
@@ -476,19 +501,23 @@ app.post("/api/chat", async (req, res) => {
   res.setHeader("Connection", "keep-alive");
   const send = (event) => res.write(`data: ${JSON.stringify(event)}\n\n`);
 
-  const messages = conversations.get(sessionId) ?? [];
-  conversations.set(sessionId, messages);
+  // Jeder Anbieter hat sein eigenes Verlaufsformat, daher getrennt merken.
+  const provider = currentProvider();
+  const convKey = `${provider}:${sessionId}`;
+  const messages = conversations.get(convKey) ?? [];
+  conversations.set(convKey, messages);
   const checkpoint = messages.length;
   messages.push({ role: "user", content: `[${nowLabel()}] ${text.trim()}` });
 
   try {
-    await runTurn(messages, send);
+    await runConversationTurn(provider, messages, send);
   } catch (err) {
     // Unvollständigen Zug verwerfen, damit der Verlauf gültig bleibt.
     messages.length = checkpoint;
     console.error(err);
     let msg = "Da ist etwas schiefgelaufen. Versuch es bitte gleich nochmal.";
-    if (err instanceof Anthropic.AuthenticationError) msg = "Der API-Schlüssel fehlt oder ist ungültig.";
+    if (provider !== "claude") msg = providerMessage(provider, err);
+    else if (err instanceof Anthropic.AuthenticationError) msg = "Der API-Schlüssel fehlt oder ist ungültig.";
     else if (err instanceof Anthropic.RateLimitError) msg = "Ich bin gerade etwas überlastet. Versuch es gleich nochmal.";
     else if (err instanceof Anthropic.APIConnectionError) msg = "Ich erreiche den Server gerade nicht. Prüf bitte die Internetverbindung.";
     send({ type: "error", message: msg });
@@ -502,6 +531,11 @@ app.post("/api/chat", async (req, res) => {
 app.get("/api/einstellungen", (_req, res) => {
   res.json({
     gesetzt: Object.fromEntries(SETTING_KEYS.map((k) => [k, Boolean(process.env[k])])),
+    anbieter: currentProvider(),
+    modell: currentModel(),
+    bereit: providerReady(),
+    anbieterListe: Object.fromEntries(Object.entries(PROVIDERS).map(([id, p]) => [id, { name: p.name, modell: p.defaultModel }])),
+    ollamaUrl: process.env.OLLAMA_URL || "http://127.0.0.1:11434",
     name: NAME,
     datenordner: DATA_DIR,
     app: IS_PACKAGED,
@@ -527,7 +561,7 @@ app.post("/api/beenden", (_req, res) => {
 });
 
 app.post("/api/reset", (req, res) => {
-  conversations.delete(req.body?.sessionId);
+  for (const provider of Object.keys(PROVIDERS)) conversations.delete(`${provider}:${req.body?.sessionId}`);
   res.json({ ok: true });
 });
 

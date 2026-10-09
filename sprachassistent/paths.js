@@ -33,7 +33,11 @@ export const dataPath = (...parts) => path.join(DATA_DIR, ...parts);
 // Einstellungen, die in der App eingegeben werden (statt in einer .env-Datei)
 
 export const SETTING_KEYS = [
+  "KI_ANBIETER",
+  "KI_MODELL",
   "ANTHROPIC_API_KEY",
+  "GEMINI_API_KEY",
+  "OLLAMA_URL",
   "ASSISTANT_NAME",
   "GOOGLE_CLIENT_ID",
   "GOOGLE_CLIENT_SECRET",

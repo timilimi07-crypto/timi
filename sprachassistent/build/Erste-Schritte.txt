@@ -12,7 +12,8 @@ TIMI – ERSTE SCHRITTE
              -> ganz unten "Dennoch öffnen".)
 
 2. Timi öffnet sich als eigenes Fenster (in Chrome oder Edge).
-   Beim ersten Start: API-Schlüssel eintragen (console.anthropic.com).
+   Beim ersten Start: KI-Gehirn wählen. Gratis geht es mit Google Gemini
+   (Schlüssel kostenlos auf aistudio.google.com/apikey) oder Ollama (ollama.com).
 
 3. Mikrofon erlauben, auf den Reaktor tippen und lossprechen.
 

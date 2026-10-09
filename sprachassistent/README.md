@@ -14,6 +14,18 @@ Ein KI-Assistent im Stil von JARVIS, mit dem du dich ganz normal auf Deutsch unt
 - **Weitere Dienste** wie Notion und Canva, oder jeder andere Dienst mit einer MCP-Schnittstelle
 - **Websuche** für Wetter, Nachrichten, Öffnungszeiten …
 
+## Kostenlos nutzen
+
+Timi braucht ein „KI-Gehirn“. Du wählst es in der App unter dem **Zahnrad → KI-Gehirn**:
+
+| Gehirn | Kosten | Was du brauchst |
+|---|---|---|
+| **Google Gemini** | **gratis** (mit Tageslimit) | Kostenlosen Schlüssel auf [aistudio.google.com/apikey](https://aistudio.google.com/apikey) mit deinem Google-Konto erstellen, ohne Kreditkarte. Im Gratis-Tarif darf Google die Gespräche zur Verbesserung seiner KI nutzen. |
+| **Ollama** | **komplett gratis**, privat | [Ollama](https://ollama.com/download) installieren und einmal `ollama pull qwen2.5:7b` in der Eingabeaufforderung ausführen. Läuft auf deinem Computer (mind. 8 GB Arbeitsspeicher), es geht nichts ins Internet. |
+| **Claude** | nach Verbrauch | Guthaben und API-Schlüssel auf [console.anthropic.com](https://console.anthropic.com). Am klügsten; mit dem Modell `claude-haiku-5-5` deutlich günstiger. |
+
+Kalender, Mails, Spotify, Aufgaben und Fenster funktionieren mit allen drei. Die **Websuche** gibt es nur mit Claude.
+
 ## App herunterladen (empfohlen)
 
 Die fertige App für **Windows** und **Mac** (Apple-Chip, M1 oder neuer) wird automatisch gebaut. Sie liegt auf der Seite **[Timi – Download](https://github.com/timilimi07-crypto/timi/releases/tag/timi-app)**.
@@ -21,7 +33,7 @@ Die fertige App für **Windows** und **Mac** (Apple-Chip, M1 oder neuer) wird au
 1. `Timi-Windows.zip` oder `Timi-Mac.zip` herunterladen und entpacken.
 2. **Windows:** `Timi.exe` doppelklicken. Erscheint „Der Computer wurde durch Windows geschützt“, dann **Weitere Informationen → Trotzdem ausführen**.
    **Mac:** `Timi.app` in den Programme-Ordner ziehen und beim ersten Mal per **Rechtsklick → Öffnen** starten.
-3. Timi öffnet sich als eigenes Fenster. Beim ersten Start trägst du deinen API-Schlüssel ein. Node.js brauchst du nicht.
+3. Timi öffnet sich als eigenes Fenster. Beim ersten Start wählst du das KI-Gehirn, z. B. das kostenlose Gemini (siehe oben). Node.js brauchst du nicht.
 
 Deine Daten liegen im normalen App-Ordner (Windows: `%APPDATA%\Timi`, Mac: `~/Library/Application Support/Timi`). Beenden kannst du Timi über das Zahnrad oben rechts.
 
@@ -146,6 +158,7 @@ Google lässt eigene Apps nur mit einem eigenen Zugang an deine Daten. Der Zugan
 - `google.js`: Google Kalender und Gmail
 - `spotify.js`: Spotify
 - `mcp.js`: weitere Dienste über das Model Context Protocol
+- `providers.js`: kostenlose KI-Anbieter (Gemini, Ollama)
 - `paths.js`: Datenordner und Einstellungen
 - `auth.js`: Passwortschutz für den Cloud-Betrieb (`TIMI_CLOUD=1`, `TIMI_PASSWORT`)
 - `../render.yaml`: Einrichtung für Render (iPad-/Cloud-Version)

@@ -815,7 +815,6 @@ async function musicControl(body, payload) {
 // Einstellungen
 
 const SETTINGS = [
-  { key: "ANTHROPIC_API_KEY", label: "Anthropic-API-Schlüssel (erforderlich)", secret: true, hint: "sk-ant-…" },
   { key: "ASSISTANT_NAME", label: "Name des Assistenten (wirkt nach Neustart)", hint: "Timi" },
   { key: "GOOGLE_CLIENT_ID", label: "Google Client-ID", hint: "….apps.googleusercontent.com" },
   { key: "GOOGLE_CLIENT_SECRET", label: "Google Clientschlüssel", secret: true },
@@ -823,18 +822,58 @@ const SETTINGS = [
   { key: "SPOTIFY_CLIENT_SECRET", label: "Spotify Client Secret", secret: true },
 ];
 
-async function renderSettings(body) {
+// Was jeder KI-Anbieter braucht
+const PROVIDER_FIELDS = {
+  claude: {
+    fields: [{ key: "ANTHROPIC_API_KEY", label: "Anthropic-API-Schlüssel", secret: true, hint: "sk-ant-…" }],
+    help: `Kostet nach Verbrauch (Guthaben auf <a href="https://console.anthropic.com/settings/billing" target="_blank" rel="noopener">console.anthropic.com</a>).
+      Am klügsten. Günstiger wird es mit dem Modell <b>claude-haiku-5-5</b>.`,
+  },
+  gemini: {
+    fields: [{ key: "GEMINI_API_KEY", label: "Gemini-API-Schlüssel", secret: true, hint: "AIza…" }],
+    help: `Gratis: Schlüssel auf <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>
+      mit deinem Google-Konto erstellen (ohne Kreditkarte). Es gibt ein Tageslimit. Achtung: Im Gratis-Tarif
+      darf Google die Gespräche zur Verbesserung seiner KI verwenden.`,
+  },
+  ollama: {
+    fields: [{ key: "OLLAMA_URL", label: "Ollama-Adresse (meist nicht nötig)", hint: "http://127.0.0.1:11434" }],
+    help: `Komplett gratis und privat – die KI läuft auf deinem Computer. Installiere
+      <a href="https://ollama.com/download" target="_blank" rel="noopener">Ollama</a> und gib einmal in der
+      Eingabeaufforderung ein: <b>ollama pull qwen2.5:7b</b>. Braucht einen Computer mit mindestens 8 GB Arbeitsspeicher.`,
+  },
+};
+
+function settingInput(s, data) {
+  return `<label class="set-row">${esc(s.label)} ${data.gesetzt[s.key] ? `<span class="ok">✓ gespeichert</span>` : ""}
+    <input name="${s.key}" type="${s.secret ? "password" : "text"}" autocomplete="off"
+      placeholder="${data.gesetzt[s.key] ? "unverändert lassen" : esc(s.hint ?? "")}" /></label>`;
+}
+
+async function renderSettings(body, chosen) {
   const data = await getJSON("/api/einstellungen");
-  const ready = data.gesetzt.ANTHROPIC_API_KEY;
+  const provider = chosen ?? data.anbieter;
+  const pf = PROVIDER_FIELDS[provider];
+  const defaultModel = data.anbieterListe[provider].modell;
   body.innerHTML = `
-    ${ready ? "" : `<div class="welcome">Willkommen! Trag zuerst deinen API-Schlüssel ein. Den bekommst du auf
-      <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>.</div>`}
+    ${data.bereit ? "" : `<div class="welcome">Willkommen! Wähl zuerst aus, welche KI Timi benutzen soll. Gratis geht es mit <b>Gemini</b> oder <b>Ollama</b>.</div>`}
     <form class="settings-form">
-      ${SETTINGS.map(
-        (s) => `<label class="set-row">${esc(s.label)} ${data.gesetzt[s.key] ? `<span class="ok">✓ gespeichert</span>` : ""}
-          <input name="${s.key}" type="${s.secret ? "password" : "text"}" autocomplete="off"
-            placeholder="${data.gesetzt[s.key] ? "unverändert lassen" : esc(s.hint ?? "")}" /></label>`,
-      ).join("")}
+      <div class="sect">KI-Gehirn</div>
+      <div class="providers">
+        ${Object.entries(data.anbieterListe)
+          .map(
+            ([id, p]) => `<label class="provider ${id === provider ? "active" : ""}">
+              <input type="radio" name="KI_ANBIETER" value="${id}" ${id === provider ? "checked" : ""} />
+              <span>${esc(p.name)}</span></label>`,
+          )
+          .join("")}
+      </div>
+      <p class="hint">${pf.help}</p>
+      ${pf.fields.map((f) => settingInput(f, data)).join("")}
+      <label class="set-row">Modell (leer lassen für Standard)
+        <input name="KI_MODELL" type="text" autocomplete="off"
+          placeholder="${esc(provider === data.anbieter ? data.modell : defaultModel)}" /></label>
+      <div class="sect">Weitere Zugänge</div>
+      ${SETTINGS.map((s) => settingInput(s, data)).join("")}
       <button class="btn" type="submit">Speichern</button>
     </form>
     <p class="hint">Wie du die Google- und Spotify-Zugänge bekommst, steht in der Anleitung (README).
@@ -842,10 +881,15 @@ async function renderSettings(body) {
     <div class="sect">System</div>
     <p class="hint">Adresse: ${esc(data.adresse)}</p>
     ${data.cloud ? `<button class="btn ghost" data-logout>Abmelden</button>` : `<button class="btn ghost" data-quit>Timi beenden</button>`}`;
+  body.querySelectorAll('input[name="KI_ANBIETER"]').forEach((r) => {
+    r.onchange = () => renderSettings(body, r.value);
+  });
   body.querySelector(".settings-form").onsubmit = async (e) => {
     e.preventDefault();
     const changes = {};
     for (const [k, v] of new FormData(e.target)) if (v.trim()) changes[k] = v.trim();
+    // Beim Wechsel des Anbieters ein altes, unpassendes Modell zurücksetzen
+    if (changes.KI_ANBIETER !== data.anbieter && !changes.KI_MODELL) changes.KI_MODELL = "";
     await getJSON("/api/einstellungen", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -853,7 +897,8 @@ async function renderSettings(body) {
     });
     renderSettings(body);
     loadChips();
-    if (changes.ANTHROPIC_API_KEY) replyEl.textContent = "Alles bereit. Tipp auf den Reaktor und sprich los.";
+    const after = await getJSON("/api/einstellungen");
+    if (after.bereit) replyEl.textContent = "Alles bereit. Tipp auf den Reaktor und sprich los.";
   };
   body.querySelector("[data-logout]")?.addEventListener("click", async () => {
     await fetch("/api/abmelden", { method: "POST" });
@@ -1031,7 +1076,7 @@ setMode("idle");
 loadChips();
 getJSON("/api/einstellungen")
   .then((d) => {
-    if (!d.gesetzt.ANTHROPIC_API_KEY) openWindow("einstellungen");
+    if (!d.bereit) openWindow("einstellungen");
   })
   .catch(() => {});
 for (const key of store("openWindows") ?? []) openWindow(key);

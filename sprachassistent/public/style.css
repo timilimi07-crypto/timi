@@ -230,8 +230,17 @@ svg { display: block; }
   padding: 6px 10px;
 }
 .set-row .ok { color: var(--green); }
+.providers { display: grid; gap: 6px; margin-bottom: 8px; }
+.provider {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
+  cursor: pointer;
+}
+.provider.active { border-color: var(--cyan); background: rgba(var(--accent-rgb), 0.1); }
+.provider input { accent-color: var(--cyan); }
 .welcome { border: 1px solid var(--cyan); padding: 10px 12px; margin-bottom: 12px; background: rgba(var(--accent-rgb), 0.08); }
-.welcome a { color: var(--cyan-2); }
+.welcome a, .win-body a { color: var(--cyan-2); }
 .chip {
   display: inline-flex;
   align-items: center;
