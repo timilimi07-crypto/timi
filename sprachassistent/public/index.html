@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Timi Sprachassistent</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <h1>Timi</h1>
+      <div class="top-actions">
+        <label class="toggle" title="Nach jeder Antwort automatisch wieder zuhören">
+          <input type="checkbox" id="handsfree" checked /> Freihändig
+        </label>
+        <button id="reset" class="ghost" title="Neues Gespräch beginnen">Neu</button>
+      </div>
+    </header>
+
+    <section class="stage">
+      <button id="mic" class="mic" aria-label="Sprechen">
+        <span class="ring"></span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2Z"/></svg>
+      </button>
+      <p id="status" class="status">Tippe aufs Mikrofon und sprich los.</p>
+      <p id="interim" class="interim"></p>
+    </section>
+
+    <section id="log" class="log" aria-live="polite"></section>
+
+    <form id="textform" class="textform">
+      <input id="textinput" type="text" placeholder="…oder hier schreiben" autocomplete="off" />
+      <button type="submit">Senden</button>
+    </form>
+
+    <details class="tasks" open>
+      <summary>Aufgaben <span id="taskcount"></span></summary>
+      <ul id="tasklist"></ul>
+    </details>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

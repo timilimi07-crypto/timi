@@ -1,0 +1,14 @@
+{
+  "name": "sprachassistent",
+  "version": "1.0.0",
+  "description": "Persönlicher deutscher Sprachassistent mit Claude",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.132.1",
+    "express": "^5.2.1"
+  },
+  "type": "module"
+}
