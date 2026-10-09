@@ -7,8 +7,9 @@ import express from "express";
 import Anthropic from "@anthropic-ai/sdk";
 import fs from "fs/promises";
 import path from "path";
-import { fileURLToPath } from "url";
 import { randomUUID } from "crypto";
+import { exec } from "child_process";
+import { APP_DIR, DATA_DIR, IS_PACKAGED, dataPath, loadSettings, saveSettings, SETTING_KEYS } from "./paths.js";
 import {
   CALENDAR_TOOLS,
   GMAIL_TOOLS,
@@ -20,6 +21,7 @@ import {
   configureGoogle,
   handleCallback,
   disconnect,
+  resetGoogle,
 } from "./google.js";
 import {
   configureMcp,
@@ -47,8 +49,9 @@ import {
   spotifyMessage,
 } from "./spotify.js";
 
-const here = path.dirname(fileURLToPath(import.meta.url));
-const DATA_FILE = path.join(here, "data", "store.json");
+loadSettings();
+
+const DATA_FILE = dataPath("store.json");
 const PORT = Number(process.env.PORT ?? 3000);
 const BASE_URL = process.env.BASE_URL ?? `http://localhost:${PORT}`;
 const MODEL = process.env.ASSISTANT_MODEL ?? "claude-opus-5-5";
@@ -62,7 +65,7 @@ configureMcp(`${BASE_URL}/auth/mcp/callback`);
 // Spotify akzeptiert für lokale Apps nur 127.0.0.1, nicht "localhost".
 configureSpotify(process.env.SPOTIFY_REDIRECT_URI ?? `http://127.0.0.1:${PORT}/auth/spotify/callback`);
 
-const client = new Anthropic();
+let client = new Anthropic();
 
 const SYSTEM_PROMPT = `Du bist ${NAME}, der persönliche KI-Assistent des Nutzers, ein bisschen wie JARVIS: souverän, aufmerksam, vorausdenkend und mit einem trockenen, freundlichen Humor. Du sprichst Deutsch und duzt den Nutzer.
 
@@ -395,8 +398,40 @@ async function runTurn(messages, send) {
 // HTTP
 
 const app = express();
+
+// Nur Anfragen an diesen Rechner selbst annehmen (Schutz gegen DNS-Rebinding).
+app.use((req, res, next) => {
+  const host = (req.headers.host ?? "").replace(/:\d+$/, "");
+  if (["localhost", "127.0.0.1", "[::1]"].includes(host)) return next();
+  res.status(403).send("Nur lokal erreichbar.");
+});
 app.use(express.json());
-app.use(express.static(path.join(here, "public")));
+
+if (IS_PACKAGED) {
+  // Als fertige App stecken die Oberflächen-Dateien im Programm selbst.
+  // eslint-disable-next-line no-undef
+  const { getAsset } = require("node:sea");
+  const TYPES = {
+    ".html": "text/html; charset=utf-8",
+    ".js": "text/javascript; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".svg": "image/svg+xml",
+    ".png": "image/png",
+    ".webmanifest": "application/manifest+json",
+  };
+  app.use((req, res, next) => {
+    if (req.method !== "GET" || req.path.startsWith("/api/") || req.path.startsWith("/auth/")) return next();
+    const file = req.path === "/" ? "index.html" : req.path.slice(1);
+    try {
+      const data = Buffer.from(getAsset(`public/${file}`));
+      res.type(TYPES[path.extname(file)] ?? "application/octet-stream").send(data);
+    } catch {
+      next();
+    }
+  });
+} else {
+  app.use(express.static(path.join(APP_DIR, "public")));
+}
 
 app.post("/api/chat", async (req, res) => {
   const { sessionId, text } = req.body ?? {};
@@ -428,6 +463,33 @@ app.post("/api/chat", async (req, res) => {
   }
   send({ type: "done" });
   res.end();
+});
+
+// Einstellungen (API-Schlüssel und Zugangsdaten) – Geheimnisse werden nie zurückgegeben.
+
+app.get("/api/einstellungen", (_req, res) => {
+  res.json({
+    gesetzt: Object.fromEntries(SETTING_KEYS.map((k) => [k, Boolean(process.env[k])])),
+    name: NAME,
+    datenordner: DATA_DIR,
+    app: IS_PACKAGED,
+    adresse: BASE_URL,
+  });
+});
+
+app.post("/api/einstellungen", (req, res) => {
+  const changes = Object.fromEntries(
+    Object.entries(req.body ?? {}).filter(([k, v]) => SETTING_KEYS.includes(k) && typeof v === "string"),
+  );
+  saveSettings(changes);
+  client = new Anthropic();
+  resetGoogle();
+  res.json({ ok: true });
+});
+
+app.post("/api/beenden", (_req, res) => {
+  res.json({ ok: true });
+  setTimeout(() => process.exit(0), 200);
 });
 
 app.post("/api/reset", (req, res) => {
@@ -607,9 +669,32 @@ function page(title, text) {
 <h1 style="color:#2ee6ff">${esc(title)}</h1><p>${esc(text)}</p><p><a style="color:#2ee6ff" href="/">Zurück</a></p>`;
 }
 
-app.listen(PORT, () => {
+// Timi als eigenes App-Fenster öffnen (Edge oder Chrome im App-Modus, sonst Standardbrowser).
+function openAppWindow() {
+  const url = BASE_URL;
+  const cmd = {
+    win32: `start "" msedge --app=${url} || start "" chrome --app=${url} || start "" ${url}`,
+    darwin: `open -na "Google Chrome" --args --app=${url} || open -na "Microsoft Edge" --args --app=${url} || open ${url}`,
+  }[process.platform] ?? `xdg-open ${url}`;
+  exec(cmd, { shell: process.platform === "win32" ? "cmd.exe" : "/bin/sh" }, () => {});
+}
+
+const shouldOpen = IS_PACKAGED || process.env.TIMI_OPEN === "1";
+const server = app.listen(PORT, "127.0.0.1", () => {
   console.log(`${NAME} ist bereit: ${BASE_URL}`);
+  console.log(`Daten: ${DATA_DIR}`);
+  if (IS_PACKAGED) console.log("Dieses Fenster offen lassen, solange du Timi benutzt.");
   if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
-    console.warn("Hinweis: Kein ANTHROPIC_API_KEY gesetzt. Trag ihn in die Datei .env ein (siehe .env.example).");
+    console.warn("Hinweis: Noch kein API-Schlüssel – bitte in der App unter Einstellungen eintragen.");
+  }
+  if (shouldOpen) openAppWindow();
+});
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE" && shouldOpen) {
+    // Timi läuft schon – nur das Fenster öffnen.
+    openAppWindow();
+    setTimeout(() => process.exit(0), 1500);
+  } else {
+    throw err;
   }
 });

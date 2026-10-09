@@ -14,7 +14,20 @@ Ein KI-Assistent im Stil von JARVIS, mit dem du dich ganz normal auf Deutsch unt
 - **Weitere Dienste** wie Notion und Canva, oder jeder andere Dienst mit einer MCP-Schnittstelle
 - **Websuche** für Wetter, Nachrichten, Öffnungszeiten …
 
-## Installieren und starten
+## App herunterladen (empfohlen)
+
+Die fertige App für **Windows** und **Mac** (Apple-Chip, M1 oder neuer) wird automatisch gebaut. Sie liegt auf der Seite **[Timi – Download](https://github.com/timilimi07-crypto/timi/releases/tag/timi-app)**.
+
+1. `Timi-Windows.zip` oder `Timi-Mac.zip` herunterladen und entpacken.
+2. **Windows:** `Timi.exe` doppelklicken. Erscheint „Der Computer wurde durch Windows geschützt“, dann **Weitere Informationen → Trotzdem ausführen**.
+   **Mac:** `Timi.app` in den Programme-Ordner ziehen und beim ersten Mal per **Rechtsklick → Öffnen** starten.
+3. Timi öffnet sich als eigenes Fenster. Beim ersten Start trägst du deinen API-Schlüssel ein. Node.js brauchst du nicht.
+
+Deine Daten liegen im normalen App-Ordner (Windows: `%APPDATA%\Timi`, Mac: `~/Library/Application Support/Timi`). Beenden kannst du Timi über das Zahnrad oben rechts.
+
+> Die Warnungen von Windows und macOS erscheinen, weil die App nicht bei Microsoft bzw. Apple gegen Gebühr signiert ist. Das ist bei selbst gebauten Apps normal.
+
+## Selbst starten (für Entwickler)
 
 Du brauchst [Node.js](https://nodejs.org/) (Version 22 oder neuer) und einen [Anthropic-API-Schlüssel](https://console.anthropic.com/).
 
@@ -22,7 +35,7 @@ Du brauchst [Node.js](https://nodejs.org/) (Version 22 oder neuer) und einen [An
 - **`Timi starten.bat`** (Windows) oder
 - **`Timi starten.command`** (Mac; beim ersten Mal per Rechtsklick → Öffnen)
 
-Beim ersten Start öffnet sich die Datei `.env`. Trag dort deinen API-Schlüssel ein, speichere sie und starte noch einmal. Timi öffnet sich dann als eigenes App-Fenster.
+Timi öffnet sich als eigenes App-Fenster. Den API-Schlüssel und die Zugänge für Google und Spotify kannst du direkt in der App unter dem Zahnrad eintragen, alternativ in der Datei `.env`.
 
 **Oder im Terminal:**
 ```bash
@@ -61,7 +74,7 @@ Google lässt eigene Apps nur mit einem eigenen Zugang an deine Daten. Der Zugan
 4. Gehe zu **Anmeldedaten / Clients → Client erstellen → OAuth-Client-ID**:
    - Anwendungstyp: **Webanwendung**
    - Autorisierte Weiterleitungs-URI: `http://localhost:3000/auth/google/callback`
-5. Trag **Client-ID** und **Clientschlüssel** in deine `.env` ein:
+5. Trag **Client-ID** und **Clientschlüssel** in Timi unter dem **Zahnrad (Einstellungen)** ein, oder in deine `.env`:
    ```
    GOOGLE_CLIENT_ID=...apps.googleusercontent.com
    GOOGLE_CLIENT_SECRET=...
@@ -74,7 +87,7 @@ Google lässt eigene Apps nur mit einem eigenen Zugang an deine Daten. Der Zugan
 
 1. Öffne das [Spotify Developer Dashboard](https://developer.spotify.com/dashboard), melde dich an und klick auf **Create app**.
 2. Name „Timi“, Beschreibung beliebig. Als **Redirect URI** trägst du genau `http://127.0.0.1:3000/auth/spotify/callback` ein (Spotify erlaubt hier kein „localhost“). Bei den APIs wählst du **Web API**. Dann speichern.
-3. Unter **Settings** findest du **Client ID** und **Client secret**. Trag beide in deine `.env` ein:
+3. Unter **Settings** findest du **Client ID** und **Client secret**. Trag beide in Timi unter dem **Zahnrad (Einstellungen)** ein, oder in deine `.env`:
    ```
    SPOTIFY_CLIENT_ID=...
    SPOTIFY_CLIENT_SECRET=...
@@ -102,6 +115,8 @@ Google lässt eigene Apps nur mit einem eigenen Zugang an deine Daten. Der Zugan
 - `google.js`: Google Kalender und Gmail
 - `spotify.js`: Spotify
 - `mcp.js`: weitere Dienste über das Model Context Protocol
+- `paths.js`: Datenordner und Einstellungen
+- `build/`: baut die fertige App (`npm run build`); auf GitHub passiert das automatisch.
 - `public/`: die Oberfläche. Spracherkennung und Sprachausgabe laufen über den Browser.
 - `data/`: deine Aufgaben, Notizen und Anmeldungen. Diese Daten sind **geheim, nicht weitergeben**. Sie werden nicht ins Git-Repository übernommen.
 

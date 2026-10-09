@@ -1,0 +1,87 @@
+name: Timi App bauen
+
+on:
+  push:
+    branches: [claude/sprachassistent]
+    paths:
+      - "sprachassistent/**"
+      - ".github/workflows/timi-app.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            name: Windows
+          - os: macos-latest
+            name: Mac
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: sprachassistent
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run build
+
+      - name: Windows-Paket
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force out/Timi | Out-Null
+          Copy-Item dist/Timi.exe out/Timi/
+          Copy-Item build/Erste-Schritte.txt out/Timi/
+          Compress-Archive -Path out/Timi -DestinationPath out/Timi-Windows.zip
+
+      - name: Mac-Paket
+        if: runner.os == 'macOS'
+        run: |
+          mkdir -p out/Timi
+          cp -R dist/Timi.app out/Timi/
+          cp build/Erste-Schritte.txt out/Timi/
+          ditto -c -k --keepParent out/Timi out/Timi-Mac.zip
+
+      - name: Kurztest (startet die App und ruft die Oberfläche ab)
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then BIN=dist/Timi.exe; else BIN=dist/Timi.app/Contents/MacOS/Timi; fi
+          TIMI_DATA_DIR="$RUNNER_TEMP/timi" PORT=3999 "$BIN" > app.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:3999/api/einstellungen && break; sleep 1; done
+          curl -sf http://127.0.0.1:3999/ | grep -q "T.I.M.I."
+          curl -sf -o /dev/null http://127.0.0.1:3999/app.js
+          echo "App startet und liefert die Oberfläche aus."
+          cat app.log
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Timi-${{ matrix.name }}
+          path: sprachassistent/out/Timi-${{ matrix.name }}.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: pakete
+          merge-multiple: true
+      - name: Download-Seite aktualisieren
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release delete timi-app --yes --cleanup-tag || true
+          gh release create timi-app pakete/*.zip \
+            --target "${{ github.sha }}" \
+            --prerelease \
+            --title "Timi – persönlicher Assistent" \
+            --notes "Zum Herunterladen: **Timi-Windows.zip** oder **Timi-Mac.zip** (Mac mit Apple-Chip, M1 oder neuer). Entpacken, dann die Datei *Erste-Schritte.txt* lesen."

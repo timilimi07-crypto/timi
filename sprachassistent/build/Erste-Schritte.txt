@@ -1,0 +1,25 @@
+TIMI – ERSTE SCHRITTE
+=====================
+
+1. Starten
+   Windows: Doppelklick auf Timi.exe.
+            Wenn "Der Computer wurde durch Windows geschützt" erscheint:
+            "Weitere Informationen" -> "Trotzdem ausführen".
+            Das schwarze Fenster offen lassen, solange du Timi benutzt.
+   Mac:     Timi.app in den Programme-Ordner ziehen.
+            Beim ersten Mal: Rechtsklick auf Timi -> "Öffnen" -> "Öffnen".
+            (Falls das nicht reicht: Systemeinstellungen -> Datenschutz & Sicherheit
+             -> ganz unten "Dennoch öffnen".)
+
+2. Timi öffnet sich als eigenes Fenster (in Chrome oder Edge).
+   Beim ersten Start: API-Schlüssel eintragen (console.anthropic.com).
+
+3. Mikrofon erlauben, auf den Reaktor tippen und lossprechen.
+
+Google (Kalender, Gmail) und Spotify verbindest du unter Einstellungen
+(Zahnrad oben rechts) und im Fenster "Dienste". Die Anleitung dafür:
+https://github.com/timilimi07-crypto/timi/tree/claude/sprachassistent/sprachassistent#dienste-verbinden
+
+Beenden: Zahnrad -> "Timi beenden" (oder unter Windows das schwarze Fenster schließen).
+
+Für Sprache bitte Google Chrome oder Microsoft Edge verwenden.

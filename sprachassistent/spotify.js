@@ -3,11 +3,10 @@
 
 import fs from "fs/promises";
 import path from "path";
-import { fileURLToPath } from "url";
 import { randomUUID } from "crypto";
+import { dataPath } from "./paths.js";
 
-const here = path.dirname(fileURLToPath(import.meta.url));
-const TOKEN_FILE = path.join(here, "data", "spotify-token.json");
+const TOKEN_FILE = dataPath("spotify-token.json");
 const API = "https://api.spotify.com/v1";
 const SCOPES = [
   "user-read-playback-state",

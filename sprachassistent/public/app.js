@@ -454,6 +454,7 @@ const WINDOW_DEFS = {
   mails: { title: "Posteingang", render: renderMails, refresh: true, w: 440, h: 500 },
   musik: { title: "Musik", render: renderMusic, refresh: true, w: 360, h: 470, onClose: stopMusicPolling },
   design: { title: "Design & Schrift", render: renderDesign, w: 440, h: 560 },
+  einstellungen: { title: "Einstellungen", render: renderSettings, w: 440, h: 580 },
   protokoll: { title: "Protokoll", render: renderLog, w: 420, h: 460 },
   verbindungen: { title: "Dienste & Verbindungen", render: renderConnections, refresh: true, w: 420, h: 480 },
 };
@@ -771,6 +772,56 @@ async function musicControl(body, payload) {
   setTimeout(() => renderMusic(body), 400);
 }
 
+// Einstellungen
+
+const SETTINGS = [
+  { key: "ANTHROPIC_API_KEY", label: "Anthropic-API-Schlüssel (erforderlich)", secret: true, hint: "sk-ant-…" },
+  { key: "ASSISTANT_NAME", label: "Name des Assistenten (wirkt nach Neustart)", hint: "Timi" },
+  { key: "GOOGLE_CLIENT_ID", label: "Google Client-ID", hint: "….apps.googleusercontent.com" },
+  { key: "GOOGLE_CLIENT_SECRET", label: "Google Clientschlüssel", secret: true },
+  { key: "SPOTIFY_CLIENT_ID", label: "Spotify Client ID" },
+  { key: "SPOTIFY_CLIENT_SECRET", label: "Spotify Client Secret", secret: true },
+];
+
+async function renderSettings(body) {
+  const data = await getJSON("/api/einstellungen");
+  const ready = data.gesetzt.ANTHROPIC_API_KEY;
+  body.innerHTML = `
+    ${ready ? "" : `<div class="welcome">Willkommen! Trag zuerst deinen API-Schlüssel ein. Den bekommst du auf
+      <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>.</div>`}
+    <form class="settings-form">
+      ${SETTINGS.map(
+        (s) => `<label class="set-row">${esc(s.label)} ${data.gesetzt[s.key] ? `<span class="ok">✓ gespeichert</span>` : ""}
+          <input name="${s.key}" type="${s.secret ? "password" : "text"}" autocomplete="off"
+            placeholder="${data.gesetzt[s.key] ? "unverändert lassen" : esc(s.hint ?? "")}" /></label>`,
+      ).join("")}
+      <button class="btn" type="submit">Speichern</button>
+    </form>
+    <p class="hint">Wie du die Google- und Spotify-Zugänge bekommst, steht in der Anleitung (README).
+      Gespeichert wird nur auf diesem Rechner, in ${esc(data.datenordner)}.</p>
+    <div class="sect">System</div>
+    <p class="hint">Adresse: ${esc(data.adresse)}</p>
+    <button class="btn ghost" data-quit>Timi beenden</button>`;
+  body.querySelector(".settings-form").onsubmit = async (e) => {
+    e.preventDefault();
+    const changes = {};
+    for (const [k, v] of new FormData(e.target)) if (v.trim()) changes[k] = v.trim();
+    await getJSON("/api/einstellungen", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(changes),
+    });
+    renderSettings(body);
+    loadChips();
+    if (changes.ANTHROPIC_API_KEY) replyEl.textContent = "Alles bereit. Tipp auf den Reaktor und sprich los.";
+  };
+  body.querySelector("[data-quit]").onclick = async () => {
+    if (!confirm("Timi beenden?")) return;
+    await fetch("/api/beenden", { method: "POST" }).catch(() => {});
+    document.body.innerHTML = `<p style="padding:40px;text-align:center">Timi wurde beendet. Du kannst dieses Fenster schließen.</p>`;
+  };
+}
+
 // Design
 
 function renderDesign(body) {
@@ -933,6 +984,11 @@ async function loadChips() {
 
 setMode("idle");
 loadChips();
+getJSON("/api/einstellungen")
+  .then((d) => {
+    if (!d.gesetzt.ANTHROPIC_API_KEY) openWindow("einstellungen");
+  })
+  .catch(() => {});
 for (const key of store("openWindows") ?? []) openWindow(key);
 
 const params = new URLSearchParams(location.search);

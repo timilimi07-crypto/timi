@@ -6,12 +6,14 @@ import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/
 import { UnauthorizedError } from "@modelcontextprotocol/sdk/client/auth.js";
 import fs from "fs/promises";
 import path from "path";
-import { fileURLToPath } from "url";
+import { dataPath } from "./paths.js";
 
-const here = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = path.join(here, "data", "mcp");
-const LIST_FILE = path.join(here, "data", "verbindungen.json");
-const DEFAULT_LIST = path.join(here, "verbindungen.standard.json");
+const DATA_DIR = dataPath("mcp");
+const LIST_FILE = dataPath("verbindungen.json");
+const DEFAULT_LIST = [
+  { id: "notion", name: "Notion", url: "https://mcp.notion.com/mcp" },
+  { id: "canva", name: "Canva", url: "https://mcp.canva.com/mcp" },
+];
 
 let redirectUrl = null;
 export function configureMcp(uri) {
@@ -25,7 +27,7 @@ export async function listConnectors() {
   try {
     return JSON.parse(await fs.readFile(LIST_FILE, "utf8"));
   } catch {
-    return JSON.parse(await fs.readFile(DEFAULT_LIST, "utf8"));
+    return DEFAULT_LIST.map((c) => ({ ...c }));
   }
 }
 

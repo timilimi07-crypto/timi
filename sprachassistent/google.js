@@ -5,10 +5,9 @@ import { auth, calendar } from "@googleapis/calendar";
 import { gmail } from "@googleapis/gmail";
 import fs from "fs/promises";
 import path from "path";
-import { fileURLToPath } from "url";
+import { dataPath } from "./paths.js";
 
-const here = path.dirname(fileURLToPath(import.meta.url));
-const TOKEN_FILE = path.join(here, "data", "google-token.json");
+const TOKEN_FILE = dataPath("google-token.json");
 const SCOPES = [
   "https://www.googleapis.com/auth/calendar.events",
   "https://www.googleapis.com/auth/calendar.calendarlist.readonly",
@@ -21,6 +20,12 @@ let redirectUri = null;
 
 export function configureGoogle(uri) {
   redirectUri = uri;
+}
+
+// Nach dem Ändern der Zugangsdaten in den Einstellungen neu aufbauen.
+export function resetGoogle() {
+  oauth = null;
+  tokensLoaded = false;
 }
 
 export function googleConfigured() {
