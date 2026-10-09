@@ -1,0 +1,33 @@
+# Timi in der Cloud (für iPad, iPhone und unterwegs).
+# Einrichtung: render.com -> New -> Blueprint -> dieses Repository wählen.
+services:
+  - type: web
+    name: timi
+    runtime: node
+    plan: starter            # Dauerbetrieb mit Festplatte für deine Daten
+    region: frankfurt
+    branch: claude/sprachassistent
+    rootDir: sprachassistent
+    buildCommand: npm ci --omit=dev
+    startCommand: node server.js
+    healthCheckPath: /manifest.webmanifest
+    autoDeploy: true
+    disk:
+      name: timi-daten
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: TIMI_CLOUD
+        value: "1"
+      - key: TIMI_DATA_DIR
+        value: /var/data
+      - key: NODE_VERSION
+        value: "22"
+      - key: TZ_USER
+        value: Europe/Berlin
+      - key: TIMI_SESSION_SECRET
+        generateValue: true
+      - key: TIMI_PASSWORT
+        sync: false            # wird beim Einrichten abgefragt
+      - key: ANTHROPIC_API_KEY
+        sync: false            # wird beim Einrichten abgefragt

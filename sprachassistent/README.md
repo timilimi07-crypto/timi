@@ -27,6 +27,37 @@ Deine Daten liegen im normalen App-Ordner (Windows: `%APPDATA%\Timi`, Mac: `~/Li
 
 > Die Warnungen von Windows und macOS erscheinen, weil die App nicht bei Microsoft bzw. Apple gegen Gebühr signiert ist. Das ist bei selbst gebauten Apps normal.
 
+## iPad und iPhone
+
+Auf dem iPad läuft Timi im Internet auf deinem eigenen kleinen Server, geschützt mit deinem Passwort. Auf dem iPad öffnest du ihn wie eine App vom Home-Bildschirm. Das geht auch auf dem iPhone und auf jedem anderen Computer, auch unterwegs.
+
+### Einrichten (einmalig, ca. 10 Minuten)
+
+1. Erstelle auf **[render.com](https://render.com)** ein Konto. Am einfachsten mit **„Sign up with GitHub“**.
+2. Klick oben auf **New → Blueprint** und wähle das Repository **timilimi07-crypto/timi**. Render liest die Einstellungen automatisch aus der Datei `render.yaml`.
+3. Render fragt nach zwei Werten:
+   - **TIMI_PASSWORT**: dein Passwort für Timi. Nimm ein **langes, sicheres** Passwort, denn Timi kommt damit an deine Mails und Termine.
+   - **ANTHROPIC_API_KEY**: dein API-Schlüssel
+4. Klick auf **Apply**. Nach ein paar Minuten bekommst du eine Adresse wie `https://timi-xxxx.onrender.com`.
+
+> **Kosten:** Render berechnet für Dauerbetrieb mit Speicherplatz für deine Daten etwa 7–8 US-Dollar im Monat (Tarif „Starter“ plus 1 GB Festplatte). Die Abrechnung läuft direkt über Render.
+
+### Auf dem iPad installieren
+
+1. Öffne die Adresse in **Safari** und melde dich mit deinem Passwort an.
+2. Tippe auf **Teilen** (□↑) → **Zum Home-Bildschirm** → **Hinzufügen**.
+3. Ab jetzt öffnest du Timi über das Symbol auf dem Home-Bildschirm.
+
+Damit die Spracherkennung funktioniert, muss auf dem iPad unter **Einstellungen → Allgemein → Tastatur** die **Diktierfunktion** eingeschaltet sein. Beim ersten Sprechen fragt Safari nach dem Mikrofon. Falls die Spracheingabe in der Home-Bildschirm-App nicht klappt, öffne Timi direkt in Safari. Das liegt an Apple, nicht an Timi.
+
+### Google und Spotify in der Cloud
+
+Trag die neue Adresse zusätzlich als Weiterleitung ein:
+- Google Cloud Console → deine OAuth-Client-ID → **Autorisierte Weiterleitungs-URIs**: `https://DEINE-ADRESSE/auth/google/callback`
+- Spotify Developer Dashboard → deine App → **Redirect URIs**: `https://DEINE-ADRESSE/auth/spotify/callback`
+
+Client-IDs und Schlüssel trägst du dann in Timi unter dem **Zahnrad** ein.
+
 ## Selbst starten (für Entwickler)
 
 Du brauchst [Node.js](https://nodejs.org/) (Version 22 oder neuer) und einen [Anthropic-API-Schlüssel](https://console.anthropic.com/).
@@ -116,6 +147,8 @@ Google lässt eigene Apps nur mit einem eigenen Zugang an deine Daten. Der Zugan
 - `spotify.js`: Spotify
 - `mcp.js`: weitere Dienste über das Model Context Protocol
 - `paths.js`: Datenordner und Einstellungen
+- `auth.js`: Passwortschutz für den Cloud-Betrieb (`TIMI_CLOUD=1`, `TIMI_PASSWORT`)
+- `../render.yaml`: Einrichtung für Render (iPad-/Cloud-Version)
 - `build/`: baut die fertige App (`npm run build`); auf GitHub passiert das automatisch.
 - `public/`: die Oberfläche. Spracherkennung und Sprachausgabe laufen über den Browser.
 - `data/`: deine Aufgaben, Notizen und Anmeldungen. Diese Daten sind **geheim, nicht weitergeben**. Sie werden nicht ins Git-Repository übernommen.

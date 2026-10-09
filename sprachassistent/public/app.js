@@ -35,8 +35,12 @@ function esc(s) {
 
 async function getJSON(url, opts) {
   const res = await fetch(url, opts);
+  if (res.status === 401) location.href = "/login"; // Cloud-Betrieb: Anmeldung abgelaufen
   return res.json();
 }
+
+// iPad und iPhone (iPadOS meldet sich wie ein Mac, hat aber einen Touchscreen)
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
 // ---------------------------------------------------------------------------
 // Design und Schrift
@@ -123,7 +127,8 @@ requestAnimationFrame(animate);
 // Mikrofonpegel für die Animation (nur während des Zuhörens)
 let analyser = null;
 async function startMeter() {
-  if (analyser || !navigator.mediaDevices?.getUserMedia) return;
+  // Auf iPad/iPhone würde der Pegelmesser der Spracherkennung das Mikrofon wegnehmen.
+  if (IS_IOS || analyser || !navigator.mediaDevices?.getUserMedia) return;
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const ctx = new AudioContext();
@@ -164,6 +169,19 @@ if ("speechSynthesis" in window) {
 let speechQueue = 0;
 let onSpeechIdle = null;
 let muted = false; // nach einer Unterbrechung den Rest der Antwort nicht mehr vorlesen
+
+// Safari gibt die Sprachausgabe erst nach einer Berührung frei – also beim ersten Tippen
+// einmal stumm „sprechen“, damit spätere Antworten hörbar sind.
+let speechUnlocked = false;
+function unlockSpeech() {
+  if (speechUnlocked || !("speechSynthesis" in window)) return;
+  speechUnlocked = true;
+  const u = new SpeechSynthesisUtterance(" ");
+  u.volume = 0;
+  speechSynthesis.speak(u);
+}
+document.addEventListener("pointerdown", unlockSpeech, { capture: true });
+document.addEventListener("keydown", unlockSpeech, { capture: true });
 
 function speak(text) {
   if (muted) return;
@@ -313,6 +331,7 @@ async function sendMessage(text) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sessionId, text }),
     });
+    if (res.status === 401) return void (location.href = "/login");
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let buf = "";
@@ -503,6 +522,27 @@ function createWindow(key, { title, w = 380, h = 420, refresh = false, saved = t
   refreshBtn.hidden = !refresh;
   refreshBtn.onclick = () => renderWindow(key);
   el.addEventListener("pointerdown", () => focusWindow(el));
+
+  // Größe ändern über den Eckgriff (funktioniert auch mit dem Finger)
+  const grip = el.querySelector(".win-resize");
+  grip.addEventListener("pointerdown", (e) => {
+    if (isNarrow()) return;
+    e.preventDefault();
+    e.stopPropagation();
+    grip.setPointerCapture(e.pointerId);
+    const start = { x: e.clientX, y: e.clientY, w: el.offsetWidth, h: el.offsetHeight };
+    const move = (ev) => {
+      el.style.width = `${Math.max(260, start.w + ev.clientX - start.x)}px`;
+      el.style.height = `${Math.max(180, start.h + ev.clientY - start.y)}px`;
+    };
+    const up = () => {
+      grip.removeEventListener("pointermove", move);
+      grip.removeEventListener("pointerup", up);
+      saveRect(key, el);
+    };
+    grip.addEventListener("pointermove", move);
+    grip.addEventListener("pointerup", up);
+  });
 
   // Verschieben an der Titelleiste
   const head = el.querySelector(".win-head");
@@ -798,10 +838,10 @@ async function renderSettings(body) {
       <button class="btn" type="submit">Speichern</button>
     </form>
     <p class="hint">Wie du die Google- und Spotify-Zugänge bekommst, steht in der Anleitung (README).
-      Gespeichert wird nur auf diesem Rechner, in ${esc(data.datenordner)}.</p>
+      ${data.cloud ? "Gespeichert wird nur auf deinem eigenen Timi-Server." : `Gespeichert wird nur auf diesem Rechner, in ${esc(data.datenordner)}.`}</p>
     <div class="sect">System</div>
     <p class="hint">Adresse: ${esc(data.adresse)}</p>
-    <button class="btn ghost" data-quit>Timi beenden</button>`;
+    ${data.cloud ? `<button class="btn ghost" data-logout>Abmelden</button>` : `<button class="btn ghost" data-quit>Timi beenden</button>`}`;
   body.querySelector(".settings-form").onsubmit = async (e) => {
     e.preventDefault();
     const changes = {};
@@ -815,7 +855,12 @@ async function renderSettings(body) {
     loadChips();
     if (changes.ANTHROPIC_API_KEY) replyEl.textContent = "Alles bereit. Tipp auf den Reaktor und sprich los.";
   };
-  body.querySelector("[data-quit]").onclick = async () => {
+  body.querySelector("[data-logout]")?.addEventListener("click", async () => {
+    await fetch("/api/abmelden", { method: "POST" });
+    location.href = "/login";
+  });
+  const quit = body.querySelector("[data-quit]");
+  if (quit) quit.onclick = async () => {
     if (!confirm("Timi beenden?")) return;
     await fetch("/api/beenden", { method: "POST" }).catch(() => {});
     document.body.innerHTML = `<p style="padding:40px;text-align:center">Timi wurde beendet. Du kannst dieses Fenster schließen.</p>`;

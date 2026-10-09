@@ -10,6 +10,7 @@ import path from "path";
 import { randomUUID } from "crypto";
 import { exec } from "child_process";
 import { APP_DIR, DATA_DIR, IS_PACKAGED, dataPath, loadSettings, saveSettings, SETTING_KEYS } from "./paths.js";
+import { authMiddleware, loginRoutes } from "./auth.js";
 import {
   CALENDAR_TOOLS,
   GMAIL_TOOLS,
@@ -53,7 +54,10 @@ loadSettings();
 
 const DATA_FILE = dataPath("store.json");
 const PORT = Number(process.env.PORT ?? 3000);
-const BASE_URL = process.env.BASE_URL ?? `http://localhost:${PORT}`;
+// Cloud-Betrieb (z. B. für das iPad): im Internet erreichbar, mit Passwortschutz.
+const CLOUD = process.env.TIMI_CLOUD === "1";
+const BASE_URL = (process.env.BASE_URL ?? process.env.RENDER_EXTERNAL_URL ?? `http://localhost:${PORT}`).replace(/\/$/, "");
+const SECURE = BASE_URL.startsWith("https://");
 const MODEL = process.env.ASSISTANT_MODEL ?? "claude-opus-5-5";
 // Für ein flüssiges Gespräch zählt Tempo mehr als Tiefe – "low" ist hier der beste Startpunkt.
 const EFFORT = process.env.ASSISTANT_EFFORT ?? "low";
@@ -62,8 +66,11 @@ const TIMEZONE = process.env.TZ_USER ?? "Europe/Berlin";
 
 configureGoogle(process.env.GOOGLE_REDIRECT_URI ?? `${BASE_URL}/auth/google/callback`);
 configureMcp(`${BASE_URL}/auth/mcp/callback`);
-// Spotify akzeptiert für lokale Apps nur 127.0.0.1, nicht "localhost".
-configureSpotify(process.env.SPOTIFY_REDIRECT_URI ?? `http://127.0.0.1:${PORT}/auth/spotify/callback`);
+// Spotify akzeptiert lokal nur 127.0.0.1 (nicht "localhost"), im Internet nur https.
+configureSpotify(
+  process.env.SPOTIFY_REDIRECT_URI ??
+    (SECURE ? `${BASE_URL}/auth/spotify/callback` : `http://127.0.0.1:${PORT}/auth/spotify/callback`),
+);
 
 let client = new Anthropic();
 
@@ -399,13 +406,38 @@ async function runTurn(messages, send) {
 
 const app = express();
 
-// Nur Anfragen an diesen Rechner selbst annehmen (Schutz gegen DNS-Rebinding).
+// Nur Anfragen an die eigene Adresse annehmen (Schutz gegen DNS-Rebinding).
+const ALLOWED_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]", new URL(BASE_URL).hostname]);
 app.use((req, res, next) => {
   const host = (req.headers.host ?? "").replace(/:\d+$/, "");
-  if (["localhost", "127.0.0.1", "[::1]"].includes(host)) return next();
-  res.status(403).send("Nur lokal erreichbar.");
+  if (ALLOWED_HOSTS.has(host)) return next();
+  res.status(403).send("Nicht erlaubt.");
 });
+
+// Ändernde Anfragen nur von der eigenen Seite (Schutz gegen fremde Webseiten).
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (req.method === "GET" || !origin) return next();
+  let host = "";
+  try {
+    host = new URL(origin).hostname;
+  } catch {}
+  if (ALLOWED_HOSTS.has(host)) return next();
+  res.status(403).json({ error: "Fremde Herkunft." });
+});
+
 app.use(express.json());
+
+if (CLOUD) {
+  if (!process.env.TIMI_PASSWORT) {
+    // Ohne Passwort wäre alles offen im Internet – dann lieber gar nichts ausliefern.
+    app.use((_req, res) => res.status(503).send("Timi ist gesperrt: Bitte die Umgebungsvariable TIMI_PASSWORT setzen."));
+  }
+  app.set("trust proxy", 1);
+  app.use("/login", express.urlencoded({ extended: false }));
+  loginRoutes(app, { secure: SECURE });
+  app.use(authMiddleware());
+}
 
 if (IS_PACKAGED) {
   // Als fertige App stecken die Oberflächen-Dateien im Programm selbst.
@@ -473,6 +505,7 @@ app.get("/api/einstellungen", (_req, res) => {
     name: NAME,
     datenordner: DATA_DIR,
     app: IS_PACKAGED,
+    cloud: CLOUD,
     adresse: BASE_URL,
   });
 });
@@ -488,6 +521,7 @@ app.post("/api/einstellungen", (req, res) => {
 });
 
 app.post("/api/beenden", (_req, res) => {
+  if (CLOUD) return res.status(400).json({ error: "Im Cloud-Betrieb läuft Timi dauerhaft." });
   res.json({ ok: true });
   setTimeout(() => process.exit(0), 200);
 });
@@ -680,7 +714,8 @@ function openAppWindow() {
 }
 
 const shouldOpen = IS_PACKAGED || process.env.TIMI_OPEN === "1";
-const server = app.listen(PORT, "127.0.0.1", () => {
+// Lokal nur vom eigenen Rechner erreichbar, in der Cloud von überall (mit Passwort).
+const server = app.listen(PORT, CLOUD ? "0.0.0.0" : "127.0.0.1", () => {
   console.log(`${NAME} ist bereit: ${BASE_URL}`);
   console.log(`Daten: ${DATA_DIR}`);
   if (IS_PACKAGED) console.log("Dieses Fenster offen lassen, solange du Timi benutzt.");
