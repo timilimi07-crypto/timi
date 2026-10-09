@@ -8,6 +8,8 @@ Ein KI-Assistent im Stil von JARVIS, mit dem du dich ganz normal auf Deutsch unt
 - **Fenster**: Kalender, Aufgaben, Gedächtnis, Mails, Protokoll und Dienste. Du öffnest sie über die Leiste links oder einfach per Sprache („Zeig mir meinen Kalender“). Die Fenster lassen sich verschieben und in der Größe ändern, und Timi merkt sich ihre Position. Für längere Infos (Mailtexte, Listen, Pläne) öffnet Timi selbst ein neues Fenster.
 - **Google Kalender**: „Was steht heute an?“, „Trag mir Dienstag um 15 Uhr den Zahnarzt ein“
 - **Gmail**: „Hab ich neue Mails?“, „Lies mir die Mail von Lea vor“, „Antworte ihr, dass ich Montag Zeit habe“. Vor dem Senden fragt er immer nach.
+- **Spotify**: „Spiel Get Lucky“, „Mach was zum Entspannen an“, „Lauter“, „Nächster Song“, „Was läuft gerade?“, dazu ein Musik-Fenster mit Cover und Steuerung
+- **Designs**: JARVIS, Mark (Iron-Man-Rot und Gold), Matrix, Synthwave, Nordlicht und ein helles Tag-Design. Schriftart und Schriftgröße sind einstellbar, per Fenster **Design** oder per Sprache („Wechsel auf Matrix“).
 - **Aufgaben und Gedächtnis**: „Erinnere mich, Mama anzurufen“, „Merk dir, dass ich vegetarisch esse“
 - **Weitere Dienste** wie Notion und Canva, oder jeder andere Dienst mit einer MCP-Schnittstelle
 - **Websuche** für Wetter, Nachrichten, Öffnungszeiten …
@@ -45,7 +47,7 @@ Ein Klick auf **Verbinden**, dann bei dem Dienst anmelden und den Zugriff erlaub
 
 Über **Dienst hinzufügen** lässt sich jeder Dienst mit einer öffentlichen MCP-Adresse anbinden, z. B. Linear (`https://mcp.linear.app/mcp`) oder Asana.
 
-> Spotify, Booking.com, Goodnotes, Shopify und Microsoft 365 sind bei Claude über eigene Integrationen angebunden, die es (noch) nicht als öffentliche Adresse für eigene Apps gibt. Sobald ein Anbieter eine MCP-Adresse veröffentlicht, kannst du sie hier eintragen.
+> Booking.com, Goodnotes, Shopify und Microsoft 365 sind bei Claude über eigene Integrationen angebunden, die es (noch) nicht als öffentliche Adresse für eigene Apps gibt. Sobald ein Anbieter eine MCP-Adresse veröffentlicht, kannst du sie hier eintragen.
 
 ### Google (Kalender und Gmail): einmalig, ca. 10 Minuten
 
@@ -68,6 +70,20 @@ Google lässt eigene Apps nur mit einem eigenen Zugang an deine Daten. Der Zugan
 
 > Solange die Google-App im Modus „Test“ ist, läuft die Anmeldung nach 7 Tagen ab. Dann einfach neu verbinden, oder auf dem Zustimmungsbildschirm **App veröffentlichen** wählen, dann bleibt sie dauerhaft gültig.
 
+### Spotify: einmalig, ca. 5 Minuten
+
+1. Öffne das [Spotify Developer Dashboard](https://developer.spotify.com/dashboard), melde dich an und klick auf **Create app**.
+2. Name „Timi“, Beschreibung beliebig. Als **Redirect URI** trägst du genau `http://127.0.0.1:3000/auth/spotify/callback` ein (Spotify erlaubt hier kein „localhost“). Bei den APIs wählst du **Web API**. Dann speichern.
+3. Unter **Settings** findest du **Client ID** und **Client secret**. Trag beide in deine `.env` ein:
+   ```
+   SPOTIFY_CLIENT_ID=...
+   SPOTIFY_CLIENT_SECRET=...
+   ```
+4. Falls es dort **User Management** gibt, trag deine Spotify-E-Mail-Adresse ein.
+5. Starte Timi neu und klick unter **Dienste** bei Spotify auf **Verbinden**.
+
+> Abspielen und Steuern geht nur mit **Spotify Premium**, so legt es Spotify fest. Außerdem muss Spotify auf irgendeinem Gerät (Handy, Computer, Lautsprecher) einmal geöffnet sein, damit Timi weiß, wo die Musik laufen soll.
+
 ## Einstellungen (in `.env`)
 
 | Variable | Standard | Bedeutung |
@@ -78,11 +94,13 @@ Google lässt eigene Apps nur mit einem eigenen Zugang an deine Daten. Der Zugan
 | `TZ_USER` | `Europe/Berlin` | Zeitzone für Datum und Uhrzeit |
 | `PORT` | `3000` | Port des Servers |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | – | Zugang für Google (siehe oben) |
+| `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` | – | Zugang für Spotify (siehe oben) |
 
 ## Aufbau
 
 - `server.js`: Backend. Führt das Gespräch mit Claude und stellt die Werkzeuge bereit.
 - `google.js`: Google Kalender und Gmail
+- `spotify.js`: Spotify
 - `mcp.js`: weitere Dienste über das Model Context Protocol
 - `public/`: die Oberfläche. Spracherkennung und Sprachausgabe laufen über den Browser.
 - `data/`: deine Aufgaben, Notizen und Anmeldungen. Diese Daten sind **geheim, nicht weitergeben**. Sie werden nicht ins Git-Repository übernommen.

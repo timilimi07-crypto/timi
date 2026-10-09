@@ -39,6 +39,47 @@ async function getJSON(url, opts) {
 }
 
 // ---------------------------------------------------------------------------
+// Design und Schrift
+
+const THEMES = [
+  { id: "jarvis", name: "JARVIS", bg: "#01070d", accent: "#3ee8ff", text: "#d4f7ff", font: "Orbitron" },
+  { id: "mark", name: "Mark", bg: "#0d0204", accent: "#ffc43d", text: "#ffe9d6", glow: "#b4141e", font: "Orbitron" },
+  { id: "matrix", name: "Matrix", bg: "#000300", accent: "#39ff78", text: "#c9ffd9", font: "Share Tech Mono" },
+  { id: "synthwave", name: "Synthwave", bg: "#0b0218", accent: "#ff40d6", text: "#f6defc", glow: "#a028dc", font: "Audiowide" },
+  { id: "nordlicht", name: "Nordlicht", bg: "#030a12", accent: "#5effd6", text: "#e2f4ff", glow: "#7850dc", font: "Exo 2" },
+  { id: "tag", name: "Tag", bg: "#eef3f7", accent: "#007acc", text: "#1f2d3a", font: "Exo 2" },
+];
+
+const FONTS = {
+  standard: { name: "Wie im Design", css: null },
+  orbitron: { name: "Orbitron – futuristisch", css: '"Orbitron", sans-serif' },
+  rajdhani: { name: "Rajdhani – technisch", css: '"Rajdhani", sans-serif' },
+  exo: { name: "Exo 2 – modern", css: '"Exo 2", sans-serif' },
+  audiowide: { name: "Audiowide – retro", css: '"Audiowide", sans-serif' },
+  mono: { name: "Share Tech Mono – Terminal", css: '"Share Tech Mono", monospace' },
+  inter: { name: "Inter – schlicht", css: '"Inter", sans-serif' },
+};
+
+let look = { theme: "jarvis", display: "standard", body: "standard", fs: 1, ...(store("look") ?? {}) };
+
+function applyLook(changes = {}) {
+  look = { ...look, ...changes };
+  store("look", look);
+  const root = document.documentElement;
+  if (look.theme === "jarvis") delete root.dataset.theme;
+  else root.dataset.theme = look.theme;
+  for (const [key, prop] of [["display", "--font-display"], ["body", "--font-body"]]) {
+    const css = FONTS[look[key]]?.css;
+    if (css) root.style.setProperty(prop, css);
+    else root.style.removeProperty(prop);
+  }
+  root.style.setProperty("--fs", String(look.fs));
+  const bg = THEMES.find((t) => t.id === look.theme)?.bg;
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", bg ?? "#01070d");
+}
+applyLook();
+
+// ---------------------------------------------------------------------------
 // Uhr
 
 function tickClock() {
@@ -321,6 +362,12 @@ const TOOL_LABELS = {
   notiz_speichern: "Gemerkt",
   notizen_abrufen: "Gedächtnis abgefragt",
   notiz_loeschen: "Vergessen",
+  design_wechseln: "Design gewechselt",
+  spotify_status: "Spotify abgefragt",
+  spotify_abspielen: "Musik gestartet",
+  spotify_steuern: "Wiedergabe gesteuert",
+  spotify_warteschlange: "In Warteschlange",
+  spotify_suchen: "Spotify durchsucht",
 };
 
 function toolLabel(name) {
@@ -345,6 +392,10 @@ function handleEvent(ev, entry, speaker) {
       break;
     case "display":
       openDisplay(ev.titel, ev.inhalt);
+      break;
+    case "theme":
+      applyLook({ theme: ev.design });
+      renderWindow("design");
       break;
     case "refresh":
       renderWindow(ev.was);
@@ -401,6 +452,8 @@ const WINDOW_DEFS = {
   aufgaben: { title: "Aufgaben", render: renderTasks, refresh: true, w: 360, h: 420 },
   notizen: { title: "Gedächtnis", render: renderNotes, refresh: true, w: 360, h: 380 },
   mails: { title: "Posteingang", render: renderMails, refresh: true, w: 440, h: 500 },
+  musik: { title: "Musik", render: renderMusic, refresh: true, w: 360, h: 470, onClose: stopMusicPolling },
+  design: { title: "Design & Schrift", render: renderDesign, w: 440, h: 560 },
   protokoll: { title: "Protokoll", render: renderLog, w: 420, h: 460 },
   verbindungen: { title: "Dienste & Verbindungen", render: renderConnections, refresh: true, w: 420, h: 480 },
 };
@@ -513,6 +566,7 @@ function openWindow(key) {
 }
 
 function closeWindow(key) {
+  WINDOW_DEFS[key]?.onClose?.();
   windows.get(key)?.el.remove();
   windows.delete(key);
   syncDock();
@@ -658,6 +712,103 @@ async function renderMails(body) {
   });
 }
 
+// Musik
+
+let musicTimer = null;
+function stopMusicPolling() {
+  clearInterval(musicTimer);
+  musicTimer = null;
+}
+
+function fmtMs(ms) {
+  const s = Math.floor((ms ?? 0) / 1000);
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+}
+
+async function renderMusic(body) {
+  if (!musicTimer) {
+    musicTimer = setInterval(() => {
+      const w = windows.get("musik");
+      if (w) renderMusic(w.el.querySelector(".win-body"));
+      else stopMusicPolling();
+    }, 5000);
+  }
+  const data = await getJSON("/api/spotify").catch(() => ({ fehler: "Server nicht erreichbar." }));
+  if (data.fehler) {
+    stopMusicPolling();
+    return notConnected(body, data.fehler);
+  }
+  const t = data.titel;
+  const pct = t?.dauer_ms ? Math.min(100, (data.fortschritt_ms / t.dauer_ms) * 100) : 0;
+  body.innerHTML = `
+    <div class="player">
+      <div class="cover">${t?.cover ? `<img src="${esc(t.cover)}" alt="" />` : `<span>♪</span>`}</div>
+      <div class="track">${esc(t?.titel ?? "Gerade läuft nichts")}</div>
+      <div class="artist">${esc(t?.kuenstler ?? "Sag zum Beispiel: Spiel etwas von Daft Punk")}</div>
+      <div class="progress"><span style="width:${pct}%"></span></div>
+      <div class="times"><span>${fmtMs(data.fortschritt_ms)}</span><span>${fmtMs(t?.dauer_ms)}</span></div>
+      <div class="controls">
+        <button data-act="zurueck" title="Zurück">⏮</button>
+        <button data-act="${data.spielt ? "pause" : "fortsetzen"}" class="main" title="${data.spielt ? "Pause" : "Abspielen"}">${data.spielt ? "❚❚" : "▶"}</button>
+        <button data-act="weiter" title="Weiter">⏭</button>
+      </div>
+      <label class="volume">Lautstärke <input type="range" min="0" max="100" value="${data.lautstaerke ?? 50}" /></label>
+      <div class="device">${data.geraet ? `Gerät: ${esc(data.geraet)}` : ""}</div>
+    </div>`;
+  body.querySelectorAll("[data-act]").forEach((b) => {
+    b.onclick = () => musicControl(body, { aktion: b.dataset.act });
+  });
+  body.querySelector(".volume input").onchange = (e) => musicControl(body, { aktion: "lautstaerke", lautstaerke: Number(e.target.value) });
+}
+
+async function musicControl(body, payload) {
+  const res = await getJSON("/api/spotify/steuern", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (res.fehler) openDisplay("Spotify", res.fehler);
+  setTimeout(() => renderMusic(body), 400);
+}
+
+// Design
+
+function renderDesign(body) {
+  const fontOptions = (selected) =>
+    Object.entries(FONTS).map(([id, f]) => `<option value="${id}" ${id === selected ? "selected" : ""}>${esc(f.name)}</option>`).join("");
+  body.innerHTML = `
+    <div class="sect">Design</div>
+    <div class="themes">
+      ${THEMES.map(
+        (t) => `<button class="theme-card ${t.id === look.theme ? "active" : ""}" data-theme-id="${t.id}"
+          style="--tb:${t.bg};--ta:${t.accent};--tt:${t.text};--tg:${t.glow ?? t.accent}">
+          <span class="theme-preview"><span class="theme-ring"></span></span>
+          <span class="theme-name" style="font-family:'${t.font}'">${esc(t.name)}</span>
+        </button>`,
+      ).join("")}
+    </div>
+    <div class="sect">Schrift</div>
+    <label class="field">Überschriften<select data-font="display">${fontOptions(look.display)}</select></label>
+    <label class="field">Text<select data-font="body">${fontOptions(look.body)}</select></label>
+    <label class="field">Schriftgröße <b>${Math.round(look.fs * 100)} %</b>
+      <input type="range" min="0.85" max="1.3" step="0.05" value="${look.fs}" data-fs /></label>
+    <p class="hint">Du kannst das Design auch per Sprache wechseln, zum Beispiel: „Wechsel auf Matrix.“</p>`;
+  body.querySelectorAll("[data-theme-id]").forEach((b) => {
+    b.onclick = () => {
+      applyLook({ theme: b.dataset.themeId });
+      renderDesign(body);
+    };
+  });
+  body.querySelectorAll("[data-font]").forEach((sel) => {
+    sel.onchange = () => applyLook({ [sel.dataset.font]: sel.value });
+  });
+  const fs = body.querySelector("[data-fs]");
+  fs.oninput = () => {
+    applyLook({ fs: Number(fs.value) });
+    fs.previousElementSibling.textContent = `${Math.round(look.fs * 100)} %`;
+  };
+}
+
 function renderLog(body) {
   if (!chatLog.length) return (body.innerHTML = `<p class="empty">Noch kein Gespräch.</p>`);
   const who = { user: "Du", assistant: "Timi", error: "System" };
@@ -694,6 +845,8 @@ async function renderConnections(body) {
   body.innerHTML = `
     <div class="sect">Google</div>
     <div class="conn"><span class="dot ${googleDot}"></span><span class="name">Google<small>${esc(googleSub)}</small></span>${googleAction}</div>
+    <div class="sect">Spotify</div>
+    ${spotifyRow(data.spotify)}
     <div class="sect">Weitere Dienste</div>
     ${data.dienste
       .map(
@@ -715,6 +868,10 @@ async function renderConnections(body) {
 
   body.querySelector("[data-google-off]")?.addEventListener("click", async () => {
     await fetch("/api/google/trennen", { method: "POST" });
+    renderWindow("verbindungen");
+  });
+  body.querySelector("[data-spotify-off]")?.addEventListener("click", async () => {
+    await fetch("/api/spotify/trennen", { method: "POST" });
     renderWindow("verbindungen");
   });
   body.querySelectorAll("[data-off]").forEach((b) => {
@@ -742,6 +899,22 @@ async function renderConnections(body) {
   };
 }
 
+function spotifyRow(s) {
+  let sub, action, dot = "";
+  if (!s.configured) {
+    sub = "Noch nicht eingerichtet: Zugangsdaten in der .env fehlen (Anleitung in der README)";
+    action = "";
+  } else if (s.connected) {
+    dot = "on";
+    sub = "Abspielen, steuern, suchen";
+    action = `<button class="btn ghost" data-spotify-off>Trennen</button>`;
+  } else {
+    sub = "Abspielen, steuern, suchen";
+    action = `<a class="btn" href="/auth/spotify">Verbinden</a>`;
+  }
+  return `<div class="conn"><span class="dot ${dot}"></span><span class="name">Spotify<small>${esc(sub)}</small></span>${action}</div>`;
+}
+
 // Statusanzeige oben rechts
 async function loadChips() {
   const data = await getJSON("/api/verbindungen").catch(() => null);
@@ -750,6 +923,7 @@ async function loadChips() {
   if (data.google.configured) {
     chips.push({ name: "Google", cls: data.google.needsReconnect ? "warn" : data.google.connected ? "on" : "" });
   }
+  if (data.spotify.configured) chips.push({ name: "Spotify", cls: data.spotify.connected ? "on" : "" });
   for (const d of data.dienste) chips.push({ name: d.name, cls: d.connected ? "on" : "" });
   $("chips").innerHTML = chips.map((c) => `<span class="chip ${c.cls}">${esc(c.name)}</span>`).join("");
 }

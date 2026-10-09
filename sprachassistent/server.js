@@ -33,6 +33,19 @@ import {
   isMcpTool,
   executeMcpTool,
 } from "./mcp.js";
+import {
+  SPOTIFY_TOOLS,
+  executeSpotifyTool,
+  configureSpotify,
+  spotifyConfigured,
+  spotifyConnected,
+  spotifyAuthUrl,
+  spotifyCallback,
+  spotifyDisconnect,
+  nowPlaying,
+  control,
+  spotifyMessage,
+} from "./spotify.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const DATA_FILE = path.join(here, "data", "store.json");
@@ -46,6 +59,8 @@ const TIMEZONE = process.env.TZ_USER ?? "Europe/Berlin";
 
 configureGoogle(process.env.GOOGLE_REDIRECT_URI ?? `${BASE_URL}/auth/google/callback`);
 configureMcp(`${BASE_URL}/auth/mcp/callback`);
+// Spotify akzeptiert für lokale Apps nur 127.0.0.1, nicht "localhost".
+configureSpotify(process.env.SPOTIFY_REDIRECT_URI ?? `http://127.0.0.1:${PORT}/auth/spotify/callback`);
 
 const client = new Anthropic();
 
@@ -57,7 +72,8 @@ Deine Antworten werden laut vorgelesen. Deshalb:
 - Zahlen, Uhrzeiten und Daten so formulieren, dass sie gut vorlesbar sind.
 
 Die Oberfläche hat Fenster. Nutze sie:
-- Wenn der Nutzer etwas sehen will (Kalender, Aufgaben, Notizen, Mails, Verbindungen, Gesprächsprotokoll), öffne das passende Fenster mit fenster_oeffnen.
+- Wenn der Nutzer etwas sehen will (Kalender, Aufgaben, Notizen, Mails, Musik, Verbindungen, Design, Gesprächsprotokoll), öffne das passende Fenster mit fenster_oeffnen.
+- Wenn er ein anderes Aussehen möchte, wechsle das Design mit design_wechseln.
 - Wenn du viel Information hast (Listen, Suchergebnisse, Mailtexte, Entwürfe, Pläne, Rezepte), zeig die Details mit anzeigen in einem eigenen Fenster und fasse sie mündlich nur kurz zusammen. Im Fenster darfst du einfache Formatierung nutzen: Zeilen, die mit "- " beginnen, und Überschriften mit "# ".
 
 Du hilfst bei allem im Alltag:
@@ -65,6 +81,7 @@ Du hilfst bei allem im Alltag:
 - Merken: Speichere Persönliches, das später nützlich ist (Vorlieben, Namen, Ziele), als Notiz. Schau in deine Notizen, wenn Wissen über den Nutzer hilft.
 - Kalender: Schau nach, wenn er nach Terminen, seinem Tag oder seiner Woche fragt oder ein neuer Termin kollidieren könnte. Bestätige neue Termine kurz mit Tag und Uhrzeit.
 - Mails: Fasse Mails kurz zusammen. Bevor du eine Mail sendest, lies Empfänger, Betreff und Kern des Inhalts vor und warte auf ein klares Ja.
+- Musik: Über Spotify spielst du Songs, Künstler, Alben und Playlists ab und steuerst die Wiedergabe. Bei Wünschen wie "spiel was zum Entspannen" such eine passende Playlist. Bestätige nur ganz kurz, was läuft, denn die Musik spricht für sich.
 - Verbundene Dienste: Werkzeuge mit einem Dienstnamen in eckigen Klammern gehören zu verbundenen Diensten wie Notion. Nutze sie, wenn es passt.
 - Aktuelles (Wetter, Nachrichten, Öffnungszeiten, Fakten) suchst du im Web.
 - Vor allem, was sich nicht rückgängig machen lässt (löschen, senden, bestellen, veröffentlichen), fragst du kurz nach.
@@ -93,7 +110,8 @@ async function saveStore(store) {
 // Werkzeuge
 
 const str = { type: "string" };
-const WINDOWS = ["kalender", "aufgaben", "notizen", "mails", "verbindungen", "protokoll"];
+const WINDOWS = ["kalender", "aufgaben", "notizen", "mails", "musik", "verbindungen", "design", "protokoll"];
+const THEMES = ["jarvis", "mark", "matrix", "synthwave", "nordlicht", "tag"];
 
 const LOCAL_TOOLS = [
   {
@@ -113,6 +131,16 @@ const LOCAL_TOOLS = [
       type: "object",
       properties: { titel: str, inhalt: str },
       required: ["titel", "inhalt"],
+    },
+  },
+  {
+    name: "design_wechseln",
+    description:
+      "Wechselt das Aussehen der Oberfläche. jarvis: Cyan-Hologramm (Standard), mark: Iron-Man-Rot und Gold, matrix: grüner Code, synthwave: Neon-Pink, nordlicht: Türkis und Violett, tag: hell.",
+    input_schema: {
+      type: "object",
+      properties: { design: { type: "string", enum: THEMES } },
+      required: ["design"],
     },
   },
   {
@@ -162,7 +190,7 @@ const LOCAL_TOOLS = [
   },
 ];
 
-const BUILTIN_TOOLS = [...LOCAL_TOOLS, ...CALENDAR_TOOLS, ...GMAIL_TOOLS];
+const BUILTIN_TOOLS = [...LOCAL_TOOLS, ...CALENDAR_TOOLS, ...GMAIL_TOOLS, ...SPOTIFY_TOOLS];
 const SERVER_TOOLS = [{ type: "web_search_20260209", name: "web_search", max_uses: 3 }];
 
 // Feste Werkzeuge zuerst, verbundene Dienste sortiert dahinter – so bleibt der
@@ -191,12 +219,21 @@ async function executeTool(name, input, send) {
     }
     return result;
   }
+  if (name.startsWith("spotify_")) {
+    const result = await executeSpotifyTool(name, input);
+    if (!result.fehler && name !== "spotify_suchen") send({ type: "refresh", was: "musik" });
+    return result;
+  }
   if (isMcpTool(name)) return executeMcpTool(name, input);
 
   switch (name) {
     case "fenster_oeffnen":
       if (!WINDOWS.includes(input.fenster)) return { fehler: `Unbekanntes Fenster: ${input.fenster}` };
       send({ type: "window", fenster: input.fenster });
+      return { ok: true };
+    case "design_wechseln":
+      if (!THEMES.includes(input.design)) return { fehler: `Unbekanntes Design: ${input.design}` };
+      send({ type: "theme", design: input.design });
       return { ok: true };
     case "anzeigen":
       send({ type: "display", titel: input.titel, inhalt: input.inhalt });
@@ -449,6 +486,7 @@ app.get("/api/verbindungen", async (_req, res) => {
       connected: await googleConnected(),
       needsReconnect: await googleNeedsReconnect(),
     },
+    spotify: { configured: spotifyConfigured(), connected: await spotifyConnected() },
     dienste: await connectorStatus(),
   });
 });
@@ -512,6 +550,49 @@ app.get("/auth/google/callback", async (req, res) => {
     console.error(err);
     res.status(400).send(page("Verbindung mit Google fehlgeschlagen", err.message));
   }
+});
+
+// Spotify
+
+app.get("/api/spotify", async (_req, res) => {
+  if (!(await spotifyConnected())) return res.json({ fehler: "Spotify ist nicht verbunden." });
+  try {
+    res.json(await nowPlaying());
+  } catch (err) {
+    res.json({ fehler: spotifyMessage(err) });
+  }
+});
+
+app.post("/api/spotify/steuern", async (req, res) => {
+  try {
+    res.json(await control(String(req.body?.aktion ?? ""), req.body?.lautstaerke));
+  } catch (err) {
+    res.json({ fehler: spotifyMessage(err) });
+  }
+});
+
+app.get("/auth/spotify", (_req, res) => {
+  if (!spotifyConfigured()) {
+    return res.status(400).send(page("Spotify ist nicht eingerichtet", "SPOTIFY_CLIENT_ID und SPOTIFY_CLIENT_SECRET fehlen in der .env. Die Anleitung steht in der README."));
+  }
+  res.redirect(spotifyAuthUrl());
+});
+
+app.get("/auth/spotify/callback", async (req, res) => {
+  try {
+    if (typeof req.query.code !== "string") throw new Error(String(req.query.error ?? "kein Code erhalten"));
+    await spotifyCallback(req.query.code, String(req.query.state ?? ""));
+    // Zurück zur gewohnten Adresse (die Anmeldung läuft über 127.0.0.1)
+    res.redirect(`${BASE_URL}/?verbunden=spotify`);
+  } catch (err) {
+    console.error(err);
+    res.status(400).send(page("Verbindung mit Spotify fehlgeschlagen", err.message));
+  }
+});
+
+app.post("/api/spotify/trennen", async (_req, res) => {
+  await spotifyDisconnect();
+  res.json({ ok: true });
 });
 
 app.post("/api/google/trennen", async (_req, res) => {

@@ -13,8 +13,15 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Exo+2:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <script>
+    // Design vor dem ersten Zeichnen setzen, damit nichts aufblitzt.
+    try {
+      const look = JSON.parse(localStorage.getItem("look") || "{}");
+      if (look.theme) document.documentElement.dataset.theme = look.theme;
+    } catch {}
+  </script>
 </head>
 <body>
   <div class="bg" aria-hidden="true">
@@ -52,6 +59,10 @@
       <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
       <span>Mails</span>
     </button>
+    <button class="dock-btn" data-open="musik" title="Musik">
+      <svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>
+      <span>Musik</span>
+    </button>
     <button class="dock-btn" data-open="protokoll" title="Protokoll">
       <svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>
       <span>Protokoll</span>
@@ -59,6 +70,10 @@
     <button class="dock-btn" data-open="verbindungen" title="Verbindungen">
       <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="m8.2 11 7.6-4M8.2 13l7.6 4"/></svg>
       <span>Dienste</span>
+    </button>
+    <button class="dock-btn" data-open="design" title="Design und Schrift">
+      <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.7-.8 1.7-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-4-4-7.2-9-7.2Z"/><circle cx="7.5" cy="11" r="1.2"/><circle cx="10.5" cy="7" r="1.2"/><circle cx="15.5" cy="7.5" r="1.2"/></svg>
+      <span>Design</span>
     </button>
     <div class="dock-sep"></div>
     <button class="dock-btn small" id="handsfree" aria-pressed="true" title="Freihändig: hört nach jeder Antwort automatisch wieder zu">
@@ -76,10 +91,10 @@
       <svg viewBox="0 0 300 300" aria-hidden="true">
         <defs>
           <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#ffffff" />
-            <stop offset="35%" stop-color="#bff8ff" />
-            <stop offset="70%" stop-color="#3ee8ff" stop-opacity="0.75" />
-            <stop offset="100%" stop-color="#3ee8ff" stop-opacity="0" />
+            <stop class="g-center" offset="0%" />
+            <stop class="g-mid" offset="35%" />
+            <stop class="g-accent" offset="70%" stop-opacity="0.75" />
+            <stop class="g-accent" offset="100%" stop-opacity="0" />
           </radialGradient>
         </defs>
         <circle class="r-outer" cx="150" cy="150" r="142" />
