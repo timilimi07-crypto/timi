@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>WEAX Karussell – Origin Drop 01</title>
+<style>
+  @font-face { font-family: 'Cinzel'; font-weight: 400 900; src: url(Cinzel.woff2) format('woff2'); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #000; font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; color: #fff; }
+  .slide {
+    position: relative; width: 1080px; height: 1350px; overflow: hidden; isolation: isolate;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 100px;
+    background: radial-gradient(ellipse at 50% 30%, #1c1e23 0%, #08080a 62%, #030304 100%);
+  }
+  .slide::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; opacity: .6;
+    background-image:
+      radial-gradient(1.4px 1.4px at 12% 22%, #fff, transparent), radial-gradient(1px 1px at 78% 14%, #fff, transparent),
+      radial-gradient(1.8px 1.8px at 35% 70%, #fff, transparent), radial-gradient(1px 1px at 88% 62%, #fff, transparent),
+      radial-gradient(1.2px 1.2px at 55% 40%, #fff, transparent), radial-gradient(1.6px 1.6px at 22% 88%, #fff, transparent),
+      radial-gradient(1px 1px at 66% 90%, #fff, transparent), radial-gradient(1.3px 1.3px at 8% 55%, #fff, transparent),
+      radial-gradient(1px 1px at 93% 33%, #fff, transparent), radial-gradient(1.5px 1.5px at 45% 8%, #fff, transparent);
+  }
+  .chrome {
+    font-family: 'Cinzel', serif; font-weight: 700;
+    background: linear-gradient(100deg, #6f757d 0%, #fff 25%, #9aa0a8 45%, #fff 62%, #7b8189 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .eyebrow { font-size: 26px; letter-spacing: .5em; text-transform: uppercase; opacity: .6; font-weight: 500; }
+  .num { position: absolute; top: 64px; left: 72px; font-size: 24px; letter-spacing: .3em; opacity: .45; }
+  .brand { position: absolute; top: 60px; right: 72px; font-family: 'Cinzel', serif; font-weight: 700; font-size: 30px; letter-spacing: .3em; opacity: .7; }
+  .swipe { position: absolute; bottom: 70px; right: 72px; font-size: 26px; letter-spacing: .3em; text-transform: uppercase; opacity: .7; }
+  .h-sans { font-weight: 800; letter-spacing: -.025em; line-height: 1.0; }
+  .h-serif { font-size: 120px; letter-spacing: .08em; line-height: 1.05; }
+  .body { font-size: 38px; line-height: 1.5; opacity: .72; max-width: 760px; margin-top: 44px; }
+  .star { width: 70px; height: 70px; margin-bottom: 50px; filter: drop-shadow(0 0 24px rgba(255,255,255,.5)); }
+  .pill {
+    margin-top: 64px; padding: 28px 60px; border-radius: 999px; font-weight: 800; font-size: 30px; letter-spacing: .22em; text-transform: uppercase;
+    color: #0b0b0d; background: linear-gradient(180deg, #fff, #c9cdd3 55%, #eef0f2);
+    box-shadow: 0 0 0 2px rgba(255,255,255,.4) inset, 0 20px 80px -10px rgba(220,225,235,.5);
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="starG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#8f959d"/><stop offset="1" stop-color="#fff"/></linearGradient>
+    <linearGradient id="fab" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#26282d"/><stop offset=".55" stop-color="#141519"/><stop offset="1" stop-color="#0c0d10"/></linearGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".5" stop-color="#9aa0a8" stop-opacity=".15"/><stop offset="1" stop-color="#fff" stop-opacity=".4"/></linearGradient>
+    <radialGradient id="glow"><stop offset="0" stop-color="#fff" stop-opacity=".8"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <path id="star" d="M20 0 L23 17 L40 20 L23 23 L20 40 L17 23 L0 20 L17 17 Z"/>
+  </defs>
+</svg>
+
+<!-- 1: Hook -->
+<section class="slide">
+  <div class="brand">WEAX</div>
+  <div class="eyebrow">Drop 01</div>
+  <div class="h-sans" style="font-size:118px; margin-top:44px;">Wir haben<br><span class="chrome" style="font-size:150px; letter-spacing:.04em;">EIN</span><br>Teil gemacht.</div>
+  <div class="body">Nicht hundert. Eins. Und das richtig.</div>
+  <div class="swipe">Swipe →</div>
+</section>
+
+<!-- 2: Fleece -->
+<section class="slide">
+  <div class="num">01 / 03</div><div class="brand">WEAX</div>
+  <svg class="star" viewBox="0 0 40 40"><use href="#star" fill="url(#starG)"/></svg>
+  <div class="chrome h-serif">SCHWERES<br>FLEECE</div>
+  <div class="body">Du merkst den Unterschied, bevor du ihn siehst. Gewicht, das sich nach Qualität anfühlt.</div>
+</section>
+
+<!-- 3: Schnitt -->
+<section class="slide">
+  <div class="num">02 / 03</div><div class="brand">WEAX</div>
+  <svg class="star" viewBox="0 0 40 40"><use href="#star" fill="url(#starG)"/></svg>
+  <div class="chrome h-serif">CLEANER<br>SCHNITT</div>
+  <div class="body">Kein Logo-Gebrüll. Keine Trends von letzter Woche. Ein Fit, der bleibt.</div>
+</section>
+
+<!-- 4: Stern / Produkt -->
+<section class="slide" style="padding-top:60px">
+  <div class="num">03 / 03</div><div class="brand">WEAX</div>
+  <svg width="640" height="672" viewBox="0 0 400 420">
+    <path d="M150 28 Q200 58 250 28 L318 50 Q362 64 378 112 L398 328 Q378 342 352 338 L336 176 L334 398 Q200 412 66 398 L64 176 L48 338 Q22 342 2 328 L22 112 Q38 64 82 50 Z" fill="url(#fab)" stroke="url(#rim)" stroke-width="1.6"/>
+    <path d="M150 28 Q200 58 250 28" fill="none" stroke="#3a3d44" stroke-width="10" stroke-linecap="round"/>
+    <path d="M68 384 Q200 396 332 384" fill="none" stroke="#2b2d33" stroke-width="10"/>
+    <path d="M8 316 Q28 326 50 324 M392 316 Q372 326 350 324" fill="none" stroke="#2b2d33" stroke-width="9"/>
+    <circle cx="200" cy="150" r="46" fill="url(#glow)" opacity=".5"/>
+    <use href="#star" fill="url(#starG)" transform="translate(200 150) rotate(20) scale(1.5) translate(-20 -20)"/>
+  </svg>
+  <div class="chrome" style="font-size:84px; letter-spacing:.12em; margin-top:40px;">EIN STERN.</div>
+  <div class="body" style="margin-top:20px">Für die, die's wissen.</div>
+</section>
+
+<!-- 5: CTA -->
+<section class="slide">
+  <div class="eyebrow">Origin Pullover</div>
+  <div class="chrome" style="font-size:210px; letter-spacing:.14em; margin:40px 0 10px .14em;">WEAX</div>
+  <div class="h-sans" style="font-size:64px; margin-top:40px;">Limitiert. <span style="opacity:.5">Kein Restock.</span></div>
+  <div class="pill">Link in Bio</div>
+  <div class="body" style="font-size:30px; margin-top:50px;">Speichern, falls du den Drop nicht verpassen willst.</div>
+</section>
+</body>
+</html>

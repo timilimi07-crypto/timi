@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>WEAX Reel – Origin Drop 01</title>
+<style>
+  @font-face { font-family: 'Cinzel'; font-weight: 400 900; src: url(Cinzel.woff2) format('woff2'); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; background: #050506; overflow: hidden; }
+  #stage {
+    position: relative; width: 1080px; height: 1920px; overflow: hidden;
+    background: radial-gradient(ellipse at 50% 35%, #1a1c21 0%, #08080a 60%, #030304 100%);
+    color: #fff; font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  }
+  .layer { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; }
+  .chrome {
+    font-family: 'Cinzel', serif; font-weight: 700;
+    background: linear-gradient(100deg, #5f656d 0%, #fff 22%, #8f959d 42%, #fff 58%, #6b7179 80%, #fff 100%);
+    background-size: 300% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .eyebrow { font-size: 30px; letter-spacing: .5em; text-transform: uppercase; opacity: .65; font-weight: 500; }
+  .big { font-size: 150px; letter-spacing: .06em; line-height: 1.02; }
+  .mid { font-size: 96px; letter-spacing: .12em; line-height: 1.1; }
+  .sans { font-family: 'Inter', sans-serif; font-weight: 800; letter-spacing: -.02em; }
+  #stars { position: absolute; inset: 0; }
+  #grain { position: absolute; inset: 0; opacity: .09; mix-blend-mode: overlay; pointer-events: none; }
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+  #progress { position: absolute; left: 60px; right: 60px; bottom: 120px; height: 4px; background: rgba(255,255,255,.12); border-radius: 4px; overflow: hidden; }
+  #progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #8f959d, #fff); }
+  .pill {
+    margin-top: 70px; padding: 30px 64px; border-radius: 999px; font-weight: 800; font-size: 34px; letter-spacing: .22em; text-transform: uppercase;
+    color: #0b0b0d; background: linear-gradient(180deg, #fff, #c9cdd3 55%, #eef0f2);
+    box-shadow: 0 0 0 2px rgba(255,255,255,.4) inset, 0 20px 80px -10px rgba(220,225,235,.55);
+  }
+  .feature { font-family: 'Cinzel', serif; font-weight: 700; font-size: 112px; letter-spacing: .08em; line-height: 1.05; }
+  .feature small { display: block; font-family: 'Inter', sans-serif; font-size: 34px; letter-spacing: .3em; font-weight: 500; opacity: .6; margin-top: 30px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="stars" width="1080" height="1920"></canvas>
+
+  <!-- 1 HOOK -->
+  <div class="layer" id="s1">
+    <div class="sans" style="font-size:132px; line-height:1.0;">Das ist<br>kein<br>Pullover.</div>
+  </div>
+
+  <!-- 2 TWIST -->
+  <div class="layer" id="s2">
+    <div class="eyebrow">Das ist ein</div>
+    <div class="chrome big" id="s2t" style="margin-top:30px;">STATE-<br>MENT.</div>
+  </div>
+
+  <!-- 3 PRODUCT REVEAL -->
+  <div class="layer" id="s3">
+    <svg id="sweater" width="860" height="900" viewBox="0 0 400 420" style="overflow:visible">
+      <defs>
+        <linearGradient id="fab" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#26282d"/><stop offset=".55" stop-color="#141519"/><stop offset="1" stop-color="#0c0d10"/>
+        </linearGradient>
+        <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".5" stop-color="#9aa0a8" stop-opacity=".15"/><stop offset="1" stop-color="#fff" stop-opacity=".4"/>
+        </linearGradient>
+        <linearGradient id="starG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#8f959d"/><stop offset="1" stop-color="#fff"/>
+        </linearGradient>
+        <radialGradient id="glow"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+        <filter id="soft"><feGaussianBlur stdDeviation="14"/></filter>
+      </defs>
+      <ellipse cx="200" cy="420" rx="170" ry="16" fill="#000" opacity=".6" filter="url(#soft)"/>
+      <path d="M150 28 Q200 58 250 28 L318 50 Q362 64 378 112 L398 328 Q378 342 352 338 L336 176 L334 398 Q200 412 66 398 L64 176 L48 338 Q22 342 2 328 L22 112 Q38 64 82 50 Z"
+            fill="url(#fab)" stroke="url(#rim)" stroke-width="1.6"/>
+      <path d="M150 28 Q200 58 250 28" fill="none" stroke="#3a3d44" stroke-width="10" stroke-linecap="round"/>
+      <path d="M68 384 Q200 396 332 384" fill="none" stroke="#2b2d33" stroke-width="10"/>
+      <path d="M8 316 Q28 326 50 324 M392 316 Q372 326 350 324" fill="none" stroke="#2b2d33" stroke-width="9"/>
+      <path d="M64 176 Q70 150 82 120 M336 176 Q330 150 318 120" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="2"/>
+      <g id="chestStar" transform="translate(200 150)">
+        <circle r="60" fill="url(#glow)" id="starGlow" opacity="0"/>
+        <path id="starPath" transform="scale(1.3) translate(-20 -20)" fill="url(#starG)" d="M20 0 L23 17 L40 20 L23 23 L20 40 L17 23 L0 20 L17 17 Z"/>
+      </g>
+    </svg>
+    <div class="eyebrow" id="s3cap" style="margin-top:70px;">WEAX · Origin Pullover</div>
+  </div>
+
+  <!-- 4 FEATURES (rapid cuts) -->
+  <div class="layer" id="f1"><div class="feature chrome">SCHWERES<br>FLEECE<small>Spürst du sofort.</small></div></div>
+  <div class="layer" id="f2"><div class="feature chrome">CLEANER<br>SCHNITT<small>Kein Logo-Gebrüll.</small></div></div>
+  <div class="layer" id="f3"><div class="feature chrome">EIN<br>STERN<small>Für die, die's wissen.</small></div></div>
+
+  <!-- 5 BRAND -->
+  <div class="layer" id="s5">
+    <div class="eyebrow">Drop 01</div>
+    <div class="chrome" id="logo" style="font-size:230px; letter-spacing:.14em; margin:36px 0 10px 0.14em;">WEAX</div>
+    <div class="eyebrow" style="letter-spacing:.7em; opacity:.8">Origin</div>
+  </div>
+
+  <!-- 6 CTA -->
+  <div class="layer" id="s6">
+    <div class="sans" style="font-size:96px; line-height:1.05;">Limitiert.<br><span style="opacity:.55">Kein Restock.</span></div>
+    <div class="pill">Link in Bio</div>
+  </div>
+
+  <svg id="grain" width="1080" height="1920"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+  <div id="flash"></div>
+</div>
+
+<script>
+  const DURATION = 13;
+  const $ = id => document.getElementById(id);
+  const clamp = v => Math.max(0, Math.min(1, v));
+  const prog = (t, a, b) => clamp((t - a) / (b - a));
+  const easeOut = x => 1 - Math.pow(1 - x, 3);
+  const easeIn = x => x * x * x;
+  // fade in over [a, a+fi], hold, fade out over [b-fo, b]
+  const win = (t, a, b, fi = .25, fo = .2) => Math.min(prog(t, a, a + fi), 1 - prog(t, b - fo, b));
+
+  // deterministic star field
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const stars = Array.from({ length: 220 }, () => ({ x: rnd() * 1080, y: rnd() * 1920, r: rnd() * 1.8 + .3, p: rnd() * 6.28, z: rnd() * .8 + .2 }));
+  const ctx = $('stars').getContext('2d');
+
+  function drawStars(t, warp) {
+    ctx.clearRect(0, 0, 1080, 1920);
+    for (const s of stars) {
+      const tw = .45 + .55 * Math.abs(Math.sin(t * 1.6 + s.p));
+      // warp: stars rush outward from the centre
+      const dx = s.x - 540, dy = s.y - 900;
+      const k = 1 + warp * s.z * 2.2;
+      const x = 540 + dx * k, y = 900 + dy * k;
+      ctx.globalAlpha = tw * (.35 + s.z * .65);
+      ctx.strokeStyle = ctx.fillStyle = '#fff';
+      if (warp > .02) {
+        ctx.lineWidth = s.r;
+        ctx.beginPath(); ctx.moveTo(540 + dx * (1 + (k - 1) * .6), 900 + dy * (1 + (k - 1) * .6)); ctx.lineTo(x, y); ctx.stroke();
+      } else {
+        ctx.beginPath(); ctx.arc(x, y, s.r, 0, 6.28); ctx.fill();
+      }
+    }
+  }
+
+  function set(id, o, transform = '', filter = '') {
+    const el = $(id); el.style.opacity = o; el.style.transform = transform; el.style.filter = filter;
+  }
+
+  window.render = function (t) {
+    // background stars + warp into the product reveal
+    const warp = Math.sin(Math.PI * prog(t, 2.9, 3.6)) + Math.sin(Math.PI * prog(t, 8.4, 9.0)) * .8;
+    drawStars(t, warp);
+
+    // flashes on the hard cuts
+    const flashes = [1.6, 3.4, 9.0];
+    $('flash').style.opacity = .85 * Math.max(...flashes.map(f => t < f ? 0 : 1 - prog(t, f, f + .18)));
+
+    // 1 hook: punch-in, slight shake
+    const p1 = prog(t, 0, .35);
+    set('s1', win(t, 0, 1.6, .05, .08), `scale(${1.25 - .25 * easeOut(p1)}) translateX(${Math.sin(t * 60) * 3 * (1 - p1)}px)`);
+
+    // 2 twist
+    const p2 = prog(t, 1.6, 2.1);
+    set('s2', win(t, 1.6, 3.4, .1, .12), `scale(${.85 + .15 * easeOut(p2)})`, `blur(${(1 - easeOut(p2)) * 16}px)`);
+    $('s2t').style.backgroundPosition = `${100 - prog(t, 1.6, 3.4) * 220}% 0`;
+
+    // 3 product reveal with slow push and star ignition
+    const p3 = prog(t, 3.4, 6.2);
+    set('s3', win(t, 3.4, 6.4, .3, .2), `translateY(${(1 - easeOut(prog(t, 3.4, 4.2))) * 120}px) scale(${.96 + .1 * p3})`);
+    const ign = easeOut(prog(t, 4.4, 5.0));
+    $('starPath').setAttribute('transform', `rotate(${ign * 45 + p3 * 30}) scale(${1.3 + ign * .5}) translate(-20 -20)`);
+    $('starGlow').setAttribute('opacity', ign * (.55 + .2 * Math.sin(t * 8)));
+    $('s3cap').style.opacity = prog(t, 4.8, 5.3);
+
+    // 4 features: hard rapid cuts with zoom
+    [['f1', 6.4, 7.1], ['f2', 7.1, 7.8], ['f3', 7.8, 8.6]].forEach(([id, a, b]) => {
+      const p = prog(t, a, b);
+      set(id, t >= a && t < b ? 1 : 0, `scale(${1.12 - .12 * easeOut(p)})`);
+      $(id).firstElementChild.style.backgroundPosition = `${100 - p * 200}% 0`;
+    });
+
+    // 5 brand: logo with chrome sweep
+    const p5 = prog(t, 9.0, 9.6);
+    set('s5', win(t, 9.0, 11.0, .1, .2), `scale(${1.15 - .15 * easeOut(p5)})`, `blur(${(1 - easeOut(p5)) * 10}px)`);
+    $('logo').style.backgroundPosition = `${100 - prog(t, 9.0, 11.0) * 220}% 0`;
+
+    // 6 CTA, fades to black at the end so the reel loops cleanly into the hook
+    const p6 = prog(t, 11.0, 11.4);
+    set('s6', Math.min(p6, 1 - prog(t, 12.6, 13)), `translateY(${(1 - easeOut(p6)) * 60}px)`);
+
+  };
+
+  window.DURATION = DURATION;
+  render(0);
+</script>
+</body>
+</html>
