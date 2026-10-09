@@ -56,6 +56,7 @@ run(process.execPath, ["--experimental-sea-config", seaConfig]);
 const exe = path.join(dist, platform === "win32" ? "Timi.exe" : "Timi");
 fs.copyFileSync(process.execPath, exe);
 if (platform === "darwin") run("codesign", ["--remove-signature", exe]);
+if (platform === "win32") await setWindowsIcon(exe);
 
 const postject = path.join(root, "node_modules", "postject", "dist", "cli.js");
 run(process.execPath, [
@@ -104,18 +105,26 @@ if (platform === "darwin") {
   run("codesign", ["--force", "--deep", "--sign", "-", path.join(dist, "Timi.app")]);
 }
 
-if (platform === "win32") {
-  // Programmsymbol setzen
-  const { default: pngToIco } = await import("png-to-ico");
-  const ico = path.join(dist, "Timi.ico");
-  fs.writeFileSync(ico, await pngToIco([path.join(root, "build/icon-256.png")]));
-  const { rcedit } = await import("rcedit");
-  await rcedit(exe, {
-    icon: ico,
-    "version-string": { ProductName: "Timi", FileDescription: "Timi – persönlicher Assistent", CompanyName: "Timi" },
-    "file-version": "1.0.0",
-    "product-version": "1.0.0",
-  });
-}
-
 console.log("Fertig:", exe);
+
+// Programmsymbol und Beschreibung in die Windows-Datei schreiben (vor dem Einbetten,
+// damit das eingebettete Paket danach unverändert bleibt). Die alte Signatur fällt dabei weg.
+async function setWindowsIcon(file) {
+  const ResEdit = await import("resedit");
+  const { default: pngToIco } = await import("png-to-ico");
+  const exe = ResEdit.NtExecutable.from(fs.readFileSync(file), { ignoreCert: true });
+  const res = ResEdit.NtExecutableResource.from(exe);
+  const ico = ResEdit.Data.IconFile.from(await pngToIco([path.join(root, "build/icon-256.png")]));
+  for (const group of ResEdit.Resource.IconGroupEntry.fromEntries(res.entries)) {
+    ResEdit.Resource.IconGroupEntry.replaceIconsForResource(res.entries, group.id, group.lang, ico.icons.map((i) => i.data));
+  }
+  for (const vi of ResEdit.Resource.VersionInfo.fromEntries(res.entries)) {
+    for (const lang of vi.getAllLanguagesForStringValues()) {
+      vi.setStringValues(lang, { ProductName: "Timi", FileDescription: "Timi – persönlicher Assistent", CompanyName: "Timi", OriginalFilename: "Timi.exe", InternalName: "Timi" });
+    }
+    vi.outputToResourceEntries(res.entries);
+  }
+  res.outputResource(exe);
+  fs.writeFileSync(file, Buffer.from(exe.generate()));
+  console.log("Programmsymbol gesetzt.");
+}

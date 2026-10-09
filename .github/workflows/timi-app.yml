@@ -22,6 +22,7 @@ jobs:
           - os: macos-latest
             name: Mac
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: sprachassistent
@@ -69,6 +70,7 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/download-artifact@v4
         with:
