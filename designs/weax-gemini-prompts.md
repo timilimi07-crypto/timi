@@ -10,9 +10,9 @@ Markenlook (aus dem Shop übernommen): tiefes Schwarz (#050507), Chrom/Silber (#
 
 ---
 
-## WINTER-KOLLEKTION (Reflektierender Stoff + dünne Reflektor-Streifen)
+## WINTER-KOLLEKTION (dünne Reflektor-Streifen, Puffer in Reflective-Stoff)
 
-Alle Teile: **reflektierender Stoff** (tagsüber dunkel/schwarz-silbrig, im Blitzlicht glänzt die ganze Jacke silbern – wie die Reflective Puffer von Zara), **dünne silberne Reflektor-Streifen vorne und hinten**, **offene Enden**. Gemini zeigt jeweils Vorder- und Rückseite.
+Alle Teile: **dünne silberne Reflektor-Streifen vorne und hinten**, **offene Enden**. Nur die **Pufferjacke** hat den **reflektierenden Stoff** (im Blitzlicht glänzt die ganze Jacke silbern – wie die Reflective Puffer von Zara). Skijacke und Skihose sind aus **normalem mattem Stoff** und **richtig baggy**. Gemini zeigt jeweils Vorder- und Rückseite.
 
 ### 1. Pufferjacke – mit Kapuze, reflektierender Stoff
 ```
@@ -47,30 +47,33 @@ Presentation: three images side by side – front view with hood down, front vie
 **Gemini macht trotzdem Reißverschlüsse:** „Remove all zippers except the small one at the bottom of the left sleeve.“
 **Ganz ohne Front-Reißverschluss (zum Überziehen):** „Make it a pullover anorak with no front opening.“
 
-### 3. Skihose – richtig „special“
+### 3. Skihose – richtig „special“, richtig baggy, normaler Stoff
 ```
-Create a high-end product mockup of a statement baggy ski pant for the streetwear brand "WEAX" – it must look special, premium and unique, like a hero piece, matching the reflective WEAX puffer and ski jacket. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
+Create a high-end product mockup of a statement, REALLY BAGGY ski pant for the streetwear brand "WEAX" – it must look special, premium and unique, like a hero piece, designed as a set with a very baggy matte black WEAX ski jacket. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
-Fabric: waterproof technical ski fabric with the same REFLECTIVE finish – matte black-graphite in normal light, glowing metallic silver when hit by flash or headlights.
-Fit: very wide baggy straight leg, relaxed but technical, with articulated knee darts for movement (no padding).
+Fabric: normal matte black waterproof ski fabric – NOT reflective, NOT shiny, NOT metallic.
+Fit: REALLY BAGGY and extremely oversized – very wide, roomy legs from hip to hem, low relaxed crotch, extra length so the fabric stacks heavily over the boots. Streetwear ski style, with articulated knee darts for movement (no padding).
 Special details:
-- Large 3D cargo pocket on the outside of each thigh, closed with a waterproof chrome zipper and a chrome star-shaped zipper puller.
+- Large 3D cargo pocket on the outside of each thigh with a clean flap – NO zippers on the pockets.
 - Integrated black webbing belt as the closure, with a custom polished chrome buckle shaped like the WEAX star.
 - Detachable black ski suspenders (braces) with chrome clips and a small silver logo printed on the straps.
-- Thin silver 3M-style reflective stripes (about 5 mm wide) running straight down the FRONT and the BACK of each leg, from waistband to hem.
+- Thin silver 3M-style reflective stripes (about 5 mm wide) running straight down the FRONT and the BACK of each leg, from waistband to hem. The fabric itself stays matte black.
 - One small silver star at the bottom of each leg, just above the hem – left and right. Use only the star shape from the attached logo, without the letter "W".
 - A tonal embossed shooting star (without the "W") on the back of the right thigh.
-Open legs: the leg openings are straight, wide and open – NO elastic, NO visible cuffs, NO toggles at the ankles; an inner snow gaiter is hidden inside and not visible. The fabric stacks slightly over the boots.
+Open legs: the leg openings are straight, very wide and open – NO elastic, NO visible cuffs, NO zippers, NO toggles at the ankles; an inner snow gaiter is hidden inside and not visible.
 Logo: one small logo on the front left thigh above the pocket.
 
-Presentation: three images side by side – front view with the suspenders attached, back view, and one front view at night with flash so the reflective fabric and stripes glow silver. Ghost-mannequin style, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
+Presentation: front view with the suspenders attached and back view side by side, ghost-mannequin style showing the very baggy oversized shape, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
 ```
+
+**Noch nicht baggy genug:** nachschreiben „Make the pants even more baggy and wider, like oversized snowboard pants.“
+**Nachtbild mit leuchtenden Streifen:** „Now show the same pants at night with flash, only the thin stripes glow silver.“
 
 ### 4. Winter-Outfit komplett (Lookbook)
 ```
-Create a fashion lookbook photo of a model wearing the WEAX ski outfit: the very baggy, oversized matte black (non-reflective) WEAX ski jacket with the large hood pulled up over a black ski helmet, no visible zippers, thin silver reflective stripe around the chest, small logo on the left chest; combined with the statement reflective WEAX baggy ski pants with chrome star belt buckle, black suspenders, zip cargo pockets on the thighs, thin silver stripes down the front of each leg, a small silver star above each hem, and wide open leg hems over black ski boots. Use the attached image as the exact brand logo.
+Create a fashion lookbook photo of a model wearing the WEAX ski outfit: the very baggy, oversized matte black (non-reflective) WEAX ski jacket with the large hood pulled up over a black ski helmet, no visible zippers, thin silver reflective stripe around the chest, small logo on the left chest; combined with the really baggy matte black (non-reflective) WEAX ski pants with chrome star belt buckle, black suspenders, flap cargo pockets on the thighs, thin silver stripes down the front of each leg, a small silver star above each hem, and wide open leg hems over black ski boots. Use the attached image as the exact brand logo.
 
-Setting: on a snowy ski slope at night under floodlights, light snowfall; the light hits the model so the reflective pants and all thin silver stripes glow metallic silver against the dark sky. Full body shot, confident pose, photorealistic, cinematic editorial style, 4K.
+Setting: on a snowy ski slope at night under floodlights, light snowfall; the light hits the model so all thin silver stripes glow metallic silver against the dark sky. Full body shot, confident pose, photorealistic, cinematic editorial style, 4K.
 ```
 
 **Stoff glänzt nicht genug:** nachschreiben „Make the fabric more reflective, it should shine silver under flash.“
