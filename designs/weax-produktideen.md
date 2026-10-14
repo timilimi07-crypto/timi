@@ -32,10 +32,10 @@ Einfach ankreuzen, was du willst – ich lege die Produkte dann als **Entwurf** 
   Pufferjacke mit Rillen und Kapuze, reflektierender Stoff (glänzt im Licht silbern), dünner Reflektor-Streifen vorne & hinten, offene Enden, kleines Logo (siehe Gemini-Prompt #1).
 
 - [ ] **WEAX SKI JACKE** – ~150–190 €
-  Richtig baggy Skijacke aus normalem mattem Stoff, große helmtaugliche Kapuze, keine sichtbaren Reißverschlüsse außer der Skipass-Tasche unten am linken Ärmel, unten per Kordelzug enger zu machen, dünne Streifen vorne & hinten (siehe Gemini-Prompt #2).
+  Skijacke aus normalem mattem Stoff, lockerer Schnitt, große helmtaugliche Kapuze, keine sichtbaren Reißverschlüsse außer der Skipass-Tasche unten am linken Ärmel, unten per Kordelzug enger zu machen, geschwungene Sternschnuppen-Streifen seitlich bis auf den Rücken, passend zur Hose (siehe Gemini-Prompt #2).
 
 - [ ] **WEAX SKI HOSE** – ~90–120 €
-  Das Statement-Teil: richtig baggy Skihose aus normalem mattem Stoff, Cargotaschen mit Klappe, Gürtel mit Stern-Schnalle, abnehmbare Hosenträger, dünne Streifen vorne & hinten, Stern unten an jedem Bein, offene Beine (siehe Gemini-Prompt #3).
+  Das Statement-Teil: baggy Skihose aus normalem mattem Stoff, Cargotaschen mit Klappe, Gürtel mit Stern-Schnalle, abnehmbare Hosenträger, geschwungene Sternschnuppen-Streifen passend zur Jacke (Stern unten am Bein als Kopf der Sternschnuppe), offene Beine (siehe Gemini-Prompt #3).
 
 - [ ] **WEAX BEANIE** – ~20 €
   Gerippte Mütze mit kleinem gestickten Stern. Schwarz / Grau / Weiß.

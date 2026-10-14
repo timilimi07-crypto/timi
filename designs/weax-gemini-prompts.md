@@ -27,53 +27,52 @@ Logo: one small logo on the left chest, nothing else.
 Presentation: three images side by side – front view and back view in soft studio light on a plain light-grey background, plus one front view at night photographed with flash so the whole reflective jacket glows silver. Ghost-mannequin style, photorealistic, 4K, e-commerce quality.
 ```
 
-### 2. Skijacke – richtig baggy, normaler Stoff, Kapuze über den Helm
+### 2. Skijacke – normaler Stoff, Kapuze über den Helm, Sternschnuppen-Streifen
 ```
-Create a high-end product mockup of a very baggy ski jacket for the streetwear brand "WEAX", designed as a set with WEAX ski pants. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
+Create a high-end product mockup of a ski jacket for the streetwear brand "WEAX", designed as a matching set with WEAX ski pants. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
 Fabric: normal matte black waterproof ski fabric – NOT reflective, NOT shiny, NOT metallic. Lightly padded, smooth surface (not a puffer).
-Fit: REALLY BAGGY and extremely oversized – very wide and roomy body, heavily dropped shoulders, very wide loose sleeves that are slightly too long, longer length covering the hips and upper thighs. It should look big and loose, streetwear ski style.
+Fit: relaxed, slightly oversized ski fit – comfortable room for layering, slightly dropped shoulders, length covering the hips. Clean streetwear ski style, not extremely baggy.
 Hood: large, HELMET-COMPATIBLE hood – big enough to be worn over a ski helmet. When the hood is down it lies loosely on the back.
 Zippers: NO visible zippers anywhere – no zipper pockets, no chest zippers, no pit zips. The front closure is a black color-matched zipper that is barely visible, with NO storm flap and NO overlapping placket. The ONLY visible zipper is one small ski-pass pocket at the very bottom of the LEFT sleeve, near the sleeve end, with a small chrome zipper.
 Pockets: two simple hand pockets as clean slits in the side seams, no zippers, no flaps.
-Reflective stripes: THIN silver 3M-style reflective stripes (about 5 mm wide) on the FRONT and on the BACK: one thin horizontal stripe across the chest and the same across the back, continuing around the sleeves as one clean line. The fabric itself stays matte black.
+Shooting-star stripes: on the left and right side of the jacket, one THIN silver 3M-style reflective stripe (about 5 mm wide) runs VERTICALLY upward from the bottom hem along the side of the body in a gently curving, flowing wave line – like the trail of a shooting star – sweeps up over the side towards the shoulder blade and continues along the BACK in the same flowing curve. Visible from the front, the side and the back; left and right are mirrored. At the bottom end of each stripe, at the hem, sits one small silver star (star shape from the attached logo, without the letter "W") as the head of the shooting star. NO horizontal stripes. The fabric itself stays matte black.
 Sleeves: sleeve ends are straight, wide and open with NO elastic cuffs.
 Adjustable hem: the bottom hem has a hidden drawcord running inside the hem, with two small chrome cord stoppers shaped like the WEAX star at the left and right side, so the hem can be pulled tight around the hips. When loose, the hem hangs straight and wide.
 Logo: one small logo on the left chest, a small silver star on the back of the hood, nothing else.
 
-Presentation: three images side by side – front view with hood down, front view with the hood pulled up over a black ski helmet on the mannequin, and back view. Ghost-mannequin style showing the very baggy oversized shape, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
+Presentation: three images side by side – front view with the hood pulled up over a black ski helmet on the mannequin, side view, and back view, so the flowing shooting-star stripes are clearly visible. Ghost-mannequin style, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
 ```
 
 **Saum enger gezogen zeigen:** nachschreiben „Show the same jacket with the hem drawcord pulled tight.“
-**Noch nicht baggy genug:** nachschreiben „Make the jacket even more baggy and oversized, much wider body and sleeves.“
+**Streifen sollen mehr geschwungen sein:** nachschreiben „Make the stripes curve more, like a flowing shooting star trail.“
 **Gemini macht trotzdem Reißverschlüsse:** „Remove all zippers except the small one at the bottom of the left sleeve.“
 **Ganz ohne Front-Reißverschluss (zum Überziehen):** „Make it a pullover anorak with no front opening.“
 
-### 3. Skihose – richtig „special“, richtig baggy, normaler Stoff
+### 3. Skihose – richtig „special“, baggy, normaler Stoff, Sternschnuppen-Streifen wie die Jacke
 ```
-Create a high-end product mockup of a statement, REALLY BAGGY ski pant for the streetwear brand "WEAX" – it must look special, premium and unique, like a hero piece, designed as a set with a very baggy matte black WEAX ski jacket. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
+Create a high-end product mockup of a statement baggy ski pant for the streetwear brand "WEAX" – it must look special, premium and unique, like a hero piece, designed as a matching set with a matte black WEAX ski jacket that has the same shooting-star stripes. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
 Fabric: normal matte black waterproof ski fabric – NOT reflective, NOT shiny, NOT metallic.
-Fit: REALLY BAGGY and extremely oversized – very wide, roomy legs from hip to hem, low relaxed crotch, extra length so the fabric stacks heavily over the boots. Streetwear ski style, with articulated knee darts for movement (no padding).
+Fit: baggy and wide – roomy straight legs from hip to hem, relaxed crotch, extra length so the fabric stacks over the boots. Streetwear ski style, with articulated knee darts for movement (no padding).
 Special details:
 - Large 3D cargo pocket on the outside of each thigh with a clean flap – NO zippers on the pockets.
 - Integrated black webbing belt as the closure, with a custom polished chrome buckle shaped like the WEAX star.
 - Detachable black ski suspenders (braces) with chrome clips and a small silver logo printed on the straps.
-- Thin silver 3M-style reflective stripes (about 5 mm wide) running straight down the FRONT and the BACK of each leg, from waistband to hem. The fabric itself stays matte black.
-- One small silver star at the bottom of each leg, just above the hem – left and right. Use only the star shape from the attached logo, without the letter "W".
+- Shooting-star stripes, EXACTLY matching the jacket: on each leg one THIN silver 3M-style reflective stripe (about 5 mm wide) starts at a small silver star just above the hem (the star is the head of the shooting star) and runs VERTICALLY upward along the outer side of the leg to the waistband in the same gently curving, flowing wave line as on the jacket – like the trail of a shooting star – swinging slightly from the front to the back of the leg, so it is visible from the front, the side and the back. Left and right legs are mirrored. Use only the star shape from the attached logo, without the letter "W". NO straight stripes. The fabric itself stays matte black.
 - A tonal embossed shooting star (without the "W") on the back of the right thigh.
 Open legs: the leg openings are straight, very wide and open – NO elastic, NO visible cuffs, NO zippers, NO toggles at the ankles; an inner snow gaiter is hidden inside and not visible.
 Logo: one small logo on the front left thigh above the pocket.
 
-Presentation: front view with the suspenders attached and back view side by side, ghost-mannequin style showing the very baggy oversized shape, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
+Presentation: three images side by side – front view with the suspenders attached, side view and back view, so the flowing shooting-star stripes are clearly visible. Ghost-mannequin style showing the baggy shape, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
 ```
 
-**Noch nicht baggy genug:** nachschreiben „Make the pants even more baggy and wider, like oversized snowboard pants.“
+**Streifen passen nicht zur Jacke:** nachschreiben „The stripes on the pants must look exactly like the curved shooting-star stripes on the jacket.“
 **Nachtbild mit leuchtenden Streifen:** „Now show the same pants at night with flash, only the thin stripes glow silver.“
 
 ### 4. Winter-Outfit komplett (Lookbook)
 ```
-Create a fashion lookbook photo of a model wearing the WEAX ski outfit: the very baggy, oversized matte black (non-reflective) WEAX ski jacket with the large hood pulled up over a black ski helmet, no visible zippers, thin silver reflective stripe around the chest, small logo on the left chest; combined with the really baggy matte black (non-reflective) WEAX ski pants with chrome star belt buckle, black suspenders, flap cargo pockets on the thighs, thin silver stripes down the front of each leg, a small silver star above each hem, and wide open leg hems over black ski boots. Use the attached image as the exact brand logo.
+Create a fashion lookbook photo of a model wearing the WEAX ski outfit: the relaxed-fit matte black (non-reflective) WEAX ski jacket with the large hood pulled up over a black ski helmet, no visible zippers, small logo on the left chest; combined with the baggy matte black (non-reflective) WEAX ski pants with chrome star belt buckle, black suspenders and flap cargo pockets on the thighs. Jacket and pants share the same signature detail: thin silver reflective stripes that start at a small silver star at the hem and run upward along the sides in a flowing, curved line like a shooting star trail, continuing onto the back – on the jacket from hem to shoulder blade, on the pants from ankle to waist – so the set looks like one continuous design, and wide open leg hems over black ski boots. Use the attached image as the exact brand logo.
 
 Setting: on a snowy ski slope at night under floodlights, light snowfall; the light hits the model so all thin silver stripes glow metallic silver against the dark sky. Full body shot, confident pose, photorealistic, cinematic editorial style, 4K.
 ```
