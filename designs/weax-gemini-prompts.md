@@ -37,12 +37,14 @@ Hood: large, HELMET-COMPATIBLE hood – big enough to be worn over a ski helmet.
 Zippers: NO visible zippers anywhere – no zipper pockets, no chest zippers, no pit zips. The front closure is a black color-matched zipper that is barely visible, with NO storm flap and NO overlapping placket. The ONLY visible zipper is one small ski-pass pocket at the very bottom of the LEFT sleeve, near the sleeve end, with a small chrome zipper.
 Pockets: two simple hand pockets as clean slits in the side seams, no zippers, no flaps.
 Reflective stripes: THIN silver 3M-style reflective stripes (about 5 mm wide) on the FRONT and on the BACK: one thin horizontal stripe across the chest and the same across the back, continuing around the sleeves as one clean line. The fabric itself stays matte black.
-Open ends: sleeve ends are straight, wide and open with NO elastic cuffs; the bottom hem is straight and open with NO drawcord.
+Sleeves: sleeve ends are straight, wide and open with NO elastic cuffs.
+Adjustable hem: the bottom hem has a hidden drawcord running inside the hem, with two small chrome cord stoppers shaped like the WEAX star at the left and right side, so the hem can be pulled tight around the hips. When loose, the hem hangs straight and wide.
 Logo: one small logo on the left chest, a small silver star on the back of the hood, nothing else.
 
 Presentation: three images side by side – front view with hood down, front view with the hood pulled up over a black ski helmet on the mannequin, and back view. Ghost-mannequin style showing the very baggy oversized shape, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
 ```
 
+**Saum enger gezogen zeigen:** nachschreiben „Show the same jacket with the hem drawcord pulled tight.“
 **Noch nicht baggy genug:** nachschreiben „Make the jacket even more baggy and oversized, much wider body and sleeves.“
 **Gemini macht trotzdem Reißverschlüsse:** „Remove all zippers except the small one at the bottom of the left sleeve.“
 **Ganz ohne Front-Reißverschluss (zum Überziehen):** „Make it a pullover anorak with no front opening.“
