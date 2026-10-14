@@ -10,52 +10,73 @@ Markenlook (aus dem Shop übernommen): tiefes Schwarz (#050507), Chrom/Silber (#
 
 ---
 
-## WINTER-KOLLEKTION (Puffer + dünne Reflektor-Streifen)
+## WINTER-KOLLEKTION (Reflektierender Stoff + dünne Reflektor-Streifen)
 
-Beide Teile: **dünne silberne Reflektor-Streifen vorne und hinten**, die nachts im Licht leuchten, **offene Enden** (keine Bündchen, kein Gummizug, kein Kordelzug). Gemini zeigt jeweils Vorder- und Rückseite nebeneinander.
+Alle Teile: **reflektierender Stoff** (tagsüber dunkel/schwarz-silbrig, im Blitzlicht glänzt die ganze Jacke silbern – wie die Reflective Puffer von Zara), **dünne silberne Reflektor-Streifen vorne und hinten**, **offene Enden**. Gemini zeigt jeweils Vorder- und Rückseite.
 
-### 1. Pufferjacke – klassisch gesteppt, dünne Reflektor-Streifen
+### 1. Pufferjacke – mit Kapuze, reflektierender Stoff
 ```
-Create a high-end product mockup of an oversized puffer jacket for the streetwear brand "WEAX". Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
+Create a high-end product mockup of an oversized hooded puffer jacket for the streetwear brand "WEAX". Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
-Design: classic real puffer jacket – boxy oversized fit, thick and full, with clearly visible horizontal quilted channels (puffy ribs about 8–10 cm apart) all around the body and sleeves. Matte black fabric with a soft sheen. Simple high stand-up collar. One plain straight front zipper, fully visible – NO storm flap, NO overlapping placket, NO snaps or buttons covering the zipper. Two simple side pockets.
-Reflective stripes: THIN silver 3M-style reflective stripes (about 5 mm wide), placed on the FRONT and on the BACK: one thin stripe running horizontally along a quilting seam across the chest, and the same thin stripe across the back at the same height, continuing around the sleeves so it forms one clean line around the jacket. The stripes look silver-grey in daylight and glow bright silver-white when hit by light. No other stripes.
+Fabric: fully REFLECTIVE outer fabric – in normal light it looks dark black-graphite with a fine silver shimmer, and when hit by a camera flash or headlights the whole jacket lights up in bright metallic silver (like a reflective puffer jacket from Zara).
+Design: classic real puffer jacket – boxy oversized fit, thick and full, with clearly visible horizontal quilted channels (puffy ribs about 8–10 cm apart) on the body and sleeves. Attached, fixed, puffy quilted HOOD in the same reflective fabric, large and slightly oversized. One plain straight front zipper running up to the chin, fully visible – NO storm flap, NO overlapping placket, NO snaps or buttons. Two simple side pockets.
+Reflective stripes: THIN silver 3M-style reflective stripes (about 5 mm wide) on the FRONT and on the BACK: one thin stripe running horizontally along a quilting seam across the chest, and the same thin stripe across the back at the same height, continuing around the sleeves so it forms one clean line around the jacket.
 Open ends: the sleeve ends are straight and open with NO elastic cuffs and NO ribbing; the bottom hem is straight and open with NO drawcord and NO elastic.
 Logo: one small logo on the left chest, nothing else.
 
-Presentation: front view and back view side by side, ghost-mannequin style, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
+Presentation: three images side by side – front view and back view in soft studio light on a plain light-grey background, plus one front view at night photographed with flash so the whole reflective jacket glows silver. Ghost-mannequin style, photorealistic, 4K, e-commerce quality.
 ```
 
-### 2. Baggy-Hose – Seitentaschen, Gürtel, dünne Streifen, Sterne unten
+### 2. Skijacke – mit helmtauglicher Kapuze
 ```
-Create a high-end product mockup of baggy cargo pants for the streetwear brand "WEAX", matching a black WEAX puffer jacket with thin silver reflective stripes. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
+Create a high-end product mockup of a technical ski jacket for the streetwear brand "WEAX", designed as a set with WEAX ski pants. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
-Design: very wide baggy straight-leg fit, smooth matte black nylon fabric, one large cargo pocket with a simple flap on the outside of each thigh. NO quilting, NO knee padding.
-Belt closure: the waist closes with an integrated black webbing belt with a polished silver/chrome buckle at the front, threaded through the belt loops – the belt is the main closure, no visible button.
-Reflective stripes: THIN silver 3M-style reflective stripes (about 5 mm wide) on the FRONT and on the BACK: one thin stripe running straight down the front of each leg from the waistband to the hem, and one thin stripe running straight down the back of each leg. The stripes look silver-grey in daylight and glow bright silver-white when hit by light. No other stripes.
-Stars: one small silver star at the bottom of each leg, just above the hem – one on the left leg and one on the right leg. Use only the star shape from the attached logo, without the letter "W".
-Open legs: the leg openings are straight, wide and open – NO elastic, NO cuffs, NO zippers, NO toggles or drawcords at the ankles. The fabric falls loosely and stacks slightly over the shoes.
-Logo: one small logo on the front left thigh, nothing else.
+Fabric: waterproof technical ski shell with a REFLECTIVE finish – in normal light it looks matte black-graphite, and when hit by a camera flash or headlights the whole jacket lights up in metallic silver. Lightly padded, smooth surface (not a puffer), relaxed oversized ski fit, slightly longer length covering the hips.
+Hood: large, HELMET-COMPATIBLE hood – big enough to be worn over a ski helmet, with a stiffened brim and a simple adjustment at the back. When the hood is down it lies flat on the back.
+Details: high protective collar, one plain straight front zipper with a chrome puller – NO storm flap, NO overlapping placket. Two chest pockets and two hand pockets with clean waterproof chrome zippers, a ski-pass pocket on the left sleeve, an inner snow skirt hidden inside (not visible from outside).
+Reflective stripes: THIN silver 3M-style reflective stripes (about 5 mm wide) on the FRONT and on the BACK: one thin horizontal stripe across the chest and the same across the back, continuing around the sleeves as one clean line.
+Open ends: sleeve ends are straight and open with NO visible elastic cuffs; the bottom hem is straight and open with NO visible drawcord.
+Logo: one small logo on the left chest, a small silver star on the back of the hood, nothing else.
 
-Presentation: front view and back view side by side, ghost-mannequin style, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
-```
-
-### 3. Winter-Outfit komplett (Lookbook)
-```
-Create a fashion lookbook photo of a model wearing the WEAX winter outfit: a classic black oversized puffer jacket with horizontal quilted channels, simple visible zipper, open straight sleeve ends and hem, small logo on the left chest, and one thin silver reflective stripe around the chest and back; combined with black baggy cargo pants with a chrome belt buckle, one cargo pocket on each thigh, thin silver reflective stripes down the front and back of each leg, a small silver star above each hem, and wide open leg hems falling over the shoes. Use the attached image as the exact brand logo.
-
-Setting: city street at night with light snowfall, a car headlight or camera flash hits the model so all thin silver stripes glow brightly against the black outfit. Full body shot, relaxed pose, photorealistic, cinematic editorial style, 4K.
+Presentation: three images side by side – front view with hood up (shown over a black ski helmet on the mannequin), back view, and one front view at night with flash so the reflective jacket glows silver. Soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
 ```
 
-**Nachtbild:** nachschreiben „Now show the same piece at night, photographed with flash, so the silver stripes reflect brightly.“
-**Streifen immer noch zu dick:** „Make the reflective stripes thinner, like a thin piping line.“
-**Jacke nicht puffig genug:** „Make it much puffier, like a classic down puffer jacket.“
+### 3. Skihose – richtig „special“
+```
+Create a high-end product mockup of a statement baggy ski pant for the streetwear brand "WEAX" – it must look special, premium and unique, like a hero piece, matching the reflective WEAX puffer and ski jacket. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
+
+Fabric: waterproof technical ski fabric with the same REFLECTIVE finish – matte black-graphite in normal light, glowing metallic silver when hit by flash or headlights.
+Fit: very wide baggy straight leg, relaxed but technical, with articulated knee darts for movement (no padding).
+Special details:
+- Large 3D cargo pocket on the outside of each thigh, closed with a waterproof chrome zipper and a chrome star-shaped zipper puller.
+- Integrated black webbing belt as the closure, with a custom polished chrome buckle shaped like the WEAX star.
+- Detachable black ski suspenders (braces) with chrome clips and a small silver logo printed on the straps.
+- Thin silver 3M-style reflective stripes (about 5 mm wide) running straight down the FRONT and the BACK of each leg, from waistband to hem.
+- One small silver star at the bottom of each leg, just above the hem – left and right. Use only the star shape from the attached logo, without the letter "W".
+- A tonal embossed shooting star (without the "W") on the back of the right thigh.
+Open legs: the leg openings are straight, wide and open – NO elastic, NO visible cuffs, NO toggles at the ankles; an inner snow gaiter is hidden inside and not visible. The fabric stacks slightly over the boots.
+Logo: one small logo on the front left thigh above the pocket.
+
+Presentation: three images side by side – front view with the suspenders attached, back view, and one front view at night with flash so the reflective fabric and stripes glow silver. Ghost-mannequin style, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
+```
+
+### 4. Winter-Outfit komplett (Lookbook)
+```
+Create a fashion lookbook photo of a model wearing the WEAX ski outfit: the reflective black WEAX ski jacket with the large hood pulled up over a black ski helmet, thin silver reflective stripe around the chest, small logo on the left chest; combined with the statement reflective WEAX baggy ski pants with chrome star belt buckle, black suspenders, zip cargo pockets on the thighs, thin silver stripes down the front of each leg, a small silver star above each hem, and wide open leg hems over black ski boots. Use the attached image as the exact brand logo.
+
+Setting: on a snowy ski slope at night under floodlights, light snowfall; the light hits the model so the whole reflective outfit glows metallic silver against the dark sky. Full body shot, confident pose, photorealistic, cinematic editorial style, 4K.
+```
+
+**Stoff glänzt nicht genug:** nachschreiben „Make the fabric more reflective, it should shine silver under flash.“
+**Hose noch auffälliger:** „Make the pants even more unique and premium, add more chrome details.“
+**Kapuze zu klein:** „Make the hood bigger so it fits over a ski helmet.“
+**Gleiche Jacke ohne Blitz zeigen:** „Show the same piece only in normal daylight.“
 
 ---
 
 ## SOMMER-KOLLEKTION
 
-### 4. T-Shirt – Slim Fit, kurze Ärmel, Logo oben rechts, Sternschnuppe hinten
+### 5. T-Shirt – Slim Fit, kurze Ärmel, Logo oben rechts, Sternschnuppe hinten
 ```
 Create a high-end product mockup of a slim-fit muscle T-shirt for the streetwear brand "WEAX". Use the attached image as the brand logo – do not redesign or distort it.
 
@@ -72,7 +93,7 @@ Presentation: front view and back view side by side, ghost-mannequin style showi
 **Am Model zeigen:** „Show the same T-shirt worn by an athletic model, front and back.“
 **Weitere Farbe:** „Same T-shirt in white, with the shooting star in silver-grey.“
 
-### 5. Kurze Hose (Shorts)
+### 6. Kurze Hose (Shorts)
 ```
 Create a high-end product mockup of relaxed summer shorts for the luxury streetwear brand "WEAX", matching a slim-fit WEAX T-shirt. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
@@ -83,7 +104,7 @@ Logo placement: small chrome logo on the lower left leg, tonal logo embossed on 
 Presentation: flat lay front view, soft natural daylight, plain light-grey background, photorealistic, 4K, e-commerce quality.
 ```
 
-### 6. Tanktop
+### 7. Tanktop
 ```
 Create a high-end product mockup of a premium tank top for the luxury streetwear brand "WEAX". Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
@@ -94,7 +115,7 @@ Logo placement: small logo on the left chest, large logo across the upper back.
 Presentation: flat lay, both colorways side by side, soft summer daylight, plain light-grey background, photorealistic, 4K, e-commerce quality.
 ```
 
-### 7. Socken
+### 8. Socken
 ```
 Create a high-end product mockup of a pair of crew sports socks for the luxury streetwear brand "WEAX". Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
@@ -104,7 +125,7 @@ Colors: show a 3-pack – white, black and cream. On each sock the logo is knitt
 Presentation: socks laid flat next to each other with a minimal branded paper band around them, plain light-grey background, soft studio light, photorealistic, 4K, e-commerce quality.
 ```
 
-### 8. Unterwäsche (Boxershorts)
+### 9. Unterwäsche (Boxershorts)
 ```
 Create a high-end product mockup of premium boxer briefs for the luxury streetwear brand "WEAX". Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
@@ -115,7 +136,7 @@ Logo placement: logo repeated around the waistband in chrome-silver on black (on
 Presentation: the 3-pack laid flat in a premium black box with silver foil WEAX logo on the lid, plain light-grey background, soft studio light, photorealistic, 4K, e-commerce quality.
 ```
 
-### 9. Sommer-Outfit komplett (Lookbook)
+### 10. Sommer-Outfit komplett (Lookbook)
 ```
 Create a fashion lookbook photo of a model wearing the full WEAX summer outfit: a plain black slim-fit muscle T-shirt with short sleeves showing the arms and a small logo on the upper right chest, matching cream relaxed shorts with chrome drawcord tips, white crew socks with the logo on the cuff, and clean white sneakers. Use the attached image as the exact brand logo on all pieces.
 

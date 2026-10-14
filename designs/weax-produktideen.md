@@ -28,11 +28,14 @@ Einfach ankreuzen, was du willst – ich lege die Produkte dann als **Entwurf** 
 
 ## Winter
 
-- [ ] **WEAX PUFFER JACKE** – ~120–150 €
-  Klassische Pufferjacke mit Rillen, offene Enden, dünner silberner Reflektor-Streifen vorne & hinten, kleines Logo (siehe Gemini-Prompt #1).
+- [ ] **WEAX REFLECTIVE PUFFER JACKE** – ~130–160 €
+  Pufferjacke mit Rillen und Kapuze, reflektierender Stoff (glänzt im Licht silbern), dünner Reflektor-Streifen vorne & hinten, offene Enden, kleines Logo (siehe Gemini-Prompt #1).
 
-- [ ] **WEAX BAGGY CARGO HOSE** – ~60–70 €
-  Weite Hose mit Seitentaschen, Gürtel-Verschluss, dünne Reflektor-Streifen vorne & hinten, Stern unten an jedem Bein, offene Beine (siehe Gemini-Prompt #2).
+- [ ] **WEAX SKI JACKE** – ~150–190 €
+  Technische Skijacke, reflektierend, große helmtaugliche Kapuze, Chrom-Reißverschlüsse, Skipass-Tasche, dünne Streifen vorne & hinten (siehe Gemini-Prompt #2).
+
+- [ ] **WEAX SKI HOSE** – ~90–120 €
+  Das Statement-Teil: weite Skihose, reflektierend, Zip-Cargotaschen, Gürtel mit Stern-Schnalle, abnehmbare Hosenträger, dünne Streifen vorne & hinten, Stern unten an jedem Bein, offene Beine (siehe Gemini-Prompt #3).
 
 - [ ] **WEAX BEANIE** – ~20 €
   Gerippte Mütze mit kleinem gestickten Stern. Schwarz / Grau / Weiß.
@@ -57,7 +60,7 @@ Einfach ankreuzen, was du willst – ich lege die Produkte dann als **Entwurf** 
 1. **ORIGIN T-SHIRT** – günstigster Einstieg und passt zum Pullover
 2. **ORIGIN SET** – kostet dich nichts Neues, nur ein Bundle
 3. **BEANIE** – günstig, saisonal passend (Oktober), ideal als Zusatzkauf
-4. **PUFFER JACKE + BAGGY CARGO HOSE** – als Winter-Drop, sobald die Designs aus Gemini stehen
+4. **PUFFER, SKI JACKE + SKI HOSE** – als Winter-Drop, sobald die Designs aus Gemini stehen
 
 Damit hättest du 6 Produkte im Shop, und der Shop wirkt sofort voller.
 
