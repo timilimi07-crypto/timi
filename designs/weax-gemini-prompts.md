@@ -116,16 +116,24 @@ Logo placement: small chrome logo on the lower left leg, tonal logo embossed on 
 Presentation: flat lay front view, soft natural daylight, plain light-grey background, photorealistic, 4K, e-commerce quality.
 ```
 
-### 7. Tanktop
+### 7. Tanktop – eng anliegend, elastisch, Logo oben rechts, leuchtender Stern hinten
 ```
-Create a high-end product mockup of a premium tank top for the luxury streetwear brand "WEAX". Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
+Create a high-end product mockup of a fitted stretch tank top for the streetwear brand "WEAX". Use the attached image as the brand logo – do not redesign or distort it.
 
-Design: relaxed fit, wide armholes, ribbed cotton fabric, thick neck and armhole binding, slightly longer back hem.
-Color: black (#050507) with logo in metallic chrome-silver (#DFE3E8). Show a second colorway in cream next to it.
-Logo placement: small logo on the left chest, large logo across the upper back.
+Fit: slim, close-fitting athletic fit that hugs the chest, back and waist – fitted, but not compression-tight. Clean racer-free classic tank shape with medium-width shoulder straps, slightly deeper armholes, clean bound neckline and armholes, straight hem at the hip.
+Fabric: very elastic, soft stretch fabric – 92% cotton / 8% elastane fine rib jersey, about 200 GSM. 4-way stretch with excellent recovery, smooth and soft against the skin. The stretch should be visible in how the fabric follows the body shape.
+Color: solid deep black.
+Front: one SMALL embroidered metallic silver-white logo on the upper right chest (on the right side as seen in the image). Nothing else on the front.
+Back: one medium-sized eight-pointed star (the star from the attached logo, WITHOUT the letter "W") centered on the upper back, printed in metallic silver with a soft glowing shine around it – subtle light rays and a gentle halo, like a sparkling star in the night sky. Elegant and clean, not oversized.
+No stripes, no other prints.
 
-Presentation: flat lay, both colorways side by side, soft summer daylight, plain light-grey background, photorealistic, 4K, e-commerce quality.
+Presentation: front view and back view side by side, ghost-mannequin style showing the fitted athletic shape, soft studio light, plain light-grey background, realistic fine rib texture, photorealistic, 4K, e-commerce quality.
 ```
+
+**Enger / lockerer:** nachschreiben „Make it a bit tighter“ bzw. „Make it slightly looser.“
+**Stern mehr leuchten lassen:** „Make the star on the back shine more, with a brighter glow.“
+**Am Model zeigen:** „Show the same tank top worn by an athletic model, front and back.“
+**Weiße Version:** „Same tank top in white, with the star in silver-grey.“
 
 ### 8. Socken
 ```

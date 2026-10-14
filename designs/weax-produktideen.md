@@ -21,7 +21,7 @@ Einfach ankreuzen, was du willst – ich lege die Produkte dann als **Entwurf** 
   *Text:* „Die ORIGIN Hose für den Sommer. Weit, schwer, knielang.“
 
 - [ ] **WEAX ORIGIN TANKTOP** – ~25 €
-  Geripptes Tanktop, weite Armausschnitte, kleiner Stern. Schwarz / Weiß.
+  Eng anliegendes, elastisches Tanktop (Baumwolle/Elasthan), kleines Logo oben rechts, leuchtender Stern auf dem Rücken. Schwarz / Weiß.
 
 - [ ] **WEAX ORIGIN SET (Pullover + Hose)** – ~75 € statt 80 €
   Bundle aus den zwei bestehenden Produkten – bringt sofort mehr Warenkorbwert, ohne neue Ware.
