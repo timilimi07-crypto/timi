@@ -1,5 +1,5 @@
 # WEAX TREND DROP – Gemini Prompts
-Alle Teile folgen derselben **WEAX DNA**: washed black, kleines silbernes Logo, die **WEAX LINE** (dünne, geschwungene Reflektor-Linie wie eine Sternschnuppe, startet immer an einem kleinen Stern) und alles **baggy**. Trägt man Oberteil + Hose zusammen, ergeben die Linien **eine durchgehende Sternschnuppe von der Schulter bis zum Knöchel** – das ist das, was es so noch nicht gibt.
+Alle Teile folgen derselben **WEAX DNA**: washed black, kleines silbernes Logo, die **WEAX LINE** (dünne, geschwungene Reflektor-Linie wie eine Sternschnuppe, startet immer an einem kleinen Stern) – Streetwear **baggy**, Gym-Teile **slim fit**. Trägt man Oberteil + Hose zusammen, ergeben die Linien **eine durchgehende Sternschnuppe von der Schulter bis zum Knöchel** – das ist das, was es so noch nicht gibt.
 **So geht’s:** Logo in Gemini hochladen → Prompt kopieren → einfügen. Ein Teil pro Nachricht.
 
 ---
@@ -451,11 +451,200 @@ Presentation: the 3-pack laid flat plus one sock worn with baggy black WEAX pant
 
 ---
 
+## Gym
+
+Slim Fit, eng und elastisch – die Linie folgt den Muskeln bis zur Schulter. Logo oben rechts.
+
+### 20. Compression Longsleeve – WEAX ORBIT COMPRESSION LONGSLEEVE
+
+Hauteng wie eine zweite Haut, Daumenlöcher, Linie folgt dem Latissimus bis zur Schulter.
+
+```
+Create a high-end product mockup of a compression longsleeve training top for the streetwear and gymwear brand "WEAX".
+
+WEAX GYM DNA (follow exactly):
+- Brand: "WEAX". Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Small metallic silver-white logo, heat-transferred or finely embroidered.
+- Colors: deep black base, metallic silver-white logo, silver reflective details. No other colors.
+- Fit: SLIM / athletic. Close to the body, shows the shape of chest, shoulders, arms and back. Made for training.
+- Fabric: technical stretch – about 78% nylon / 22% elastane (or 92% cotton / 8% elastane where stated), 4-way stretch, quick-dry, smooth matte surface.
+- Signature "WEAX LINE": thin (3 mm) silver reflective contour lines that flow in gentle curves like the trail of a shooting star. Each starts at a small silver eight-pointed star (the star from the logo, without the W) at the hip and follows the body’s muscle lines up the side and over the lat towards the shoulder blade, so it highlights the V-shape.
+- Logo placement: small logo on the upper right chest (on the right side as seen in the image).
+
+PRODUCT:
+- Compression fit, second-skin, 78% nylon / 22% elastane, 4-way stretch.
+- Long sleeves with thumbholes, flatlock seams, crew neck.
+- WEAX LINE: on both sides from a star at the hip up the lats to the shoulder blade, and down the outside of each sleeve to the wrist.
+- Small logo on the upper right chest; a small glowing eight-pointed star at the back of the neck.
+
+Presentation: front, side and back view side by side. Ghost-mannequin with an athletic body shape, deep black studio background with hard rim light that shows the muscle contours, subtle silver reflections, photorealistic, 4K, premium gymwear campaign quality.
+```
+
+### 21. Muscle Tee – WEAX ORBIT MUSCLE TEE
+
+Slim-Fit-Shirt mit kurzen, engen Ärmeln, die auf dem Bizeps sitzen – Stern mit Schein auf dem Rücken.
+
+```
+Create a high-end product mockup of a slim-fit muscle T-shirt for the streetwear and gymwear brand "WEAX".
+
+WEAX GYM DNA (follow exactly):
+- Brand: "WEAX". Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Small metallic silver-white logo, heat-transferred or finely embroidered.
+- Colors: deep black base, metallic silver-white logo, silver reflective details. No other colors.
+- Fit: SLIM / athletic. Close to the body, shows the shape of chest, shoulders, arms and back. Made for training.
+- Fabric: technical stretch – about 78% nylon / 22% elastane (or 92% cotton / 8% elastane where stated), 4-way stretch, quick-dry, smooth matte surface.
+- Signature "WEAX LINE": thin (3 mm) silver reflective contour lines that flow in gentle curves like the trail of a shooting star. Each starts at a small silver eight-pointed star (the star from the logo, without the W) at the hip and follows the body’s muscle lines up the side and over the lat towards the shoulder blade, so it highlights the V-shape.
+- Logo placement: small logo on the upper right chest (on the right side as seen in the image).
+
+PRODUCT:
+- 92% cotton / 8% elastane stretch jersey, slim athletic fit, tapered waist.
+- Short, tight sleeves that end high on the upper arm so the biceps show.
+- WEAX LINE on both sides from a star at the hip up to the shoulder blade.
+- Small logo on the upper right chest.
+- Back: medium-sized eight-pointed star (without the W) centered on the upper back, metallic silver with a soft glowing shine and subtle light rays.
+
+Presentation: front and back view side by side. Ghost-mannequin with an athletic body shape, deep black studio background with hard rim light that shows the muscle contours, subtle silver reflections, photorealistic, 4K, premium gymwear campaign quality.
+```
+
+### 22. Stringer Tank – WEAX ORBIT STRINGER
+
+Klassisches Bodybuilder-Tank mit tiefen Armausschnitten und dünnen Trägern – Linie läuft über den Rücken.
+
+```
+Create a high-end product mockup of a gym stringer tank top for the streetwear and gymwear brand "WEAX".
+
+WEAX GYM DNA (follow exactly):
+- Brand: "WEAX". Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Small metallic silver-white logo, heat-transferred or finely embroidered.
+- Colors: deep black base, metallic silver-white logo, silver reflective details. No other colors.
+- Fit: SLIM / athletic. Close to the body, shows the shape of chest, shoulders, arms and back. Made for training.
+- Fabric: technical stretch – about 78% nylon / 22% elastane (or 92% cotton / 8% elastane where stated), 4-way stretch, quick-dry, smooth matte surface.
+- Signature "WEAX LINE": thin (3 mm) silver reflective contour lines that flow in gentle curves like the trail of a shooting star. Each starts at a small silver eight-pointed star (the star from the logo, without the W) at the hip and follows the body’s muscle lines up the side and over the lat towards the shoulder blade, so it highlights the V-shape.
+- Logo placement: small logo on the upper right chest (on the right side as seen in the image).
+
+PRODUCT:
+- 92% cotton / 8% elastane, fitted athletic cut.
+- Very deep armholes, thin racerback straps, long body.
+- WEAX LINE runs from a star at each hip up along the open sides and continues along the straps over the shoulders.
+- Small logo on the upper right chest; small shooting star (without the W) between the shoulder blades.
+
+Presentation: front and back view side by side. Ghost-mannequin with an athletic body shape, deep black studio background with hard rim light that shows the muscle contours, subtle silver reflections, photorealistic, 4K, premium gymwear campaign quality.
+```
+
+### 23. Seamless Tank – WEAX ORBIT SEAMLESS TANK
+
+Nahtloses, eng anliegendes Tank – Stern hinten mit Schein, Rippstruktur zeichnet die Muskeln nach.
+
+```
+Create a high-end product mockup of a seamless fitted tank top for the streetwear and gymwear brand "WEAX".
+
+WEAX GYM DNA (follow exactly):
+- Brand: "WEAX". Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Small metallic silver-white logo, heat-transferred or finely embroidered.
+- Colors: deep black base, metallic silver-white logo, silver reflective details. No other colors.
+- Fit: SLIM / athletic. Close to the body, shows the shape of chest, shoulders, arms and back. Made for training.
+- Fabric: technical stretch – about 78% nylon / 22% elastane (or 92% cotton / 8% elastane where stated), 4-way stretch, quick-dry, smooth matte surface.
+- Signature "WEAX LINE": thin (3 mm) silver reflective contour lines that flow in gentle curves like the trail of a shooting star. Each starts at a small silver eight-pointed star (the star from the logo, without the W) at the hip and follows the body’s muscle lines up the side and over the lat towards the shoulder blade, so it highlights the V-shape.
+- Logo placement: small logo on the upper right chest (on the right side as seen in the image).
+
+PRODUCT:
+- Seamless knit technical stretch fabric, fitted close to the body, not compression-tight.
+- Engineered knit texture: subtle ribbed zones along the sides and back that follow the muscles.
+- Medium-width shoulder straps, clean round neckline.
+- WEAX LINE knitted in reflective silver yarn on both sides from a star at the hip to the shoulder blade.
+- Small logo on the upper right chest.
+- Back: eight-pointed star (without the W) on the upper back, metallic silver with a soft glowing shine.
+
+Presentation: front and back view side by side, with a close-up of the seamless knit texture. Ghost-mannequin with an athletic body shape, deep black studio background with hard rim light that shows the muscle contours, subtle silver reflections, photorealistic, 4K, premium gymwear campaign quality.
+```
+
+### 24. Slim Quarter-Zip – WEAX ORBIT TRAINING ZIP
+
+Enges Trainings-Oberteil mit kurzem Reißverschluss, Stern-Zipper, für Aufwärmen und Cardio.
+
+```
+Create a high-end product mockup of a slim-fit quarter-zip training top for the streetwear and gymwear brand "WEAX".
+
+WEAX GYM DNA (follow exactly):
+- Brand: "WEAX". Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Small metallic silver-white logo, heat-transferred or finely embroidered.
+- Colors: deep black base, metallic silver-white logo, silver reflective details. No other colors.
+- Fit: SLIM / athletic. Close to the body, shows the shape of chest, shoulders, arms and back. Made for training.
+- Fabric: technical stretch – about 78% nylon / 22% elastane (or 92% cotton / 8% elastane where stated), 4-way stretch, quick-dry, smooth matte surface.
+- Signature "WEAX LINE": thin (3 mm) silver reflective contour lines that flow in gentle curves like the trail of a shooting star. Each starts at a small silver eight-pointed star (the star from the logo, without the W) at the hip and follows the body’s muscle lines up the side and over the lat towards the shoulder blade, so it highlights the V-shape.
+- Logo placement: small logo on the upper right chest (on the right side as seen in the image).
+
+PRODUCT:
+- 78% nylon / 22% elastane, slim athletic fit, long sleeves with thumbholes.
+- High collar with a chrome quarter-zip and an eight-pointed star zipper puller.
+- Laser-cut ventilation holes under the arms and along the upper back in the shape of tiny stars.
+- WEAX LINE on both sides from a star at the hip to the shoulder blade.
+- Small logo on the upper right chest.
+
+Presentation: front with collar zipped up, front with collar open, and back view side by side. Ghost-mannequin with an athletic body shape, deep black studio background with hard rim light that shows the muscle contours, subtle silver reflections, photorealistic, 4K, premium gymwear campaign quality.
+```
+
+### 25. Slim Gym-Hoodie – WEAX ORBIT GYM HOODIE
+
+Taillierter Hoodie mit engen Ärmeln – für vor und nach dem Training, betont die Schultern.
+
+```
+Create a high-end product mockup of a slim-fit gym hoodie for the streetwear and gymwear brand "WEAX".
+
+WEAX GYM DNA (follow exactly):
+- Brand: "WEAX". Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Small metallic silver-white logo, heat-transferred or finely embroidered.
+- Colors: deep black base, metallic silver-white logo, silver reflective details. No other colors.
+- Fit: SLIM / athletic. Close to the body, shows the shape of chest, shoulders, arms and back. Made for training.
+- Fabric: technical stretch – about 78% nylon / 22% elastane (or 92% cotton / 8% elastane where stated), 4-way stretch, quick-dry, smooth matte surface.
+- Signature "WEAX LINE": thin (3 mm) silver reflective contour lines that flow in gentle curves like the trail of a shooting star. Each starts at a small silver eight-pointed star (the star from the logo, without the W) at the hip and follows the body’s muscle lines up the side and over the lat towards the shoulder blade, so it highlights the V-shape.
+- Logo placement: small logo on the upper right chest (on the right side as seen in the image).
+
+PRODUCT:
+- 92% cotton / 8% elastane brushed stretch fleece, slim athletic fit with tapered waist and fitted sleeves.
+- Fitted hood without drawstrings, ribbed cuffs with thumbholes, ribbed hem.
+- WEAX LINE on both sides from a star at the hip up to the shoulder blade, continuing along the hood seam.
+- Small logo on the upper right chest; small shooting star (without the W) on the back of the hood.
+
+Presentation: front and back view side by side. Ghost-mannequin with an athletic body shape, deep black studio background with hard rim light that shows the muscle contours, subtle silver reflections, photorealistic, 4K, premium gymwear campaign quality.
+```
+
+### 26. Sports-Bra (Women) – WEAX ORBIT SPORTS BRA
+
+Sport-BH mit gekreuzten Trägern hinten, die die Sternschnuppen-Linie bilden.
+
+```
+Create a high-end product mockup of a women's sports bra for the streetwear and gymwear brand "WEAX".
+
+WEAX GYM DNA (follow exactly):
+- Brand: "WEAX". Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Small metallic silver-white logo, heat-transferred or finely embroidered.
+- Colors: deep black base, metallic silver-white logo, silver reflective details. No other colors.
+- Fit: SLIM / athletic. Close to the body, shows the shape of chest, shoulders, arms and back. Made for training.
+- Fabric: technical stretch – about 78% nylon / 22% elastane (or 92% cotton / 8% elastane where stated), 4-way stretch, quick-dry, smooth matte surface.
+- Signature "WEAX LINE": thin (3 mm) silver reflective contour lines that flow in gentle curves like the trail of a shooting star. Each starts at a small silver eight-pointed star (the star from the logo, without the W) at the hip and follows the body’s muscle lines up the side and over the lat towards the shoulder blade, so it highlights the V-shape.
+- Logo placement: small logo on the upper right chest (on the right side as seen in the image).
+
+PRODUCT:
+- 78% nylon / 22% elastane, medium support, removable pads, wide elastic underband.
+- Crossed straps on the back that form the WEAX LINE: thin silver reflective trim along the straps, meeting at a small eight-pointed star between the shoulder blades.
+- Small logo on the upper right front.
+
+Presentation: front and back view side by side. Ghost-mannequin with an athletic body shape, deep black studio background with hard rim light that shows the muscle contours, subtle silver reflections, photorealistic, 4K, premium gymwear campaign quality.
+```
+
+### 27. Gym-Kampagnenbild – WEAX GYM CAMPAIGN
+
+Zwei Leute trainieren im dunklen Gym, nur Blitz und die Linien leuchten – für TikTok.
+
+```
+Create a gymwear campaign photo for the brand "WEAX". Use the attached image as the exact logo.
+
+Two athletic young people train in a dark, raw concrete gym at night: one does pull-ups in a black WEAX compression longsleeve, the other stands with dumbbells in a black slim-fit WEAX muscle tee with short tight sleeves. Both tops show thin silver reflective lines that follow the muscles from a small eight-pointed star at the hip up the sides to the shoulder blades, like shooting star trails. Small metallic silver-white logo on the upper right chest.
+Direct camera flash makes the lines glow bright silver, chalk dust in the air, sweat, intense focus.
+Vertical 9:16 format for TikTok and Instagram. Photorealistic, 4K.
+```
+
+---
+
 ## Kampagne
 
 Fürs Profil-Highlight oder als erstes TikTok zum Drop.
 
-### 20. Kampagnen-Bild – WEAX TREND DROP
+### 28. Kampagnen-Bild – WEAX TREND DROP
 
 Ein Titelbild für den ganzen Drop – vier Teenager in verschiedenen Teilen, alles leuchtet im Blitz.
 
