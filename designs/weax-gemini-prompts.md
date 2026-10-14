@@ -27,7 +27,7 @@ Logo: one small logo on the left chest, nothing else.
 Presentation: three images side by side – front view and back view in soft studio light on a plain light-grey background, plus one front view at night photographed with flash so the whole reflective jacket glows silver. Ghost-mannequin style, photorealistic, 4K, e-commerce quality.
 ```
 
-### 2. Skijacke – normaler Stoff, Kapuze über den Helm, Sternschnuppen-Streifen, croppbar
+### 2. Skijacke – normaler Stoff, Kapuze über den Helm, Sternschnuppen-Streifen
 ```
 Create a high-end product mockup of a ski jacket for the streetwear brand "WEAX", designed as a matching set with WEAX ski pants. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
@@ -38,15 +38,13 @@ Zippers: NO visible zippers anywhere – no zipper pockets, no chest zippers, no
 Pockets: two simple hand pockets as clean slits in the side seams, no zippers, no flaps.
 Shooting-star stripes: on the left and right side of the jacket, one THIN silver 3M-style reflective stripe (about 5 mm wide) runs VERTICALLY upward from the bottom hem along the side of the body in a gently curving, flowing wave line – like the trail of a shooting star – sweeps up over the side towards the shoulder blade and continues along the BACK in the same flowing curve. Visible from the front, the side and the back; left and right are mirrored. At the bottom end of each stripe, at the hem, sits one small silver star (star shape from the attached logo, without the letter "W") as the head of the shooting star. NO horizontal stripes. The fabric itself stays matte black.
 Sleeves: sleeve ends are straight, wide and open with NO elastic cuffs.
-Convertible cropped length: the jacket can be CROPPED. A hidden, color-matched zipper runs around the body at waist height, concealed inside a clean seam (not visible, no flap). The lower part zips off completely, turning the hip-length ski jacket into a short cropped jacket that ends at the waist. The shooting-star stripes continue seamlessly across the seam, so both lengths look complete.
-Adjustable hem: both the long hem and the cropped hem have a hidden drawcord inside, with two small chrome cord stoppers shaped like the WEAX star at the left and right side, so the hem can be pulled tight. When loose, the hem hangs straight and wide.
+Adjustable hem: the bottom hem has a hidden drawcord inside, with two small chrome cord stoppers shaped like the WEAX star at the left and right side, so the hem can be pulled tight. When loose, the hem hangs straight and wide.
 Logo: one small logo on the left chest, a small silver star on the back of the hood, nothing else.
 
-Presentation: four images side by side – front view of the long version with the hood pulled up over a black ski helmet on the mannequin, front view of the CROPPED version with the lower part zipped off (shown lying next to it), side view, and back view, so the flowing shooting-star stripes are clearly visible. Ghost-mannequin style, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
+Presentation: three images side by side – front view with the hood pulled up over a black ski helmet on the mannequin, side view, and back view, so the flowing shooting-star stripes are clearly visible. Ghost-mannequin style, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
 ```
 
 **Saum enger gezogen zeigen:** nachschreiben „Show the same jacket with the hem drawcord pulled tight.“
-**Nur die Crop-Version zeigen:** „Show only the cropped version of the jacket, worn by a model with the matching ski pants.“
 **Streifen sollen mehr geschwungen sein:** nachschreiben „Make the stripes curve more, like a flowing shooting star trail.“
 **Gemini macht trotzdem Reißverschlüsse:** „Remove all zippers except the small one at the bottom of the left sleeve.“
 **Ganz ohne Front-Reißverschluss (zum Überziehen):** „Make it a pullover anorak with no front opening.“

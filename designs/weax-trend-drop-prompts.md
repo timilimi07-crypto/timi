@@ -1,12 +1,12 @@
 # WEAX TREND DROP – Gemini Prompts
-Alle Teile folgen derselben **WEAX DNA**: washed black, kleines silbernes Logo, die **WEAX LINE** (dünne, geschwungene Reflektor-Linie wie eine Sternschnuppe, startet immer an einem kleinen Stern), **baggy** und **croppbar** (unterer Teil per verstecktem Reißverschluss abnehmbar). Trägt man Oberteil + Hose zusammen, ergeben die Linien **eine durchgehende Sternschnuppe von der Schulter bis zum Knöchel** – das ist das, was es so noch nicht gibt.
+Alle Teile folgen derselben **WEAX DNA**: washed black, kleines silbernes Logo, die **WEAX LINE** (dünne, geschwungene Reflektor-Linie wie eine Sternschnuppe, startet immer an einem kleinen Stern) und alles **baggy**. Trägt man Oberteil + Hose zusammen, ergeben die Linien **eine durchgehende Sternschnuppe von der Schulter bis zum Knöchel** – das ist das, was es so noch nicht gibt.
 **So geht’s:** Logo in Gemini hochladen → Prompt kopieren → einfügen. Ein Teil pro Nachricht.
 
 ---
 
 ## Oberteile
 
-Alle baggy, alle croppbar, alle mit der WEAX LINE an der Seite.
+Alle baggy, alle mit der WEAX LINE an der Seite.
 
 ### 1. Zip-Hoodie – WEAX ORBIT ZIP HOODIE
 
@@ -20,7 +20,6 @@ WEAX DESIGN DNA (follow exactly):
 - Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
 - Signature "WEAX LINE": thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
 - Fit: baggy, oversized and relaxed – never slim fit.
-- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
 - Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
 
 PRODUCT:
@@ -30,9 +29,8 @@ PRODUCT:
 - Kangaroo pocket, ribbed cuffs, no drawstrings.
 - WEAX LINE: on each side one line starts at a small star at the hem, sweeps up the side and over the shoulder blade onto the back.
 - Small logo on the left chest.
-- Croppable: the lower 15 cm zip off, turning it into a cropped hoodie that ends at the waist.
 
-Presentation: four views side by side – front open, front fully zipped up over the head as a mask, back, and the cropped version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
+Presentation: three views side by side – front open, front fully zipped up over the head as a mask, and back. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
 ```
 
 ### 2. Waffel-Longsleeve – WEAX THERMAL LONGSLEEVE
@@ -47,17 +45,14 @@ WEAX DESIGN DNA (follow exactly):
 - Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
 - Signature "WEAX LINE": thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
 - Fit: baggy, oversized and relaxed – never slim fit.
-- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
 - Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
 
 PRODUCT:
 - Soft cotton waffle knit, washed black, boxy oversized fit, extra-long sleeves that stack at the wrist, thumbholes.
-- Convertible: hidden zippers at the elbows let the lower sleeves zip off, turning it into an oversized T-shirt.
 - WEAX LINE: on each sleeve one line runs down the outside from shoulder to wrist and ends at a small star at the cuff; it continues from the shoulder down the side of the body to the hem.
 - Small logo on the upper right chest; a small shooting star (without the W) at the back of the neck.
-- Croppable: the body hem zips off for a cropped length.
 
-Presentation: four views side by side – front, back, short-sleeve version with sleeves zipped off, and the cropped version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
+Presentation: front and back view side by side, with a close-up of the waffle texture and thumbholes. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
 ```
 
 ### 3. Strickpullover – WEAX SHOOTING STAR KNIT
@@ -72,16 +67,14 @@ WEAX DESIGN DNA (follow exactly):
 - Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
 - Signature "WEAX LINE": thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
 - Fit: baggy, oversized and relaxed – never slim fit.
-- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
 - Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
 
 PRODUCT:
 - Chunky, slightly brushed wool-blend knit, washed black, very oversized and boxy, dropped shoulders, wide ribbed cuffs and hem.
 - A large intarsia shooting star knitted diagonally across the front, from the left hip up to the right shoulder, in metallic silver lurex yarn. Its trail continues as the thin WEAX LINE over the shoulder and down the back.
 - Small embroidered logo on the left cuff.
-- Croppable: a hidden zipper behind the ribbed band lets the lower part be removed for a cropped knit.
 
-Presentation: three views side by side – front, back and the cropped version, with close-up of the shimmering lurex yarn. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
+Presentation: front and back view side by side, with a close-up of the shimmering lurex yarn. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
 ```
 
 ### 4. Quarter-Zip – WEAX ORBIT QUARTER-ZIP
@@ -96,7 +89,6 @@ WEAX DESIGN DNA (follow exactly):
 - Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
 - Signature "WEAX LINE": thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
 - Fit: baggy, oversized and relaxed – never slim fit.
-- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
 - Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
 
 PRODUCT:
@@ -104,9 +96,8 @@ PRODUCT:
 - High funnel collar with a chrome quarter-zip and an eight-pointed star puller. When the collar is folded open, the inside shows a silver printed orbit ring.
 - WEAX LINE on both sides from a star at the hem, sweeping up to the shoulder blades.
 - Small logo on the left chest.
-- Croppable: hidden zip-off hem for a cropped version.
 
-Presentation: three views side by side – front with collar open, back, and the cropped version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
+Presentation: three views side by side – front with collar zipped up, front with collar open, and back. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
 ```
 
 ### 5. Varsity-Jacke – WEAX ORBIT VARSITY
@@ -121,7 +112,6 @@ WEAX DESIGN DNA (follow exactly):
 - Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
 - Signature "WEAX LINE": thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
 - Fit: baggy, oversized and relaxed – never slim fit.
-- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
 - Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
 
 PRODUCT:
@@ -131,9 +121,8 @@ PRODUCT:
 - Back: a large shooting star embroidered in silver thread arching across the shoulder blades.
 - Black ribbed collar, cuffs and hem, each with a thin silver double stripe.
 - WEAX LINE along both sides from a star at the hem.
-- Croppable: hidden zip-off hem band for a cropped varsity.
 
-Presentation: three views side by side – front, back with the large shooting star, and the cropped version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
+Presentation: front and back view side by side, with a close-up of the chrome star snaps. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
 ```
 
 ### 6. Puffer-Weste – WEAX ORBIT PUFFER VEST
@@ -148,7 +137,6 @@ WEAX DESIGN DNA (follow exactly):
 - Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
 - Signature "WEAX LINE": thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
 - Fit: baggy, oversized and relaxed – never slim fit.
-- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
 - Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
 
 PRODUCT:
@@ -158,9 +146,8 @@ PRODUCT:
 - WEAX LINE running along a quilting seam across chest and back.
 - Chrome star-shaped cord stoppers at the hem.
 - Small logo on the left chest.
-- Croppable: the lower quilted channel zips off for a cropped vest.
 
-Presentation: four views side by side – front, back, front at night with flash glowing silver, and the cropped version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
+Presentation: three views side by side – front, back, and front at night with flash glowing silver. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
 ```
 
 ### 7. Sherpa-Jacke – WEAX STARDUST SHERPA
@@ -175,7 +162,6 @@ WEAX DESIGN DNA (follow exactly):
 - Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
 - Signature "WEAX LINE": thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
 - Fit: baggy, oversized and relaxed – never slim fit.
-- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
 - Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
 
 PRODUCT:
@@ -184,33 +170,30 @@ PRODUCT:
 - Logo embroidered on the nylon chest pocket.
 - WEAX LINE as thin reflective piping that curves from a star at the hem across the side and onto the back.
 - Boxy oversized fit.
-- Croppable: hidden zip-off hem for a cropped sherpa.
 
-Presentation: three views side by side – front, back and the cropped version, with a close-up of the fluffy texture. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
+Presentation: front and back view side by side, with a close-up of the fluffy texture. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
 ```
 
-### 8. Boxy Crop-Tee – WEAX BOXY CROP TEE
+### 8. Boxy Tee – WEAX BOXY TEE
 
-Breites, kurzes Shirt – mit Anzipp-Saum wird es wieder lang. Funktioniert für Jungs und Mädels.
+Extrem breites, schweres Shirt mit weiten Ärmeln – Sternschnuppe hinten, Linie an der Seite.
 
 ```
-Create a high-end product mockup of a boxy cropped T-shirt for the streetwear brand "WEAX".
+Create a high-end product mockup of a boxy oversized T-shirt for the streetwear brand "WEAX".
 
 WEAX DESIGN DNA (follow exactly):
 - Brand: "WEAX". Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered, metallic silver-white.
 - Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
 - Signature "WEAX LINE": thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
 - Fit: baggy, oversized and relaxed – never slim fit.
-- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
 - Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
 
 PRODUCT:
-- 260 GSM heavyweight cotton, washed black. Very wide and boxy, wide short sleeves, cropped length.
-- Convertible: a matching black hem extension zips onto the hidden zipper, turning it into a regular-length oversized tee.
+- 260 GSM heavyweight cotton, washed black. Very wide and boxy, dropped shoulders, wide elbow-length sleeves, regular length.
 - WEAX LINE: on each side from a small star at the hem, curving up the side and onto the sleeve.
 - Small logo on the upper right chest; medium shooting star (without the W) centered on the upper back.
 
-Presentation: three views side by side – cropped front, back, and the long version with the hem extension attached. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
+Presentation: front and back view side by side. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
 ```
 
 ---
@@ -221,7 +204,7 @@ Die Linie läuft außen am Bein hoch und verbindet sich mit dem Oberteil.
 
 ### 9. Jorts – WEAX ORBIT JORTS
 
-Extrem weite, lange Jeans-Shorts bis unters Knie. Unteres Stück abzippbar – dann normale Shorts.
+Extrem weite, lange Jeans-Shorts bis unters Knie, mit Stern-Nieten und Orbit-Ring auf der Gesäßtasche.
 
 ```
 Create a high-end product mockup of extra-baggy long denim shorts (jorts) for the streetwear brand "WEAX".
@@ -231,7 +214,6 @@ WEAX DESIGN DNA (follow exactly):
 - Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
 - Signature "WEAX LINE": thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
 - Fit: baggy, oversized and relaxed – never slim fit.
-- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
 - Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
 
 PRODUCT:
@@ -239,14 +221,13 @@ PRODUCT:
 - Chrome rivets and a chrome button shaped like the eight-pointed star.
 - WEAX LINE on the outside of each leg, starting at a small star just above the hem and curving up to the waistband.
 - Silver embroidered orbit ring on the right back pocket; small logo on the front left thigh.
-- Croppable: a hidden zipper above the knee lets the lower part zip off for shorter shorts.
 
-Presentation: three views side by side – front, back and the shorter cropped version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
+Presentation: front and back view side by side. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
 ```
 
 ### 10. Baggy-Jeans – WEAX STARFALL DENIM
 
-Super-baggy schwarze Jeans, die über die Schuhe fällt – und per Reißverschluss am Knie zu den Jorts wird (2-in-1).
+Super-baggy schwarze Jeans, die über die Schuhe fällt – mit Stern-Nieten und der WEAX LINE am Bein.
 
 ```
 Create a high-end product mockup of super-baggy jeans for the streetwear brand "WEAX".
@@ -256,17 +237,15 @@ WEAX DESIGN DNA (follow exactly):
 - Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
 - Signature "WEAX LINE": thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
 - Fit: baggy, oversized and relaxed – never slim fit.
-- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
 - Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
 
 PRODUCT:
 - Washed black heavy denim, very wide legs that puddle over the shoes.
-- 2-in-1: a hidden zipper at the knee lets the lower legs zip off, turning the jeans into the matching WEAX jorts.
 - Chrome star rivets and button.
 - WEAX LINE on the outside of each leg from a small star at the hem up to the waistband.
 - Silver embroidered orbit ring on the right back pocket; small logo on the front left thigh.
 
-Presentation: three views side by side – front, back and the zipped-off jorts version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
+Presentation: front and back view side by side. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
 ```
 
 ### 11. Parachute Pants – WEAX PARACHUTE PANTS
@@ -281,7 +260,6 @@ WEAX DESIGN DNA (follow exactly):
 - Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
 - Signature "WEAX LINE": thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
 - Fit: baggy, oversized and relaxed – never slim fit.
-- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
 - Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
 
 PRODUCT:
@@ -291,9 +269,8 @@ PRODUCT:
 - Elastic waistband with an integrated black belt and a chrome star buckle.
 - WEAX LINE on the outside of each leg from a star at the hem up to the waistband.
 - Small logo on the front left thigh.
-- Croppable: hidden zipper at the knee to convert into wide shorts.
 
-Presentation: three views side by side – front, back and the cropped shorts version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
+Presentation: front and back view side by side. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
 ```
 
 ### 12. Trackpants – WEAX ORBIT TRACKPANTS
@@ -308,7 +285,6 @@ WEAX DESIGN DNA (follow exactly):
 - Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
 - Signature "WEAX LINE": thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
 - Fit: baggy, oversized and relaxed – never slim fit.
-- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
 - Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
 
 PRODUCT:
@@ -317,9 +293,8 @@ PRODUCT:
 - Side snap buttons shaped like the eight-pointed star along the lower legs, so the hem can be opened wider.
 - Elastic waistband, no drawstrings.
 - Small logo on the front left thigh.
-- Croppable: hidden zipper at mid-calf for a cropped length.
 
-Presentation: three views side by side – front, back and the cropped version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
+Presentation: front and back view side by side. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
 ```
 
 ### 13. Matching Set (Lookbook) – WEAX LINE SET
@@ -330,7 +305,7 @@ Das Herzstück für TikTok: Hoodie + Trackpants zusammen – die Linien verbinde
 Create a fashion campaign photo for the streetwear brand "WEAX". Use the attached image as the exact logo.
 
 Two teenagers stand side by side in a matching WEAX set: an oversized washed black full-zip hoodie and baggy black track pants. On both, thin silver reflective lines flow in gentle curves like a shooting star trail – starting at a small silver eight-pointed star at the ankle, running up the outside of the leg, continuing seamlessly onto the hoodie and ending over the shoulder blade. Together they form one continuous shooting-star line from ankle to shoulder.
-Model 1 wears the full-length version. Model 2 wears the cropped versions (cropped hoodie at the waist, track pants zipped off at mid-calf), the line still continuous.
+One model faces the camera, the other is turned to the side, so the continuous line is visible from the front and the side.
 Small embroidered silver-white logo on the chest of both hoodies.
 
 Setting: city rooftop at night, camera flash makes all the lines glow bright silver against the black outfits, slight motion blur, Gen-Z editorial energy. Vertical 9:16 format for TikTok and Instagram Reels. Photorealistic, 4K.
@@ -365,7 +340,7 @@ Presentation: front and side view, plus one shot at night with flash so the line
 
 ### 15. Balaclava – WEAX NIGHT BALACLAVA
 
-Strick-Sturmhaube, Gesichtsöffnung mit Reflektor-Linie umrandet – lässt sich runterziehen und als Neck-Gaiter tragen.
+Strick-Sturmhaube, die Gesichtsöffnung ist mit einer Reflektor-Linie umrandet, kleiner Stern auf der Stirn.
 
 ```
 Create a high-end product mockup of a knit balaclava for the streetwear brand "WEAX".
@@ -380,9 +355,8 @@ PRODUCT:
 - Fine black rib knit, full head coverage with an open face.
 - The face opening is outlined with a thin silver reflective line that ends in a small star on the forehead.
 - Small embroidered logo on the side of the neck.
-- Convertible ("croppable"): it can be pulled down and worn as a neck gaiter.
 
-Presentation: three views side by side – worn on a mannequin head as balaclava, as neck gaiter, and at night with flash so the line glows. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
+Presentation: worn on a mannequin head, front and side view, plus one shot at night with flash so the line glows. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.
 ```
 
 ### 16. Cap – WEAX ORBIT CAP
@@ -488,9 +462,9 @@ Ein Titelbild für den ganzen Drop – vier Teenager in verschiedenen Teilen, al
 ```
 Create a fashion campaign cover image for the streetwear brand "WEAX". Use the attached image as the exact logo.
 
-Four teenagers pose together on a city rooftop at night, each wearing different pieces of the all-black WEAX collection: a full-zip hoodie zipped up over the head as a mask, a cropped varsity jacket with chrome star snaps, a reflective puffer vest, super-baggy black jeans, parachute pants, a short beanie, a balaclava and a silver chain with the WEAX logo pendant.
+Four teenagers pose together on a city rooftop at night, each wearing different pieces of the all-black WEAX collection: a full-zip hoodie zipped up over the head as a mask, an oversized varsity jacket with chrome star snaps, a reflective puffer vest, super-baggy black jeans, parachute pants, a short beanie, a balaclava and a silver chain with the WEAX logo pendant.
 All pieces share the signature WEAX LINE: thin silver reflective lines flowing like shooting star trails, each starting at a small eight-pointed star. Camera flash makes every line and the reflective vest glow bright silver against the black outfits.
-Everything is baggy and oversized; two of them wear cropped versions.
+Everything is baggy and oversized.
 The WEAX logo appears small in silver at the top of the image.
 
 Gen-Z editorial energy, slight motion blur, direct flash, vertical 9:16 format for TikTok and Instagram. Photorealistic, 4K.
@@ -501,5 +475,4 @@ Gen-Z editorial energy, slight motion blur, direct flash, vertical 9:16 format f
 **Falls Gemini etwas falsch macht:**
 - Linie zu dick: „Make the WEAX LINE thinner, like a fine piping.“
 - Nicht baggy genug: „Make it more baggy and oversized.“
-- Crop-Version fehlt: „Also show the cropped version with the lower part zipped off.“
 - Logo verändert: „Keep the logo exactly like in the uploaded image.“
