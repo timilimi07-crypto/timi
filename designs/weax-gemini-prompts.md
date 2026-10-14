@@ -10,62 +10,65 @@ Markenlook (aus dem Shop übernommen): tiefes Schwarz (#050507), Chrom/Silber (#
 
 ---
 
-## WINTER-KOLLEKTION (Basic-Version)
+## WINTER-KOLLEKTION (Basic + reflektierende Streifen)
 
-Wichtig für beide Teile: **schlicht und glatt**, keine Streifen, keine Paspeln, keine Überlappungen, **offene Enden** (keine Bündchen, kein Gummizug, kein Kordelzug).
+Beide Teile: schlicht und glatt, **offene Enden** (keine Bündchen, kein Gummizug, kein Kordelzug) – aber mit **silbernen reflektierenden Streifen**, die nachts im Licht leuchten. Die Streifen sitzen bei Jacke und Hose an der gleichen Stelle (außen an Ärmel bzw. Bein), damit es zusammen wie ein Set aussieht.
 
-### 1. Pufferjacke – basic
+### 1. Pufferjacke – basic mit Reflektor-Streifen
 ```
 Create a clean, minimal product mockup of a basic oversized puffer jacket for the streetwear brand "WEAX". Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
-Design: simple boxy oversized fit, smooth matte outer fabric with NO visible quilting lines, NO stripes, NO piping, NO panels – one clean, even, puffy surface. Simple stand-up collar. One plain straight front zipper only, fully visible – NO storm flap, NO overlapping placket, NO snaps or buttons covering the zipper. Two simple hidden side-seam pockets.
+Design: simple boxy oversized fit, smooth matte black outer fabric with NO visible quilting lines – one clean, even, puffy surface. Simple stand-up collar. One plain straight front zipper only, fully visible – NO storm flap, NO overlapping placket, NO snaps or buttons covering the zipper. Two simple hidden side-seam pockets.
+Reflective stripes: one straight, clean silver 3M-style reflective stripe (about 2 cm wide) running down the outer side of each sleeve from shoulder to sleeve end. The stripes look silver-grey in daylight and glow bright silver-white when hit by light. No other stripes or panels.
 Open ends: the sleeve ends are straight and open with NO elastic cuffs and NO ribbing; the bottom hem is straight and open with NO drawcord and NO elastic.
-Color: solid matte black, everything tonal black except the logo.
-Logo: one small logo on the left chest, nothing else. No other prints, labels or decorations.
+Logo: one small logo on the left chest, nothing else.
 
-Presentation: ghost-mannequin front view, clean soft studio lighting, plain light-grey background, photorealistic, 4K, minimal e-commerce style.
+Presentation: two images side by side – left: ghost-mannequin front view in soft studio light on a plain light-grey background; right: the same jacket at night, photographed with flash so the silver stripes reflect brightly. Photorealistic, 4K, minimal e-commerce style.
 ```
 
-### 2. Baggy-Hose mit Seitentaschen – basic
+### 2. Baggy-Hose mit Seitentaschen – basic mit Reflektor-Streifen
 ```
-Create a clean, minimal product mockup of basic baggy cargo pants for the streetwear brand "WEAX", matching a plain black WEAX puffer jacket. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
+Create a clean, minimal product mockup of basic baggy cargo pants for the streetwear brand "WEAX", matching a plain black WEAX puffer jacket with silver reflective sleeve stripes. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
-Design: very wide baggy straight-leg fit, smooth matte nylon fabric, one large cargo pocket with a simple flap on the outside of each thigh. NO stripes, NO side tape, NO piping, NO contrast panels, NO quilting, NO knee padding, NO straps or buckles. Simple waistband with belt loops and a plain button and fly.
+Design: very wide baggy straight-leg fit, smooth matte black nylon fabric, one large cargo pocket with a simple flap on the outside of each thigh. NO quilting, NO knee padding, NO straps or buckles. Simple waistband with belt loops and a plain button and fly.
+Reflective stripes: one straight, clean silver 3M-style reflective stripe (about 2 cm wide) running down the outer side seam of each leg from waistband to hem, passing next to the cargo pocket. The stripes look silver-grey in daylight and glow bright silver-white when hit by light. No other stripes.
 Open legs: the leg openings are straight, wide and open – NO elastic, NO cuffs, NO zippers, NO toggles or drawcords at the ankles. The fabric falls loosely and stacks slightly over the shoes.
-Color: solid matte black, everything tonal black except the logo.
-Logo: one small logo on the front left thigh below the pocket line (or on the back pocket), nothing else.
+Logo: one small logo on the front left thigh, nothing else.
 
-Presentation: front view, ghost-mannequin style, clean soft studio lighting, plain light-grey background, photorealistic, 4K, minimal e-commerce style.
+Presentation: two images side by side – left: ghost-mannequin front view in soft studio light on a plain light-grey background; right: the same pants at night, photographed with flash so the silver stripes reflect brightly. Photorealistic, 4K, minimal e-commerce style.
 ```
 
 ### 3. Winter-Outfit komplett (Lookbook)
 ```
-Create a fashion lookbook photo of a model wearing a minimal, basic WEAX winter outfit: a plain matte black oversized puffer jacket with smooth fabric (no quilting lines), a simple visible front zipper with no flap, open straight sleeve ends and open hem, and a small logo on the left chest; combined with plain black baggy cargo pants with one cargo pocket on each thigh, no stripes, and wide open leg hems falling over the shoes. Use the attached image as the exact brand logo.
+Create a fashion lookbook photo of a model wearing the WEAX winter outfit: a plain matte black oversized puffer jacket (smooth, no quilting lines, simple visible zipper, open straight sleeve ends and hem, small logo on the left chest) with a silver reflective stripe down each sleeve, combined with black baggy cargo pants (one cargo pocket on each thigh, wide open leg hems falling over the shoes) with a silver reflective stripe down each outer leg. Use the attached image as the exact brand logo.
 
-Setting: snowy city street at blue hour, light snowfall, calm cinematic lighting. Full body shot, relaxed pose, photorealistic, clean editorial style, 4K.
+Setting: city street at night with light snowfall, a car headlight or camera flash hits the model so all silver stripes glow brightly against the black outfit. Full body shot, relaxed pose, photorealistic, cinematic editorial style, 4K.
 ```
 
-**Wenn Gemini trotzdem Streifen oder Bündchen einbaut:** nachschreiben „Remove all stripes and elastic cuffs. The sleeve and leg openings must be straight and open.“
-**Wenn die Jacke zu flach aussieht:** nachschreiben „Make it puffier, but keep the surface smooth without stitched lines.“
+**Wenn Gemini zu viele Streifen macht:** nachschreiben „Only one reflective stripe per sleeve / per leg, nothing else.“
 
 ---
 
 ## SOMMER-KOLLEKTION
 
-### 4. T-Shirt
+### 4. T-Shirt – Logo oben rechts, Streifen, große Sternschnuppe hinten
 ```
-Create a high-end product mockup of an oversized heavyweight T-shirt for the luxury streetwear brand "WEAX". Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
+Create a high-end product mockup of an oversized heavyweight T-shirt for the streetwear brand "WEAX". Use the attached image as the brand logo – do not redesign or distort it.
 
-Design: boxy oversized fit, dropped shoulders, thick ribbed crew neck, 260 gsm premium cotton, slightly cropped length.
-Color: off-white / cream body, logo printed in metallic chrome-silver puff print.
-Logo placement: medium logo centered on the chest, large logo across the upper back, small woven label on the bottom hem.
+Design: boxy oversized fit, dropped shoulders, thick ribbed crew neck, 260 gsm premium cotton, solid black.
+Front: one small logo placed in the upper right corner of the chest (on the right side as seen in the image), nothing else on the front.
+Stripes: one thin silver reflective stripe running over each shoulder and down the outer side of each sleeve to the sleeve end – matching the WEAX winter collection.
+Back: one LARGE shooting star graphic covering most of the upper back, printed in metallic chrome-silver. Use ONLY the shooting star from the attached logo – remove the letter "W" completely, no letters, no text, just the big shooting star with its trail.
 
-Presentation: flat lay, front and back view side by side, soft natural summer daylight, plain light-grey background, visible cotton texture, photorealistic, 4K, e-commerce quality.
+Presentation: flat lay, front view and back view side by side, soft studio light, plain light-grey background, visible cotton texture, photorealistic, 4K, e-commerce quality.
 ```
+
+**Wenn Gemini das W trotzdem mit draufmacht:** nachschreiben „Remove the W on the back. Only the shooting star, no letters.“
+**Weitere Farbe:** „Same T-shirt in white, with the shooting star in silver-grey.“
 
 ### 5. Kurze Hose (Shorts)
 ```
-Create a high-end product mockup of relaxed summer shorts for the luxury streetwear brand "WEAX", matching an oversized cream WEAX T-shirt. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
+Create a high-end product mockup of relaxed summer shorts for the luxury streetwear brand "WEAX", matching an oversized WEAX T-shirt. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
 Design: loose fit, length just above the knee, heavyweight cotton fleece/terry, elastic waistband with thick flat drawcords ending in chrome metal tips, two side pockets and one back pocket.
 Color: cream / off-white to match the T-shirt (alternative colorway: black), details in chrome-silver.
@@ -108,7 +111,7 @@ Presentation: the 3-pack laid flat in a premium black box with silver foil WEAX 
 
 ### 9. Sommer-Outfit komplett (Lookbook)
 ```
-Create a fashion lookbook photo of a model wearing the full WEAX summer outfit: an oversized cream heavyweight T-shirt with chrome-silver logo on the chest, matching cream relaxed shorts with chrome drawcord tips, white crew socks with the logo on the cuff, and clean white sneakers. Use the attached image as the exact brand logo on all pieces.
+Create a fashion lookbook photo of a model wearing the full WEAX summer outfit: an oversized black heavyweight T-shirt with a small logo on the upper right chest, thin silver reflective stripes over the shoulders and sleeves, matching cream relaxed shorts with chrome drawcord tips, white crew socks with the logo on the cuff, and clean white sneakers. Use the attached image as the exact brand logo on all pieces.
 
 Setting: sunny concrete rooftop or beach promenade at golden hour, warm light, palm shadows. Full body shot, relaxed streetwear pose, photorealistic, editorial fashion campaign style, 4K.
 ```

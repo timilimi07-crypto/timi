@@ -9,7 +9,7 @@ Einfach ankreuzen, was du willst – ich lege die Produkte dann als **Entwurf** 
 ## Basics – schnell umsetzbar, passen sofort zum Pullover & zur Hose
 
 - [ ] **WEAX ORIGIN T-SHIRT** – ~30 €
-  Oversized Heavyweight-Shirt, 240–260 g Baumwolle, kleiner Stern auf der Brust. Schwarz / Weiß.
+  Oversized Heavyweight-Shirt, 260 g Baumwolle, Logo oben rechts, silberne Reflektor-Streifen an Schultern/Ärmeln, große Sternschnuppe auf dem Rücken. Schwarz / Weiß.
   *Text:* „Schwere Baumwolle, boxy Schnitt, Stern auf der Brust. Das Basic, das nicht basic aussieht.“
 
 - [ ] **WEAX ORIGIN ZIP HOODIE** – ~50 €
@@ -29,10 +29,10 @@ Einfach ankreuzen, was du willst – ich lege die Produkte dann als **Entwurf** 
 ## Winter
 
 - [ ] **WEAX PUFFER JACKE** – ~120–150 €
-  Basic Pufferjacke, glatt, offene Enden, kleines Logo (siehe Gemini-Prompt #1).
+  Basic Pufferjacke, glatt, offene Enden, silberne Reflektor-Streifen an den Ärmeln, kleines Logo (siehe Gemini-Prompt #1).
 
 - [ ] **WEAX BAGGY CARGO HOSE** – ~60–70 €
-  Weite Hose mit Seitentaschen, keine Streifen, offene Beine (siehe Gemini-Prompt #2).
+  Weite Hose mit Seitentaschen, silberne Reflektor-Streifen an den Beinen, offene Beine (siehe Gemini-Prompt #2).
 
 - [ ] **WEAX BEANIE** – ~20 €
   Gerippte Mütze mit kleinem gestickten Stern. Schwarz / Grau / Weiß.
