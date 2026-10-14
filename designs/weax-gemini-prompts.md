@@ -10,37 +10,43 @@ Markenlook (aus dem Shop übernommen): tiefes Schwarz (#050507), Chrom/Silber (#
 
 ---
 
-## WINTER-KOLLEKTION
+## WINTER-KOLLEKTION (Basic-Version)
 
-### 1. Pufferjacke
+Wichtig für beide Teile: **schlicht und glatt**, keine Streifen, keine Paspeln, keine Überlappungen, **offene Enden** (keine Bündchen, kein Gummizug, kein Kordelzug).
+
+### 1. Pufferjacke – basic
 ```
-Create a high-end product mockup of an oversized puffer jacket for the luxury streetwear brand "WEAX". Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
+Create a clean, minimal product mockup of a basic oversized puffer jacket for the streetwear brand "WEAX". Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
-Design: boxy oversized fit, thick horizontal quilted baffles, high stand-up collar that covers the chin, two-way chrome zipper, hidden snap storm flap, elastic cuffs, adjustable drawcord hem.
-Color: deep matte black (#050507) shell with a subtle satin sheen; zipper pulls, snaps and logo in polished chrome/silver (#DFE3E8).
-Logo placement: medium-size embroidered/3D-chrome logo centered on the chest, small tonal logo on the left sleeve, woven chrome logo tab on the hood/collar back.
-Details: soft fleece-lined collar inside, reflective silver piping along the shoulder seams.
+Design: simple boxy oversized fit, smooth matte outer fabric with NO visible quilting lines, NO stripes, NO piping, NO panels – one clean, even, puffy surface. Simple stand-up collar. One plain straight front zipper only, fully visible – NO storm flap, NO overlapping placket, NO snaps or buttons covering the zipper. Two simple hidden side-seam pockets.
+Open ends: the sleeve ends are straight and open with NO elastic cuffs and NO ribbing; the bottom hem is straight and open with NO drawcord and NO elastic.
+Color: solid matte black, everything tonal black except the logo.
+Logo: one small logo on the left chest, nothing else. No other prints, labels or decorations.
 
-Presentation: ghost-mannequin front view, clean studio lighting, plain dark-grey gradient background, sharp fabric texture, photorealistic, 4K, e-commerce lookbook quality.
+Presentation: ghost-mannequin front view, clean soft studio lighting, plain light-grey background, photorealistic, 4K, minimal e-commerce style.
 ```
 
-### 2. Baggy Ski-Hose (passend zur Jacke)
+### 2. Baggy-Hose mit Seitentaschen – basic
 ```
-Create a high-end product mockup of baggy ski-style cargo pants for the luxury streetwear brand "WEAX", designed to match a black oversized WEAX puffer jacket. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
+Create a clean, minimal product mockup of basic baggy cargo pants for the streetwear brand "WEAX", matching a plain black WEAX puffer jacket. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
-Design: very wide baggy straight-leg fit, technical water-repellent nylon shell, articulated knees, large 3D cargo pockets with chrome snap buttons, snow gaiter cuffs with side zippers at the hem, adjustable elastic waist with chrome buckle belt, subtle padding/quilting at the knees.
-Color: deep matte black (#050507), hardware and logo in polished chrome/silver (#DFE3E8).
-Logo placement: small chrome logo on the left thigh below the hip, vertical logo print running down the side of the right leg, rubber logo patch on the back waistband.
+Design: very wide baggy straight-leg fit, smooth matte nylon fabric, one large cargo pocket with a simple flap on the outside of each thigh. NO stripes, NO side tape, NO piping, NO contrast panels, NO quilting, NO knee padding, NO straps or buckles. Simple waistband with belt loops and a plain button and fly.
+Open legs: the leg openings are straight, wide and open – NO elastic, NO cuffs, NO zippers, NO toggles or drawcords at the ankles. The fabric falls loosely and stacks slightly over the shoes.
+Color: solid matte black, everything tonal black except the logo.
+Logo: one small logo on the front left thigh below the pocket line (or on the back pocket), nothing else.
 
-Presentation: front view, ghost-mannequin style, clean studio lighting, plain dark-grey gradient background, photorealistic, 4K, e-commerce lookbook quality.
+Presentation: front view, ghost-mannequin style, clean soft studio lighting, plain light-grey background, photorealistic, 4K, minimal e-commerce style.
 ```
 
 ### 3. Winter-Outfit komplett (Lookbook)
 ```
-Create a fashion lookbook photo of a model wearing the full WEAX winter outfit: a black oversized quilted puffer jacket with high collar and chrome logo on the chest, combined with matching black baggy ski cargo pants with chrome snaps and a vertical logo print on the leg. Use the attached image as the exact brand logo on both pieces.
+Create a fashion lookbook photo of a model wearing a minimal, basic WEAX winter outfit: a plain matte black oversized puffer jacket with smooth fabric (no quilting lines), a simple visible front zipper with no flap, open straight sleeve ends and open hem, and a small logo on the left chest; combined with plain black baggy cargo pants with one cargo pocket on each thigh, no stripes, and wide open leg hems falling over the shoes. Use the attached image as the exact brand logo.
 
-Setting: snowy mountain rooftop at blue hour, light snowfall, cold cinematic lighting with silver highlights. Full body shot, confident streetwear pose, photorealistic, editorial fashion campaign style, 4K.
+Setting: snowy city street at blue hour, light snowfall, calm cinematic lighting. Full body shot, relaxed pose, photorealistic, clean editorial style, 4K.
 ```
+
+**Wenn Gemini trotzdem Streifen oder Bündchen einbaut:** nachschreiben „Remove all stripes and elastic cuffs. The sleeve and leg openings must be straight and open.“
+**Wenn die Jacke zu flach aussieht:** nachschreiben „Make it puffier, but keep the surface smooth without stitched lines.“
 
 ---
 
