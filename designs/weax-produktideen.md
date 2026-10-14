@@ -29,10 +29,10 @@ Einfach ankreuzen, was du willst – ich lege die Produkte dann als **Entwurf** 
 ## Winter
 
 - [ ] **WEAX PUFFER JACKE** – ~120–150 €
-  Basic Pufferjacke, glatt, offene Enden, silberne Reflektor-Streifen an den Ärmeln, kleines Logo (siehe Gemini-Prompt #1).
+  Klassische Pufferjacke mit Rillen, offene Enden, dünner silberner Reflektor-Streifen vorne & hinten, kleines Logo (siehe Gemini-Prompt #1).
 
 - [ ] **WEAX BAGGY CARGO HOSE** – ~60–70 €
-  Weite Hose mit Seitentaschen, silberne Reflektor-Streifen an den Beinen, offene Beine (siehe Gemini-Prompt #2).
+  Weite Hose mit Seitentaschen, Gürtel-Verschluss, dünne Reflektor-Streifen vorne & hinten, Stern unten an jedem Bein, offene Beine (siehe Gemini-Prompt #2).
 
 - [ ] **WEAX BEANIE** – ~20 €
   Gerippte Mütze mit kleinem gestickten Stern. Schwarz / Grau / Weiß.

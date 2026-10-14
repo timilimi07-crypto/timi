@@ -10,42 +10,46 @@ Markenlook (aus dem Shop übernommen): tiefes Schwarz (#050507), Chrom/Silber (#
 
 ---
 
-## WINTER-KOLLEKTION (Basic + reflektierende Streifen)
+## WINTER-KOLLEKTION (Puffer + dünne Reflektor-Streifen)
 
-Beide Teile: schlicht und glatt, **offene Enden** (keine Bündchen, kein Gummizug, kein Kordelzug) – aber mit **silbernen reflektierenden Streifen**, die nachts im Licht leuchten. Die Streifen sitzen bei Jacke und Hose an der gleichen Stelle (außen an Ärmel bzw. Bein), damit es zusammen wie ein Set aussieht.
+Beide Teile: **dünne silberne Reflektor-Streifen vorne und hinten**, die nachts im Licht leuchten, **offene Enden** (keine Bündchen, kein Gummizug, kein Kordelzug). Gemini zeigt jeweils Vorder- und Rückseite nebeneinander.
 
-### 1. Pufferjacke – basic mit Reflektor-Streifen
+### 1. Pufferjacke – klassisch gesteppt, dünne Reflektor-Streifen
 ```
-Create a clean, minimal product mockup of a basic oversized puffer jacket for the streetwear brand "WEAX". Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
+Create a high-end product mockup of an oversized puffer jacket for the streetwear brand "WEAX". Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
-Design: simple boxy oversized fit, smooth matte black outer fabric with NO visible quilting lines – one clean, even, puffy surface. Simple stand-up collar. One plain straight front zipper only, fully visible – NO storm flap, NO overlapping placket, NO snaps or buttons covering the zipper. Two simple hidden side-seam pockets.
-Reflective stripes: one straight, clean silver 3M-style reflective stripe (about 2 cm wide) running down the outer side of each sleeve from shoulder to sleeve end. The stripes look silver-grey in daylight and glow bright silver-white when hit by light. No other stripes or panels.
+Design: classic real puffer jacket – boxy oversized fit, thick and full, with clearly visible horizontal quilted channels (puffy ribs about 8–10 cm apart) all around the body and sleeves. Matte black fabric with a soft sheen. Simple high stand-up collar. One plain straight front zipper, fully visible – NO storm flap, NO overlapping placket, NO snaps or buttons covering the zipper. Two simple side pockets.
+Reflective stripes: THIN silver 3M-style reflective stripes (about 5 mm wide), placed on the FRONT and on the BACK: one thin stripe running horizontally along a quilting seam across the chest, and the same thin stripe across the back at the same height, continuing around the sleeves so it forms one clean line around the jacket. The stripes look silver-grey in daylight and glow bright silver-white when hit by light. No other stripes.
 Open ends: the sleeve ends are straight and open with NO elastic cuffs and NO ribbing; the bottom hem is straight and open with NO drawcord and NO elastic.
 Logo: one small logo on the left chest, nothing else.
 
-Presentation: two images side by side – left: ghost-mannequin front view in soft studio light on a plain light-grey background; right: the same jacket at night, photographed with flash so the silver stripes reflect brightly. Photorealistic, 4K, minimal e-commerce style.
+Presentation: front view and back view side by side, ghost-mannequin style, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
 ```
 
-### 2. Baggy-Hose mit Seitentaschen – basic mit Reflektor-Streifen
+### 2. Baggy-Hose – Seitentaschen, Gürtel, dünne Streifen, Sterne unten
 ```
-Create a clean, minimal product mockup of basic baggy cargo pants for the streetwear brand "WEAX", matching a plain black WEAX puffer jacket with silver reflective sleeve stripes. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
+Create a high-end product mockup of baggy cargo pants for the streetwear brand "WEAX", matching a black WEAX puffer jacket with thin silver reflective stripes. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
-Design: very wide baggy straight-leg fit, smooth matte black nylon fabric, one large cargo pocket with a simple flap on the outside of each thigh. NO quilting, NO knee padding, NO straps or buckles. Simple waistband with belt loops and a plain button and fly.
-Reflective stripes: one straight, clean silver 3M-style reflective stripe (about 2 cm wide) running down the outer side seam of each leg from waistband to hem, passing next to the cargo pocket. The stripes look silver-grey in daylight and glow bright silver-white when hit by light. No other stripes.
+Design: very wide baggy straight-leg fit, smooth matte black nylon fabric, one large cargo pocket with a simple flap on the outside of each thigh. NO quilting, NO knee padding.
+Belt closure: the waist closes with an integrated black webbing belt with a polished silver/chrome buckle at the front, threaded through the belt loops – the belt is the main closure, no visible button.
+Reflective stripes: THIN silver 3M-style reflective stripes (about 5 mm wide) on the FRONT and on the BACK: one thin stripe running straight down the front of each leg from the waistband to the hem, and one thin stripe running straight down the back of each leg. The stripes look silver-grey in daylight and glow bright silver-white when hit by light. No other stripes.
+Stars: one small silver star at the bottom of each leg, just above the hem – one on the left leg and one on the right leg. Use only the star shape from the attached logo, without the letter "W".
 Open legs: the leg openings are straight, wide and open – NO elastic, NO cuffs, NO zippers, NO toggles or drawcords at the ankles. The fabric falls loosely and stacks slightly over the shoes.
 Logo: one small logo on the front left thigh, nothing else.
 
-Presentation: two images side by side – left: ghost-mannequin front view in soft studio light on a plain light-grey background; right: the same pants at night, photographed with flash so the silver stripes reflect brightly. Photorealistic, 4K, minimal e-commerce style.
+Presentation: front view and back view side by side, ghost-mannequin style, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
 ```
 
 ### 3. Winter-Outfit komplett (Lookbook)
 ```
-Create a fashion lookbook photo of a model wearing the WEAX winter outfit: a plain matte black oversized puffer jacket (smooth, no quilting lines, simple visible zipper, open straight sleeve ends and hem, small logo on the left chest) with a silver reflective stripe down each sleeve, combined with black baggy cargo pants (one cargo pocket on each thigh, wide open leg hems falling over the shoes) with a silver reflective stripe down each outer leg. Use the attached image as the exact brand logo.
+Create a fashion lookbook photo of a model wearing the WEAX winter outfit: a classic black oversized puffer jacket with horizontal quilted channels, simple visible zipper, open straight sleeve ends and hem, small logo on the left chest, and one thin silver reflective stripe around the chest and back; combined with black baggy cargo pants with a chrome belt buckle, one cargo pocket on each thigh, thin silver reflective stripes down the front and back of each leg, a small silver star above each hem, and wide open leg hems falling over the shoes. Use the attached image as the exact brand logo.
 
-Setting: city street at night with light snowfall, a car headlight or camera flash hits the model so all silver stripes glow brightly against the black outfit. Full body shot, relaxed pose, photorealistic, cinematic editorial style, 4K.
+Setting: city street at night with light snowfall, a car headlight or camera flash hits the model so all thin silver stripes glow brightly against the black outfit. Full body shot, relaxed pose, photorealistic, cinematic editorial style, 4K.
 ```
 
-**Wenn Gemini zu viele Streifen macht:** nachschreiben „Only one reflective stripe per sleeve / per leg, nothing else.“
+**Nachtbild:** nachschreiben „Now show the same piece at night, photographed with flash, so the silver stripes reflect brightly.“
+**Streifen immer noch zu dick:** „Make the reflective stripes thinner, like a thin piping line.“
+**Jacke nicht puffig genug:** „Make it much puffier, like a classic down puffer jacket.“
 
 ---
 
