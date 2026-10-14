@@ -55,19 +55,19 @@ Setting: city street at night with light snowfall, a car headlight or camera fla
 
 ## SOMMER-KOLLEKTION
 
-### 4. T-Shirt – Slim Fit, kurze Ärmel, dünne Streifen, Logo unten rechts, Sternschnuppe hinten
+### 4. T-Shirt – Slim Fit, kurze Ärmel, Logo oben rechts, Sternschnuppe hinten
 ```
 Create a high-end product mockup of a slim-fit muscle T-shirt for the streetwear brand "WEAX". Use the attached image as the brand logo – do not redesign or distort it.
 
-Design: slim fit / muscle fit that sits close to the body through the chest and arms, SHORT tight sleeves that end high on the upper arm so the biceps show, clean ribbed crew neck, premium stretch cotton, solid black.
-Reflective stripes: THIN silver 3M-style reflective stripes (about 3–5 mm wide) on the FRONT and on the BACK: on each side one thin stripe running straight down from the shoulder seam to the hem – two stripes on the front and two matching stripes on the back. The stripes look silver-grey in daylight and glow bright silver-white when hit by light. No other stripes.
-Front: one SMALL logo in the bottom right corner of the front, just above the hem (on the right side as seen in the image). Nothing else on the front.
-Back: one LARGE shooting star graphic covering most of the upper back, between the two back stripes, printed in metallic chrome-silver. Use ONLY the shooting star from the attached logo – remove the letter "W" completely, no letters, no text, just the big shooting star with its trail.
+Design: slim fit / muscle fit that sits close to the body through the chest and arms, SHORT tight sleeves that end high on the upper arm so the biceps show, clean ribbed crew neck, premium stretch cotton, solid black. Plain and clean – NO stripes, NO piping, NO panels.
+Front: one SMALL logo on the upper right chest (on the right side as seen in the image). Nothing else on the front.
+Back: one MEDIUM-SIZED shooting star graphic centered on the upper back, roughly the width of a hand – clearly visible but not oversized. Printed in metallic chrome-silver. Use ONLY the shooting star from the attached logo – remove the letter "W" completely, no letters, no text, just the shooting star with its trail.
 
 Presentation: front view and back view side by side, ghost-mannequin style showing the slim athletic shape, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
 ```
 
 **Wenn Gemini das W trotzdem mit draufmacht:** nachschreiben „Remove the W on the back. Only the shooting star, no letters.“
+**Sternschnuppe noch kleiner:** „Make the shooting star on the back smaller.“
 **Ärmel noch kürzer / enger:** „Make the sleeves shorter and tighter, like a gym muscle tee.“
 **Am Model zeigen:** „Show the same T-shirt worn by an athletic model, front and back.“
 **Weitere Farbe:** „Same T-shirt in white, with the shooting star in silver-grey.“
@@ -117,7 +117,7 @@ Presentation: the 3-pack laid flat in a premium black box with silver foil WEAX 
 
 ### 9. Sommer-Outfit komplett (Lookbook)
 ```
-Create a fashion lookbook photo of a model wearing the full WEAX summer outfit: a black slim-fit muscle T-shirt with short sleeves showing the arms, thin silver reflective stripes on front and back, a small logo at the bottom right of the front, matching cream relaxed shorts with chrome drawcord tips, white crew socks with the logo on the cuff, and clean white sneakers. Use the attached image as the exact brand logo on all pieces.
+Create a fashion lookbook photo of a model wearing the full WEAX summer outfit: a plain black slim-fit muscle T-shirt with short sleeves showing the arms and a small logo on the upper right chest, matching cream relaxed shorts with chrome drawcord tips, white crew socks with the logo on the cuff, and clean white sneakers. Use the attached image as the exact brand logo on all pieces.
 
 Setting: sunny concrete rooftop or beach promenade at golden hour, warm light, palm shadows. Full body shot, relaxed streetwear pose, photorealistic, editorial fashion campaign style, 4K.
 ```

@@ -9,7 +9,7 @@ Einfach ankreuzen, was du willst – ich lege die Produkte dann als **Entwurf** 
 ## Basics – schnell umsetzbar, passen sofort zum Pullover & zur Hose
 
 - [ ] **WEAX ORIGIN T-SHIRT** – ~30 €
-  Slim-Fit Muscle-Shirt mit kurzen Ärmeln, dünne Reflektor-Streifen vorne & hinten, kleines Logo unten rechts, große Sternschnuppe auf dem Rücken. Schwarz / Weiß.
+  Slim-Fit Muscle-Shirt mit kurzen Ärmeln, ohne Streifen, kleines Logo oben rechts, mittelgroße Sternschnuppe auf dem Rücken. Schwarz / Weiß.
   *Text:* „Schwere Baumwolle, boxy Schnitt, Stern auf der Brust. Das Basic, das nicht basic aussieht.“
 
 - [ ] **WEAX ORIGIN ZIP HOODIE** – ~50 €
