@@ -27,19 +27,25 @@ Logo: one small logo on the left chest, nothing else.
 Presentation: three images side by side – front view and back view in soft studio light on a plain light-grey background, plus one front view at night photographed with flash so the whole reflective jacket glows silver. Ghost-mannequin style, photorealistic, 4K, e-commerce quality.
 ```
 
-### 2. Skijacke – mit helmtauglicher Kapuze
+### 2. Skijacke – richtig baggy, normaler Stoff, Kapuze über den Helm
 ```
-Create a high-end product mockup of a technical ski jacket for the streetwear brand "WEAX", designed as a set with WEAX ski pants. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
+Create a high-end product mockup of a very baggy ski jacket for the streetwear brand "WEAX", designed as a set with WEAX ski pants. Use the attached image as the exact brand logo – do not redesign, distort or misspell it.
 
-Fabric: waterproof technical ski shell with a REFLECTIVE finish – in normal light it looks matte black-graphite, and when hit by a camera flash or headlights the whole jacket lights up in metallic silver. Lightly padded, smooth surface (not a puffer), relaxed oversized ski fit, slightly longer length covering the hips.
-Hood: large, HELMET-COMPATIBLE hood – big enough to be worn over a ski helmet, with a stiffened brim and a simple adjustment at the back. When the hood is down it lies flat on the back.
-Details: high protective collar, one plain straight front zipper with a chrome puller – NO storm flap, NO overlapping placket. Two chest pockets and two hand pockets with clean waterproof chrome zippers, a ski-pass pocket on the left sleeve, an inner snow skirt hidden inside (not visible from outside).
-Reflective stripes: THIN silver 3M-style reflective stripes (about 5 mm wide) on the FRONT and on the BACK: one thin horizontal stripe across the chest and the same across the back, continuing around the sleeves as one clean line.
-Open ends: sleeve ends are straight and open with NO visible elastic cuffs; the bottom hem is straight and open with NO visible drawcord.
+Fabric: normal matte black waterproof ski fabric – NOT reflective, NOT shiny, NOT metallic. Lightly padded, smooth surface (not a puffer).
+Fit: REALLY BAGGY and extremely oversized – very wide and roomy body, heavily dropped shoulders, very wide loose sleeves that are slightly too long, longer length covering the hips and upper thighs. It should look big and loose, streetwear ski style.
+Hood: large, HELMET-COMPATIBLE hood – big enough to be worn over a ski helmet. When the hood is down it lies loosely on the back.
+Zippers: NO visible zippers anywhere – no zipper pockets, no chest zippers, no pit zips. The front closure is a black color-matched zipper that is barely visible, with NO storm flap and NO overlapping placket. The ONLY visible zipper is one small ski-pass pocket at the very bottom of the LEFT sleeve, near the sleeve end, with a small chrome zipper.
+Pockets: two simple hand pockets as clean slits in the side seams, no zippers, no flaps.
+Reflective stripes: THIN silver 3M-style reflective stripes (about 5 mm wide) on the FRONT and on the BACK: one thin horizontal stripe across the chest and the same across the back, continuing around the sleeves as one clean line. The fabric itself stays matte black.
+Open ends: sleeve ends are straight, wide and open with NO elastic cuffs; the bottom hem is straight and open with NO drawcord.
 Logo: one small logo on the left chest, a small silver star on the back of the hood, nothing else.
 
-Presentation: three images side by side – front view with hood up (shown over a black ski helmet on the mannequin), back view, and one front view at night with flash so the reflective jacket glows silver. Soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
+Presentation: three images side by side – front view with hood down, front view with the hood pulled up over a black ski helmet on the mannequin, and back view. Ghost-mannequin style showing the very baggy oversized shape, soft studio light, plain light-grey background, photorealistic, 4K, e-commerce quality.
 ```
+
+**Noch nicht baggy genug:** nachschreiben „Make the jacket even more baggy and oversized, much wider body and sleeves.“
+**Gemini macht trotzdem Reißverschlüsse:** „Remove all zippers except the small one at the bottom of the left sleeve.“
+**Ganz ohne Front-Reißverschluss (zum Überziehen):** „Make it a pullover anorak with no front opening.“
 
 ### 3. Skihose – richtig „special“
 ```
@@ -62,9 +68,9 @@ Presentation: three images side by side – front view with the suspenders attac
 
 ### 4. Winter-Outfit komplett (Lookbook)
 ```
-Create a fashion lookbook photo of a model wearing the WEAX ski outfit: the reflective black WEAX ski jacket with the large hood pulled up over a black ski helmet, thin silver reflective stripe around the chest, small logo on the left chest; combined with the statement reflective WEAX baggy ski pants with chrome star belt buckle, black suspenders, zip cargo pockets on the thighs, thin silver stripes down the front of each leg, a small silver star above each hem, and wide open leg hems over black ski boots. Use the attached image as the exact brand logo.
+Create a fashion lookbook photo of a model wearing the WEAX ski outfit: the very baggy, oversized matte black (non-reflective) WEAX ski jacket with the large hood pulled up over a black ski helmet, no visible zippers, thin silver reflective stripe around the chest, small logo on the left chest; combined with the statement reflective WEAX baggy ski pants with chrome star belt buckle, black suspenders, zip cargo pockets on the thighs, thin silver stripes down the front of each leg, a small silver star above each hem, and wide open leg hems over black ski boots. Use the attached image as the exact brand logo.
 
-Setting: on a snowy ski slope at night under floodlights, light snowfall; the light hits the model so the whole reflective outfit glows metallic silver against the dark sky. Full body shot, confident pose, photorealistic, cinematic editorial style, 4K.
+Setting: on a snowy ski slope at night under floodlights, light snowfall; the light hits the model so the reflective pants and all thin silver stripes glow metallic silver against the dark sky. Full body shot, confident pose, photorealistic, cinematic editorial style, 4K.
 ```
 
 **Stoff glänzt nicht genug:** nachschreiben „Make the fabric more reflective, it should shine silver under flash.“
