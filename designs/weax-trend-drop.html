@@ -1,0 +1,554 @@
+<title>WEAX Trend Drop</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+/* Layout: dark editorial sheet — chrome serif masthead, then category sections with prompt cards in an auto-fill grid */
+:root {
+  color-scheme: dark;
+  --bg: #07070a;
+  --panel: #111116;
+  --line: #24242c;
+  --fg: #e9ebef;
+  --muted: #9a9ea8;
+  --chrome: #dfe3e8;
+  --ink: #07070a;
+  --display: 'Cinzel', 'Times New Roman', serif;
+  --body: 'Manrope', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 40px 64px; display: grid; gap: 48px; }
+header { display: grid; gap: 18px; }
+.eyebrow { font-size: 11px; letter-spacing: .32em; text-transform: uppercase; color: var(--muted); margin: 0; }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(36px, 8vw, 76px); letter-spacing: .14em; line-height: 1.05; margin: 0; text-wrap: balance;
+  background: linear-gradient(100deg, #6f757d 0%, #ffffff 26%, #9aa0a8 46%, #ffffff 62%, #7b8189 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.star-line { width: 100%; max-width: 520px; height: 40px; display: block; }
+.lede { max-width: 62ch; margin: 0; color: var(--fg); }
+.lede b { color: var(--chrome); }
+.how { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; color: var(--muted); margin: 0; padding: 0; list-style: none; }
+.how li::before { content: "✦ "; color: var(--chrome); }
+nav { display: flex; flex-wrap: wrap; gap: 8px; }
+nav a { color: var(--fg); text-decoration: none; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 99px; padding: 8px 14px; }
+nav a:hover, nav a:focus-visible { border-color: var(--chrome); outline: none; }
+.sec { display: grid; gap: 20px; scroll-margin-top: 16px; }
+.sec-head { display: grid; gap: 4px; border-top: 1px solid var(--line); padding-top: 20px; }
+h2 { font-family: var(--display); font-weight: 500; letter-spacing: .2em; text-transform: uppercase; font-size: 20px; margin: 0; color: var(--chrome); }
+.sec-head p { margin: 0; color: var(--muted); max-width: 62ch; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 14px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 18px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card-top { display: flex; justify-content: space-between; align-items: baseline; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.num { font-family: var(--mono); letter-spacing: 0; font-variant-numeric: tabular-nums; }
+h3 { font-family: var(--display); font-weight: 700; letter-spacing: .1em; font-size: 17px; margin: 0; color: var(--fg); text-wrap: balance; }
+.note { margin: 0; color: var(--muted); font-size: 14px; flex: 1; }
+.actions { display: flex; }
+.copy { font: 700 12px/1 var(--body); letter-spacing: .18em; text-transform: uppercase; color: var(--ink); background: linear-gradient(180deg, #ffffff, #c9cdd3 55%, #eef0f2);
+  border: 0; border-radius: 99px; padding: 12px 18px; cursor: pointer; width: 100%; }
+.copy:focus-visible { outline: 2px solid var(--chrome); outline-offset: 3px; }
+.copy.done { background: var(--chrome); }
+details summary { cursor: pointer; font-size: 12px; color: var(--muted); letter-spacing: .1em; }
+details summary:focus-visible { outline: 1px solid var(--chrome); }
+pre { font-family: var(--mono); font-size: 12px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 12px; margin: 10px 0 0; max-height: 360px; overflow: auto; color: var(--fg); }
+.fixes { display: grid; gap: 8px; border-top: 1px solid var(--line); padding-top: 20px; }
+.fixes ul { margin: 0; padding-left: 18px; color: var(--muted); display: grid; gap: 6px; }
+.fixes code { font-family: var(--mono); font-size: 12px; color: var(--fg); }
+@media (prefers-reduced-motion: no-preference) { .copy { transition: transform .15s; } .copy:active { transform: scale(.98); } }
+</style>
+<div class="wrap">
+<header>
+  <p class="eyebrow">Gemini Prompts · 20 Teile</p>
+  <h1>WEAX<br>TREND DROP</h1>
+  <svg class="star-line" viewBox="0 0 520 40" aria-hidden="true">
+    <path d="M28 28 C 140 30, 220 6, 340 14 S 480 24, 516 8" fill="none" stroke="#dfe3e8" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+    <path d="M18 18 L21 25 L28 28 L21 31 L18 38 L15 31 L8 28 L15 25 Z" fill="#ffffff"/>
+  </svg>
+  <p class="lede">Alles baggy, alles croppbar, alles schwarz mit Silber. Jedes Teil trägt die <b>WEAX LINE</b>: eine dünne, geschwungene Reflektor-Linie, die an einem kleinen Stern startet. Trägt man Oberteil und Hose zusammen, ergeben die Linien <b>eine durchgehende Sternschnuppe von der Schulter bis zum Knöchel</b>.</p>
+  <ul class="how"><li>Logo in Gemini hochladen</li><li>Prompt kopieren</li><li>Einfügen, ein Teil pro Nachricht</li></ul>
+  <nav><a href="#s0">Oberteile</a><a href="#s1">Hosen &amp; Set</a><a href="#s2">Accessoires</a><a href="#s3">Kampagne</a></nav>
+</header>
+<section id="s0" class="sec"><div class="sec-head"><h2>Oberteile</h2><p>Alle baggy, alle croppbar, alle mit der WEAX LINE an der Seite.</p></div><div class="grid">
+<article class="card">
+  <div class="card-top"><span class="num">01</span><span class="kind">Zip-Hoodie</span></div>
+  <h3>WEAX ORBIT ZIP HOODIE</h3>
+  <p class="note">Reißverschluss geht durch die Kapuze bis über den Kopf – zugezogen wird’s zur Maske. Orbit-Ring als Naht um die Kapuze.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p1" id="btn-p1">Prompt kopieren</button></div>
+  <details id="det-p1"><summary>Prompt ansehen</summary><pre id="p1">Create a high-end product mockup of an oversized full-zip hoodie for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered, metallic silver-white.
+- Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
+- Signature &quot;WEAX LINE&quot;: thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
+- Fit: baggy, oversized and relaxed – never slim fit.
+- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
+- Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
+
+PRODUCT:
+- Heavyweight 420 GSM cotton fleece, washed black, brushed inside. Boxy oversized fit, dropped shoulders, wide sleeves.
+- Full-length two-way chrome zipper that runs from the hem all the way up through the hood to the top of the head: fully closed, the hood becomes a face-covering mask with a small black mesh window at the eyes. The zipper ends in an eight-pointed star puller on top of the hood.
+- A thin silver embroidered orbit ring (the ring from the logo) runs around the hood opening.
+- Kangaroo pocket, ribbed cuffs, no drawstrings.
+- WEAX LINE: on each side one line starts at a small star at the hem, sweeps up the side and over the shoulder blade onto the back.
+- Small logo on the left chest.
+- Croppable: the lower 15 cm zip off, turning it into a cropped hoodie that ends at the waist.
+
+Presentation: four views side by side – front open, front fully zipped up over the head as a mask, back, and the cropped version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">02</span><span class="kind">Waffel-Longsleeve</span></div>
+  <h3>WEAX THERMAL LONGSLEEVE</h3>
+  <p class="note">Oversized Waffelstrick mit Daumenlöchern. Ärmel per Reißverschluss am Ellbogen abnehmbar – Longsleeve wird T-Shirt.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p2" id="btn-p2">Prompt kopieren</button></div>
+  <details id="det-p2"><summary>Prompt ansehen</summary><pre id="p2">Create a high-end product mockup of an oversized thermal waffle-knit longsleeve for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered, metallic silver-white.
+- Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
+- Signature &quot;WEAX LINE&quot;: thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
+- Fit: baggy, oversized and relaxed – never slim fit.
+- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
+- Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
+
+PRODUCT:
+- Soft cotton waffle knit, washed black, boxy oversized fit, extra-long sleeves that stack at the wrist, thumbholes.
+- Convertible: hidden zippers at the elbows let the lower sleeves zip off, turning it into an oversized T-shirt.
+- WEAX LINE: on each sleeve one line runs down the outside from shoulder to wrist and ends at a small star at the cuff; it continues from the shoulder down the side of the body to the hem.
+- Small logo on the upper right chest; a small shooting star (without the W) at the back of the neck.
+- Croppable: the body hem zips off for a cropped length.
+
+Presentation: four views side by side – front, back, short-sleeve version with sleeves zipped off, and the cropped version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">03</span><span class="kind">Strickpullover</span></div>
+  <h3>WEAX SHOOTING STAR KNIT</h3>
+  <p class="note">Grobstrick mit einer riesigen Sternschnuppe aus Silber-Lurex quer über die Brust, deren Schweif zur WEAX LINE wird.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p3" id="btn-p3">Prompt kopieren</button></div>
+  <details id="det-p3"><summary>Prompt ansehen</summary><pre id="p3">Create a high-end product mockup of an oversized chunky knit sweater for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered, metallic silver-white.
+- Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
+- Signature &quot;WEAX LINE&quot;: thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
+- Fit: baggy, oversized and relaxed – never slim fit.
+- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
+- Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
+
+PRODUCT:
+- Chunky, slightly brushed wool-blend knit, washed black, very oversized and boxy, dropped shoulders, wide ribbed cuffs and hem.
+- A large intarsia shooting star knitted diagonally across the front, from the left hip up to the right shoulder, in metallic silver lurex yarn. Its trail continues as the thin WEAX LINE over the shoulder and down the back.
+- Small embroidered logo on the left cuff.
+- Croppable: a hidden zipper behind the ribbed band lets the lower part be removed for a cropped knit.
+
+Presentation: three views side by side – front, back and the cropped version, with close-up of the shimmering lurex yarn. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">04</span><span class="kind">Quarter-Zip</span></div>
+  <h3>WEAX ORBIT QUARTER-ZIP</h3>
+  <p class="note">Sportlicher Troyer mit hohem Kragen, der innen den Orbit-Ring zeigt, wenn man ihn öffnet.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p4" id="btn-p4">Prompt kopieren</button></div>
+  <details id="det-p4"><summary>Prompt ansehen</summary><pre id="p4">Create a high-end product mockup of an oversized quarter-zip pullover for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered, metallic silver-white.
+- Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
+- Signature &quot;WEAX LINE&quot;: thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
+- Fit: baggy, oversized and relaxed – never slim fit.
+- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
+- Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
+
+PRODUCT:
+- Heavyweight 400 GSM cotton fleece, washed black, oversized relaxed fit.
+- High funnel collar with a chrome quarter-zip and an eight-pointed star puller. When the collar is folded open, the inside shows a silver printed orbit ring.
+- WEAX LINE on both sides from a star at the hem, sweeping up to the shoulder blades.
+- Small logo on the left chest.
+- Croppable: hidden zip-off hem for a cropped version.
+
+Presentation: three views side by side – front with collar open, back, and the cropped version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">05</span><span class="kind">Varsity-Jacke</span></div>
+  <h3>WEAX ORBIT VARSITY</h3>
+  <p class="note">Komplett schwarze College-Jacke: Wolle + Lederärmel, Stern-Druckknöpfe, große gestickte Sternschnuppe hinten.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p5" id="btn-p5">Prompt kopieren</button></div>
+  <details id="det-p5"><summary>Prompt ansehen</summary><pre id="p5">Create a high-end product mockup of an oversized all-black varsity jacket for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered, metallic silver-white.
+- Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
+- Signature &quot;WEAX LINE&quot;: thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
+- Fit: baggy, oversized and relaxed – never slim fit.
+- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
+- Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
+
+PRODUCT:
+- Body in black wool, sleeves in black vegan leather – fully tonal black. Boxy oversized fit.
+- Polished chrome snap buttons shaped like the eight-pointed star.
+- Black chenille logo patch on the left chest, outlined in silver.
+- Back: a large shooting star embroidered in silver thread arching across the shoulder blades.
+- Black ribbed collar, cuffs and hem, each with a thin silver double stripe.
+- WEAX LINE along both sides from a star at the hem.
+- Croppable: hidden zip-off hem band for a cropped varsity.
+
+Presentation: three views side by side – front, back with the large shooting star, and the cropped version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">06</span><span class="kind">Puffer-Weste</span></div>
+  <h3>WEAX ORBIT PUFFER VEST</h3>
+  <p class="note">Reflektierende Puffer-Weste im Zara-Stoff – leuchtet im Blitz komplett silbern. Kapuze abnehmbar.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p6" id="btn-p6">Prompt kopieren</button></div>
+  <details id="det-p6"><summary>Prompt ansehen</summary><pre id="p6">Create a high-end product mockup of an oversized puffer vest (gilet) for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered, metallic silver-white.
+- Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
+- Signature &quot;WEAX LINE&quot;: thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
+- Fit: baggy, oversized and relaxed – never slim fit.
+- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
+- Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
+
+PRODUCT:
+- Fully reflective outer fabric: dark black-graphite in normal light, the whole vest lights up metallic silver under flash.
+- Boxy oversized fit, thick horizontal quilted channels, high stand-up collar, detachable puffy hood.
+- One plain front zipper with a star puller, no storm flap.
+- WEAX LINE running along a quilting seam across chest and back.
+- Chrome star-shaped cord stoppers at the hem.
+- Small logo on the left chest.
+- Croppable: the lower quilted channel zips off for a cropped vest.
+
+Presentation: four views side by side – front, back, front at night with flash glowing silver, and the cropped version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">07</span><span class="kind">Sherpa-Jacke</span></div>
+  <h3>WEAX STARDUST SHERPA</h3>
+  <p class="note">Flauschige schwarze Sherpa-Jacke mit glatten Nylon-Einsätzen – Gorpcore trifft WEAX.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p7" id="btn-p7">Prompt kopieren</button></div>
+  <details id="det-p7"><summary>Prompt ansehen</summary><pre id="p7">Create a high-end product mockup of an oversized sherpa fleece jacket for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered, metallic silver-white.
+- Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
+- Signature &quot;WEAX LINE&quot;: thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
+- Fit: baggy, oversized and relaxed – never slim fit.
+- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
+- Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
+
+PRODUCT:
+- Thick, fluffy black sherpa fleece body, smooth matte black nylon panels on the shoulders, collar and chest pocket.
+- High collar, front zipper with a star puller.
+- Logo embroidered on the nylon chest pocket.
+- WEAX LINE as thin reflective piping that curves from a star at the hem across the side and onto the back.
+- Boxy oversized fit.
+- Croppable: hidden zip-off hem for a cropped sherpa.
+
+Presentation: three views side by side – front, back and the cropped version, with a close-up of the fluffy texture. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">08</span><span class="kind">Boxy Crop-Tee</span></div>
+  <h3>WEAX BOXY CROP TEE</h3>
+  <p class="note">Breites, kurzes Shirt – mit Anzipp-Saum wird es wieder lang. Funktioniert für Jungs und Mädels.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p8" id="btn-p8">Prompt kopieren</button></div>
+  <details id="det-p8"><summary>Prompt ansehen</summary><pre id="p8">Create a high-end product mockup of a boxy cropped T-shirt for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered, metallic silver-white.
+- Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
+- Signature &quot;WEAX LINE&quot;: thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
+- Fit: baggy, oversized and relaxed – never slim fit.
+- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
+- Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
+
+PRODUCT:
+- 260 GSM heavyweight cotton, washed black. Very wide and boxy, wide short sleeves, cropped length.
+- Convertible: a matching black hem extension zips onto the hidden zipper, turning it into a regular-length oversized tee.
+- WEAX LINE: on each side from a small star at the hem, curving up the side and onto the sleeve.
+- Small logo on the upper right chest; medium shooting star (without the W) centered on the upper back.
+
+Presentation: three views side by side – cropped front, back, and the long version with the hem extension attached. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+</div></section><section id="s1" class="sec"><div class="sec-head"><h2>Hosen &amp; Set</h2><p>Die Linie läuft außen am Bein hoch und verbindet sich mit dem Oberteil.</p></div><div class="grid">
+<article class="card">
+  <div class="card-top"><span class="num">09</span><span class="kind">Jorts</span></div>
+  <h3>WEAX ORBIT JORTS</h3>
+  <p class="note">Extrem weite, lange Jeans-Shorts bis unters Knie. Unteres Stück abzippbar – dann normale Shorts.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p9" id="btn-p9">Prompt kopieren</button></div>
+  <details id="det-p9"><summary>Prompt ansehen</summary><pre id="p9">Create a high-end product mockup of extra-baggy long denim shorts (jorts) for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered, metallic silver-white.
+- Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
+- Signature &quot;WEAX LINE&quot;: thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
+- Fit: baggy, oversized and relaxed – never slim fit.
+- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
+- Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
+
+PRODUCT:
+- Washed black heavy denim, extremely wide legs ending below the knee.
+- Chrome rivets and a chrome button shaped like the eight-pointed star.
+- WEAX LINE on the outside of each leg, starting at a small star just above the hem and curving up to the waistband.
+- Silver embroidered orbit ring on the right back pocket; small logo on the front left thigh.
+- Croppable: a hidden zipper above the knee lets the lower part zip off for shorter shorts.
+
+Presentation: three views side by side – front, back and the shorter cropped version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">10</span><span class="kind">Baggy-Jeans</span></div>
+  <h3>WEAX STARFALL DENIM</h3>
+  <p class="note">Super-baggy schwarze Jeans, die über die Schuhe fällt – und per Reißverschluss am Knie zu den Jorts wird (2-in-1).</p>
+  <div class="actions"><button type="button" class="copy" data-target="p10" id="btn-p10">Prompt kopieren</button></div>
+  <details id="det-p10"><summary>Prompt ansehen</summary><pre id="p10">Create a high-end product mockup of super-baggy jeans for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered, metallic silver-white.
+- Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
+- Signature &quot;WEAX LINE&quot;: thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
+- Fit: baggy, oversized and relaxed – never slim fit.
+- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
+- Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
+
+PRODUCT:
+- Washed black heavy denim, very wide legs that puddle over the shoes.
+- 2-in-1: a hidden zipper at the knee lets the lower legs zip off, turning the jeans into the matching WEAX jorts.
+- Chrome star rivets and button.
+- WEAX LINE on the outside of each leg from a small star at the hem up to the waistband.
+- Silver embroidered orbit ring on the right back pocket; small logo on the front left thigh.
+
+Presentation: three views side by side – front, back and the zipped-off jorts version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">11</span><span class="kind">Parachute Pants</span></div>
+  <h3>WEAX PARACHUTE PANTS</h3>
+  <p class="note">Leichte Knitter-Nylonhose, mega weit, raschelt beim Laufen – mit Stern-Stoppern am Saum.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p11" id="btn-p11">Prompt kopieren</button></div>
+  <details id="det-p11"><summary>Prompt ansehen</summary><pre id="p11">Create a high-end product mockup of extra-wide parachute pants for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered, metallic silver-white.
+- Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
+- Signature &quot;WEAX LINE&quot;: thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
+- Fit: baggy, oversized and relaxed – never slim fit.
+- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
+- Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
+
+PRODUCT:
+- Lightweight crinkled nylon, matte washed black, very wide and voluminous legs.
+- Wide open hems with an optional hidden drawcord and star-shaped chrome cord stoppers to balloon the hem.
+- Two big flap cargo pockets on the thighs, no zippers on the pockets.
+- Elastic waistband with an integrated black belt and a chrome star buckle.
+- WEAX LINE on the outside of each leg from a star at the hem up to the waistband.
+- Small logo on the front left thigh.
+- Croppable: hidden zipper at the knee to convert into wide shorts.
+
+Presentation: three views side by side – front, back and the cropped shorts version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">12</span><span class="kind">Trackpants</span></div>
+  <h3>WEAX ORBIT TRACKPANTS</h3>
+  <p class="note">Retro-Trainingshose – statt der klassischen geraden Streifen läuft die geschwungene WEAX LINE seitlich runter.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p12" id="btn-p12">Prompt kopieren</button></div>
+  <details id="det-p12"><summary>Prompt ansehen</summary><pre id="p12">Create a high-end product mockup of baggy retro track pants for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered, metallic silver-white.
+- Colors: deep washed black base, metallic silver-white logo, polished chrome hardware. No other colors.
+- Signature &quot;WEAX LINE&quot;: thin (3–5 mm) silver reflective lines that flow in gentle curves like the trail of a shooting star. Each line starts at a small silver eight-pointed star (the star from the logo, without the W) and sweeps along the side of the garment from front to back. The lines are placed so that when WEAX tops and bottoms are worn together they connect into one continuous shooting-star line from shoulder to ankle. In daylight they look silver-grey; under camera flash they glow bright silver.
+- Fit: baggy, oversized and relaxed – never slim fit.
+- Croppable: a hidden, color-matched zipper concealed inside a clean seam lets the lower part be zipped off, turning the piece into a cropped version. The WEAX LINE continues seamlessly across that seam, so both lengths look complete.
+- Hardware: polished chrome; zipper pullers and cord stoppers shaped like the eight-pointed star.
+
+PRODUCT:
+- Smooth matte black tricot, baggy wide straight legs, relaxed fit.
+- Instead of classic straight side stripes, the curved WEAX LINE runs down the outside of each leg from the waistband to a small star just above the hem.
+- Side snap buttons shaped like the eight-pointed star along the lower legs, so the hem can be opened wider.
+- Elastic waistband, no drawstrings.
+- Small logo on the front left thigh.
+- Croppable: hidden zipper at mid-calf for a cropped length.
+
+Presentation: three views side by side – front, back and the cropped version. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">13</span><span class="kind">Matching Set (Lookbook)</span></div>
+  <h3>WEAX LINE SET</h3>
+  <p class="note">Das Herzstück für TikTok: Hoodie + Trackpants zusammen – die Linien verbinden sich zu einer durchgehenden Sternschnuppe von Schulter bis Knöchel.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p13" id="btn-p13">Prompt kopieren</button></div>
+  <details id="det-p13"><summary>Prompt ansehen</summary><pre id="p13">Create a fashion campaign photo for the streetwear brand &quot;WEAX&quot;. Use the attached image as the exact logo.
+
+Two teenagers stand side by side in a matching WEAX set: an oversized washed black full-zip hoodie and baggy black track pants. On both, thin silver reflective lines flow in gentle curves like a shooting star trail – starting at a small silver eight-pointed star at the ankle, running up the outside of the leg, continuing seamlessly onto the hoodie and ending over the shoulder blade. Together they form one continuous shooting-star line from ankle to shoulder.
+Model 1 wears the full-length version. Model 2 wears the cropped versions (cropped hoodie at the waist, track pants zipped off at mid-calf), the line still continuous.
+Small embroidered silver-white logo on the chest of both hoodies.
+
+Setting: city rooftop at night, camera flash makes all the lines glow bright silver against the black outfits, slight motion blur, Gen-Z editorial energy. Vertical 9:16 format for TikTok and Instagram Reels. Photorealistic, 4K.</pre></details>
+</article>
+</div></section><section id="s2" class="sec"><div class="sec-head"><h2>Accessoires</h2><p>Günstig herzustellen, gut als Zusatzkauf – mit derselben Linie und dem Stern.</p></div><div class="grid">
+<article class="card">
+  <div class="card-top"><span class="num">14</span><span class="kind">Beanie</span></div>
+  <h3>WEAX ORBIT BEANIE</h3>
+  <p class="note">Kurze Fisherman-Beanie mit eingestrickter Silberlinie, die sich wie eine Sternschnuppe einmal rundherum zieht.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p14" id="btn-p14">Prompt kopieren</button></div>
+  <details id="det-p14"><summary>Prompt ansehen</summary><pre id="p14">Create a high-end product mockup of a short fisherman beanie for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered or engraved, metallic silver-white.
+- Colors: deep washed black, metallic silver-white, polished chrome. No other colors.
+- Signature &quot;WEAX LINE&quot;: a thin silver reflective line that flows in a gentle curve like the trail of a shooting star, starting at a small silver eight-pointed star (the star from the logo, without the W). It matches the lines on the WEAX clothing.
+- Hardware: polished chrome, shaped like the eight-pointed star wherever possible.
+
+PRODUCT:
+- Black rib knit, short fit that sits above the ears, folded cuff.
+- A thin line knitted in reflective silver yarn curves once around the beanie like a shooting star trail, starting at a small silver star at the front of the cuff.
+- Small embroidered logo on the cuff next to the star.
+
+Presentation: front and side view, plus one shot at night with flash so the line glows. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">15</span><span class="kind">Balaclava</span></div>
+  <h3>WEAX NIGHT BALACLAVA</h3>
+  <p class="note">Strick-Sturmhaube, Gesichtsöffnung mit Reflektor-Linie umrandet – lässt sich runterziehen und als Neck-Gaiter tragen.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p15" id="btn-p15">Prompt kopieren</button></div>
+  <details id="det-p15"><summary>Prompt ansehen</summary><pre id="p15">Create a high-end product mockup of a knit balaclava for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered or engraved, metallic silver-white.
+- Colors: deep washed black, metallic silver-white, polished chrome. No other colors.
+- Signature &quot;WEAX LINE&quot;: a thin silver reflective line that flows in a gentle curve like the trail of a shooting star, starting at a small silver eight-pointed star (the star from the logo, without the W). It matches the lines on the WEAX clothing.
+- Hardware: polished chrome, shaped like the eight-pointed star wherever possible.
+
+PRODUCT:
+- Fine black rib knit, full head coverage with an open face.
+- The face opening is outlined with a thin silver reflective line that ends in a small star on the forehead.
+- Small embroidered logo on the side of the neck.
+- Convertible (&quot;croppable&quot;): it can be pulled down and worn as a neck gaiter.
+
+Presentation: three views side by side – worn on a mannequin head as balaclava, as neck gaiter, and at night with flash so the line glows. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">16</span><span class="kind">Cap</span></div>
+  <h3>WEAX ORBIT CAP</h3>
+  <p class="note">Washed-Black Cap: Orbit-Ring als feine Silberstickerei um das Logo, Sternschnuppe unter dem Schirm.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p16" id="btn-p16">Prompt kopieren</button></div>
+  <details id="det-p16"><summary>Prompt ansehen</summary><pre id="p16">Create a high-end product mockup of a six-panel cap for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered or engraved, metallic silver-white.
+- Colors: deep washed black, metallic silver-white, polished chrome. No other colors.
+- Signature &quot;WEAX LINE&quot;: a thin silver reflective line that flows in a gentle curve like the trail of a shooting star, starting at a small silver eight-pointed star (the star from the logo, without the W). It matches the lines on the WEAX clothing.
+- Hardware: polished chrome, shaped like the eight-pointed star wherever possible.
+
+PRODUCT:
+- Washed black cotton twill, curved brim, relaxed unstructured crown.
+- Front: small embroidered logo; a thin silver embroidered orbit ring loops around the front of the crown, around the logo.
+- Under the brim: a printed silver shooting star.
+- Thin reflective line along the edge of the brim.
+- Back strap with a chrome star-shaped buckle.
+
+Presentation: three views side by side – front, back with the star buckle, and under the brim. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">17</span><span class="kind">Sling Bag</span></div>
+  <h3>WEAX ORBIT SLING</h3>
+  <p class="note">Kleine Umhängetasche mit Chrom-Stern-Schnalle und abnehmbarem Mini-Pouch.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p17" id="btn-p17">Prompt kopieren</button></div>
+  <details id="det-p17"><summary>Prompt ansehen</summary><pre id="p17">Create a high-end product mockup of a crossbody sling bag for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered or engraved, metallic silver-white.
+- Colors: deep washed black, metallic silver-white, polished chrome. No other colors.
+- Signature &quot;WEAX LINE&quot;: a thin silver reflective line that flows in a gentle curve like the trail of a shooting star, starting at a small silver eight-pointed star (the star from the logo, without the W). It matches the lines on the WEAX clothing.
+- Hardware: polished chrome, shaped like the eight-pointed star wherever possible.
+
+PRODUCT:
+- Black technical nylon, compact sling shape, wide black webbing strap.
+- Polished chrome buckle shaped like the eight-pointed star.
+- WEAX LINE as reflective piping curving across the front of the bag, starting at a small silver star.
+- Embroidered logo on the front.
+- Detachable mini pouch clipped to the strap.
+
+Presentation: three views side by side – front, worn crossbody on a mannequin, and the detached mini pouch. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">18</span><span class="kind">Schmuck</span></div>
+  <h3>WEAX ORBIT JEWELRY</h3>
+  <p class="note">Silberkette mit Logo-Anhänger (Stern als Zirkonia), drehbarer Orbit-Ring und Stern-Ohrstecker.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p18" id="btn-p18">Prompt kopieren</button></div>
+  <details id="det-p18"><summary>Prompt ansehen</summary><pre id="p18">Create a high-end product mockup of a jewelry set for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered or engraved, metallic silver-white.
+- Colors: deep washed black, metallic silver-white, polished chrome. No other colors.
+- Signature &quot;WEAX LINE&quot;: a thin silver reflective line that flows in a gentle curve like the trail of a shooting star, starting at a small silver eight-pointed star (the star from the logo, without the W). It matches the lines on the WEAX clothing.
+- Hardware: polished chrome, shaped like the eight-pointed star wherever possible.
+
+PRODUCT:
+- Sterling silver chain with a pendant of the WEAX logo: the stylized W, the elliptical orbit ring around it and the eight-pointed star set with a sparkling clear stone.
+- A chunky silver ring with an engraved orbit ring that spins around the band.
+- A pair of small eight-pointed star stud earrings.
+- High-polish chrome finish.
+
+Presentation: all three pieces arranged on black velvet, macro product photography with sparkling highlights. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+<article class="card">
+  <div class="card-top"><span class="num">19</span><span class="kind">Socken</span></div>
+  <h3>WEAX LINE SOCKS</h3>
+  <p class="note">Crew-Socken, auf denen die Linie der Hose weiterläuft und am Knöchel im Stern endet.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p19" id="btn-p19">Prompt kopieren</button></div>
+  <details id="det-p19"><summary>Prompt ansehen</summary><pre id="p19">Create a high-end product mockup of crew socks in a 3-pack for the streetwear brand &quot;WEAX&quot;.
+
+WEAX DESIGN DNA (follow exactly):
+- Brand: &quot;WEAX&quot;. Use the attached image as the exact logo (stylized W with an elliptical orbit ring and a sharp eight-pointed star). Do not redesign, distort or misspell it. Logos are small, embroidered or engraved, metallic silver-white.
+- Colors: deep washed black, metallic silver-white, polished chrome. No other colors.
+- Signature &quot;WEAX LINE&quot;: a thin silver reflective line that flows in a gentle curve like the trail of a shooting star, starting at a small silver eight-pointed star (the star from the logo, without the W). It matches the lines on the WEAX clothing.
+- Hardware: polished chrome, shaped like the eight-pointed star wherever possible.
+
+PRODUCT:
+- Black crew socks, cushioned sole, ribbed cuff.
+- A thin line knitted in reflective silver yarn curves down the outside of the sock and ends in a small star at the ankle – it continues the line of the WEAX pants.
+- Small knitted logo on the cuff.
+- Packed as a 3-pack with a black paper band printed with a silver logo.
+
+Presentation: the 3-pack laid flat plus one sock worn with baggy black WEAX pants. Deep black studio background with soft rim light and subtle silver reflections, photorealistic, 4K, premium streetwear campaign quality – striking enough to stop the scroll on TikTok and Instagram.</pre></details>
+</article>
+</div></section><section id="s3" class="sec"><div class="sec-head"><h2>Kampagne</h2><p>Fürs Profil-Highlight oder als erstes TikTok zum Drop.</p></div><div class="grid">
+<article class="card">
+  <div class="card-top"><span class="num">20</span><span class="kind">Kampagnen-Bild</span></div>
+  <h3>WEAX TREND DROP</h3>
+  <p class="note">Ein Titelbild für den ganzen Drop – vier Teenager in verschiedenen Teilen, alles leuchtet im Blitz.</p>
+  <div class="actions"><button type="button" class="copy" data-target="p20" id="btn-p20">Prompt kopieren</button></div>
+  <details id="det-p20"><summary>Prompt ansehen</summary><pre id="p20">Create a fashion campaign cover image for the streetwear brand &quot;WEAX&quot;. Use the attached image as the exact logo.
+
+Four teenagers pose together on a city rooftop at night, each wearing different pieces of the all-black WEAX collection: a full-zip hoodie zipped up over the head as a mask, a cropped varsity jacket with chrome star snaps, a reflective puffer vest, super-baggy black jeans, parachute pants, a short beanie, a balaclava and a silver chain with the WEAX logo pendant.
+All pieces share the signature WEAX LINE: thin silver reflective lines flowing like shooting star trails, each starting at a small eight-pointed star. Camera flash makes every line and the reflective vest glow bright silver against the black outfits.
+Everything is baggy and oversized; two of them wear cropped versions.
+The WEAX logo appears small in silver at the top of the image.
+
+Gen-Z editorial energy, slight motion blur, direct flash, vertical 9:16 format for TikTok and Instagram. Photorealistic, 4K.</pre></details>
+</article>
+</div></section>
+<section class="fixes">
+  <h2>Wenn Gemini danebenliegt</h2>
+  <ul>
+    <li>Linie zu dick: <code>Make the WEAX LINE thinner, like a fine piping.</code></li>
+    <li>Nicht baggy genug: <code>Make it more baggy and oversized.</code></li>
+    <li>Crop-Version fehlt: <code>Also show the cropped version with the lower part zipped off.</code></li>
+    <li>Logo verändert: <code>Keep the logo exactly like in the uploaded image.</code></li>
+  </ul>
+</section>
+</div>
+<script>
+document.querySelectorAll('.copy').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var pre = document.getElementById(btn.dataset.target);
+    var text = pre.textContent;
+    function done(msg) { btn.textContent = msg; btn.classList.add('done'); setTimeout(function () { btn.textContent = 'Prompt kopieren'; btn.classList.remove('done'); }, 1800); }
+    function fallback() {
+      var det = document.getElementById('det-' + btn.dataset.target); det.open = true;
+      var r = document.createRange(); r.selectNodeContents(pre);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      done('Markiert – jetzt kopieren');
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done('Kopiert ✓'); }, fallback);
+    } else { fallback(); }
+  });
+});
+</script>
