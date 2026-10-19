@@ -18,42 +18,38 @@
     min-height: 100svh;
     display: grid; place-items: center;
     padding: 96px 20px 120px;
-    background: radial-gradient(ellipse at 50% 38%, color-mix(in srgb, var(--chrome) 9%, var(--bg)), var(--bg) 62%);
+    background: radial-gradient(ellipse at 50% 35%, color-mix(in srgb, var(--chrome) 5%, var(--bg)), var(--bg) 60%);
     color: var(--chrome); text-align: center;
   }
   #wsh-preview .wsh__canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-  #wsh-preview .wsh__flash {
-    position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0;
-    background: radial-gradient(circle at var(--fx, 50%) var(--fy, 40%), rgba(255,255,255,.85), rgba(255,255,255,0) 45%);
-  }
-  #wsh-preview.is-arrived .wsh__flash { animation: wsh-flash-preview 1.1s ease-out forwards; }
 
   #wsh-preview .wsh__content { position: relative; z-index: 2; display: grid; justify-items: center; gap: 0; max-width: 900px; }
   #wsh-preview .wsh__anchor { width: 120px; height: clamp(110px, 18vw, 170px); }
   #wsh-preview .wsh__eyebrow { font-size: 12px; letter-spacing: .45em; text-transform: uppercase; margin: 8px 0 0; opacity: .7; }
   #wsh-preview .wsh__title {
-    font-family: 'Cinzel', 'Times New Roman', serif; font-weight: 700;
-    font-size: clamp(54px, 14vw, 150px); line-height: 1; letter-spacing: .18em; margin: 14px 0 0 .18em;
+    font-family: 'Cinzel', 'Times New Roman', serif; font-weight: 500;
+    font-size: clamp(48px, 11vw, 120px); line-height: 1; letter-spacing: .22em; margin: 18px 0 0 .22em;
   }
   #wsh-preview .wsh__title span {
     display: inline-block;
-    background: linear-gradient(100deg, #6f757d 0%, #ffffff 18%, #9aa0a8 36%, #ffffff 52%, #7b8189 70%, #ffffff 88%, #6f757d 100%);
+    background: linear-gradient(100deg, #b9bec6 0%, #b9bec6 40%, #ffffff 50%, #b9bec6 60%, #b9bec6 100%);
     background-size: 300% 100%;
     -webkit-background-clip: text; background-clip: text; color: transparent;
-    animation: wsh-shine-preview 6s linear infinite; animation-delay: calc(var(--i, 0) * -.25s);
+    animation: wsh-shine-preview 9s ease-in-out infinite; animation-delay: calc(var(--i, 0) * .12s);
   }
-  #wsh-preview .wsh__logo { width: min(70vw, 420px); height: auto; margin-top: 14px; filter: drop-shadow(0 0 24px color-mix(in srgb, var(--chrome) 45%, transparent)); }
-  #wsh-preview .wsh__sub { max-width: 520px; margin: 22px auto 0; line-height: 1.7; font-size: 16px; opacity: .8; }
+  #wsh-preview .wsh__logo { width: min(70vw, 420px); height: auto; margin-top: 14px; filter: drop-shadow(0 0 18px color-mix(in srgb, var(--chrome) 25%, transparent)); }
+  #wsh-preview .wsh__sub { max-width: 460px; margin: 24px auto 0; line-height: 1.7; font-size: 15px; letter-spacing: .04em; opacity: .65; }
   #wsh-preview .wsh__btn {
-    display: inline-flex; align-items: center; gap: 12px; margin-top: 36px;
-    padding: 18px 42px; border-radius: 99px; text-decoration: none; font-weight: 700; letter-spacing: .2em;
-    text-transform: uppercase; font-size: 14px; color: #0b0b0d;
-    background: linear-gradient(180deg, #ffffff, #c9cdd3 55%, #eef0f2);
-    box-shadow: 0 0 0 1px rgba(255,255,255,.4) inset, 0 10px 40px -10px color-mix(in srgb, var(--chrome) 70%, transparent);
-    transition: transform .3s, box-shadow .3s;
+    display: inline-flex; align-items: center; gap: 14px; margin-top: 40px;
+    padding: 15px 34px; border-radius: 99px; text-decoration: none; font-weight: 500; letter-spacing: .28em;
+    text-transform: uppercase; font-size: 12px; color: var(--chrome);
+    border: 1px solid color-mix(in srgb, var(--chrome) 45%, transparent); background: transparent;
+    transition: background .4s ease, color .4s ease, border-color .4s ease;
   }
-  #wsh-preview .wsh__btn:hover, #wsh-preview .wsh__btn:focus-visible { transform: translateY(-3px) scale(1.03); box-shadow: 0 0 0 1px #fff inset, 0 18px 60px -10px var(--chrome); outline: none; }
-  #wsh-preview .wsh__btn svg { width: 16px; height: 16px; }
+  #wsh-preview .wsh__btn:hover, #wsh-preview .wsh__btn:focus-visible { background: var(--chrome); color: var(--bg); border-color: var(--chrome); outline: none; }
+  #wsh-preview .wsh__btn svg { transition: transform .4s ease; }
+  #wsh-preview .wsh__btn:hover svg { transform: translateX(4px); }
+  #wsh-preview .wsh__btn svg { width: 14px; height: 14px; }
 
   #wsh-preview .wsh__skip {
     position: absolute; right: 18px; bottom: 18px; z-index: 3;
@@ -71,22 +67,21 @@
   #wsh-preview.js .wsh__eyebrow,
   #wsh-preview.js .wsh__sub,
   #wsh-preview.js .wsh__btn,
-  #wsh-preview.js .wsh__scroll { opacity: 0; transform: translateY(18px); transition: opacity 1s ease, transform 1.2s cubic-bezier(.16,1,.3,1); }
-  #wsh-preview.js .wsh__title { letter-spacing: .55em; transition: letter-spacing 2.2s cubic-bezier(.16,1,.3,1); }
-  #wsh-preview.js .wsh__title span { opacity: 0; filter: blur(14px); transform: translateY(30px) scale(1.15);
-    transition: opacity .9s ease, filter 1.1s ease, transform 1.3s cubic-bezier(.16,1,.3,1); transition-delay: calc(var(--i, 0) * 90ms); }
-  #wsh-preview.js .wsh__logo { opacity: 0; filter: blur(14px); transform: scale(1.15); transition: opacity 1s ease, filter 1.2s ease, transform 1.4s cubic-bezier(.16,1,.3,1); }
+  #wsh-preview.js .wsh__scroll { opacity: 0; transform: translateY(10px); transition: opacity 1.4s ease, transform 1.8s cubic-bezier(.22,1,.36,1); }
+  #wsh-preview.js .wsh__title { letter-spacing: .4em; transition: letter-spacing 2.6s cubic-bezier(.22,1,.36,1); }
+  #wsh-preview.js .wsh__title span { opacity: 0; transform: translateY(10px);
+    transition: opacity 1.6s ease, transform 2s cubic-bezier(.22,1,.36,1); transition-delay: calc(var(--i, 0) * 120ms); }
+  #wsh-preview.js .wsh__logo { opacity: 0; transform: translateY(10px); transition: opacity 1.6s ease, transform 2s cubic-bezier(.22,1,.36,1); }
 
   #wsh-preview.is-title .wsh__title { letter-spacing: .18em; }
-  #wsh-preview.is-title .wsh__title span { opacity: 1; filter: none; transform: none; }
-  #wsh-preview.is-title .wsh__logo { opacity: 1; filter: drop-shadow(0 0 24px color-mix(in srgb, var(--chrome) 45%, transparent)); transform: none; }
+  #wsh-preview.is-title .wsh__title span { opacity: 1; transform: none; }
+  #wsh-preview.is-title .wsh__logo { opacity: 1; transform: none; }
   #wsh-preview.is-title .wsh__eyebrow { opacity: .7; transform: none; }
-  #wsh-preview.is-sub .wsh__sub { opacity: .8; transform: none; }
+  #wsh-preview.is-sub .wsh__sub { opacity: .65; transform: none; }
   #wsh-preview.is-btn .wsh__btn { opacity: 1; transform: none; }
   #wsh-preview.is-btn .wsh__scroll { opacity: 1; transform: translateX(-50%); }
 
-  @keyframes wsh-flash-preview { 0% { opacity: 0; } 12% { opacity: 1; } 100% { opacity: 0; } }
-  @keyframes wsh-shine-preview { from { background-position: 100% 0; } to { background-position: -200% 0; } }
+  @keyframes wsh-shine-preview { 0%, 55% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
   @keyframes wsh-drop-preview { 0% { top: -40%; } 100% { top: 100%; } }
 
   @media (prefers-reduced-motion: reduce) {
@@ -102,7 +97,6 @@
   data-once="false"
 >
   <canvas class="wsh__canvas" aria-hidden="true"></canvas>
-  <div class="wsh__flash" aria-hidden="true"></div>
 
   <div class="wsh__content">
     <div class="wsh__anchor" aria-hidden="true"></div>
@@ -169,18 +163,18 @@
   function col(a) { return 'rgba(' + C[0] + ',' + C[1] + ',' + C[2] + ',' + a + ')'; }
   function white(a) { return 'rgba(255,255,255,' + a + ')'; }
 
-  var D = { field: 500 * speed, travel: 2100 * speed, title: 350 * speed, sub: 1300 * speed, btn: 1800 * speed };
+  var D = { field: 900 * speed, travel: 2800 * speed, title: 500 * speed, sub: 1500 * speed, btn: 2100 * speed };
   var W = 0, H = 0, DPR = 1, ax = 0, ay = 0, starR = 36, P = [];
-  var stars = [], parts = [], meteors = [];
+  var stars = [], parts = [];
   var T0 = null, last = null, arrivedAt = null, done = false, raf = null, onScreen = true;
-  var mx = 0, my = 0, pmx = 0, pmy = 0, nextMeteor = 0, timers = [];
+  var mx = 0, my = 0, pmx = 0, pmy = 0, timers = [];
 
   function bez(t) {
     var u = 1 - t, a = u * u * u, b = 3 * u * u * t, c = 3 * u * t * t, d = t * t * t;
     return [a * P[0][0] + b * P[1][0] + c * P[2][0] + d * P[3][0], a * P[0][1] + b * P[1][1] + c * P[2][1] + d * P[3][1]];
   }
-  function easeTravel(u) { return 1 - Math.pow(1 - u, 2.4); }
-  function easeBack(x) { var c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); }
+  function easeTravel(u) { return u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; }
+  function easeOut(x) { return 1 - Math.pow(1 - x, 3); }
 
   function resize() {
     var r = root.getBoundingClientRect();
@@ -190,15 +184,15 @@
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     var a = anchor.getBoundingClientRect();
     ax = a.left - r.left + a.width / 2; ay = a.top - r.top + a.height / 2;
-    starR = Math.max(24, Math.min(48, W * 0.045));
+    starR = Math.max(18, Math.min(34, W * 0.03));
     root.style.setProperty('--fx', (ax / W * 100) + '%');
     root.style.setProperty('--fy', (ay / H * 100) + '%');
     // Geschwungene Flugbahn: von oben links, tiefer Bogen nach unten, dann hoch und in die Mitte
-    P = [[-0.12 * W, 0.12 * H], [0.2 * W, 1.0 * H], [ax + 0.22 * W, ay - 0.34 * H], [ax, ay]];
-    var count = Math.min(340, Math.round(W * H / 4200));
+    P = [[-0.08 * W, 0.62 * H], [0.18 * W, 0.98 * H], [ax - 0.12 * W, ay + 0.08 * H], [ax, ay]];
+    var count = Math.min(170, Math.round(W * H / 9000));
     stars = [];
     for (var i = 0; i < count; i++) {
-      stars.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.3 + 0.2, d: Math.random() * 0.8 + 0.2, ph: Math.random() * 6.28, sp: Math.random() * 0.002 + 0.0007 });
+      stars.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.1 + 0.2, d: Math.random() * 0.6 + 0.15, ph: Math.random() * 6.28, sp: Math.random() * 0.002 + 0.0007 });
     }
   }
 
@@ -237,11 +231,10 @@
   function drawStars(now, fade) {
     for (var i = 0; i < stars.length; i++) {
       var s = stars[i];
-      var a = (0.35 + 0.65 * (0.5 + 0.5 * Math.sin(now * s.sp + s.ph))) * fade * s.d;
-      var x = s.x + pmx * 18 * s.d, y = s.y + pmy * 18 * s.d;
+      var a = (0.5 + 0.5 * (0.5 + 0.5 * Math.sin(now * s.sp + s.ph))) * fade * s.d;
+      var x = s.x + pmx * 8 * s.d, y = s.y + pmy * 8 * s.d;
       ctx.fillStyle = white(a);
       ctx.fillRect(x, y, s.r, s.r);
-      if (s.r > 1.25 && a > 0.6) { ctx.fillStyle = white(a * 0.25); ctx.fillRect(x - 2, y + s.r / 2 - 0.25, 4 + s.r, 0.5); ctx.fillRect(x + s.r / 2 - 0.25, y - 2, 0.5, 4 + s.r); }
     }
   }
 
@@ -249,22 +242,22 @@
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     ctx.lineCap = 'round';
-    strokePath(0, t, 0.16, 1.2);                       // die Linie, die stehen bleibt
-    var L = 0.26, n = 40, t0 = Math.max(0, t - L), prev = bez(t0);
+    strokePath(0, t, 0.12, 0.8);                       // die Linie, die stehen bleibt
+    var L = 0.3, n = 48, t0 = Math.max(0, t - L), prev = bez(t0);
     for (var i = 1; i <= n; i++) {
       var k = i / n, p = bez(t0 + (t - t0) * k);
-      ctx.strokeStyle = k > 0.85 ? white(0.9 * k) : col(0.04 + 0.8 * k * k);
-      ctx.lineWidth = 0.4 + 4.2 * k * k;
+      ctx.strokeStyle = k > 0.9 ? white(0.85 * k) : col(0.02 + 0.6 * k * k);
+      ctx.lineWidth = 0.3 + 1.6 * k * k;
       ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(p[0], p[1]); ctx.stroke();
       prev = p;
     }
     var h = bez(t);
-    glow(h[0], h[1], 34, 0.95);
-    star8(h[0], h[1], 11, now * 0.006, 1);
+    glow(h[0], h[1], 16, 0.7);
+    ctx.fillStyle = white(1); ctx.beginPath(); ctx.arc(h[0], h[1], 1.6, 0, 6.2832); ctx.fill();
     ctx.restore();
-    // Funken, die vom Kopf abfallen
-    for (var j = 0; j < 3; j++) {
-      parts.push({ x: h[0], y: h[1], vx: (Math.random() - 0.5) * 0.9, vy: (Math.random() - 0.3) * 0.9, life: 0, max: 600 + Math.random() * 700, r: Math.random() * 1.6 + 0.4 });
+    // ganz vereinzelt ein feiner Funke
+    if (Math.random() < 0.25) {
+      parts.push({ x: h[0], y: h[1], vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, life: 0, max: 900 + Math.random() * 600, r: Math.random() * 0.8 + 0.3 });
     }
   }
 
@@ -272,10 +265,6 @@
     if (arrivedAt !== null) return;
     arrivedAt = now;
     if (!quiet) {
-      for (var i = 0; i < 170; i++) {
-        var ang = Math.random() * 6.2832, sp = Math.random() * 6 + 1;
-        parts.push({ x: ax, y: ay, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, life: 0, max: 900 + Math.random() * 1300, r: Math.random() * 1.9 + 0.4 });
-      }
       root.classList.add('is-arrived');
       timers.push(setTimeout(function () { root.classList.add('is-title'); }, D.title));
       timers.push(setTimeout(function () { root.classList.add('is-sub'); }, D.sub));
@@ -292,74 +281,29 @@
     ctx.globalCompositeOperation = 'lighter';
     ctx.lineCap = 'round';
 
-    // WEAX LINE: der Schweif bleibt stehen, ein Lichtpunkt läuft darüber
-    strokePath(0, 1, 0.2, 1.2);
-    var s = (now / (3200 * speed)) % 1;
-    strokePath(Math.max(0, s - 0.07), s, 0.75, 1.8);
-    var sp = bez(s); glow(sp[0], sp[1], 10, 0.6);
+    // WEAX LINE: der Schweif bleibt fein stehen, ein Lichtschimmer gleitet langsam darüber
+    strokePath(0, 1, 0.14, 0.8);
+    var s = (now / (6000 * speed)) % 1;
+    strokePath(Math.max(0, s - 0.12), s, 0.35, 1);
 
-    // Druckwelle + Lichtstreifen
-    if (k < 1000) {
-      var q = k / 1000;
-      ctx.strokeStyle = white(0.55 * (1 - q)); ctx.lineWidth = 2 * (1 - q) + 0.5;
-      ctx.beginPath(); ctx.arc(ax, ay, starR + q * Math.max(W, H) * 0.45, 0, 6.2832); ctx.stroke();
-    }
-    if (k < 1600) {
-      var f = 1 - k / 1600;
-      var lg = ctx.createLinearGradient(0, ay, W, ay);
-      lg.addColorStop(0, col(0)); lg.addColorStop(0.5, white(0.8 * f)); lg.addColorStop(1, col(0));
-      ctx.fillStyle = lg; ctx.fillRect(0, ay - 1.2, W, 2.4);
-      glow(ax, ay, starR * 5 * (0.6 + f), 0.5 * f);
-    }
+    // Stern: weich einblenden und leicht wachsen
+    var a = Math.min(1, k / 1400), e = easeOut(a);
+    glow(ax, ay, starR * 2.4, (0.16 + 0.03 * Math.sin(now / 1800)) * e);
+    star8(ax, ay, starR * (0.7 + 0.3 * e) * (1 + 0.015 * Math.sin(now / 1500)), 0, e);
 
-    // Orbit-Ring wie im Logo – hintere Hälfte hinter dem Stern
-    var g = Math.min(1, k / 1200), og = g < 1 ? easeBack(g) : 1;
-    var rx = starR * 2.7 * og, ry = rx * 0.3, rot = -0.38;
-    var spin = now * 0.0012;
-    if (rx > 1) {
-      ctx.lineWidth = 1.3;
-      ctx.strokeStyle = col(0.28);
-      ctx.beginPath(); ctx.ellipse(ax, ay, rx, ry, rot, Math.PI, 2 * Math.PI); ctx.stroke();
-    }
-
-    // Stern
-    var sc = k < 650 ? easeBack(k / 650) : 1 + 0.035 * Math.sin(now / 650);
-    glow(ax, ay, starR * 3.2, 0.32 + 0.08 * Math.sin(now / 900));
-    star8(ax, ay, starR * sc, 0.12 * Math.sin(now / 2400), 1);
-    // kurzes Funkeln an den Spitzen
-    var tw = 0.5 + 0.5 * Math.sin(now / 420);
-    ctx.fillStyle = white(0.5 * tw);
-    ctx.fillRect(ax - starR * 1.6, ay - 0.5, starR * 3.2, 1);
-    ctx.fillRect(ax - 0.5, ay - starR * 1.6, 1, starR * 3.2);
-
-    // vordere Hälfte des Orbits + Lichtpunkt, der darauf kreist
-    if (rx > 1) {
-      ctx.strokeStyle = col(0.6); ctx.lineWidth = 1.4;
-      ctx.beginPath(); ctx.ellipse(ax, ay, rx, ry, rot, 0, Math.PI); ctx.stroke();
-      var oa = spin % 6.2832;
-      var ox = ax + Math.cos(oa) * rx * Math.cos(rot) - Math.sin(oa) * ry * Math.sin(rot);
-      var oy = ay + Math.cos(oa) * rx * Math.sin(rot) + Math.sin(oa) * ry * Math.cos(rot);
-      glow(ox, oy, 9, Math.sin(oa) > 0 ? 0.9 : 0.35);
-    }
-    ctx.restore();
-  }
-
-  function drawMeteors(now, dt) {
-    if (arrivedAt !== null && now > nextMeteor) {
-      var fromRight = Math.random() < 0.5;
-      meteors.push({ x: fromRight ? W * (0.5 + Math.random() * 0.6) : W * Math.random() * 0.5, y: -20, vx: (fromRight ? -1 : 1) * (4 + Math.random() * 3), vy: 2.5 + Math.random() * 2, life: 0, max: 900 + Math.random() * 600 });
-      nextMeteor = now + 2200 + Math.random() * 3800;
-    }
-    ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round';
-    for (var i = meteors.length - 1; i >= 0; i--) {
-      var m = meteors[i];
-      m.life += dt; m.x += m.vx * dt / 16; m.y += m.vy * dt / 16; m.vy += 0.02 * dt / 16;
-      var a = Math.sin(Math.min(1, m.life / m.max) * Math.PI);
-      var lg = ctx.createLinearGradient(m.x, m.y, m.x - m.vx * 14, m.y - m.vy * 14);
-      lg.addColorStop(0, white(0.9 * a)); lg.addColorStop(1, col(0));
-      ctx.strokeStyle = lg; ctx.lineWidth = 1.4;
-      ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x - m.vx * 14, m.y - m.vy * 14); ctx.stroke();
-      if (m.life > m.max) meteors.splice(i, 1);
+    // Orbit-Ring zeichnet sich langsam
+    var g = easeOut(Math.min(1, Math.max(0, (k - 300) / 2000)));
+    if (g > 0) {
+      var rx = starR * 2.9, ry = rx * 0.28, rot = -0.32;
+      ctx.lineWidth = 0.9;
+      ctx.strokeStyle = col(0.42);
+      ctx.beginPath(); ctx.ellipse(ax, ay, rx, ry, rot, -Math.PI / 2, -Math.PI / 2 + g * 2 * Math.PI); ctx.stroke();
+      if (g >= 1) {
+        var oa = (now * 0.0005) % 6.2832;
+        var ox = ax + Math.cos(oa) * rx * Math.cos(rot) - Math.sin(oa) * ry * Math.sin(rot);
+        var oy = ay + Math.cos(oa) * rx * Math.sin(rot) + Math.sin(oa) * ry * Math.cos(rot);
+        glow(ox, oy, 6, 0.5);
+      }
     }
     ctx.restore();
   }
@@ -383,11 +327,10 @@
   }
 
   function render(now, dt) {
-    pmx += (mx - pmx) * 0.05; pmy += (my - pmy) * 0.05;
+    pmx += (mx - pmx) * 0.03; pmy += (my - pmy) * 0.03;
     ctx.clearRect(0, 0, W, H);
     var el = now - T0;
     drawStars(now, done ? 1 : Math.min(1, el / D.field));
-    drawMeteors(now, dt);
     if (arrivedAt === null) {
       var u = Math.max(0, (el - D.field * 0.6) / D.travel);
       if (u < 1) drawTrail(easeTravel(u), now);
@@ -418,7 +361,7 @@
     timers.forEach(clearTimeout); timers = [];
     root.classList.remove('is-arrived', 'is-title', 'is-sub', 'is-btn');
     void root.offsetWidth;
-    T0 = null; arrivedAt = null; done = false; parts = []; meteors = [];
+    T0 = null; arrivedAt = null; done = false; parts = [];
     start();
   }
   root.weaxReplay = replay;
