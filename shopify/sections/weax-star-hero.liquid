@@ -7,9 +7,10 @@
 {%- endcomment -%}
 
 {%- assign sid = section.id -%}
-{% render 'weax-fonts' %}
-
 <style>
+  /* Schrift lokal (Datei "Cinzel.woff2" unter Assets). Fehlt sie, wird eine Ersatzschrift genutzt. */
+  @font-face { font-family: 'Cinzel'; font-style: normal; font-weight: 400 900; font-display: swap; src: url({{ 'Cinzel.woff2' | asset_url }}) format('woff2'); }
+
   #wsh-{{ sid }} {
     --bg: {{ section.settings.bg_color }};
     --chrome: {{ section.settings.chrome_color }};
@@ -190,7 +191,7 @@
     starR = Math.max(18, Math.min(34, W * 0.03));
     root.style.setProperty('--fx', (ax / W * 100) + '%');
     root.style.setProperty('--fy', (ay / H * 100) + '%');
-    // Geschwungene Flugbahn: von oben links, tiefer Bogen nach unten, dann hoch und in die Mitte
+    // Weiter S-Bogen: von links unten sanft hoch in die Mitte
     P = [[-0.08 * W, 0.62 * H], [0.18 * W, 0.98 * H], [ax - 0.12 * W, ay + 0.08 * H], [ax, ay]];
     var count = Math.min(170, Math.round(W * H / 9000));
     stars = [];
