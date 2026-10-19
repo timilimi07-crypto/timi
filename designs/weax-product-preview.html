@@ -1,0 +1,329 @@
+<title>WEAX Produktseite</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap">
+<style>:root{color-scheme:dark}html,body{background:#050507;color:#dfe3e8;margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.pv-note{text-align:center;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#80848c;padding:12px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid #1a1b20}
+#wp-pv{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}</style>
+<style>
+  @font-face { font-family: 'Cinzel'; font-style: normal; font-weight: 400 900; font-display: swap; src: local('Cinzel'); }
+
+  #wp-pv {
+    --bg: #050507;
+    --chrome: #dfe3e8;
+    --line: color-mix(in srgb, var(--chrome) 16%, transparent);
+    --muted: color-mix(in srgb, var(--chrome) 62%, var(--bg));
+    position: relative; overflow: hidden; isolation: isolate;
+    background: var(--bg); color: var(--chrome);
+    padding: clamp(24px, 5vw, 64px) 20px clamp(48px, 7vw, 96px);
+  }
+  #wp-pv .wp__sky { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+  #wp-pv .wp__grid {
+    max-width: 1240px; margin: 0 auto;
+    display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 80px); align-items: start;
+  }
+
+  /* Bilder */
+  #wp-pv .wp__media { display: grid; gap: 12px; min-width: 0; }
+  #wp-pv .wp__stage {
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+    border-radius: 4px; background: color-mix(in srgb, var(--chrome) 4%, var(--bg));
+  }
+  #wp-pv .wp__stage::-webkit-scrollbar { display: none; }
+  #wp-pv .wp__slide { flex: 0 0 100%; scroll-snap-align: center; aspect-ratio: 4 / 5; overflow: hidden; }
+  #wp-pv .wp__slide img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 1.2s cubic-bezier(.22,1,.36,1); }
+  #wp-pv .wp__stage:hover .wp__slide img { transform: scale(1.03); }
+  #wp-pv .wp__thumbs { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
+  #wp-pv .wp__thumb {
+    flex: 0 0 72px; aspect-ratio: 4 / 5; padding: 0; border: 1px solid transparent; border-radius: 3px; overflow: hidden;
+    background: none; cursor: pointer; opacity: .5; transition: opacity .4s, border-color .4s;
+  }
+  #wp-pv .wp__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #wp-pv .wp__thumb[aria-current="true"] { opacity: 1; border-color: var(--chrome); }
+  #wp-pv .wp__thumb:hover, #wp-pv .wp__thumb:focus-visible { opacity: 1; outline: none; }
+
+  /* Infos */
+  #wp-pv .wp__info { position: sticky; top: 32px; display: grid; gap: 28px; min-width: 0; }
+  #wp-pv .wp__head { display: grid; gap: 10px; }
+  #wp-pv .wp__eyebrow { margin: 0; font-size: 11px; letter-spacing: .4em; text-transform: uppercase; color: var(--muted); }
+  #wp-pv .wp__title {
+    margin: 0; font-family: 'Cinzel', 'Times New Roman', serif; font-weight: 500;
+    font-size: clamp(28px, 3.4vw, 42px); letter-spacing: .14em; line-height: 1.15; color: #fff; text-wrap: balance;
+  }
+  #wp-pv .wp__line { width: 100%; max-width: 340px; height: 28px; display: block; overflow: visible; }
+  #wp-pv .wp__line path { fill: none; stroke: var(--chrome); stroke-width: 1; stroke-linecap: round; opacity: .55; }
+  #wp-pv .wp__line .wp__line-star { fill: #fff; opacity: 1; stroke: none; }
+  #wp-pv .wp__price-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  #wp-pv .wp__price { font-size: 20px; letter-spacing: .06em; color: #fff; font-variant-numeric: tabular-nums; }
+  #wp-pv .wp__compare { font-size: 15px; color: var(--muted); text-decoration: line-through; }
+  #wp-pv .wp__tax { width: 100%; font-size: 12px; color: var(--muted); }
+  #wp-pv .wp__tax a { color: inherit; }
+  #wp-pv .wp__short { margin: 0; line-height: 1.75; color: color-mix(in srgb, var(--chrome) 82%, var(--bg)); max-width: 52ch; }
+
+  #wp-pv .wp__form { --d: 3; }
+  #wp-pv .wp__opt { border: 0; margin: 0; padding: 0; display: grid; gap: 12px; min-width: 0; }
+  #wp-pv .wp__opt legend { padding: 0; font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
+  #wp-pv .wp__opt legend b { font-weight: 400; color: #fff; letter-spacing: .12em; margin-left: 8px; }
+  #wp-pv .wp__choices { display: flex; flex-wrap: wrap; gap: 8px; }
+  #wp-pv .wp__choice input { position: absolute; opacity: 0; pointer-events: none; }
+  #wp-pv .wp__choice span {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-width: 54px; height: 44px; padding: 0 16px; border-radius: 99px; cursor: pointer;
+    border: 1px solid var(--line); font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+    transition: border-color .3s, background .3s, color .3s;
+  }
+  #wp-pv .wp__choice:hover span { border-color: color-mix(in srgb, var(--chrome) 50%, transparent); }
+  #wp-pv .wp__choice input:checked + span { border-color: var(--chrome); background: var(--chrome); color: var(--bg); }
+  #wp-pv .wp__choice input:focus-visible + span { outline: 2px solid var(--chrome); outline-offset: 3px; }
+  #wp-pv .wp__choice.is-out span { opacity: .35; text-decoration: line-through; }
+  #wp-pv .wp__dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--chrome) 45%, transparent); }
+
+  #wp-pv .wp__buy { display: grid; gap: 12px; }
+  #wp-pv .wp__add {
+    position: relative; overflow: hidden; width: 100%; height: 56px; border-radius: 99px; cursor: pointer;
+    border: 1px solid var(--chrome); background: var(--chrome); color: var(--bg);
+    font: 500 13px/1 inherit; letter-spacing: .3em; text-transform: uppercase;
+    transition: background .4s, color .4s;
+  }
+  #wp-pv .wp__add::after {
+    content: ""; position: absolute; top: 0; bottom: 0; left: -40%; width: 30%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,.75), transparent); transform: skewX(-20deg);
+    transition: left .9s cubic-bezier(.22,1,.36,1);
+  }
+  #wp-pv .wp__add:hover::after { left: 120%; }
+  #wp-pv .wp__add:focus-visible { outline: 2px solid var(--chrome); outline-offset: 4px; }
+  #wp-pv .wp__add[disabled] { cursor: not-allowed; background: transparent; color: var(--muted); border-color: var(--line); }
+  #wp-pv .wp__add[disabled]::after { display: none; }
+  #wp-pv .wp__stock { margin: 0; font-size: 12px; letter-spacing: .08em; color: var(--muted); }
+  #wp-pv .wp__stock:empty { display: none; }
+  #wp-pv .wp__perks { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 13px; color: color-mix(in srgb, var(--chrome) 80%, var(--bg)); }
+  #wp-pv .wp__perks li { display: flex; align-items: center; gap: 10px; }
+  #wp-pv .wp__perks svg { width: 10px; height: 10px; flex: none; }
+
+  #wp-pv .wp__acc { border-top: 1px solid var(--line); }
+  #wp-pv .wp__acc details { border-bottom: 1px solid var(--line); }
+  #wp-pv .wp__acc summary {
+    list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 0; font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: #fff;
+  }
+  #wp-pv .wp__acc summary::-webkit-details-marker { display: none; }
+  #wp-pv .wp__acc summary::after { content: "+"; font-size: 18px; letter-spacing: 0; color: var(--muted); transition: transform .4s; }
+  #wp-pv .wp__acc details[open] summary::after { transform: rotate(45deg); }
+  #wp-pv .wp__acc summary:focus-visible { outline: 1px solid var(--chrome); outline-offset: 4px; }
+  #wp-pv .wp__acc-body { padding: 0 0 20px; line-height: 1.75; font-size: 14px; color: color-mix(in srgb, var(--chrome) 82%, var(--bg)); }
+  #wp-pv .wp__acc-body p { margin: 0 0 10px; }
+  #wp-pv .wp__acc-body table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  #wp-pv .wp__acc-body td, #wp-pv .wp__acc-body th { padding: 8px 6px; border-bottom: 1px solid var(--line); text-align: left; font-weight: 400; }
+
+  /* sanftes Einblenden */
+  #wp-pv.js .wp__reveal { opacity: 0; transform: translateY(12px); transition: opacity 1.2s ease, transform 1.4s cubic-bezier(.22,1,.36,1); transition-delay: calc(var(--d, 0) * 110ms); }
+  #wp-pv.is-in .wp__reveal { opacity: 1; transform: none; }
+  #wp-pv.js .wp__line path:not(.wp__line-star) { stroke-dasharray: 400; stroke-dashoffset: 400; transition: stroke-dashoffset 2.4s cubic-bezier(.22,1,.36,1) .5s; }
+  #wp-pv.is-in .wp__line path:not(.wp__line-star) { stroke-dashoffset: 0; }
+  #wp-pv.js .wp__line-star { opacity: 0; transform-origin: 4px 22px; transform: scale(.3); transition: opacity .8s ease 2.2s, transform 1s cubic-bezier(.22,1,.36,1) 2.2s; }
+  #wp-pv.is-in .wp__line-star { opacity: 1; transform: none; }
+
+  @media (max-width: 860px) {
+    #wp-pv .wp__grid { grid-template-columns: minmax(0, 1fr); }
+    #wp-pv .wp__info { position: static; }
+    #wp-pv .wp__thumb { flex-basis: 56px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #wp-pv *, #wp-pv *::after { transition: none !important; animation: none !important; }
+  }
+</style>
+<div class="pv-note">Vorschau · Platzhalter-Bilder – im Shop erscheinen deine echten Produktfotos · „Weiß / L“ ist hier als ausverkauft markiert</div><section id="wp-pv" class="wp" data-chrome="#dfe3e8">
+  <canvas class="wp__sky" aria-hidden="true"></canvas>
+  <div class="wp__grid">
+    <div class="wp__media wp__reveal" style="--d:0">
+      <div class="wp__stage" tabindex="0" aria-label="Produktbilder"><div class="wp__slide" data-media-id="1"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgMzc1Ij48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9ImIiIGN4PSIuNSIgY3k9Ii40MiIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyNjI3MmMiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwZDBkMTAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjM3NSIgZmlsbD0idXJsKCNiKSIvPjxwYXRoIGQ9Ik0xNTAgMTYwbDQgMTQgMTQgNC0xNCA0LTQgMTQtNC0xNC0xNC00IDE0LTR6IiBmaWxsPSIjZGZlM2U4IiBvcGFjaXR5PSIuOCIvPjx0ZXh0IHg9IjE1MCIgeT0iMjMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBsZXR0ZXItc3BhY2luZz0iMyIgZmlsbD0iI2RmZTNlOCIgb3BhY2l0eT0iLjYiPkZPVE8gMSDCtyBTQ0hXQVJaPC90ZXh0Pjwvc3ZnPg==" alt="WEAX ORIGIN PULLOVER" width="1200" height="1500"></div><div class="wp__slide" data-media-id="2"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgMzc1Ij48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9ImIiIGN4PSIuNSIgY3k9Ii40MiIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyNjI3MmMiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwZDBkMTAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjM3NSIgZmlsbD0idXJsKCNiKSIvPjxwYXRoIGQ9Ik0xNTAgMTYwbDQgMTQgMTQgNC0xNCA0LTQgMTQtNC0xNC0xNC00IDE0LTR6IiBmaWxsPSIjZGZlM2U4IiBvcGFjaXR5PSIuOCIvPjx0ZXh0IHg9IjE1MCIgeT0iMjMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBsZXR0ZXItc3BhY2luZz0iMyIgZmlsbD0iI2RmZTNlOCIgb3BhY2l0eT0iLjYiPkZPVE8gMiDCtyBTQ0hXQVJaPC90ZXh0Pjwvc3ZnPg==" alt="WEAX ORIGIN PULLOVER" width="1200" height="1500"></div><div class="wp__slide" data-media-id="3"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgMzc1Ij48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9ImIiIGN4PSIuNSIgY3k9Ii40MiIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmNGY0ZjIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNjOWNiY2YiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjM3NSIgZmlsbD0idXJsKCNiKSIvPjxwYXRoIGQ9Ik0xNTAgMTYwbDQgMTQgMTQgNC0xNCA0LTQgMTQtNC0xNC0xNC00IDE0LTR6IiBmaWxsPSIjMGIwYjBkIiBvcGFjaXR5PSIuOCIvPjx0ZXh0IHg9IjE1MCIgeT0iMjMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBsZXR0ZXItc3BhY2luZz0iMyIgZmlsbD0iIzBiMGIwZCIgb3BhY2l0eT0iLjYiPkZPVE8gMyDCtyBXRUlTUzwvdGV4dD48L3N2Zz4=" alt="WEAX ORIGIN PULLOVER" width="1200" height="1500"></div><div class="wp__slide" data-media-id="4"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgMzc1Ij48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9ImIiIGN4PSIuNSIgY3k9Ii40MiIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmNGY0ZjIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNjOWNiY2YiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjM3NSIgZmlsbD0idXJsKCNiKSIvPjxwYXRoIGQ9Ik0xNTAgMTYwbDQgMTQgMTQgNC0xNCA0LTQgMTQtNC0xNC0xNC00IDE0LTR6IiBmaWxsPSIjMGIwYjBkIiBvcGFjaXR5PSIuOCIvPjx0ZXh0IHg9IjE1MCIgeT0iMjMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBsZXR0ZXItc3BhY2luZz0iMyIgZmlsbD0iIzBiMGIwZCIgb3BhY2l0eT0iLjYiPkZPVE8gNCDCtyBXRUlTUzwvdGV4dD48L3N2Zz4=" alt="WEAX ORIGIN PULLOVER" width="1200" height="1500"></div></div>
+      <div class="wp__thumbs"><button type="button" class="wp__thumb" data-index="0" aria-label="Bild 1 anzeigen" aria-current="true"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgMzc1Ij48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9ImIiIGN4PSIuNSIgY3k9Ii40MiIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyNjI3MmMiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwZDBkMTAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjM3NSIgZmlsbD0idXJsKCNiKSIvPjxwYXRoIGQ9Ik0xNTAgMTYwbDQgMTQgMTQgNC0xNCA0LTQgMTQtNC0xNC0xNC00IDE0LTR6IiBmaWxsPSIjZGZlM2U4IiBvcGFjaXR5PSIuOCIvPjx0ZXh0IHg9IjE1MCIgeT0iMjMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBsZXR0ZXItc3BhY2luZz0iMyIgZmlsbD0iI2RmZTNlOCIgb3BhY2l0eT0iLjYiPkZPVE8gMSDCtyBTQ0hXQVJaPC90ZXh0Pjwvc3ZnPg==" alt="" width="72" height="90"></button><button type="button" class="wp__thumb" data-index="1" aria-label="Bild 2 anzeigen" ><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgMzc1Ij48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9ImIiIGN4PSIuNSIgY3k9Ii40MiIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMyNjI3MmMiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwZDBkMTAiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjM3NSIgZmlsbD0idXJsKCNiKSIvPjxwYXRoIGQ9Ik0xNTAgMTYwbDQgMTQgMTQgNC0xNCA0LTQgMTQtNC0xNC0xNC00IDE0LTR6IiBmaWxsPSIjZGZlM2U4IiBvcGFjaXR5PSIuOCIvPjx0ZXh0IHg9IjE1MCIgeT0iMjMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBsZXR0ZXItc3BhY2luZz0iMyIgZmlsbD0iI2RmZTNlOCIgb3BhY2l0eT0iLjYiPkZPVE8gMiDCtyBTQ0hXQVJaPC90ZXh0Pjwvc3ZnPg==" alt="" width="72" height="90"></button><button type="button" class="wp__thumb" data-index="2" aria-label="Bild 3 anzeigen" ><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgMzc1Ij48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9ImIiIGN4PSIuNSIgY3k9Ii40MiIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmNGY0ZjIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNjOWNiY2YiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjM3NSIgZmlsbD0idXJsKCNiKSIvPjxwYXRoIGQ9Ik0xNTAgMTYwbDQgMTQgMTQgNC0xNCA0LTQgMTQtNC0xNC0xNC00IDE0LTR6IiBmaWxsPSIjMGIwYjBkIiBvcGFjaXR5PSIuOCIvPjx0ZXh0IHg9IjE1MCIgeT0iMjMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBsZXR0ZXItc3BhY2luZz0iMyIgZmlsbD0iIzBiMGIwZCIgb3BhY2l0eT0iLjYiPkZPVE8gMyDCtyBXRUlTUzwvdGV4dD48L3N2Zz4=" alt="" width="72" height="90"></button><button type="button" class="wp__thumb" data-index="3" aria-label="Bild 4 anzeigen" ><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgMzc1Ij48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9ImIiIGN4PSIuNSIgY3k9Ii40MiIgcj0iLjc1Ij48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmNGY0ZjIiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNjOWNiY2YiLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjM3NSIgZmlsbD0idXJsKCNiKSIvPjxwYXRoIGQ9Ik0xNTAgMTYwbDQgMTQgMTQgNC0xNCA0LTQgMTQtNC0xNC0xNC00IDE0LTR6IiBmaWxsPSIjMGIwYjBkIiBvcGFjaXR5PSIuOCIvPjx0ZXh0IHg9IjE1MCIgeT0iMjMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSI5IiBsZXR0ZXItc3BhY2luZz0iMyIgZmlsbD0iIzBiMGIwZCIgb3BhY2l0eT0iLjYiPkZPVE8gNCDCtyBXRUlTUzwvdGV4dD48L3N2Zz4=" alt="" width="72" height="90"></button></div>
+    </div>
+    <div class="wp__info">
+      <div class="wp__head wp__reveal" style="--d:1">
+        <p class="wp__eyebrow">WEAX · Origin</p>
+        <h1 class="wp__title">WEAX ORIGIN PULLOVER</h1>
+        <svg class="wp__line" viewBox="0 0 340 28" aria-hidden="true"><path d="M4 22 C 70 26, 120 4, 200 10 S 300 22, 336 6"/><path class="wp__line-star" d="M4 15 L5.4 20.6 L11 22 L5.4 23.4 L4 29 L2.6 23.4 L-3 22 L2.6 20.6 Z"/></svg>
+        <div class="wp__price-row"><span class="wp__price" data-price>40,00 €</span><span class="wp__compare" data-compare hidden></span><span class="wp__tax">inkl. MwSt., zzgl. <a href="#">Versand</a></span></div>
+      </div>
+      <p class="wp__short wp__reveal" style="--d:2">Schweres Fleece, cleaner Schnitt, WEAX-Stern auf der Brust. Das Stück, mit dem alles anfängt – gemacht, um zu bleiben.</p>
+      <form class="wp__form wp__reveal" onsubmit="event.preventDefault();var b=this.querySelector('[data-add]');b.textContent='Hinzugefügt ✓ (Vorschau)';setTimeout(function(){b.textContent='In den Warenkorb'},1600)" novalidate>
+        <div style="display:grid;gap:24px">
+          <input type="hidden" name="id" value="1003" data-variant-input>
+          <fieldset class="wp__opt" data-option-index="0"><legend>Farbe <b data-selected-label>Schwarz</b></legend><div class="wp__choices"><label class="wp__choice"><input type="radio" name="wp-pv-opt-0" value="Schwarz" checked><span><i class="wp__dot" style="background:#0b0b0d"></i>Schwarz</span></label><label class="wp__choice"><input type="radio" name="wp-pv-opt-0" value="Weiß" ><span><i class="wp__dot" style="background:#f3f3f1"></i>Weiß</span></label></div></fieldset>
+          <fieldset class="wp__opt" data-option-index="1"><legend>Größe <b data-selected-label>M</b></legend><div class="wp__choices"><label class="wp__choice"><input type="radio" name="wp-pv-opt-1" value="XS" ><span>XS</span></label><label class="wp__choice"><input type="radio" name="wp-pv-opt-1" value="S" ><span>S</span></label><label class="wp__choice"><input type="radio" name="wp-pv-opt-1" value="M" checked><span>M</span></label><label class="wp__choice"><input type="radio" name="wp-pv-opt-1" value="L" ><span>L</span></label><label class="wp__choice"><input type="radio" name="wp-pv-opt-1" value="XL" ><span>XL</span></label></div></fieldset>
+          <div class="wp__buy"><button type="submit" name="add" class="wp__add" data-add>In den Warenkorb</button><p class="wp__stock" data-stock aria-live="polite"></p></div>
+        </div>
+      </form>
+      <ul class="wp__perks wp__reveal" style="--d:4"><li><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 0L6 4L10 5L6 6L5 10L4 6L0 5L4 4Z" fill="currentColor"/></svg>Versand in 2–4 Werktagen</li><li><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 0L6 4L10 5L6 6L5 10L4 6L0 5L4 4Z" fill="currentColor"/></svg>14 Tage Widerrufsrecht</li><li><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 0L6 4L10 5L6 6L5 10L4 6L0 5L4 4Z" fill="currentColor"/></svg>Sichere Zahlung</li></ul>
+      <div class="wp__acc wp__reveal" style="--d:5">
+        <details open><summary>Beschreibung</summary><div class="wp__acc-body"><p>Schweres Fleece, cleaner Schnitt, WEAX-Stern auf der Brust. Das Stück, mit dem alles anfängt – gemacht, um zu bleiben.</p></div></details>
+        <details><summary>Material &amp; Pflege</summary><div class="wp__acc-body"><p>Schweres Baumwoll-Fleece, innen angeraut. Auf links bei 30 °C waschen, nicht in den Trockner.</p></div></details>
+        <details><summary>Größen &amp; Passform</summary><div class="wp__acc-body"><p>Leicht oversized geschnitten. Für einen engeren Sitz eine Größe kleiner wählen.</p></div></details>
+        <details><summary>Versand &amp; Rückgabe</summary><div class="wp__acc-body"><p>Versand innerhalb Deutschlands in 2–4 Werktagen. Du kannst deine Bestellung innerhalb von 14 Tagen widerrufen.</p></div></details>
+      </div>
+    </div>
+  </div>
+  <script type="application/json" data-product-json>{"title": "WEAX ORIGIN PULLOVER", "variants": [{"id": 1001, "options": ["Schwarz", "XS"], "available": true, "featured_media": {"id": 1}}, {"id": 1002, "options": ["Schwarz", "S"], "available": true, "featured_media": {"id": 1}}, {"id": 1003, "options": ["Schwarz", "M"], "available": true, "featured_media": {"id": 1}}, {"id": 1004, "options": ["Schwarz", "L"], "available": true, "featured_media": {"id": 1}}, {"id": 1005, "options": ["Schwarz", "XL"], "available": true, "featured_media": {"id": 1}}, {"id": 1006, "options": ["Wei\u00df", "XS"], "available": true, "featured_media": {"id": 3}}, {"id": 1007, "options": ["Wei\u00df", "S"], "available": true, "featured_media": {"id": 3}}, {"id": 1008, "options": ["Wei\u00df", "M"], "available": true, "featured_media": {"id": 3}}, {"id": 1009, "options": ["Wei\u00df", "L"], "available": false, "featured_media": {"id": 3}}, {"id": 1010, "options": ["Wei\u00df", "XL"], "available": true, "featured_media": {"id": 3}}]}</script>
+  <script type="application/json" data-money-json>{"1001": ["40,00 €", "", false], "1002": ["40,00 €", "", false], "1003": ["40,00 €", "", false], "1004": ["40,00 €", "", false], "1005": ["40,00 €", "", false], "1006": ["40,00 €", "", false], "1007": ["40,00 €", "", false], "1008": ["40,00 €", "", false], "1009": ["40,00 €", "", false], "1010": ["40,00 €", "", false]}</script>
+</section>
+<script>
+(function () {
+  var root = document.getElementById('wp-pv');
+  if (!root || root.dataset.init) return;
+  root.dataset.init = '1';
+  root.classList.add('js');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---------- Einblenden ----------
+  requestAnimationFrame(function () { requestAnimationFrame(function () { root.classList.add('is-in'); }); });
+
+  // ---------- Bilder ----------
+  var stage = root.querySelector('.wp__stage');
+  var slides = root.querySelectorAll('.wp__slide');
+  var thumbs = root.querySelectorAll('.wp__thumb');
+  function goTo(i, smooth) {
+    if (!slides[i]) return;
+    stage.scrollTo({ left: slides[i].offsetLeft - stage.offsetLeft, behavior: smooth && !reduce ? 'smooth' : 'auto' });
+  }
+  thumbs.forEach(function (t) { t.addEventListener('click', function () { goTo(+t.dataset.index, true); }); });
+  var st;
+  stage.addEventListener('scroll', function () {
+    clearTimeout(st);
+    st = setTimeout(function () {
+      var i = Math.round(stage.scrollLeft / stage.clientWidth);
+      thumbs.forEach(function (t, k) { t.setAttribute('aria-current', k === i ? 'true' : 'false'); });
+    }, 60);
+  });
+
+  // ---------- Varianten ----------
+  var product = JSON.parse(root.querySelector('[data-product-json]').textContent);
+  var money = JSON.parse(root.querySelector('[data-money-json]').textContent);
+  var input = root.querySelector('[data-variant-input]');
+  var addBtn = root.querySelector('[data-add]');
+  var priceEl = root.querySelector('[data-price]');
+  var compareEl = root.querySelector('[data-compare]');
+  var stockEl = root.querySelector('[data-stock]');
+  var sets = root.querySelectorAll('.wp__opt');
+
+  function selected() {
+    var vals = [];
+    sets.forEach(function (fs) { var c = fs.querySelector('input:checked'); vals.push(c ? c.value : null); });
+    return vals;
+  }
+  function findVariant(vals) {
+    for (var i = 0; i < product.variants.length; i++) {
+      var v = product.variants[i], ok = true;
+      for (var k = 0; k < vals.length; k++) { if (v.options[k] !== vals[k]) { ok = false; break; } }
+      if (ok) return v;
+    }
+    return null;
+  }
+  function markAvailability(vals) {
+    sets.forEach(function (fs, idx) {
+      fs.querySelectorAll('.wp__choice').forEach(function (label) {
+        var test = vals.slice(); test[idx] = label.querySelector('input').value;
+        var v = findVariant(test);
+        label.classList.toggle('is-out', !v || !v.available);
+      });
+    });
+  }
+  function update(fromUser) {
+    var vals = selected();
+    sets.forEach(function (fs, idx) { var l = fs.querySelector('[data-selected-label]'); if (l) l.textContent = vals[idx] || ''; });
+    markAvailability(vals);
+    var v = findVariant(vals);
+    if (!v) {
+      addBtn.disabled = true; addBtn.textContent = 'Nicht verfügbar'; stockEl.textContent = '';
+      return;
+    }
+    input.value = v.id;
+    var m = money[v.id];
+    if (m) {
+      priceEl.textContent = m[0];
+      compareEl.textContent = m[1] || '';
+      compareEl.hidden = !m[2];
+    }
+    addBtn.disabled = !v.available;
+    addBtn.textContent = v.available ? 'In den Warenkorb' : 'Ausverkauft';
+    stockEl.textContent = '';
+    if (fromUser) {
+      if (v.featured_media) {
+        slides.forEach(function (s, i) { if (+s.dataset.mediaId === v.featured_media.id) goTo(i, true); });
+      }
+      try {
+        var url = new URL(window.location.href); url.searchParams.set('variant', v.id);
+        window.history.replaceState({}, '', url.toString());
+      } catch (e) {}
+    }
+  }
+  sets.forEach(function (fs) { fs.addEventListener('change', function () { update(true); }); });
+  if (sets.length) update(false);
+
+  // ---------- Sternschnuppen im Hintergrund ----------
+  var canvas = root.querySelector('.wp__sky');
+  if (!canvas || reduce) return;
+  var ctx = canvas.getContext('2d');
+  var hex = (root.dataset.chrome || '#dfe3e8').replace('#', '');
+  if (hex.length === 3) hex = hex.replace(/(.)/g, '$1$1');
+  var n = parseInt(hex, 16), C = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  function col(a) { return 'rgba(' + C[0] + ',' + C[1] + ',' + C[2] + ',' + a + ')'; }
+  var W = 0, H = 0, stars = [], meteor = null, next = 0, raf = null, onScreen = true, last = null;
+
+  function resize() {
+    var r = root.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = r.width; H = r.height;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    stars = [];
+    var count = Math.min(90, Math.round(W * H / 16000));
+    for (var i = 0; i < count; i++) stars.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 0.9 + 0.2, ph: Math.random() * 6.28, sp: Math.random() * 0.0015 + 0.0005, a: Math.random() * 0.4 + 0.1 });
+  }
+  function spawn(now) {
+    // feiner Bogen von oben rechts nach links unten
+    var sx = W * (0.55 + Math.random() * 0.45), sy = -20;
+    var ex = sx - W * (0.35 + Math.random() * 0.25), ey = H * (0.25 + Math.random() * 0.35);
+    meteor = { p0: [sx, sy], p1: [sx - W * 0.05, ey * 0.7], p2: [ex, ey], t0: now, dur: 2600 + Math.random() * 1000 };
+  }
+  function q(m, t) {
+    var u = 1 - t;
+    return [u * u * m.p0[0] + 2 * u * t * m.p1[0] + t * t * m.p2[0], u * u * m.p0[1] + 2 * u * t * m.p1[1] + t * t * m.p2[1]];
+  }
+  function frame(now) {
+    raf = null;
+    ctx.clearRect(0, 0, W, H);
+    for (var i = 0; i < stars.length; i++) {
+      var s = stars[i];
+      ctx.fillStyle = 'rgba(255,255,255,' + (s.a * (0.6 + 0.4 * Math.sin(now * s.sp + s.ph))) + ')';
+      ctx.fillRect(s.x, s.y, s.r, s.r);
+    }
+    if (!meteor && now > next) spawn(now);
+    if (meteor) {
+      var k = (now - meteor.t0) / meteor.dur;
+      if (k >= 1) { meteor = null; next = now + 5000 + Math.random() * 6000; }
+      else {
+        var t = 1 - Math.pow(1 - k, 2), fade = Math.sin(k * Math.PI);
+        var L = 0.22, steps = 24, t0 = Math.max(0, t - L), prev = q(meteor, t0);
+        ctx.lineCap = 'round';
+        for (var j = 1; j <= steps; j++) {
+          var f = j / steps, p = q(meteor, t0 + (t - t0) * f);
+          ctx.strokeStyle = col(0.45 * f * f * fade); ctx.lineWidth = 0.3 + 1.1 * f;
+          ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(p[0], p[1]); ctx.stroke();
+          prev = p;
+        }
+        var h = q(meteor, t), g = ctx.createRadialGradient(h[0], h[1], 0, h[0], h[1], 8);
+        g.addColorStop(0, 'rgba(255,255,255,' + 0.8 * fade + ')'); g.addColorStop(1, col(0));
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(h[0], h[1], 8, 0, 6.2832); ctx.fill();
+      }
+    }
+    if (onScreen) raf = requestAnimationFrame(frame);
+  }
+  resize();
+  next = performance.now() + 1800;
+  raf = requestAnimationFrame(frame);
+  var rt;
+  window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(resize, 150); });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (e) { onScreen = e[0].isIntersecting; if (onScreen && !raf) raf = requestAnimationFrame(frame); }).observe(root);
+  }
+})();
+</script>

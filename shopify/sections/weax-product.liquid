@@ -1,0 +1,460 @@
+{%- comment -%}
+  WEAX Produktseite – modern, ruhig, elegant.
+  Links die Bilder (wischbar, mit Vorschaubildern), rechts Titel, Preis, Farbe, Größe,
+  "In den Warenkorb" und aufklappbare Infos. Leichter Sternschnuppen-Effekt:
+  eine feine WEAX LINE zeichnet sich unter dem Titel, und ab und zu gleitet
+  eine dezente Sternschnuppe durch den Hintergrund.
+  Datei: sections/weax-product.liquid  ·  Vorlage: templates/product.weax.json
+{%- endcomment -%}
+
+{%- assign sid = section.id -%}
+{%- assign current = product.selected_or_first_available_variant -%}
+
+<style>
+  @font-face { font-family: 'Cinzel'; font-style: normal; font-weight: 400 900; font-display: swap; src: url({{ 'Cinzel.woff2' | asset_url }}) format('woff2'); }
+
+  #wp-{{ sid }} {
+    --bg: {{ section.settings.bg_color }};
+    --chrome: {{ section.settings.chrome_color }};
+    --line: color-mix(in srgb, var(--chrome) 16%, transparent);
+    --muted: color-mix(in srgb, var(--chrome) 62%, var(--bg));
+    position: relative; overflow: hidden; isolation: isolate;
+    background: var(--bg); color: var(--chrome);
+    padding: clamp(24px, 5vw, 64px) 20px clamp(48px, 7vw, 96px);
+  }
+  #wp-{{ sid }} .wp__sky { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+  #wp-{{ sid }} .wp__grid {
+    max-width: 1240px; margin: 0 auto;
+    display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 80px); align-items: start;
+  }
+
+  /* Bilder */
+  #wp-{{ sid }} .wp__media { display: grid; gap: 12px; min-width: 0; }
+  #wp-{{ sid }} .wp__stage {
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+    border-radius: 4px; background: color-mix(in srgb, var(--chrome) 4%, var(--bg));
+  }
+  #wp-{{ sid }} .wp__stage::-webkit-scrollbar { display: none; }
+  #wp-{{ sid }} .wp__slide { flex: 0 0 100%; scroll-snap-align: center; aspect-ratio: 4 / 5; overflow: hidden; }
+  #wp-{{ sid }} .wp__slide img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 1.2s cubic-bezier(.22,1,.36,1); }
+  #wp-{{ sid }} .wp__stage:hover .wp__slide img { transform: scale(1.03); }
+  #wp-{{ sid }} .wp__thumbs { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
+  #wp-{{ sid }} .wp__thumb {
+    flex: 0 0 72px; aspect-ratio: 4 / 5; padding: 0; border: 1px solid transparent; border-radius: 3px; overflow: hidden;
+    background: none; cursor: pointer; opacity: .5; transition: opacity .4s, border-color .4s;
+  }
+  #wp-{{ sid }} .wp__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #wp-{{ sid }} .wp__thumb[aria-current="true"] { opacity: 1; border-color: var(--chrome); }
+  #wp-{{ sid }} .wp__thumb:hover, #wp-{{ sid }} .wp__thumb:focus-visible { opacity: 1; outline: none; }
+
+  /* Infos */
+  #wp-{{ sid }} .wp__info { position: sticky; top: 32px; display: grid; gap: 28px; min-width: 0; }
+  #wp-{{ sid }} .wp__head { display: grid; gap: 10px; }
+  #wp-{{ sid }} .wp__eyebrow { margin: 0; font-size: 11px; letter-spacing: .4em; text-transform: uppercase; color: var(--muted); }
+  #wp-{{ sid }} .wp__title {
+    margin: 0; font-family: 'Cinzel', 'Times New Roman', serif; font-weight: 500;
+    font-size: clamp(28px, 3.4vw, 42px); letter-spacing: .14em; line-height: 1.15; color: #fff; text-wrap: balance;
+  }
+  #wp-{{ sid }} .wp__line { width: 100%; max-width: 340px; height: 28px; display: block; overflow: visible; }
+  #wp-{{ sid }} .wp__line path { fill: none; stroke: var(--chrome); stroke-width: 1; stroke-linecap: round; opacity: .55; }
+  #wp-{{ sid }} .wp__line .wp__line-star { fill: #fff; opacity: 1; stroke: none; }
+  #wp-{{ sid }} .wp__price-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  #wp-{{ sid }} .wp__price { font-size: 20px; letter-spacing: .06em; color: #fff; font-variant-numeric: tabular-nums; }
+  #wp-{{ sid }} .wp__compare { font-size: 15px; color: var(--muted); text-decoration: line-through; }
+  #wp-{{ sid }} .wp__tax { width: 100%; font-size: 12px; color: var(--muted); }
+  #wp-{{ sid }} .wp__tax a { color: inherit; }
+  #wp-{{ sid }} .wp__short { margin: 0; line-height: 1.75; color: color-mix(in srgb, var(--chrome) 82%, var(--bg)); max-width: 52ch; }
+
+  #wp-{{ sid }} .wp__form { --d: 3; }
+  #wp-{{ sid }} .wp__opt { border: 0; margin: 0; padding: 0; display: grid; gap: 12px; min-width: 0; }
+  #wp-{{ sid }} .wp__opt legend { padding: 0; font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
+  #wp-{{ sid }} .wp__opt legend b { font-weight: 400; color: #fff; letter-spacing: .12em; margin-left: 8px; }
+  #wp-{{ sid }} .wp__choices { display: flex; flex-wrap: wrap; gap: 8px; }
+  #wp-{{ sid }} .wp__choice input { position: absolute; opacity: 0; pointer-events: none; }
+  #wp-{{ sid }} .wp__choice span {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-width: 54px; height: 44px; padding: 0 16px; border-radius: 99px; cursor: pointer;
+    border: 1px solid var(--line); font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+    transition: border-color .3s, background .3s, color .3s;
+  }
+  #wp-{{ sid }} .wp__choice:hover span { border-color: color-mix(in srgb, var(--chrome) 50%, transparent); }
+  #wp-{{ sid }} .wp__choice input:checked + span { border-color: var(--chrome); background: var(--chrome); color: var(--bg); }
+  #wp-{{ sid }} .wp__choice input:focus-visible + span { outline: 2px solid var(--chrome); outline-offset: 3px; }
+  #wp-{{ sid }} .wp__choice.is-out span { opacity: .35; text-decoration: line-through; }
+  #wp-{{ sid }} .wp__dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--chrome) 45%, transparent); }
+
+  #wp-{{ sid }} .wp__buy { display: grid; gap: 12px; }
+  #wp-{{ sid }} .wp__add {
+    position: relative; overflow: hidden; width: 100%; height: 56px; border-radius: 99px; cursor: pointer;
+    border: 1px solid var(--chrome); background: var(--chrome); color: var(--bg);
+    font: 500 13px/1 inherit; letter-spacing: .3em; text-transform: uppercase;
+    transition: background .4s, color .4s;
+  }
+  #wp-{{ sid }} .wp__add::after {
+    content: ""; position: absolute; top: 0; bottom: 0; left: -40%; width: 30%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,.75), transparent); transform: skewX(-20deg);
+    transition: left .9s cubic-bezier(.22,1,.36,1);
+  }
+  #wp-{{ sid }} .wp__add:hover::after { left: 120%; }
+  #wp-{{ sid }} .wp__add:focus-visible { outline: 2px solid var(--chrome); outline-offset: 4px; }
+  #wp-{{ sid }} .wp__add[disabled] { cursor: not-allowed; background: transparent; color: var(--muted); border-color: var(--line); }
+  #wp-{{ sid }} .wp__add[disabled]::after { display: none; }
+  #wp-{{ sid }} .wp__stock { margin: 0; font-size: 12px; letter-spacing: .08em; color: var(--muted); }
+  #wp-{{ sid }} .wp__stock:empty { display: none; }
+  #wp-{{ sid }} .wp__perks { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 13px; color: color-mix(in srgb, var(--chrome) 80%, var(--bg)); }
+  #wp-{{ sid }} .wp__perks li { display: flex; align-items: center; gap: 10px; }
+  #wp-{{ sid }} .wp__perks svg { width: 10px; height: 10px; flex: none; }
+
+  #wp-{{ sid }} .wp__acc { border-top: 1px solid var(--line); }
+  #wp-{{ sid }} .wp__acc details { border-bottom: 1px solid var(--line); }
+  #wp-{{ sid }} .wp__acc summary {
+    list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 0; font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: #fff;
+  }
+  #wp-{{ sid }} .wp__acc summary::-webkit-details-marker { display: none; }
+  #wp-{{ sid }} .wp__acc summary::after { content: "+"; font-size: 18px; letter-spacing: 0; color: var(--muted); transition: transform .4s; }
+  #wp-{{ sid }} .wp__acc details[open] summary::after { transform: rotate(45deg); }
+  #wp-{{ sid }} .wp__acc summary:focus-visible { outline: 1px solid var(--chrome); outline-offset: 4px; }
+  #wp-{{ sid }} .wp__acc-body { padding: 0 0 20px; line-height: 1.75; font-size: 14px; color: color-mix(in srgb, var(--chrome) 82%, var(--bg)); }
+  #wp-{{ sid }} .wp__acc-body p { margin: 0 0 10px; }
+  #wp-{{ sid }} .wp__acc-body table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  #wp-{{ sid }} .wp__acc-body td, #wp-{{ sid }} .wp__acc-body th { padding: 8px 6px; border-bottom: 1px solid var(--line); text-align: left; font-weight: 400; }
+
+  /* sanftes Einblenden */
+  #wp-{{ sid }}.js .wp__reveal { opacity: 0; transform: translateY(12px); transition: opacity 1.2s ease, transform 1.4s cubic-bezier(.22,1,.36,1); transition-delay: calc(var(--d, 0) * 110ms); }
+  #wp-{{ sid }}.is-in .wp__reveal { opacity: 1; transform: none; }
+  #wp-{{ sid }}.js .wp__line path:not(.wp__line-star) { stroke-dasharray: 400; stroke-dashoffset: 400; transition: stroke-dashoffset 2.4s cubic-bezier(.22,1,.36,1) .5s; }
+  #wp-{{ sid }}.is-in .wp__line path:not(.wp__line-star) { stroke-dashoffset: 0; }
+  #wp-{{ sid }}.js .wp__line-star { opacity: 0; transform-origin: 4px 22px; transform: scale(.3); transition: opacity .8s ease 2.2s, transform 1s cubic-bezier(.22,1,.36,1) 2.2s; }
+  #wp-{{ sid }}.is-in .wp__line-star { opacity: 1; transform: none; }
+
+  @media (max-width: 860px) {
+    #wp-{{ sid }} .wp__grid { grid-template-columns: minmax(0, 1fr); }
+    #wp-{{ sid }} .wp__info { position: static; }
+    #wp-{{ sid }} .wp__thumb { flex-basis: 56px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #wp-{{ sid }} *, #wp-{{ sid }} *::after { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<section id="wp-{{ sid }}" class="wp" data-chrome="{{ section.settings.chrome_color }}">
+  <canvas class="wp__sky" aria-hidden="true"></canvas>
+
+  <div class="wp__grid">
+    <div class="wp__media wp__reveal" style="--d:0">
+      <div class="wp__stage" tabindex="0" aria-label="Produktbilder">
+        {%- for media in product.media -%}
+          {%- if media.media_type == 'image' -%}
+            <div class="wp__slide" data-media-id="{{ media.id }}">
+              <img src="{{ media | image_url: width: 1200 }}"
+                srcset="{{ media | image_url: width: 600 }} 600w, {{ media | image_url: width: 900 }} 900w, {{ media | image_url: width: 1200 }} 1200w, {{ media | image_url: width: 1600 }} 1600w"
+                sizes="(max-width: 860px) 100vw, 55vw"
+                alt="{{ media.alt | default: product.title | escape }}" width="1200" height="1500"
+                {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}>
+            </div>
+          {%- endif -%}
+        {%- else -%}
+          <div class="wp__slide">{{ 'product-1' | placeholder_svg_tag }}</div>
+        {%- endfor -%}
+      </div>
+      {%- if product.media.size > 1 -%}
+        <div class="wp__thumbs">
+          {%- for media in product.media -%}
+            {%- if media.media_type == 'image' -%}
+              <button type="button" class="wp__thumb" data-index="{{ forloop.index0 }}" aria-label="Bild {{ forloop.index }} anzeigen" {% if forloop.first %}aria-current="true"{% endif %}>
+                <img src="{{ media | image_url: width: 200 }}" alt="" width="72" height="90" loading="lazy">
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="wp__info">
+      <div class="wp__head wp__reveal" style="--d:1">
+        {%- if section.settings.eyebrow != blank -%}<p class="wp__eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+        <h1 class="wp__title">{{ product.title }}</h1>
+        <svg class="wp__line" viewBox="0 0 340 28" aria-hidden="true">
+          <path d="M4 22 C 70 26, 120 4, 200 10 S 300 22, 336 6"/>
+          <path class="wp__line-star" d="M4 15 L5.4 20.6 L11 22 L5.4 23.4 L4 29 L2.6 23.4 L-3 22 L2.6 20.6 Z"/>
+        </svg>
+        <div class="wp__price-row">
+          <span class="wp__price" data-price>{{ current.price | money }}</span>
+          <span class="wp__compare" data-compare {% unless current.compare_at_price > current.price %}hidden{% endunless %}>{{ current.compare_at_price | money }}</span>
+          <span class="wp__tax">inkl. MwSt., zzgl. <a href="{{ shop.shipping_policy.url | default: '#' }}">Versand</a></span>
+        </div>
+      </div>
+
+      {%- if section.settings.short_text != blank -%}
+        <p class="wp__short wp__reveal" style="--d:2">{{ section.settings.short_text }}</p>
+      {%- elsif product.description != blank -%}
+        <p class="wp__short wp__reveal" style="--d:2">{{ product.description | strip_html | truncatewords: 32 }}</p>
+      {%- endif -%}
+
+      {%- form 'product', product, class: 'wp__form wp__reveal', novalidate: 'novalidate' -%}
+        <div style="display:grid;gap:24px">
+          <input type="hidden" name="id" value="{{ current.id }}" data-variant-input>
+          {%- unless product.has_only_default_variant -%}
+            {%- for option in product.options_with_values -%}
+              {%- assign oname = option.name | downcase -%}
+              {%- assign is_color = false -%}
+              {%- if oname contains 'farbe' or oname contains 'color' or oname contains 'colour' -%}{%- assign is_color = true -%}{%- endif -%}
+              <fieldset class="wp__opt" data-option-index="{{ forloop.index0 }}">
+                <legend>{{ option.name }} <b data-selected-label>{{ option.selected_value }}</b></legend>
+                <div class="wp__choices">
+                  {%- for value in option.values -%}
+                    <label class="wp__choice">
+                      <input type="radio" name="wp-{{ sid }}-opt-{{ forloop.parentloop.index0 }}" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %}>
+                      <span>
+                        {%- if is_color -%}
+                          {%- assign v = value | downcase -%}
+                          {%- assign swatch = '#777' -%}
+                          {%- if v contains 'schwarz' or v contains 'black' -%}{%- assign swatch = '#0b0b0d' -%}
+                          {%- elsif v contains 'weiß' or v contains 'weiss' or v contains 'white' -%}{%- assign swatch = '#f3f3f1' -%}
+                          {%- elsif v contains 'grau' or v contains 'grey' or v contains 'gray' -%}{%- assign swatch = '#8a8d93' -%}
+                          {%- elsif v contains 'creme' or v contains 'cream' or v contains 'beige' -%}{%- assign swatch = '#e8e0cf' -%}
+                          {%- endif -%}
+                          <i class="wp__dot" style="background:{{ swatch }}"></i>
+                        {%- endif -%}
+                        {{ value }}
+                      </span>
+                    </label>
+                  {%- endfor -%}
+                </div>
+              </fieldset>
+            {%- endfor -%}
+          {%- endunless -%}
+
+          <div class="wp__buy">
+            <button type="submit" name="add" class="wp__add" data-add {% unless current.available %}disabled{% endunless %}>
+              {%- if current.available -%}In den Warenkorb{%- else -%}Ausverkauft{%- endif -%}
+            </button>
+            {%- if section.settings.show_dynamic_checkout -%}{{ form | payment_button }}{%- endif -%}
+            <p class="wp__stock" data-stock aria-live="polite"></p>
+          </div>
+        </div>
+      {%- endform -%}
+
+      {%- if section.settings.perk_1 != blank or section.settings.perk_2 != blank or section.settings.perk_3 != blank -%}
+        <ul class="wp__perks wp__reveal" style="--d:4">
+          {%- for i in (1..3) -%}
+            {%- assign key = 'perk_' | append: i -%}
+            {%- if section.settings[key] != blank -%}
+              <li><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 0L6 4L10 5L6 6L5 10L4 6L0 5L4 4Z" fill="currentColor"/></svg>{{ section.settings[key] }}</li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      <div class="wp__acc wp__reveal" style="--d:5">
+        {%- if product.description != blank -%}
+          <details open><summary>Beschreibung</summary><div class="wp__acc-body">{{ product.description }}</div></details>
+        {%- endif -%}
+        {%- if section.settings.material != blank -%}
+          <details><summary>Material &amp; Pflege</summary><div class="wp__acc-body">{{ section.settings.material }}</div></details>
+        {%- endif -%}
+        {%- if section.settings.sizes != blank -%}
+          <details><summary>Größen &amp; Passform</summary><div class="wp__acc-body">{{ section.settings.sizes }}</div></details>
+        {%- endif -%}
+        {%- if section.settings.shipping != blank -%}
+          <details><summary>Versand &amp; Rückgabe</summary><div class="wp__acc-body">{{ section.settings.shipping }}</div></details>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" data-product-json>{{ product | json }}</script>
+  <script type="application/json" data-money-json>{ {%- for v in product.variants -%}"{{ v.id }}":[{{ v.price | money | json }},{{ v.compare_at_price | money | json }},{% if v.compare_at_price > v.price %}true{% else %}false{% endif %}]{% unless forloop.last %},{% endunless %}{%- endfor -%} }</script>
+</section>
+
+<script>
+(function () {
+  var root = document.getElementById('wp-{{ sid }}');
+  if (!root || root.dataset.init) return;
+  root.dataset.init = '1';
+  root.classList.add('js');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---------- Einblenden ----------
+  requestAnimationFrame(function () { requestAnimationFrame(function () { root.classList.add('is-in'); }); });
+
+  // ---------- Bilder ----------
+  var stage = root.querySelector('.wp__stage');
+  var slides = root.querySelectorAll('.wp__slide');
+  var thumbs = root.querySelectorAll('.wp__thumb');
+  function goTo(i, smooth) {
+    if (!slides[i]) return;
+    stage.scrollTo({ left: slides[i].offsetLeft - stage.offsetLeft, behavior: smooth && !reduce ? 'smooth' : 'auto' });
+  }
+  thumbs.forEach(function (t) { t.addEventListener('click', function () { goTo(+t.dataset.index, true); }); });
+  var st;
+  stage.addEventListener('scroll', function () {
+    clearTimeout(st);
+    st = setTimeout(function () {
+      var i = Math.round(stage.scrollLeft / stage.clientWidth);
+      thumbs.forEach(function (t, k) { t.setAttribute('aria-current', k === i ? 'true' : 'false'); });
+    }, 60);
+  });
+
+  // ---------- Varianten ----------
+  var product = JSON.parse(root.querySelector('[data-product-json]').textContent);
+  var money = JSON.parse(root.querySelector('[data-money-json]').textContent);
+  var input = root.querySelector('[data-variant-input]');
+  var addBtn = root.querySelector('[data-add]');
+  var priceEl = root.querySelector('[data-price]');
+  var compareEl = root.querySelector('[data-compare]');
+  var stockEl = root.querySelector('[data-stock]');
+  var sets = root.querySelectorAll('.wp__opt');
+
+  function selected() {
+    var vals = [];
+    sets.forEach(function (fs) { var c = fs.querySelector('input:checked'); vals.push(c ? c.value : null); });
+    return vals;
+  }
+  function findVariant(vals) {
+    for (var i = 0; i < product.variants.length; i++) {
+      var v = product.variants[i], ok = true;
+      for (var k = 0; k < vals.length; k++) { if (v.options[k] !== vals[k]) { ok = false; break; } }
+      if (ok) return v;
+    }
+    return null;
+  }
+  function markAvailability(vals) {
+    sets.forEach(function (fs, idx) {
+      fs.querySelectorAll('.wp__choice').forEach(function (label) {
+        var test = vals.slice(); test[idx] = label.querySelector('input').value;
+        var v = findVariant(test);
+        label.classList.toggle('is-out', !v || !v.available);
+      });
+    });
+  }
+  function update(fromUser) {
+    var vals = selected();
+    sets.forEach(function (fs, idx) { var l = fs.querySelector('[data-selected-label]'); if (l) l.textContent = vals[idx] || ''; });
+    markAvailability(vals);
+    var v = findVariant(vals);
+    if (!v) {
+      addBtn.disabled = true; addBtn.textContent = 'Nicht verfügbar'; stockEl.textContent = '';
+      return;
+    }
+    input.value = v.id;
+    var m = money[v.id];
+    if (m) {
+      priceEl.textContent = m[0];
+      compareEl.textContent = m[1] || '';
+      compareEl.hidden = !m[2];
+    }
+    addBtn.disabled = !v.available;
+    addBtn.textContent = v.available ? 'In den Warenkorb' : 'Ausverkauft';
+    stockEl.textContent = '';
+    if (fromUser) {
+      if (v.featured_media) {
+        slides.forEach(function (s, i) { if (+s.dataset.mediaId === v.featured_media.id) goTo(i, true); });
+      }
+      try {
+        var url = new URL(window.location.href); url.searchParams.set('variant', v.id);
+        window.history.replaceState({}, '', url.toString());
+      } catch (e) {}
+    }
+  }
+  sets.forEach(function (fs) { fs.addEventListener('change', function () { update(true); }); });
+  if (sets.length) update(false);
+
+  // ---------- Sternschnuppen im Hintergrund ----------
+  var canvas = root.querySelector('.wp__sky');
+  if (!canvas || reduce) return;
+  var ctx = canvas.getContext('2d');
+  var hex = (root.dataset.chrome || '#dfe3e8').replace('#', '');
+  if (hex.length === 3) hex = hex.replace(/(.)/g, '$1$1');
+  var n = parseInt(hex, 16), C = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  function col(a) { return 'rgba(' + C[0] + ',' + C[1] + ',' + C[2] + ',' + a + ')'; }
+  var W = 0, H = 0, stars = [], meteor = null, next = 0, raf = null, onScreen = true, last = null;
+
+  function resize() {
+    var r = root.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = r.width; H = r.height;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    stars = [];
+    var count = Math.min(90, Math.round(W * H / 16000));
+    for (var i = 0; i < count; i++) stars.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 0.9 + 0.2, ph: Math.random() * 6.28, sp: Math.random() * 0.0015 + 0.0005, a: Math.random() * 0.4 + 0.1 });
+  }
+  function spawn(now) {
+    // feiner Bogen von oben rechts nach links unten
+    var sx = W * (0.55 + Math.random() * 0.45), sy = -20;
+    var ex = sx - W * (0.35 + Math.random() * 0.25), ey = H * (0.25 + Math.random() * 0.35);
+    meteor = { p0: [sx, sy], p1: [sx - W * 0.05, ey * 0.7], p2: [ex, ey], t0: now, dur: 2600 + Math.random() * 1000 };
+  }
+  function q(m, t) {
+    var u = 1 - t;
+    return [u * u * m.p0[0] + 2 * u * t * m.p1[0] + t * t * m.p2[0], u * u * m.p0[1] + 2 * u * t * m.p1[1] + t * t * m.p2[1]];
+  }
+  function frame(now) {
+    raf = null;
+    ctx.clearRect(0, 0, W, H);
+    for (var i = 0; i < stars.length; i++) {
+      var s = stars[i];
+      ctx.fillStyle = 'rgba(255,255,255,' + (s.a * (0.6 + 0.4 * Math.sin(now * s.sp + s.ph))) + ')';
+      ctx.fillRect(s.x, s.y, s.r, s.r);
+    }
+    if (!meteor && now > next) spawn(now);
+    if (meteor) {
+      var k = (now - meteor.t0) / meteor.dur;
+      if (k >= 1) { meteor = null; next = now + 5000 + Math.random() * 6000; }
+      else {
+        var t = 1 - Math.pow(1 - k, 2), fade = Math.sin(k * Math.PI);
+        var L = 0.22, steps = 24, t0 = Math.max(0, t - L), prev = q(meteor, t0);
+        ctx.lineCap = 'round';
+        for (var j = 1; j <= steps; j++) {
+          var f = j / steps, p = q(meteor, t0 + (t - t0) * f);
+          ctx.strokeStyle = col(0.45 * f * f * fade); ctx.lineWidth = 0.3 + 1.1 * f;
+          ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(p[0], p[1]); ctx.stroke();
+          prev = p;
+        }
+        var h = q(meteor, t), g = ctx.createRadialGradient(h[0], h[1], 0, h[0], h[1], 8);
+        g.addColorStop(0, 'rgba(255,255,255,' + 0.8 * fade + ')'); g.addColorStop(1, col(0));
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(h[0], h[1], 8, 0, 6.2832); ctx.fill();
+      }
+    }
+    if (onScreen) raf = requestAnimationFrame(frame);
+  }
+  resize();
+  next = performance.now() + 1800;
+  raf = requestAnimationFrame(frame);
+  var rt;
+  window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(resize, 150); });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (e) { onScreen = e[0].isIntersecting; if (onScreen && !raf) raf = requestAnimationFrame(frame); }).observe(root);
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "WEAX Produkt",
+  "tag": "div",
+  "class": "section-weax-product",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "WEAX · Origin" },
+    { "type": "textarea", "id": "short_text", "label": "Kurztext unter dem Preis", "info": "Leer lassen = Anfang der Produktbeschreibung" },
+
+    { "type": "header", "content": "Vorteile unter dem Button" },
+    { "type": "text", "id": "perk_1", "label": "Vorteil 1", "default": "Versand in 2–4 Werktagen" },
+    { "type": "text", "id": "perk_2", "label": "Vorteil 2", "default": "14 Tage Widerrufsrecht" },
+    { "type": "text", "id": "perk_3", "label": "Vorteil 3", "default": "Sichere Zahlung" },
+
+    { "type": "header", "content": "Aufklappbare Infos" },
+    { "type": "richtext", "id": "material", "label": "Material & Pflege", "default": "<p>Schweres Baumwoll-Fleece, innen angeraut. Auf links bei 30 °C waschen, nicht in den Trockner.</p>" },
+    { "type": "richtext", "id": "sizes", "label": "Größen & Passform", "default": "<p>Leicht oversized geschnitten. Für einen engeren Sitz eine Größe kleiner wählen.</p>" },
+    { "type": "richtext", "id": "shipping", "label": "Versand & Rückgabe", "default": "<p>Versand innerhalb Deutschlands in 2–4 Werktagen. Du kannst deine Bestellung innerhalb von 14 Tagen widerrufen.</p>" },
+
+    { "type": "header", "content": "Kaufen" },
+    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Express-Kauf-Buttons zeigen (z. B. Shop Pay, PayPal)", "default": false },
+
+    { "type": "header", "content": "Farben" },
+    { "type": "color", "id": "bg_color", "label": "Hintergrund", "default": "#050507" },
+    { "type": "color", "id": "chrome_color", "label": "Chrome / Text", "default": "#dfe3e8" }
+  ]
+}
+{% endschema %}
