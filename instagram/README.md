@@ -4,8 +4,8 @@ Zwei Reels im 9:16-Format (1080×1920, 30 fps) im WEAX-Look: Chrome auf Schwarz,
 
 | Datei | Länge | Zweck |
 |---|---|---|
-| `out/01_hook.mp4` | ~7 s | **Aufmerksamkeit.** Text gleich im ersten Frame („DU KENNST UNS NICHT. / NOCH.“), Strobe-Sterne, Logo-Aufbau, „DROP 01 – KOMMT BALD.“ Das Ende glitcht zurück zum Anfang, damit das Reel loopt. |
-| `out/02_drop.mp4` | ~10,5 s | **Drop-Reveal.** „DROP 01“-Slam → „ORIGIN“ → Pullover-Reveal → 3 Detail-Cuts → Pullover + WEAX-Logo zusammen → „DROP 01 IST LIVE. LINK IN BIO →“ |
+| `out/01_hook.mp4` | ~7 s | **Aufmerksamkeit.** Text gleich im ersten Frame („DU KENNST UNS NICHT. / NOCH.“), Hoodie im Dunkeln – nur die Paspeln leuchten auf, Strobe-Sterne, W-Logo, „DROP 01 – KOMMT BALD.“ Das Ende glitcht zurück zum Anfang, damit das Reel loopt. |
+| `out/02_drop.mp4` | ~13 s | **Drop-Reveal.** „DROP 01“-Slam → W-Logo + „TRACKSUIT“ → Hoodie-Reveal (Paspeln zuerst) → Drehung nach hinten → 4 Detail-Cuts (Logo, Stern in der Kapuze, Fleece, Stern am Saum) → Hose vorne/hinten → komplettes Outfit mit Logo → „DROP 01 IST LIVE. LINK IN BIO →“ |
 
 Alle Schnitte liegen auf dem Beat (Standard 140 BPM, Kick auf jedem Schnitt).
 
@@ -30,19 +30,18 @@ Das Script erkennt Tempo und ersten Beat selbst und legt alle Schnitte darauf.
 Falls es daneben liegt: `--bpm 142 --offset 0.1` erzwingt Tempo und Startversatz.
 Für Video 2 einen anderen Songteil: `--start2 0:52`.
 
-## Echte Klamotten-Fotos statt Mockup
+## Klamotten (Tracksuit-Mockups)
 
-Der Pullover im Video ist ein gezeichneter Platzhalter. Mit echten Fotos wirkt es deutlich stärker:
+Die Teile kommen aus `mockups/` – freigestellt aus `weax_mockups_tracksuit.pdf`:
+`hoodie_front.png`, `hoodie_back.png`, `pants_front.png`, `pants_back.png` und `logo.png` (W-Orbit-Logo).
+Neue Mockups einspielen:
 
 ```bash
-python3 render_reels.py --photos fotos/
+python3 prepare_mockups.py neue_mockups.pdf   # erwartet 4 Bilder: Hoodie vorne/hinten, Hose vorne/hinten
+python3 render_reels.py
 ```
 
-`fotos/` mit 3–5 Hochformat-Bildern (jpg/png) füllen, sortiert nach Dateiname:
-`1_ganz.jpg` (Reveal), `2_stoff.jpg`, `3_schnitt.jpg`, `4_stern.jpg` (Details), letztes Bild = Logo-Szene.
-Die Fotos bekommen automatisch den kühlen, entsättigten WEAX-Look.
-
-Am besten: getragen, nachts/dunkel, ein harter Lichtkegel, Stern auf der Brust gut sichtbar.
+Zusätzlich entstehen Einzelbilder jedes Teils im WEAX-Look (9:16) in `out/bilder/` – für Story, Post oder Shop.
 
 ## Posting-Plan
 
@@ -51,7 +50,7 @@ Am besten: getragen, nachts/dunkel, ein harter Lichtkegel, Stern auf der Brust g
 3. Beide Reels zusätzlich in die Story mit Countdown-Sticker (Hook) bzw. Link-Sticker (Drop).
 4. Erste 30–60 Minuten nach dem Posten aktiv auf Kommentare antworten – das pusht das Reel.
 
-**Cover:** Für 01 den „NOCH.“-Frame, für 02 den Frame mit Pullover + WEAX-Logo wählen.
+**Cover:** Für 01 den „NOCH.“-Frame, für 02 den Frame mit dem kompletten Outfit + Logo wählen.
 
 ### Caption – Reel 1 (Hook)
 ```
@@ -63,11 +62,11 @@ drop 01 kommt. folgen, sonst verpasst ihr's.
 
 ### Caption – Reel 2 (Drop)
 ```
-DROP 01 — ORIGIN ⭐
-schweres fleece. cleaner schnitt. der stern auf der brust.
+DROP 01 — TRACKSUIT ⭐
+hoodie + jogginghose. 380 g/m² fleece. schwarz & weiß.
 limitiert. wenn weg, dann weg. link in bio.
 
-#weax #drop01 #streetwear #streetweardeutschland #pullover #fitcheck #newbrand #outfitinspo
+#weax #drop01 #tracksuit #streetwear #streetweardeutschland #fitcheck #newbrand #outfitinspo
 ```
 
 ## Neu rendern

@@ -4,7 +4,9 @@ WEAX – Instagram Reels Renderer (Drop 01)
 
 Rendert zwei 9:16-Reels (1080x1920, 30 fps) im WEAX-Look (Chrome auf Schwarz, Stern-Logo):
   01_hook.mp4  – Aufmerksamkeits-Teaser (Hook in der ersten Sekunde, loopbar)
-  02_drop.mp4  – Drop-Reveal mit Klamotten + Logo + CTA
+  02_drop.mp4  – Drop-Reveal mit dem Tracksuit (Hoodie + Jogginghose) + Logo + CTA
+
+Die Klamotten kommen aus mockups/ (einmalig erzeugen mit prepare_mockups.py).
 
 Alle Schnitte liegen auf dem Beat. Ohne Song wird ein fester BPM-Raster benutzt;
 mit --audio wird das Tempo aus dem Song geschätzt und der Song direkt eingebettet.
@@ -12,7 +14,6 @@ mit --audio wird das Tempo aus dem Song geschätzt und der Song direkt eingebett
 Beispiele:
   python3 render_reels.py
   python3 render_reels.py --audio shottas.mp3 --start 0:31
-  python3 render_reels.py --audio shottas.mp3 --start 0:31 --photos fotos/
   python3 render_reels.py --bpm 142 --offset 0.12
 """
 import argparse
@@ -246,109 +247,128 @@ def star_mask(cx, cy, r, rot=0.0):
     return m
 
 
-# ---------------------------------------------------------------- Pullover-Mockup
+# ---------------------------------------------------------------- Klamotten (freigestellte Mockups)
 
-def draw_pullover(size=900):
-    """Gezeichneter Crewneck mit WEAX-Stern – Platzhalter, bis echte Fotos da sind (--photos)."""
-    S = size / 1000
-    left = [(500, 150), (430, 140), (370, 158), (250, 205), (175, 330), (110, 560), (78, 760),
-            (195, 785), (240, 610), (285, 470), (290, 640), (288, 905), (500, 915)]
-    pts = [(x * S, y * S) for x, y in left] + [((1000 - x) * S, y * S) for x, y in reversed(left)]
-    mask = Image.new("L", (size, size), 0)
-    ImageDraw.Draw(mask).polygon(pts, fill=255)
-    mask = mask.filter(ImageFilter.GaussianBlur(1.2))
-
-    # Stoff: dunkles Anthrazit, Licht von oben, weiche Falten, feine Struktur
-    yy, xx = np.mgrid[0:size, 0:size].astype(np.float32) / size
-    base = 26 + 26 * np.clip(1 - np.sqrt((xx - 0.45) ** 2 + (yy - 0.3) ** 2) * 1.6, 0, 1)
-    folds = 5 * np.sin(xx * 40 + yy * 6) * np.exp(-((yy - 0.75) ** 2) * 20)
-    folds += 7 * np.sin(yy * 22 + xx * 3) * np.exp(-((xx - 0.17) ** 2) * 60)
-    folds += 7 * np.sin(yy * 22 - xx * 3) * np.exp(-((xx - 0.83) ** 2) * 60)
-    texture = np.random.default_rng(3).normal(0, 2.5, (size, size))
-    fabric = base + folds + texture
-    tex = np.stack([fabric, fabric * 1.01, fabric * 1.07], -1)
-    img = Image.fromarray(np.clip(tex, 0, 255).astype(np.uint8))
-
-    d = ImageDraw.Draw(img)
-    rib = (16, 16, 19)
-    # Kragen
-    d.ellipse((395 * S, 118 * S, 605 * S, 200 * S), outline=rib, width=int(26 * S))
-    d.ellipse((418 * S, 132 * S, 582 * S, 186 * S), fill=(8, 8, 10))
-    # Bündchen + Saum
-    for y in range(int(850 * S), int(908 * S), 7):
-        d.line((292 * S, y, 708 * S, y), fill=rib, width=2)
-    for k in (-1, 1):
-        for i in range(6):
-            o = i * 7 * S
-            if k < 0:
-                d.line((86 * S + o * 0.3, 735 * S + o, 200 * S + o * 0.3, 760 * S + o), fill=rib, width=2)
-            else:
-                d.line((914 * S - o * 0.3, 735 * S + o, 800 * S - o * 0.3, 760 * S + o), fill=rib, width=2)
-    # Nähte an den Schultern
-    d.line((370 * S, 160 * S, 285 * S, 470 * S), fill=(18, 18, 21), width=2)
-    d.line((630 * S, 160 * S, 715 * S, 470 * S), fill=(18, 18, 21), width=2)
-
-    rgba = img.convert("RGBA")
-    rgba.putalpha(mask)
-
-    # Chrome-Stern auf der Brust
-    star = Image.new("L", (size, size), 0)
-    ImageDraw.Draw(star).polygon(star_points(500 * S, 330 * S, 62 * S), fill=255)
-    chrome = Image.fromarray(chrome_gradient(size, size, 0.1).astype(np.uint8))
-    rgba.paste(chrome, (0, 0), star)
-    rim = ImageChops.subtract(mask, mask.filter(ImageFilter.MinFilter(9))).filter(ImageFilter.GaussianBlur(4))
-    return rgba, (500 * S, 330 * S), rim
+MOCKUPS = os.path.join(HERE, "mockups")
+_logo_src = None
 
 
-def pullover_on_frame(fr, pull, scale, cy, sweep, center_star, shift):
-    p, (sx, sy), rim = pull
-    w = int(p.width * scale)
-    img = p.resize((w, w), Image.BILINEAR)
-    x, y = int(W / 2 - w / 2), int(cy - w / 2)
-    layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    layer.paste(img, (x, y), img)
-    alpha = layer.split()[3]
-    # Rim-Light
-    edge = Image.new("L", (W, H), 0)
-    edge.paste(rim.resize((w, w), Image.BILINEAR), (x, y))
-    fr.add_light(soft(alpha, 60), (200, 210, 230), 0.12)
-    fr.paste(layer)
-    fr.add_light(edge, (210, 220, 240), 0.35)
-    # Lichtstreifen über den Stoff
-    if sweep is not None:
-        band = Image.new("L", (W, H), 0)
-        bx = -400 + sweep * (W + 800)
-        ImageDraw.Draw(band).polygon([(bx, 0), (bx + 160, 0), (bx - 340, H), (bx - 500, H)], fill=255)
-        band = ImageChops.multiply(soft(band, 50), alpha)
-        fr.add_light(band, (255, 255, 255), 0.22)
-    # Glanzpunkt auf dem Stern
-    gx, gy = x + sx * scale, y + sy * scale
-    if center_star > 0:
-        fr.add_light(star_mask(gx, gy, 120 * scale * center_star, math.pi / 4).filter(ImageFilter.GaussianBlur(6)),
-                     (255, 255, 255), 0.9 * center_star)
-    return gx, gy
+def logo_mask(cx, cy, width, rot=0.0):
+    """W-Orbit-Logo (aus dem Hoodie freigestellt) als Vollbild-Maske."""
+    global _logo_src
+    if _logo_src is None:
+        _logo_src = Image.open(os.path.join(MOCKUPS, "logo.png")).convert("L")
+    w = max(int(width), 2)
+    h = max(int(_logo_src.height * w / _logo_src.width), 2)
+    lg = _logo_src.resize((w, h), Image.BILINEAR)
+    if rot:
+        lg = lg.rotate(math.degrees(rot), Image.BILINEAR, expand=True)
+    m = Image.new("L", (W, H), 0)
+    m.paste(lg, (int(cx - lg.width / 2), int(cy - lg.height / 2)))
+    return m
 
 
-def photo_on_frame(fr, path, prog, zoom_from=1.15, zoom_to=1.0):
-    img = Image.open(path).convert("RGB")
-    s = max(W / img.width, H / img.height) * (zoom_from + (zoom_to - zoom_from) * ease_out(prog))
-    img = img.resize((int(img.width * s), int(img.height * s)), Image.LANCZOS)
-    l, t = (img.width - W) // 2, (img.height - H) // 2
-    arr = np.asarray(img.crop((l, t, l + W, t + H)), np.float32)
-    # Look angleichen: entsättigt, kühl, dunkel
-    lum = arr.mean(-1, keepdims=True)
-    arr = lum * 0.75 + arr * 0.25
-    arr = arr * np.array([0.92, 0.95, 1.02]) * 0.9
-    fr.a = arr
+SPOT = None
+
+
+def spotlight(fr, cx, cy, rx, ry, strength):
+    """Weicher Studio-Lichtkegel hinter dem Teil, damit Schwarz auf Schwarz lesbar bleibt."""
+    global SPOT
+    if SPOT is None:
+        yy, xx = np.mgrid[-1:1:H * 1j, -1:1:W * 1j].astype(np.float32)
+        SPOT = np.clip(1 - np.sqrt(xx ** 2 + yy ** 2), 0, 1) ** 1.6
+    img = Image.fromarray((SPOT * 255).astype(np.uint8)).resize((int(rx * 2), int(ry * 2)), Image.BILINEAR)
+    m = Image.new("L", (W, H), 0)
+    m.paste(img, (int(cx - rx), int(cy - ry)))
+    fr.add_light(m, (150, 156, 170), strength)
+
+
+class Garment:
+    """Freigestelltes Mockup mit vorbereitetem Licht: Stoff leicht angehoben, Paspeln als Glow-Maske, Rim-Light."""
+
+    def __init__(self, name, base_h=1500):
+        src = Image.open(os.path.join(MOCKUPS, name + ".png")).convert("RGBA")
+        self.full = src
+        s = base_h / src.height
+        img = src.resize((int(src.width * s), base_h), Image.LANCZOS)
+        rgb = np.asarray(img.convert("RGB"), np.float32)
+        a = np.asarray(img.split()[3], np.float32) / 255
+        lum = rgb.mean(-1)
+        lifted = rgb * 1.35 + np.array([4, 5, 9], np.float32)
+        lifted = np.where(lum[..., None] > 120, rgb, lifted)
+        self.rgb = Image.fromarray(lifted.clip(0, 255).astype(np.uint8))
+        self.alpha = img.split()[3]
+        pip = ((lum > 140) & (a > 0.9)).astype(np.uint8) * 255
+        self.piping = Image.fromarray(pip).filter(ImageFilter.MaxFilter(3))
+        self.rim = ImageChops.subtract(self.alpha, self.alpha.filter(ImageFilter.MinFilter(15))).filter(
+            ImageFilter.GaussianBlur(5))
+        self.w, self.h = img.size
+
+    def place(self, fr, cx, cy, h, light=1.0, piping=1.0, sweep=None, squeeze=1.0, pip_wipe=1.0, spot=0.32):
+        """Teil zentriert bei (cx, cy) mit Höhe h zeichnen. squeeze < 1 = Drehung (horizontal gestaucht)."""
+        s = h / self.h
+        w = max(int(self.w * s * abs(squeeze)), 2)
+        hh = int(h)
+        x, y = int(cx - w / 2), int(cy - hh / 2)
+
+        def full(img, mode="L"):
+            c = Image.new(mode, (W, H), 0)
+            c.paste(img.resize((w, hh), Image.BILINEAR), (x, y))
+            return c
+
+        alpha = full(self.alpha)
+        if spot:
+            spotlight(fr, cx, cy - hh * 0.05, max(w, hh * 0.55) * 0.95, hh * 0.68, spot * light)
+        # Gegenlicht: Kontur leuchtet leicht von hinten
+        fr.add_light(soft(alpha, 40), (190, 200, 220), 0.18 * light)
+        rgb = np.asarray(full(self.rgb, "RGB"), np.float32) * light
+        m = np.asarray(alpha, np.float32)[..., None] / 255
+        fr.a = fr.a * (1 - m) + rgb * m
+        fr.add_light(full(self.rim), (215, 222, 240), 0.35 * light)
+        # Paspeln leuchten (optional von oben nach unten aufgedeckt)
+        if piping > 0:
+            pip = full(self.piping)
+            if pip_wipe < 1:
+                cut = Image.new("L", (W, H), 0)
+                ImageDraw.Draw(cut).rectangle((0, 0, W, y + hh * pip_wipe), fill=255)
+                pip = ImageChops.multiply(pip, soft(cut, 30))
+            fr.add_mask(pip, (250, 251, 255), min(piping, 1.0))
+            fr.add_light(soft(pip, 18), (220, 230, 255), 0.9 * piping)
+        # Lichtstreifen über den Stoff
+        if sweep is not None:
+            band = Image.new("L", (W, H), 0)
+            bx = -400 + sweep * (W + 800)
+            ImageDraw.Draw(band).polygon([(bx, 0), (bx + 180, 0), (bx - 340, H), (bx - 520, H)], fill=255)
+            fr.add_light(ImageChops.multiply(soft(band, 60), alpha), (255, 255, 255), 0.16 * light)
+        return x, y, w, hh
+
+    def detail(self, fr, fx, fy, frac, drift=0.0):
+        """Nahaufnahme direkt aus der vollen Auflösung: Ausschnitt um (fx, fy), Breite = frac * Teilbreite."""
+        src = self.full
+        cw = src.width * frac
+        ch = cw * H / W
+        cx = src.width * fx + drift * cw * 0.15
+        cy = src.height * fy
+        box = (int(cx - cw / 2), int(cy - ch / 2), int(cx + cw / 2), int(cy + ch / 2))
+        crop = src.crop(box).resize((W, H), Image.BICUBIC)
+        rgb = np.asarray(crop.convert("RGB"), np.float32)
+        lum = rgb.mean(-1)[..., None]
+        rgb = np.where(lum > 120, rgb, rgb * 1.35 + np.array([4, 5, 9], np.float32))
+        a = np.asarray(crop.split()[3], np.float32)[..., None] / 255
+        fr.a = fr.a * (1 - a) + rgb * a
+        pip = Image.fromarray(((lum[..., 0] > 140) * (a[..., 0] > 0.9) * 255).astype(np.uint8))
+        fr.add_light(soft(pip, 26), (220, 230, 255), 0.7)
 
 
 # ---------------------------------------------------------------- Szenen
 
 class Ctx:
-    def __init__(self, beat, photos):
+    def __init__(self, beat):
         self.beat = beat
-        self.photos = photos
-        self.pull = draw_pullover()
+        self.hoodie = Garment("hoodie_front")
+        self.hoodie_back = Garment("hoodie_back")
+        self.pants = Garment("pants_front")
+        self.pants_back = Garment("pants_back")
 
 
 def on_beat_pulse(t, beat, decay=0.18):
@@ -364,14 +384,14 @@ def hook_scenes(c):
     big = font(BLACK_FONT, 150)
     mid = font(BLACK_FONT, 96)
     small = font(MED_FONT, 40)
-    cin = font(CINZEL, 230)
-    cin_s = font(CINZEL, 120)
+    cin = font(CINZEL, 200)
+    cin_s = font(CINZEL, 110)
 
     def s1(fr, t, d, i):  # Hook – sofort Text, harter Look
         fr.a *= 0.35
         m = text_mask(["DU KENNST", "UNS NICHT."], big, H * 0.46, 1.0, 2, 1.0 + 0.06 * (1 - ease_out(t / d)))
         fr.add_mask(m, (245, 247, 250))
-        fr.flash(0.9 * on_beat_pulse(t, b, 0.06) if t < 0.04 else 0)
+        fr.flash(0.9 if t < 0.04 else 0)
         fr.shake(14 * on_beat_pulse(t, b), i)
         fr.glitch(0.9 * on_beat_pulse(t, b, 0.1), i)
 
@@ -382,7 +402,15 @@ def hook_scenes(c):
         fr.shake(20 * on_beat_pulse(t, b), i + 3)
         fr.glitch(0.6 * on_beat_pulse(t, b, 0.08), i + 1)
 
-    def s3(fr, t, d, i):  # Strobe-Sterne
+    def s3(fr, t, d, i):  # Teaser: Hoodie im Dunkeln, nur die Paspeln leuchten auf
+        fr.a *= 0.4
+        c.hoodie.place(fr, W / 2, H * 0.47, 1250 * (1 + 0.08 * t / d), light=0.12, piping=1.0,
+                       pip_wipe=ease_out(t / (b * 1.2)), spot=0.15)
+        fr.flash(0.7 * (1 - ease_out(t / (b * 0.25))))
+        fr.shake(8 * on_beat_pulse(t, b), i)
+        fr.glitch(0.5 * on_beat_pulse(t, b, 0.06), i)
+
+    def s4(fr, t, d, i):  # Strobe-Sterne
         n = int(t / (b / 4))
         r = random.Random(n)
         fr.a *= 0.2
@@ -392,25 +420,27 @@ def hook_scenes(c):
         if n % 2 == 0:
             fr.flash(0.55)
 
-    def s4(fr, t, d, i):  # Logo baut sich auf
-        p = ease_out_back(t / (b * 1.5))
-        rot = (1 - ease_out(t / (b * 2))) * math.pi * 1.5
-        fr.chrome(star_mask(W / 2, H * 0.43, 330 * p, rot), 0.1 + t * 0.25, 1.0, 0.8)
+    def s5(fr, t, d, i):  # Logo baut sich auf
+        p = ease_out_back(t / (b * 1.2))
+        fr.chrome(logo_mask(W / 2, H * 0.42, 820 * p, (1 - ease_out(t / b)) * 0.4), 0.1 + t * 0.25, 1.0, 0.8)
         fr.flash(0.8 * on_beat_pulse(t, b, 0.06))
         fr.zoom(1 + 0.04 * on_beat_pulse(t, b))
 
-    def s5(fr, t, d, i):  # WEAX slam, Buchstabe für Buchstabe auf Halbbeats
-        fr.chrome(star_mask(W / 2, H * 0.32, 170, 0), 0.1 + t * 0.25, 0.9, 0.5)
+    def s6(fr, t, d, i):  # WEAX slam, Buchstabe für Buchstabe auf Halbbeats
+        fr.chrome(logo_mask(W / 2, H * 0.35, 560), 0.1 + t * 0.25, 0.9, 0.5)
         shown = min(4, int(t / (b / 2)) + 1)
-        word = "WEAX"[:shown]
-        m = text_mask([word.ljust(4).replace(" ", " ")], cin, H * 0.56, 1, 24)
+        m = text_mask(["WEAX"], cin, H * 0.56, 1, 24)
+        if shown < 4:
+            widths = [cin.getlength(ch) for ch in "WEAX"]
+            x = W / 2 - (sum(widths) + 24 * 3) / 2 + sum(widths[:shown]) + 24 * shown - 12
+            ImageDraw.Draw(m).rectangle((x, 0, W, H), fill=0)
         fr.chrome(m, 0.3 + t * 0.3, 1.0, 0.6)
         fr.shake(16 * on_beat_pulse(t, b / 2), i)
         fr.zoom(1 + 0.05 * on_beat_pulse(t, b / 2))
 
-    def s6(fr, t, d, i):  # Drop-Ansage
-        fr.chrome(star_mask(W / 2, H * 0.28, 130, 0), 0.1 + t * 0.25, 0.8, 0.4)
-        fr.chrome(text_mask(["WEAX"], cin_s, H * 0.39, 1, 16), 0.3 + t * 0.3, 1.0, 0.3)
+    def s7(fr, t, d, i):  # Drop-Ansage
+        fr.chrome(logo_mask(W / 2, H * 0.29, 420), 0.1 + t * 0.25, 0.85, 0.4)
+        fr.chrome(text_mask(["WEAX"], cin_s, H * 0.4, 1, 16), 0.3 + t * 0.3, 1.0, 0.3)
         a = ease_out(t / (b * 0.5))
         fr.add_mask(text_mask(["DROP 01"], mid, H * 0.52, 1, 8, 1.15 - 0.15 * a), (245, 247, 250), a)
         if t > b * 1.5:
@@ -421,26 +451,32 @@ def hook_scenes(c):
             fr.add_mask(text_mask(["folg uns, sonst verpasst du's."], small, H * 0.67, 1, 1), (150, 155, 165), a3)
         fr.zoom(1 + 0.03 * on_beat_pulse(t, b))
 
-    def s7(fr, t, d, i):  # Übergang zurück zum Anfang (Loop)
-        s6(fr, t + b * 4, d, i)
+    def s8(fr, t, d, i):  # Übergang zurück zum Anfang (Loop)
+        s7(fr, t + b * 4, d, i)
         fr.glitch(ease_out(t / d), i)
         fr.fade(ease_out(t / d) * 0.8)
 
-    return [(s1, 2), (s2, 2), (s3, 1), (s4, 3), (s5, 2.5), (s6, 5), (s7, 0.5)]
+    return [(s1, 2), (s2, 2), (s3, 2), (s4, 1), (s5, 2), (s6, 2.5), (s7, 5), (s8, 0.5)]
 
 
-# --- Video 2: Drop-Reveal
+# --- Video 2: Drop-Reveal mit dem Tracksuit
 
 def drop_scenes(c):
     b = c.beat
     huge = font(BLACK_FONT, 210)
-    label = font(BLACK_FONT, 78)
+    label = font(BLACK_FONT, 76)
     small = font(MED_FONT, 40)
-    cin = font(CINZEL, 190)
+    cin = font(CINZEL, 118)
     cin_s = font(CINZEL, 110)
-    details = [("SCHWERES", "FLEECE", (0.5, 0.62), 2.3),
-               ("CLEANER", "SCHNITT", (0.2, 0.62), 1.8),
-               ("WEAX-STERN", "AUF DER BRUST", (0.5, 0.33), 3.2)]
+
+    shade = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(shade).rectangle((0, H * 0.7, W, H), fill=255)
+    shade = soft(shade, 160)
+
+    def caption(fr, t, top, bottom, y=0.8):
+        fr.add_mask(shade, BG, 0.75)
+        fr.add_mask(text_mask([top], label, H * y, 1, 6), (245, 247, 250))
+        fr.chrome(text_mask([bottom], label, H * (y + 0.048), 1, 6), 0.2 + t * 0.4, 1, 0.3)
 
     def s1(fr, t, d, i):
         fr.a *= 0.3
@@ -452,64 +488,64 @@ def drop_scenes(c):
         fr.shake(18 * on_beat_pulse(t, b), i)
         fr.glitch(0.7 * on_beat_pulse(t, b, 0.08), i)
 
-    def s2(fr, t, d, i):
-        fr.chrome(star_mask(W / 2, H * 0.36, 150 + 20 * on_beat_pulse(t, b), t * 0.4), 0.1 + t * 0.3, 1.0, 0.7)
+    def s2(fr, t, d, i):  # Logo + Titel
+        fr.chrome(logo_mask(W / 2, H * 0.37, 640 + 30 * on_beat_pulse(t, b)), 0.1 + t * 0.3, 1.0, 0.7)
         a = ease_out(t / (b * 0.6))
-        fr.chrome(text_mask(["ORIGIN"], cin, H * 0.52, 1, 22, 1.1 - 0.1 * a), 0.25 + t * 0.35, a, 0.5)
-        fr.add_mask(text_mask(["DAS STÜCK, MIT DEM ALLES ANFÄNGT."], small, H * 0.6, 1, 3), (150, 155, 165),
-                    ease_out((t - b) / b))
+        fr.chrome(text_mask(["TRACKSUIT"], cin, H * 0.53, 1, 10, 1.1 - 0.1 * a), 0.25 + t * 0.35, a, 0.5)
+        fr.add_mask(text_mask(["HOODIE + JOGGINGHOSE"], small, H * 0.6, 1, 6), (150, 155, 165), ease_out((t - b) / b))
         fr.zoom(1 + 0.03 * on_beat_pulse(t, b))
 
-    def s3(fr, t, d, i):  # Klamotten-Reveal
-        prog = t / d
-        if c.photos:
-            photo_on_frame(fr, c.photos[0], prog)
-        else:
-            reveal = ease_out(t / (b * 2))
-            fr.a *= 0.6 + 0.4 * reveal
-            pullover_on_frame(fr, c.pull, 0.98 + 0.08 * prog, H * 0.47, (t / (b * 3)) % 1.4,
-                              on_beat_pulse(t, b * 2, 0.25) if t > b * 2 else 0, t)
-            fr.a = BACKGROUND + (fr.a - BACKGROUND) * reveal
-        fr.flash(0.9 * (1 - ease_out(t / (b * 0.3))))
+    def s3(fr, t, d, i):  # Hoodie-Reveal: erst nur Paspeln, dann Licht an
+        light = 0.25 + 0.75 * ease_out((t - b * 1.5) / b)
+        c.hoodie.place(fr, W / 2, H * 0.46, 1280 * (1 + 0.05 * t / d), light=light,
+                       pip_wipe=ease_out(t / (b * 1.5)), sweep=(t / (b * 4)) * 1.3)
+        fr.flash(0.9 * (1 - ease_out(t / (b * 0.3))) + 0.5 * on_beat_pulse(t - b * 2, b * 10, 0.08) * (t > b * 2))
         fr.zoom(1 + 0.025 * on_beat_pulse(t, b))
 
-    def detail(n):
-        top, bottom, (fx, fy), zoom = details[n]
-
-        def s(fr, t, d, i):
-            if c.photos:
-                photo_on_frame(fr, c.photos[(n + 1) % len(c.photos)], t / d, 1.35, 1.2)
-            else:
-                pullover_on_frame(fr, c.pull, 0.98, H * 0.47, 0.4 + t / d * 0.6, 0.6 if n == 2 else 0, t)
-                p = c.pull[0].width * 0.98
-                cx = W / 2 - p / 2 + fx * p
-                cy = H * 0.47 - p / 2 + fy * p
-                fr.zoom(zoom * (1 + 0.06 * t / d), cx, cy)
-            fr.a *= 0.75
-            fr.add_mask(text_mask([top], label, H * 0.74, 1, 6), (245, 247, 250))
-            fr.chrome(text_mask([bottom], label, H * 0.79, 1, 6), 0.2 + t * 0.4, 1, 0.3)
-            fr.flash(0.6 * (1 - ease_out(t / (b * 0.2))))
-            fr.shake(10 * on_beat_pulse(t, b), i)
-            fr.glitch(0.4 * on_beat_pulse(t, b, 0.06), i)
-        return s
-
-    def s5(fr, t, d, i):  # Logo + Klamotte zusammen
-        fr.chrome(star_mask(W / 2, H * 0.4, 520, t * 0.15), 0.1 + t * 0.2, 0.18, 0.2)
-        if c.photos:
-            photo_on_frame(fr, c.photos[-1], t / d, 1.1, 1.0)
-            fr.a *= 0.65
+    def s4(fr, t, d, i):  # Drehung: vorne → hinten
+        p = t / d
+        if p < 0.3:
+            g, sq = c.hoodie, 1 - ease_out(p / 0.3) * 0.95
         else:
-            pullover_on_frame(fr, c.pull, 0.86, H * 0.43, (t / (b * 3)) % 1.4, on_beat_pulse(t, b * 2, 0.3), t)
-        fr.chrome(text_mask(["WEAX"], cin, H * 0.73, 1, 26), 0.25 + t * 0.35, 1.0, 0.7)
-        fr.add_mask(text_mask(["DROP 01 — ORIGIN"], small, H * 0.79, 1, 8), (170, 175, 185), ease_out(t / b))
+            g, sq = c.hoodie_back, 0.05 + 0.95 * ease_out_back((p - 0.3) / 0.4)
+        g.place(fr, W / 2, H * 0.46, 1330, squeeze=sq, sweep=0.3 + p * 0.6)
         fr.zoom(1 + 0.03 * on_beat_pulse(t, b))
 
-    def s6(fr, t, d, i):  # CTA
-        fr.chrome(star_mask(W / 2, H * 0.27, 120, 0), 0.1 + t * 0.3, 0.9, 0.5)
-        fr.chrome(text_mask(["WEAX"], cin_s, H * 0.37, 1, 16), 0.2 + t * 0.3, 1.0, 0.3)
+    def detail(g, fx, fy, frac, top, bottom):
+        def s(fr, t, d, i):
+            g.detail(fr, fx, fy, frac * (1 - 0.08 * t / d), t / d)
+            fr.a *= 0.85
+            caption(fr, t, top, bottom)
+            fr.flash(0.6 * (1 - ease_out(t / (b * 0.2))))
+            fr.shake(10 * on_beat_pulse(t, b), i)
+            fr.glitch(0.35 * on_beat_pulse(t, b, 0.06), i)
+        return s
+
+    def s6(fr, t, d, i):  # Jogginghose vorne → hinten
+        p = t / d
+        if p < 0.55:
+            g, sq = c.pants, 1.0 if p < 0.4 else 1 - ease_out((p - 0.4) / 0.15) * 0.95
+        else:
+            g, sq = c.pants_back, 0.05 + 0.95 * ease_out_back((p - 0.55) / 0.3)
+        g.place(fr, W / 2, H * 0.47, 1450 * (1 + 0.04 * p), squeeze=sq, sweep=p * 1.2,
+                pip_wipe=ease_out(t / b) if p < 0.4 else 1.0)
+        fr.flash(0.8 * (1 - ease_out(t / (b * 0.3))))
+        fr.zoom(1 + 0.025 * on_beat_pulse(t, b))
+
+    def s7(fr, t, d, i):  # Komplettes Outfit + Logo
+        fr.chrome(logo_mask(W / 2, H * 0.5, 1050), 0.1 + t * 0.2, 0.14, 0.2)
+        k = 1 + 0.03 * t / d
+        c.pants.place(fr, W / 2, H * 0.67, 800 * k, spot=0.0)
+        c.hoodie.place(fr, W / 2, H * 0.335, 620 * k, sweep=(t / (b * 3)) % 1.4, spot=0.3)
+        fr.chrome(logo_mask(W / 2, H * 0.085, 300), 0.25 + t * 0.35, ease_out(t / b), 0.6)
+        fr.add_mask(text_mask(["DROP 01 — TRACKSUIT"], small, H * 0.15, 1, 8), (170, 175, 185), ease_out(t / b))
+        fr.zoom(1 + 0.03 * on_beat_pulse(t, b))
+
+    def s8(fr, t, d, i):  # CTA
+        fr.chrome(logo_mask(W / 2, H * 0.27, 440), 0.1 + t * 0.3, 0.9, 0.5)
+        fr.chrome(text_mask(["WEAX"], cin_s, H * 0.375, 1, 16), 0.2 + t * 0.3, 1.0, 0.3)
         fr.add_mask(text_mask(["DROP 01", "IST LIVE."], font(BLACK_FONT, 120), H * 0.5, 1.0, 4), (245, 247, 250),
                     ease_out(t / (b * 0.5)))
-        # Chrome-Button
         a = ease_out((t - b) / (b * 0.6))
         if a > 0:
             btn = Image.new("L", (W, H), 0)
@@ -517,17 +553,21 @@ def drop_scenes(c):
             ImageDraw.Draw(btn).rounded_rectangle((W / 2 - bw / 2, by - bh / 2, W / 2 + bw / 2, by + bh / 2), 65, fill=255)
             fr.chrome(btn, 0.15 + t * 0.4, a, 0.8 * on_beat_pulse(t, b, 0.3))
             fr.add_mask(text_mask(["LINK IN BIO →"], font(BLACK_FONT, 56), by + 2, 1, 4), (11, 11, 13), a)
-        fr.add_mask(text_mask(["limitiert. wenn weg, dann weg."], small, H * 0.71, 1, 1), (150, 155, 165),
+        fr.add_mask(text_mask(["schwarz & weiß · XS–XL · limitiert."], small, H * 0.71, 1, 1), (150, 155, 165),
                     ease_out((t - b * 2) / b))
         fr.zoom(1 + 0.025 * on_beat_pulse(t, b))
 
-    def s7(fr, t, d, i):
-        s6(fr, t + b * 4, d, i)
+    def s9(fr, t, d, i):
+        s8(fr, t + b * 4, d, i)
         fr.glitch(ease_out(t / d), i)
         fr.fade(ease_out(t / d) * 0.8)
 
-    return [(s1, 2), (s2, 3), (s3, 5), (detail(0), 1.5), (detail(1), 1.5), (detail(2), 2),
-            (s5, 4), (s6, 5), (s7, 0.5)]
+    return [(s1, 2), (s2, 3), (s3, 4), (s4, 2),
+            (detail(c.hoodie, 0.65, 0.30, 0.42, "LOGO", "GESTICKT"), 1.5),
+            (detail(c.hoodie, 0.50, 0.12, 0.42, "STERN", "IN DER KAPUZE"), 1.5),
+            (detail(c.hoodie, 0.70, 0.55, 0.62, "380 G/M²", "FLEECE"), 1.5),
+            (detail(c.pants, 0.10, 0.83, 0.75, "STERN", "AM SAUM"), 1.5),
+            (s6, 3.5), (s7, 4), (s8, 5), (s9, 0.5)]
 
 
 # ---------------------------------------------------------------- Audio / Tempo
@@ -634,6 +674,24 @@ def render(name, scenes, beat, offset, audio, start, out_dir):
     return path
 
 
+def render_posters(c, out_dir):
+    """Einzelbilder jedes Teils im WEAX-Look (9:16, für Story/Post/Shop)."""
+    shots = [("hoodie_front", c.hoodie, 1280), ("hoodie_back", c.hoodie_back, 1280),
+             ("pants_front", c.pants, 1380), ("pants_back", c.pants_back, 1380)]
+    for i, (name, g, h) in enumerate(shots):
+        fr = Frame(1.0)
+        g.place(fr, W / 2, H * 0.53, h, sweep=0.45)
+        fr.chrome(logo_mask(W / 2, H * 0.07, 220), 0.3, 1.0, 0.4)
+        Image.fromarray(fr.finish(i)).save(os.path.join(out_dir, f"{name}.png"))
+    fr = Frame(1.0)
+    fr.chrome(logo_mask(W / 2, H * 0.5, 1050), 0.1, 0.14, 0.2)
+    c.pants.place(fr, W / 2, H * 0.67, 800, spot=0.0)
+    c.hoodie.place(fr, W / 2, H * 0.335, 620, sweep=0.45, spot=0.3)
+    fr.chrome(logo_mask(W / 2, H * 0.085, 300), 0.3, 1.0, 0.6)
+    Image.fromarray(fr.finish(9)).save(os.path.join(out_dir, "tracksuit_outfit.png"))
+    print("Einzelbilder fertig")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--audio", help="Song-Datei (z. B. shottas.mp3) – wird eingebettet und für den Beat analysiert")
@@ -641,9 +699,8 @@ def main():
     ap.add_argument("--start2", help="Eigener Startpunkt für Video 2 (Standard: wie --start)")
     ap.add_argument("--bpm", type=float, help="Tempo erzwingen (sonst aus Song geschätzt bzw. 140)")
     ap.add_argument("--offset", type=float, help="Sekunden bis zum ersten Beat")
-    ap.add_argument("--photos", help="Ordner mit echten Klamotten-Fotos (jpg/png), ersetzt das Mockup")
     ap.add_argument("--out", default=os.path.join(HERE, "out"))
-    ap.add_argument("--only", choices=["hook", "drop"])
+    ap.add_argument("--only", choices=["hook", "drop", "stills"])
     args = ap.parse_args()
 
     os.makedirs(args.out, exist_ok=True)
@@ -662,12 +719,13 @@ def main():
     if beat < 0.36:
         beat *= 2
 
-    photos = []
-    if args.photos:
-        photos = sorted(os.path.join(args.photos, f) for f in os.listdir(args.photos)
-                        if f.lower().endswith((".jpg", ".jpeg", ".png", ".webp")))
-    ctx = Ctx(beat, photos)
+    ctx = Ctx(beat)
 
+    if args.only in (None, "stills"):
+        os.makedirs(os.path.join(args.out, "bilder"), exist_ok=True)
+        render_posters(ctx, os.path.join(args.out, "bilder"))
+    if args.only == "stills":
+        return
     if args.only != "drop":
         render("01_hook.mp4", hook_scenes(ctx), beat, offset, args.audio, start, args.out)
     if args.only != "hook":
