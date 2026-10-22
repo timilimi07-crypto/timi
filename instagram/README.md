@@ -1,18 +1,21 @@
 # WEAX – Erste Instagram-Reels (Drop 01)
 
-Zwei Reels im 9:16-Format (1080×1920, 30 fps) im WEAX-Look: Chrome auf Schwarz, Stern-Logo, Cinzel.
+Zwei Reels im 9:16-Format (1080×1920, 30 fps), Texte auf Englisch, im WEAX-Look: Chrome auf Schwarz, W-Orbit-Logo, Cinzel.
 
 | Datei | Länge | Zweck |
 |---|---|---|
-| `out/01_hook.mp4` | ~7 s | **Aufmerksamkeit.** Text gleich im ersten Frame („DU KENNST UNS NICHT. / NOCH.“), Hoodie im Dunkeln – nur die Paspeln leuchten auf, Strobe-Sterne, W-Logo, „DROP 01 – KOMMT BALD.“ Das Ende glitcht zurück zum Anfang, damit das Reel loopt. |
-| `out/02_drop.mp4` | ~13 s | **Drop-Reveal.** „DROP 01“-Slam → W-Logo + „TRACKSUIT“ → Hoodie-Reveal (Paspeln zuerst) → Drehung nach hinten → 4 Detail-Cuts (Logo, Stern in der Kapuze, Fleece, Stern am Saum) → Hose vorne/hinten → komplettes Outfit mit Logo → „DROP 01 IST LIVE. LINK IN BIO →“ |
+| `out/01_hook.mp4` | ~10 s | **Köder-Hook (nichts mit der Brand).** Hypnotische Spirale ab Frame 1: „STARE AT THE RED DOT – DON'T LOOK AWAY“ + Countdown 5→1. Dann „NOW LOOK HERE.“ → das Outfit steht still, scheint sich für den Zuschauer aber zu bewegen (Nachbild-Illusion). „IT'S MOVING, RIGHT?“ + „comment what you saw“ (Kommentare = Reichweite). Erst danach kurz WEAX-Logo „DROP 01 · SOON“. Loopt zurück zur Spirale. |
+| `out/02_drop.mp4` | ~15 s | **Drop-Reveal (Englisch).** Spirale „WAIT FOR IT…“ → „DROP 01“ mit Schockwelle → W-Logo + „TRACKSUIT“ → Hoodie-Reveal → Drehung → Details (LOGO EMBROIDERED, STAR INSIDE THE HOOD, 380 GSM FLEECE, STAR ON THE HEM) → Hose vorne/hinten → Outfit + Logo → „DROP 01 IS LIVE. LINK IN BIO →“ |
 
-Alle Schnitte liegen auf dem Beat (Standard 140 BPM, Kick auf jedem Schnitt).
+Effekte: Schockwellen, Zoom-Blur-Übergänge, anamorphe Lens-Flares, Funkenregen, Invert-Strobe, RGB-Glitch, Scanlines, Kamera-Shake.
+Alle Schnitte liegen auf dem Beat von „Shotta's.“ (Season 25, 67 BPM → Double-Time 134 BPM).
 
-## Song: „Shottas“ – Season 25
+## Song: „Shotta's.“ – Season 25
+
+Spotify: https://open.spotify.com/track/0M4R6G6junOgTJDccOEGHo
 
 Der Song ist **nicht** eingebettet. Füg ihn direkt in Instagram hinzu:
-Reel hochladen → **Audio** → „Shottas Season 25“ suchen → Startpunkt auf den Drop/Hook des Songs setzen.
+Reel hochladen → **Audio** → „Shotta's Season 25“ suchen → Startpunkt auf den Drop/Hook des Songs setzen.
 
 Warum in der App: Das Reel wird dann unter dem Sound gelistet (zusätzliche Reichweite über die Audio-Seite),
 und Instagram schaltet den Ton nicht wegen Urheberrecht stumm.
@@ -50,23 +53,23 @@ Zusätzlich entstehen Einzelbilder jedes Teils im WEAX-Look (9:16) in `out/bilde
 3. Beide Reels zusätzlich in die Story mit Countdown-Sticker (Hook) bzw. Link-Sticker (Drop).
 4. Erste 30–60 Minuten nach dem Posten aktiv auf Kommentare antworten – das pusht das Reel.
 
-**Cover:** Für 01 den „NOCH.“-Frame, für 02 den Frame mit dem kompletten Outfit + Logo wählen.
+**Cover:** Für 01 einen Spiral-Frame mit „STARE AT THE RED DOT“, für 02 den Frame mit dem kompletten Outfit + Logo wählen.
 
 ### Caption – Reel 1 (Hook)
 ```
-ihr kennt uns noch nicht. ⭐
-drop 01 kommt. folgen, sonst verpasst ihr's.
+did it move for you too? 👁
+comment what you saw 👇
 
-#weax #drop01 #streetwear #streetweardeutschland #newbrand #fashiontok #outfitinspo #comingsoon
+#opticalillusion #illusion #trippy #streetwear #weax #drop01 #fyp #explore
 ```
 
 ### Caption – Reel 2 (Drop)
 ```
 DROP 01 — TRACKSUIT ⭐
-hoodie + jogginghose. 380 g/m² fleece. schwarz & weiß.
-limitiert. wenn weg, dann weg. link in bio.
+hoodie + pants. 380 gsm fleece. black & white.
+limited. once it's gone, it's gone. link in bio.
 
-#weax #drop01 #tracksuit #streetwear #streetweardeutschland #fitcheck #newbrand #outfitinspo
+#weax #drop01 #tracksuit #streetwear #fitcheck #newbrand #outfitinspo #fyp
 ```
 
 ## Neu rendern
