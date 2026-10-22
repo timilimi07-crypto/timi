@@ -3,7 +3,7 @@
 WEAX – Instagram Reels Renderer (Drop 01)
 
 Rendert zwei 9:16-Reels (1080x1920, 30 fps) im WEAX-Look (Chrome auf Schwarz, Stern-Logo):
-  01_hook.mp4  – Aufmerksamkeits-Teaser (Hook in der ersten Sekunde, loopbar)
+  01_hook.mp4  – Köder-Hook: hypnotische Spirale („stare at the red dot“) → Outfit scheint sich zu bewegen
   02_drop.mp4  – Drop-Reveal mit dem Tracksuit (Hoodie + Jogginghose) + Logo + CTA
 
 Die Klamotten kommen aus mockups/ (einmalig erzeugen mit prepare_mockups.py).
@@ -78,6 +78,8 @@ STARS = [(rng.uniform(0, W), rng.uniform(0, H), rng.uniform(0.6, 2.2), rng.unifo
 _yy, _xx = np.ogrid[0:H, 0:W]
 VIGNETTE = np.clip(1 - 0.55 * (((_xx - W / 2) / (W * 0.75)) ** 2 + ((_yy - H / 2) / (H * 0.75)) ** 2),
                    0.35, 1).astype(np.float32)[..., None]
+GRID_Y, GRID_X = np.mgrid[0:H, 0:W].astype(np.float32)
+SCAN = ((np.arange(H) % 4) < 1).astype(np.float32)[:, None, None]
 GRAIN = [np.random.default_rng(i).normal(0, 7, (H // 2, W // 2)).astype(np.float32) for i in range(6)]
 
 
@@ -204,6 +206,67 @@ class Frame:
             y = r.randint(0, H - 60)
             h = r.randint(8, 70)
             self.a[y:y + h] = np.roll(self.a[y:y + h], r.randint(-90, 90), axis=1)
+
+    # --- Spezialeffekte
+
+    def shockwave(self, cx, cy, prog, strength=60, width=90):
+        """Ringförmige Druckwelle, die vom Punkt (cx, cy) nach außen läuft."""
+        if not 0 <= prog < 1:
+            return
+        dx, dy = GRID_X - cx, GRID_Y - cy
+        r = np.sqrt(dx * dx + dy * dy) + 1e-3
+        R = prog * math.hypot(W, H) * 0.75
+        d = strength * (1 - prog) * np.exp(-((r - R) / width) ** 2)
+        sx = np.clip(GRID_X - dx / r * d, 0, W - 1).astype(np.int32)
+        sy = np.clip(GRID_Y - dy / r * d, 0, H - 1).astype(np.int32)
+        self.a = self.a[sy, sx]
+        ring = np.exp(-((r - R) / (width * 0.35)) ** 2) * (1 - prog) * 40
+        self.a = self.a + ring[..., None]
+
+    def zoom_blur(self, amount, cx=W / 2, cy=H / 2):
+        """Radialer Zoom-Blur für Übergänge (Speed-Ramp-Look)."""
+        if amount <= 0.002:
+            return
+        img = Image.fromarray(np.clip(self.a, 0, 255).astype(np.uint8))
+        acc = self.a.copy()
+        for k in (1, 2, 3, 4):
+            s = 1 + amount * k / 4
+            nw, nh = int(W * s), int(H * s)
+            l, t = int(cx * s - cx), int(cy * s - cy)
+            acc += np.asarray(img.resize((nw, nh), Image.BILINEAR).crop((l, t, l + W, t + H)), np.float32)
+        self.a = acc / 5
+
+    def flare(self, strength=0.6):
+        """Anamorphe Lens-Flares: helle Stellen ziehen horizontale, bläuliche Streifen."""
+        lum = self.a.mean(-1)
+        bright = Image.fromarray((np.clip(lum - 175, 0, 80) * 3.1).astype(np.uint8))
+        streak = bright.resize((24, H // 8), Image.BILINEAR).resize((W, H), Image.BICUBIC)
+        self.add_light(streak, (150, 185, 255), strength)
+
+    def invert(self, amount):
+        if amount > 0:
+            self.a = self.a + (255 - 2 * self.a) * min(amount, 1)
+
+    def sparks(self, t, seed, cx=W / 2, cy=H / 2, n=46, life=0.7):
+        """Funkenregen aus (cx, cy), t = Sekunden seit Auslösung."""
+        if not 0 <= t < life:
+            return
+        r = random.Random(seed)
+        m = Image.new("L", (W, H), 0)
+        d = ImageDraw.Draw(m)
+        fade = 1 - t / life
+        for _ in range(n):
+            a = r.uniform(0, 2 * math.pi)
+            v = r.uniform(500, 1900)
+            x, y = cx + math.cos(a) * v * t, cy + math.sin(a) * v * t + 900 * t * t
+            tail = 0.045
+            x2, y2 = cx + math.cos(a) * v * (t - tail), cy + math.sin(a) * v * (t - tail) + 900 * (t - tail) ** 2
+            d.line((x2, y2, x, y), fill=int(255 * fade), width=r.choice((2, 3, 4)))
+        self.add_light(m, (255, 250, 235), 1.0)
+        self.add_light(soft(m, 14), (190, 210, 255), 1.4)
+
+    def scanlines(self, amount=0.12):
+        self.a = self.a * (1 - amount * SCAN)
 
     def finish(self, idx):
         g = GRAIN[idx % len(GRAIN)]
@@ -373,90 +436,106 @@ class Ctx:
 
 def on_beat_pulse(t, beat, decay=0.18):
     """1.0 direkt auf dem Beat, fällt danach schnell ab."""
+    if t < 0:
+        return 0.0
     ph = (t % beat) / beat
     return math.exp(-ph * beat / decay * 1.0)
 
 
-# --- Video 1: Hook
+_SPIRAL = None
+
+
+def spiral(fr, t, contrast=1.0):
+    """Hypnotische Spirale (Motion-Aftereffect-Illusion): nach ein paar Sekunden Hinstarren
+    scheint sich das nächste stehende Bild zu bewegen."""
+    global _SPIRAL
+    if _SPIRAL is None:
+        dx, dy = GRID_X - W / 2, GRID_Y - H / 2
+        r = np.sqrt(dx * dx + dy * dy) / W + 1e-3
+        _SPIRAL = (np.arctan2(dy, dx) * 5 + np.log(r) * 14).astype(np.float32), r.astype(np.float32)
+    base, r = _SPIRAL
+    v = np.sin(base + t * 2 * math.pi * 1.1)
+    v = np.clip(v * 3.5, -1, 1) * 0.5 + 0.5
+    v = v * np.clip(r * 9, 0, 1)  # Zentrum dunkel, damit der Punkt heraussticht
+    col = v[..., None] * np.array([232, 236, 244], np.float32) * contrast
+    fr.a = fr.a * (1 - contrast) + col
+    dot = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(dot).ellipse((W / 2 - 20, H / 2 - 20, W / 2 + 20, H / 2 + 20), fill=255)
+    fr.add_light(soft(dot, 40), (255, 40, 40), 1.6)
+    fr.add_mask(dot, (255, 30, 35))
+
+
+def pill_text(fr, lines, fnt, y, color=(245, 247, 250), alpha=1.0, pad=34, tracking=3):
+    """Text auf dunkler Pille – bleibt auf jedem Hintergrund lesbar."""
+    m = text_mask(lines, fnt, y, 1.05, tracking)
+    box = m.getbbox()
+    if not box:
+        return
+    pill = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(pill).rounded_rectangle((box[0] - pad, box[1] - pad * 0.7, box[2] + pad, box[3] + pad * 0.7),
+                                           28, fill=255)
+    fr.add_mask(pill, (8, 8, 11), 0.82 * alpha)
+    fr.add_mask(m, color, alpha)
+
+
+# --- Video 1: Hook (Köder) – hat erst mal nichts mit der Brand zu tun
 
 def hook_scenes(c):
     b = c.beat
-    big = font(BLACK_FONT, 150)
-    mid = font(BLACK_FONT, 96)
-    small = font(MED_FONT, 40)
-    cin = font(CINZEL, 200)
-    cin_s = font(CINZEL, 110)
+    big = font(BLACK_FONT, 92)
+    mid = font(BLACK_FONT, 70)
+    small = font(BOLD_FONT, 44)
+    count = font(BLACK_FONT, 190)
+    stare = 12  # Beats Spirale
 
-    def s1(fr, t, d, i):  # Hook – sofort Text, harter Look
-        fr.a *= 0.35
-        m = text_mask(["DU KENNST", "UNS NICHT."], big, H * 0.46, 1.0, 2, 1.0 + 0.06 * (1 - ease_out(t / d)))
-        fr.add_mask(m, (245, 247, 250))
-        fr.flash(0.9 if t < 0.04 else 0)
-        fr.shake(14 * on_beat_pulse(t, b), i)
-        fr.glitch(0.9 * on_beat_pulse(t, b, 0.1), i)
+    def s1(fr, t, d, i):  # Spirale + Anweisung, ab Frame 1
+        spiral(fr, t)
+        pill_text(fr, ["STARE AT THE", "RED DOT"], big, H * 0.17)
+        pill_text(fr, ["DON'T LOOK AWAY"], mid, H * 0.27, (255, 70, 70), ease_out((t - b) / (b * 0.5)))
+        left = 5 - int(t / (d / 5))
+        if t > b * 2:
+            k = (t % (d / 5)) / (d / 5)
+            m = text_mask([str(max(left, 1))], count, H * 0.8, 1, 0, 1.25 - 0.25 * ease_out_back(k * 3))
+            fr.add_mask(soft(m, 20), (0, 0, 0), 0.7)
+            fr.add_mask(m, (255, 255, 255), 1 - 0.4 * k)
+        fr.flash(0.6 if t < 0.04 else 0)
+        fr.scanlines(0.1)
 
-    def s2(fr, t, d, i):
-        fr.a *= 0.35
-        m = text_mask(["NOCH."], font(BLACK_FONT, 260), H * 0.47, 1.0, 4, 1.25 - 0.25 * ease_out_back(t / (b * 0.5)))
-        fr.chrome(m, 0.2 + t * 0.4)
-        fr.shake(20 * on_beat_pulse(t, b), i + 3)
-        fr.glitch(0.6 * on_beat_pulse(t, b, 0.08), i + 1)
+    def s2(fr, t, d, i):  # „NOW LOOK“ – harter Wechsel
+        fr.a *= 0.15
+        fr.add_mask(text_mask(["NOW LOOK", "HERE."], font(BLACK_FONT, 150), H * 0.47, 1.0, 2,
+                              1.3 - 0.3 * ease_out_back(t / (b * 0.4))), (255, 255, 255))
+        fr.invert(0.9 * (1 - ease_out(t / (b * 0.25))))
+        fr.shockwave(W / 2, H / 2, t / (b * 1.2), 70)
+        fr.glitch(0.8 * on_beat_pulse(t, b, 0.08), i)
 
-    def s3(fr, t, d, i):  # Teaser: Hoodie im Dunkeln, nur die Paspeln leuchten auf
-        fr.a *= 0.4
-        c.hoodie.place(fr, W / 2, H * 0.47, 1250 * (1 + 0.08 * t / d), light=0.12, piping=1.0,
-                       pip_wipe=ease_out(t / (b * 1.2)), spot=0.15)
-        fr.flash(0.7 * (1 - ease_out(t / (b * 0.25))))
-        fr.shake(8 * on_beat_pulse(t, b), i)
-        fr.glitch(0.5 * on_beat_pulse(t, b, 0.06), i)
+    def s3(fr, t, d, i):  # Auflösung: stehendes Bild „bewegt“ sich (Nachbild-Effekt)
+        fr.chrome(logo_mask(W / 2, H * 0.5, 1050), 0.1, 0.12, 0.2)
+        c.pants.place(fr, W / 2, H * 0.66, 800, spot=0.0)
+        c.hoodie.place(fr, W / 2, H * 0.33, 620, spot=0.3)
+        if t > b * 1.5:
+            pill_text(fr, ["IT'S MOVING, RIGHT?"], mid, H * 0.1, alpha=ease_out((t - b * 1.5) / (b * 0.5)))
+        if t > b * 3.5:
+            pill_text(fr, ["comment what you saw"], small, H * 0.9, (200, 205, 215),
+                      ease_out((t - b * 3.5) / (b * 0.5)))
+        fr.flash(0.8 * (1 - ease_out(t / (b * 0.3))))
 
-    def s4(fr, t, d, i):  # Strobe-Sterne
-        n = int(t / (b / 4))
-        r = random.Random(n)
-        fr.a *= 0.2
-        for _ in range(3):
-            fr.chrome(star_mask(r.uniform(200, W - 200), r.uniform(400, H - 500), r.uniform(80, 240), r.uniform(0, 1)),
-                      r.random(), 1.0, 0.8)
-        if n % 2 == 0:
-            fr.flash(0.55)
-
-    def s5(fr, t, d, i):  # Logo baut sich auf
-        p = ease_out_back(t / (b * 1.2))
-        fr.chrome(logo_mask(W / 2, H * 0.42, 820 * p, (1 - ease_out(t / b)) * 0.4), 0.1 + t * 0.25, 1.0, 0.8)
-        fr.flash(0.8 * on_beat_pulse(t, b, 0.06))
+    def s4(fr, t, d, i):  # Brand-Stempel
+        fr.chrome(logo_mask(W / 2, H * 0.42, 720 * ease_out_back(t / (b * 0.6))), 0.1 + t * 0.3, 1.0, 0.8)
+        fr.chrome(text_mask(["WEAX"], font(CINZEL, 130), H * 0.55, 1, 18), 0.3 + t * 0.3, ease_out((t - b * 0.5) / b))
+        fr.add_mask(text_mask(["DROP 01 · SOON"], small, H * 0.61, 1, 10), (170, 175, 185), ease_out((t - b) / b))
+        fr.flare(0.7)
+        fr.sparks(t, 7, W / 2, H * 0.42)
+        fr.shockwave(W / 2, H * 0.42, t / (b * 1.5), 50)
         fr.zoom(1 + 0.04 * on_beat_pulse(t, b))
 
-    def s6(fr, t, d, i):  # WEAX slam, Buchstabe für Buchstabe auf Halbbeats
-        fr.chrome(logo_mask(W / 2, H * 0.35, 560), 0.1 + t * 0.25, 0.9, 0.5)
-        shown = min(4, int(t / (b / 2)) + 1)
-        m = text_mask(["WEAX"], cin, H * 0.56, 1, 24)
-        if shown < 4:
-            widths = [cin.getlength(ch) for ch in "WEAX"]
-            x = W / 2 - (sum(widths) + 24 * 3) / 2 + sum(widths[:shown]) + 24 * shown - 12
-            ImageDraw.Draw(m).rectangle((x, 0, W, H), fill=0)
-        fr.chrome(m, 0.3 + t * 0.3, 1.0, 0.6)
-        fr.shake(16 * on_beat_pulse(t, b / 2), i)
-        fr.zoom(1 + 0.05 * on_beat_pulse(t, b / 2))
-
-    def s7(fr, t, d, i):  # Drop-Ansage
-        fr.chrome(logo_mask(W / 2, H * 0.29, 420), 0.1 + t * 0.25, 0.85, 0.4)
-        fr.chrome(text_mask(["WEAX"], cin_s, H * 0.4, 1, 16), 0.3 + t * 0.3, 1.0, 0.3)
-        a = ease_out(t / (b * 0.5))
-        fr.add_mask(text_mask(["DROP 01"], mid, H * 0.52, 1, 8, 1.15 - 0.15 * a), (245, 247, 250), a)
-        if t > b * 1.5:
-            a2 = ease_out((t - b * 1.5) / (b * 0.5))
-            fr.add_mask(text_mask(["KOMMT BALD."], font(BLACK_FONT, 70), H * 0.6, 1, 6), (200, 205, 212), a2)
-        if t > b * 2.5:
-            a3 = ease_out((t - b * 2.5) / (b * 0.5))
-            fr.add_mask(text_mask(["folg uns, sonst verpasst du's."], small, H * 0.67, 1, 1), (150, 155, 165), a3)
-        fr.zoom(1 + 0.03 * on_beat_pulse(t, b))
-
-    def s8(fr, t, d, i):  # Übergang zurück zum Anfang (Loop)
-        s7(fr, t + b * 4, d, i)
+    def s5(fr, t, d, i):  # Loop zurück zur Spirale
+        s4(fr, t + b * 3, d, i)
+        fr.zoom_blur(0.5 * ease_out(t / d))
         fr.glitch(ease_out(t / d), i)
-        fr.fade(ease_out(t / d) * 0.8)
+        fr.fade(ease_out(t / d) * 0.7)
 
-    return [(s1, 2), (s2, 2), (s3, 2), (s4, 1), (s5, 2), (s6, 2.5), (s7, 5), (s8, 0.5)]
+    return [(s1, stare), (s2, 1.5), (s3, 5.5), (s4, 3), (s5, 0.5)]
 
 
 # --- Video 2: Drop-Reveal mit dem Tracksuit
@@ -478,13 +557,23 @@ def drop_scenes(c):
         fr.add_mask(text_mask([top], label, H * y, 1, 6), (245, 247, 250))
         fr.chrome(text_mask([bottom], label, H * (y + 0.048), 1, 6), 0.2 + t * 0.4, 1, 0.3)
 
+    def s0(fr, t, d, i):  # Köder-Opener: Spirale + „WAIT FOR IT“
+        spiral(fr, t)
+        pill_text(fr, ["WAIT FOR IT..."], font(BLACK_FONT, 96), H * 0.18)
+        fr.zoom_blur(0.6 * ease_out((t - d * 0.6) / (d * 0.4)))
+        fr.flash(0.6 if t < 0.04 else 0)
+        fr.scanlines(0.1)
+
     def s1(fr, t, d, i):
         fr.a *= 0.3
         fr.add_mask(text_mask(["DROP"], huge, H * 0.42, 1, 6, 1.2 - 0.2 * ease_out_back(t / (b * 0.4))), (245, 247, 250))
         if t > b:
             fr.chrome(text_mask(["01"], font(BLACK_FONT, 300), H * 0.56, 1, 10,
                                 1.3 - 0.3 * ease_out_back((t - b) / (b * 0.4))), 0.2 + t * 0.4)
-        fr.flash(0.9 * on_beat_pulse(t, b, 0.05))
+            fr.sparks(t - b, 3, W / 2, H * 0.56)
+        fr.invert(0.9 * (1 - ease_out(t / (b * 0.2))))
+        fr.shockwave(W / 2, H * 0.45, t / (b * 1.3), 80)
+        fr.flare(0.5)
         fr.shake(18 * on_beat_pulse(t, b), i)
         fr.glitch(0.7 * on_beat_pulse(t, b, 0.08), i)
 
@@ -492,14 +581,19 @@ def drop_scenes(c):
         fr.chrome(logo_mask(W / 2, H * 0.37, 640 + 30 * on_beat_pulse(t, b)), 0.1 + t * 0.3, 1.0, 0.7)
         a = ease_out(t / (b * 0.6))
         fr.chrome(text_mask(["TRACKSUIT"], cin, H * 0.53, 1, 10, 1.1 - 0.1 * a), 0.25 + t * 0.35, a, 0.5)
-        fr.add_mask(text_mask(["HOODIE + JOGGINGHOSE"], small, H * 0.6, 1, 6), (150, 155, 165), ease_out((t - b) / b))
+        fr.add_mask(text_mask(["HOODIE + PANTS"], small, H * 0.6, 1, 8), (150, 155, 165), ease_out((t - b) / b))
+        fr.flare(0.8)
+        fr.zoom_blur(0.35 * (1 - ease_out(t / (b * 0.5))))
         fr.zoom(1 + 0.03 * on_beat_pulse(t, b))
 
     def s3(fr, t, d, i):  # Hoodie-Reveal: erst nur Paspeln, dann Licht an
         light = 0.25 + 0.75 * ease_out((t - b * 1.5) / b)
         c.hoodie.place(fr, W / 2, H * 0.46, 1280 * (1 + 0.05 * t / d), light=light,
                        pip_wipe=ease_out(t / (b * 1.5)), sweep=(t / (b * 4)) * 1.3)
-        fr.flash(0.9 * (1 - ease_out(t / (b * 0.3))) + 0.5 * on_beat_pulse(t - b * 2, b * 10, 0.08) * (t > b * 2))
+        fr.flash(0.9 * (1 - ease_out(t / (b * 0.3))))
+        fr.shockwave(W / 2, H * 0.46, (t - b * 2) / (b * 1.2), 45)
+        fr.sparks(t - b * 2, 11, W / 2, H * 0.3, 30)
+        fr.flare(0.35)
         fr.zoom(1 + 0.025 * on_beat_pulse(t, b))
 
     def s4(fr, t, d, i):  # Drehung: vorne → hinten
@@ -509,6 +603,8 @@ def drop_scenes(c):
         else:
             g, sq = c.hoodie_back, 0.05 + 0.95 * ease_out_back((p - 0.3) / 0.4)
         g.place(fr, W / 2, H * 0.46, 1330, squeeze=sq, sweep=0.3 + p * 0.6)
+        fr.zoom_blur(0.25 * math.sin(min(p / 0.7, 1) * math.pi))
+        fr.flare(0.35)
         fr.zoom(1 + 0.03 * on_beat_pulse(t, b))
 
     def detail(g, fx, fy, frac, top, bottom):
@@ -516,7 +612,9 @@ def drop_scenes(c):
             g.detail(fr, fx, fy, frac * (1 - 0.08 * t / d), t / d)
             fr.a *= 0.85
             caption(fr, t, top, bottom)
-            fr.flash(0.6 * (1 - ease_out(t / (b * 0.2))))
+            fr.flare(0.45)
+            fr.zoom_blur(0.3 * (1 - ease_out(t / (b * 0.35))))
+            fr.invert(0.5 * (1 - ease_out(t / (b * 0.12))))
             fr.shake(10 * on_beat_pulse(t, b), i)
             fr.glitch(0.35 * on_beat_pulse(t, b, 0.06), i)
         return s
@@ -530,6 +628,8 @@ def drop_scenes(c):
         g.place(fr, W / 2, H * 0.47, 1450 * (1 + 0.04 * p), squeeze=sq, sweep=p * 1.2,
                 pip_wipe=ease_out(t / b) if p < 0.4 else 1.0)
         fr.flash(0.8 * (1 - ease_out(t / (b * 0.3))))
+        fr.shockwave(W / 2, H * 0.47, t / (b * 1.2), 45)
+        fr.flare(0.35)
         fr.zoom(1 + 0.025 * on_beat_pulse(t, b))
 
     def s7(fr, t, d, i):  # Komplettes Outfit + Logo
@@ -539,12 +639,15 @@ def drop_scenes(c):
         c.hoodie.place(fr, W / 2, H * 0.335, 620 * k, sweep=(t / (b * 3)) % 1.4, spot=0.3)
         fr.chrome(logo_mask(W / 2, H * 0.085, 300), 0.25 + t * 0.35, ease_out(t / b), 0.6)
         fr.add_mask(text_mask(["DROP 01 — TRACKSUIT"], small, H * 0.15, 1, 8), (170, 175, 185), ease_out(t / b))
+        fr.sparks(t, 21, W / 2, H * 0.085, 36)
+        fr.shockwave(W / 2, H * 0.45, t / (b * 1.4), 55)
+        fr.flare(0.45)
         fr.zoom(1 + 0.03 * on_beat_pulse(t, b))
 
     def s8(fr, t, d, i):  # CTA
         fr.chrome(logo_mask(W / 2, H * 0.27, 440), 0.1 + t * 0.3, 0.9, 0.5)
         fr.chrome(text_mask(["WEAX"], cin_s, H * 0.375, 1, 16), 0.2 + t * 0.3, 1.0, 0.3)
-        fr.add_mask(text_mask(["DROP 01", "IST LIVE."], font(BLACK_FONT, 120), H * 0.5, 1.0, 4), (245, 247, 250),
+        fr.add_mask(text_mask(["DROP 01", "IS LIVE."], font(BLACK_FONT, 120), H * 0.5, 1.0, 4), (245, 247, 250),
                     ease_out(t / (b * 0.5)))
         a = ease_out((t - b) / (b * 0.6))
         if a > 0:
@@ -553,20 +656,23 @@ def drop_scenes(c):
             ImageDraw.Draw(btn).rounded_rectangle((W / 2 - bw / 2, by - bh / 2, W / 2 + bw / 2, by + bh / 2), 65, fill=255)
             fr.chrome(btn, 0.15 + t * 0.4, a, 0.8 * on_beat_pulse(t, b, 0.3))
             fr.add_mask(text_mask(["LINK IN BIO →"], font(BLACK_FONT, 56), by + 2, 1, 4), (11, 11, 13), a)
-        fr.add_mask(text_mask(["schwarz & weiß · XS–XL · limitiert."], small, H * 0.71, 1, 1), (150, 155, 165),
+        fr.add_mask(text_mask(["black & white · XS–XL · limited."], small, H * 0.71, 1, 1), (150, 155, 165),
                     ease_out((t - b * 2) / b))
+        fr.flare(0.6)
+        fr.sparks(t - b, 5, W / 2, H * 0.63, 30)
         fr.zoom(1 + 0.025 * on_beat_pulse(t, b))
 
     def s9(fr, t, d, i):
         s8(fr, t + b * 4, d, i)
+        fr.zoom_blur(0.5 * ease_out(t / d))
         fr.glitch(ease_out(t / d), i)
         fr.fade(ease_out(t / d) * 0.8)
 
-    return [(s1, 2), (s2, 3), (s3, 4), (s4, 2),
-            (detail(c.hoodie, 0.65, 0.30, 0.42, "LOGO", "GESTICKT"), 1.5),
-            (detail(c.hoodie, 0.50, 0.12, 0.42, "STERN", "IN DER KAPUZE"), 1.5),
-            (detail(c.hoodie, 0.70, 0.55, 0.62, "380 G/M²", "FLEECE"), 1.5),
-            (detail(c.pants, 0.10, 0.83, 0.75, "STERN", "AM SAUM"), 1.5),
+    return [(s0, 3), (s1, 2), (s2, 3), (s3, 4), (s4, 2),
+            (detail(c.hoodie, 0.65, 0.30, 0.42, "LOGO", "EMBROIDERED"), 1.5),
+            (detail(c.hoodie, 0.50, 0.12, 0.42, "STAR", "INSIDE THE HOOD"), 1.5),
+            (detail(c.hoodie, 0.70, 0.55, 0.62, "380 GSM", "FLEECE"), 1.5),
+            (detail(c.pants, 0.10, 0.83, 0.75, "STAR", "ON THE HEM"), 1.5),
             (s6, 3.5), (s7, 4), (s8, 5), (s9, 0.5)]
 
 
@@ -697,7 +803,7 @@ def main():
     ap.add_argument("--audio", help="Song-Datei (z. B. shottas.mp3) – wird eingebettet und für den Beat analysiert")
     ap.add_argument("--start", default="0", help="Startpunkt im Song, z. B. 0:31 (am besten direkt der Drop)")
     ap.add_argument("--start2", help="Eigener Startpunkt für Video 2 (Standard: wie --start)")
-    ap.add_argument("--bpm", type=float, help="Tempo erzwingen (sonst aus Song geschätzt bzw. 140)")
+    ap.add_argument("--bpm", type=float, help="Tempo erzwingen (sonst aus Song geschätzt bzw. 134)")
     ap.add_argument("--offset", type=float, help="Sekunden bis zum ersten Beat")
     ap.add_argument("--out", default=os.path.join(HERE, "out"))
     ap.add_argument("--only", choices=["hook", "drop", "stills"])
@@ -707,7 +813,7 @@ def main():
     start = parse_time(args.start)
     start2 = parse_time(args.start2) if args.start2 else start
 
-    beat, offset = 60 / 140, 0.0
+    beat, offset = 60 / 134, 0.0  # „Shotta's.“ – Season 25: 67 BPM (Double-Time 134)
     if args.audio:
         beat, offset = detect_beat(args.audio, start)
         print(f"Erkannt: {60 / beat:.1f} BPM, erster Beat nach {offset:.2f}s")
