@@ -75,26 +75,15 @@ h2{font-size:20pt;margin:6px 0 10px}
 <!-- Folie 2 -->
 <section class="s">
   <span class="tag">Folie 2 · Analyse (Variante A: Politikzyklus)</span>
-  <h2>Wo stehen wir im Politikzyklus?</h2>
-  <div class="row">
-    <svg viewBox="0 0 300 300" style="width:78mm;flex:none" id="cycle"></svg>
-    <div style="flex:1">
-      <svg viewBox="0 0 520 120" style="width:100%">
-        <line x1="20" y1="50" x2="500" y2="50" stroke="#bbb" stroke-width="3"/>
-        <g font-size="12">
-          <circle cx="40" cy="50" r="9" fill="#888"/><text x="40" y="26" text-anchor="middle" font-weight="700">06.09.</text><text x="40" y="78" text-anchor="middle">Landtagswahl</text><text x="40" y="94" text-anchor="middle">AfD 43,8 %</text>
-          <circle cx="170" cy="50" r="9" fill="#888"/><text x="170" y="26" text-anchor="middle" font-weight="700">22.09.</text><text x="170" y="78" text-anchor="middle">amtliches</text><text x="170" y="94" text-anchor="middle">Endergebnis</text>
-          <circle cx="310" cy="50" r="14" fill="#c0392b"/><text x="310" y="22" text-anchor="middle" font-weight="800" fill="#c0392b">06.10. ← HIER</text><text x="310" y="82" text-anchor="middle" font-weight="700">Wahl</text><text x="310" y="98" text-anchor="middle" font-weight="700">Landtagspräsident</text>
-          <circle cx="460" cy="50" r="9" fill="#fff" stroke="#888" stroke-width="3"/><text x="460" y="26" text-anchor="middle" font-weight="700">Dezember</text><text x="460" y="78" text-anchor="middle">Wahl Minister-</text><text x="460" y="94" text-anchor="middle">präsident?</text>
-        </g>
-      </svg>
-      <div class="row" style="gap:6mm;margin-top:4px">
-        <div class="box" style="flex:1"><div class="lbl">Vorher – was hat es möglich gemacht?</div><div class="small" style="margin-top:3px">Wahl 06.09.2026 → AfD stärkste Fraktion<br>Geschäftsordnung: stärkste Fraktion schlägt vor<br>Verfassung Art. 49: Landtag wählt frei</div></div>
-        <div class="box" style="flex:1;border-color:#c0392b"><div class="lbl">Nachher – wer kann blockieren?</div><div class="small" style="margin-top:3px"><b>Vetospieler: CDU &amp; BSW</b><br>AfD (39) fehlen 3 Stimmen zur Mehrheit (42)<br>→ ohne Stimmen von CDU oder BSW kein AfD-Ministerpräsident</div></div>
-      </div>
+  <h2>Meine Meldung = Schritt 3: Entscheidung</h2>
+  <div class="row" style="gap:8mm">
+    <svg viewBox="0 0 340 300" style="width:112mm;flex:none" id="cycle"></svg>
+    <div style="flex:1;display:flex;flex-direction:column;gap:5mm;margin-top:6mm">
+      <div class="box"><div class="lbl">⬅ Davor</div><div style="font-size:13pt;margin-top:2px"><b>6.9. Landtagswahl</b><br>AfD wird stärkste Partei → darf Präsidenten vorschlagen</div></div>
+      <div class="box" style="border-color:#c0392b;background:#fdecea"><div class="lbl">Danach ➡</div><div style="font-size:13pt;margin-top:2px"><b>Dezember: Wahl Ministerpräsident</b><br>AfD fehlen 3 Stimmen<br>→ <b>CDU &amp; BSW</b> können es blockieren</div></div>
     </div>
   </div>
-  <div class="foot"><span>Politikzyklus: Problem → Agenda → Entscheidung → Umsetzung → Bewertung</span><span>2</span></div>
+  <div class="foot"><span>Politikzyklus = 5 Schritte, wie Politik ein Problem löst</span><span>2</span></div>
 </section>
 
 <!-- Folie 3 -->
@@ -149,9 +138,14 @@ function hemi(id,highlight){
 }
 hemi("hemi");hemi("hemiTitle","#fff");
 // cycle
-(function(){const s=document.getElementById("cycle"),ph=["Problem","Agenda","Entscheidung","Umsetzung","Bewertung"];let h='<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#999"/></marker></defs><circle cx="150" cy="150" r="100" fill="none" stroke="#ddd" stroke-width="2" stroke-dasharray="5 5"/>';
-ph.forEach((p,i)=>{const a=-Math.PI/2+i*2*Math.PI/5,x=150+100*Math.cos(a),y=150+100*Math.sin(a),on=i==2;
-h+=`<circle cx="${x}" cy="${y}" r="${on?40:31}" fill="${on?'#c0392b':'#fff'}" stroke="${on?'#c0392b':'#bbb'}" stroke-width="2"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="${on?12:11}" font-weight="700" fill="${on?'#fff':'#555'}">${p}</text>`});
-h+='<text x="150" y="146" text-anchor="middle" font-size="12" fill="#888">Wahl des</text><text x="150" y="162" text-anchor="middle" font-size="12" fill="#888">Präsidenten</text>';s.innerHTML=h})();
+(function(){const s=document.getElementById("cycle"),cx=170,cy=150,R=105;
+const ph=[["1 Problem","Landtag braucht","einen Chef"],["2 Agenda","AfD schlägt","Rausch vor"],["3 Entscheidung","6.10.: Landtag","wählt Rausch"],["4 Umsetzung","Rausch leitet","die Sitzungen"],["5 Bewertung","Streit: war","das okay?"]];
+let h='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="#ccc" stroke-width="2" stroke-dasharray="6 6"/>';
+ph.forEach((p,i)=>{const a=-Math.PI/2+i*2*Math.PI/5,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a),on=i==2,r=on?50:42;
+h+=`<circle cx="${x}" cy="${y}" r="${r}" fill="${on?'#c0392b':'#fff'}" stroke="${on?'#c0392b':'#bbb'}" stroke-width="2"/>`+
+`<text x="${x}" y="${y-8}" text-anchor="middle" font-size="${on?12:11}" font-weight="800" fill="${on?'#fff':'#1d2433'}">${p[0]}</text>`+
+`<text x="${x}" y="${y+7}" text-anchor="middle" font-size="9.5" fill="${on?'#fff':'#555'}">${p[1]}</text>`+
+`<text x="${x}" y="${y+19}" text-anchor="middle" font-size="9.5" fill="${on?'#fff':'#555'}">${p[2]}</text>`});
+h+=`<text x="${cx}" y="${cy+4}" text-anchor="middle" font-size="13" font-weight="700" fill="#888">↻</text>`;s.innerHTML=h})();
 </script>
 </body></html>
