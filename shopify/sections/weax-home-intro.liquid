@@ -1,0 +1,436 @@
+{%- comment -%}
+  WEAX Startseite – Intro + Hero mit Sternschnuppen und fallendem Ikarus.
+  Datei: sections/weax-home-intro.liquid
+  Voraussetzung: "weax-icarus.png" und "Cinzel.woff2" liegen unter Assets
+  (oder im Theme-Editor ein eigenes Bild wählen).
+{%- endcomment -%}
+
+{%- assign sid = section.id -%}
+{% render 'weax-fonts' %}
+
+<style>
+  #whi-{{ sid }} {
+    --bg: {{ section.settings.bg_color }};
+    --chrome: {{ section.settings.chrome_color }};
+    --sun: {{ section.settings.sun_color }};
+    position: relative; overflow: hidden; isolation: isolate;
+    min-height: 100vh; min-height: 100svh;
+    display: flex; align-items: center;
+    background: var(--bg); color: var(--chrome);
+  }
+  #whi-{{ sid }} .whi__sky { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -2; display: block; }
+  #whi-{{ sid }} .whi__sun {
+    position: absolute; z-index: -1; pointer-events: none;
+    top: -35vmax; right: -30vmax; width: 80vmax; height: 80vmax; border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--sun) 35%, transparent) 0%, color-mix(in srgb, var(--sun) 10%, transparent) 35%, transparent 65%);
+    animation: whi-pulse-{{ sid }} 8s ease-in-out infinite;
+  }
+
+  #whi-{{ sid }} .whi__inner {
+    position: relative; width: 100%; max-width: 1280px; margin: 0 auto;
+    padding: clamp(96px, 12vh, 140px) 24px clamp(72px, 10vh, 110px);
+    display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: 24px;
+  }
+
+  /* Text */
+  #whi-{{ sid }} .whi__eyebrow { font-size: 12px; letter-spacing: .45em; text-transform: uppercase; opacity: .6; margin: 0; }
+  #whi-{{ sid }} .whi__title {
+    font-family: 'Cinzel', 'Times New Roman', serif; font-weight: 700;
+    font-size: clamp(40px, 7.5vw, 104px); letter-spacing: .12em; line-height: 1.02; margin: 18px 0 0;
+    background: linear-gradient(100deg, #6f757d 0%, #fff 25%, #9aa0a8 45%, #fff 60%, #7b8189 100%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: whi-shine-{{ sid }} 6s linear infinite;
+  }
+  #whi-{{ sid }} .whi__text { max-width: 480px; margin-top: 22px; line-height: 1.7; opacity: .78; font-size: 16px; }
+  #whi-{{ sid }} .whi__text p { margin: 0; }
+  #whi-{{ sid }} .whi__actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 40px; }
+  #whi-{{ sid }} .whi__btn {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 18px 40px; border-radius: 99px; text-decoration: none; font-weight: 700; letter-spacing: .2em;
+    text-transform: uppercase; font-size: 13px; color: #0b0b0d;
+    background: linear-gradient(180deg, #ffffff, #c9cdd3 55%, #eef0f2);
+    box-shadow: 0 0 0 1px rgba(255,255,255,.4) inset, 0 10px 40px -10px color-mix(in srgb, var(--chrome) 70%, transparent);
+    transition: transform .3s, box-shadow .3s;
+  }
+  #whi-{{ sid }} .whi__btn:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 0 0 1px #fff inset, 0 18px 60px -10px var(--chrome); }
+  #whi-{{ sid }} .whi__btn--ghost {
+    color: var(--chrome); background: transparent;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--chrome) 45%, transparent) inset;
+  }
+  #whi-{{ sid }} .whi__btn--ghost:hover { box-shadow: 0 0 0 1px var(--chrome) inset, 0 18px 60px -20px var(--chrome); }
+
+  /* Ikarus */
+  #whi-{{ sid }} .whi__figure { position: relative; justify-self: center; width: min(100%, 560px); }
+  #whi-{{ sid }} .whi__fall { will-change: transform; }
+  #whi-{{ sid }} .whi__float { animation: whi-float-{{ sid }} 7s ease-in-out infinite; }
+  #whi-{{ sid }} .whi__icarus {
+    display: block; width: 100%; height: auto;
+    filter: drop-shadow(0 0 18px color-mix(in srgb, var(--chrome) 35%, transparent));
+  }
+  #whi-{{ sid }} .whi__drop {
+    position: absolute; left: 13%; top: 9%; width: 7px; height: 11px; opacity: 0;
+    background: linear-gradient(180deg, #fff, #9aa0a8);
+    border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+    animation: whi-drip-{{ sid }} 3.6s ease-in infinite;
+  }
+  #whi-{{ sid }} .whi__drop:nth-child(2) { left: 20%; top: 6%; animation-delay: 1.2s; width: 5px; height: 8px; }
+  #whi-{{ sid }} .whi__drop:nth-child(3) { left: 9%;  top: 16%; animation-delay: 2.4s; }
+
+  #whi-{{ sid }} .whi__scroll {
+    position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%);
+    width: 1px; height: 46px; overflow: hidden; background: color-mix(in srgb, var(--chrome) 20%, transparent);
+  }
+  #whi-{{ sid }} .whi__scroll::after {
+    content: ''; position: absolute; left: 0; top: -50%; width: 1px; height: 50%; background: var(--chrome);
+    animation: whi-scroll-{{ sid }} 2s ease-in-out infinite;
+  }
+
+  /* Einblenden nach dem Intro */
+  #whi-{{ sid }} .whi__in { opacity: 0; transform: translateY(26px); transition: opacity 1s ease, transform 1s cubic-bezier(.16,1,.3,1); }
+  #whi-{{ sid }}.is-ready .whi__in { opacity: 1; transform: none; }
+  #whi-{{ sid }} .whi__fall { opacity: 0; transform: translate(28vw, -90vh) rotate(-28deg) scale(.55); }
+  #whi-{{ sid }}.is-ready .whi__fall { animation: whi-fall-{{ sid }} 2.2s cubic-bezier(.22,.9,.25,1) forwards; }
+
+  /* Intro-Overlay */
+  .whi-intro-{{ sid }} {
+    position: fixed; inset: 0; z-index: 2147483000; display: grid; place-items: center;
+    background: var(--whi-bg, #050507); color: #fff; cursor: pointer; overflow: hidden;
+    transition: opacity 1s ease, visibility 1s;
+  }
+  .whi-intro-{{ sid }}.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
+  .whi-intro-{{ sid }} .whi-intro__streak {
+    position: absolute; top: 18%; left: 110%; width: 46vmax; height: 2px; border-radius: 2px;
+    background: linear-gradient(90deg, #fff, rgba(255,255,255,.6) 12%, transparent);
+    box-shadow: 0 0 14px 2px rgba(255,255,255,.7);
+    transform: rotate(-24deg); transform-origin: left center;
+    animation: whi-streak-{{ sid }} 1.3s cubic-bezier(.3,.6,.4,1) .25s forwards;
+  }
+  .whi-intro-{{ sid }} .whi-intro__streak--2 { top: 6%; width: 28vmax; animation-delay: 1.35s; animation-duration: 1s; opacity: .7; }
+  .whi-intro-{{ sid }} .whi-intro__word {
+    margin: 0; display: flex; gap: .04em;
+    font-family: 'Cinzel', 'Times New Roman', serif; font-weight: 700;
+    font-size: clamp(56px, 16vw, 200px); letter-spacing: .14em;
+  }
+  .whi-intro-{{ sid }} .whi-intro__word span {
+    display: inline-block; opacity: 0; filter: blur(14px); transform: translateY(18px);
+    background: linear-gradient(100deg, #6f757d 0%, #fff 30%, #9aa0a8 50%, #fff 70%);
+    background-size: 220% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: whi-letter-{{ sid }} 1s cubic-bezier(.16,1,.3,1) forwards, whi-shine-{{ sid }} 3s linear infinite;
+  }
+  .whi-intro-{{ sid }} .whi-intro__sub {
+    position: absolute; left: 0; right: 0; top: calc(50% + clamp(48px, 10vw, 120px));
+    margin: 0; text-align: center; font-size: 12px; letter-spacing: .5em; text-transform: uppercase;
+    opacity: 0; animation: whi-fade-{{ sid }} 1s ease 1.9s forwards;
+  }
+  .whi-intro-{{ sid }} .whi-intro__skip {
+    position: absolute; right: 20px; bottom: 20px; padding: 10px 16px;
+    font: inherit; font-size: 11px; letter-spacing: .3em; text-transform: uppercase;
+    color: rgba(255,255,255,.6); background: none; border: 1px solid rgba(255,255,255,.2); border-radius: 99px; cursor: pointer;
+  }
+  .whi-intro-{{ sid }} .whi-intro__skip:hover { color: #fff; border-color: rgba(255,255,255,.6); }
+
+  @keyframes whi-shine-{{ sid }} { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+  @keyframes whi-pulse-{{ sid }} { 0%, 100% { opacity: .8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+  @keyframes whi-float-{{ sid }} { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-14px) rotate(1.2deg); } }
+  @keyframes whi-fall-{{ sid }} {
+    0%   { opacity: 0; transform: translate(28vw, -90vh) rotate(-28deg) scale(.55); }
+    25%  { opacity: 1; }
+    78%  { transform: translate(-1vw, 2vh) rotate(3deg) scale(1.02); }
+    100% { opacity: 1; transform: none; }
+  }
+  @keyframes whi-drip-{{ sid }} {
+    0%   { opacity: 0; transform: translateY(0) scale(.6); }
+    15%  { opacity: .9; transform: translateY(4px) scale(1); }
+    100% { opacity: 0; transform: translateY(180px) scale(.8); }
+  }
+  @keyframes whi-scroll-{{ sid }} { to { top: 110%; } }
+  @keyframes whi-streak-{{ sid }} {
+    0%   { left: 110%; top: var(--t, 18%); opacity: 0; }
+    10%  { opacity: 1; }
+    100% { left: -60%; top: calc(var(--t, 18%) + 40vh); opacity: 0; }
+  }
+  @keyframes whi-letter-{{ sid }} { to { opacity: 1; filter: blur(0); transform: none; } }
+  @keyframes whi-fade-{{ sid }} { to { opacity: .6; } }
+
+  @media (max-width: 849px) {
+    #whi-{{ sid }} { align-items: flex-end; }
+    #whi-{{ sid }} .whi__inner { grid-template-columns: 1fr; gap: 0; padding-top: 80px; text-align: center; }
+    #whi-{{ sid }} .whi__figure { order: -1; width: min(78vw, 400px); margin-bottom: -4vh; }
+    #whi-{{ sid }} .whi__text { margin-left: auto; margin-right: auto; }
+    #whi-{{ sid }} .whi__actions { justify-content: center; }
+    #whi-{{ sid }} .whi__btn { padding: 16px 30px; }
+    #whi-{{ sid }} .whi__scroll { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #whi-{{ sid }} *, #whi-{{ sid }} *::after { animation: none !important; transition: none !important; }
+    #whi-{{ sid }} .whi__in, #whi-{{ sid }} .whi__fall { opacity: 1; transform: none; }
+    #whi-{{ sid }} .whi__drop { display: none; }
+  }
+</style>
+
+<section id="whi-{{ sid }}" class="whi" aria-label="{{ section.settings.heading | escape }}">
+  <canvas class="whi__sky" aria-hidden="true"></canvas>
+  {%- if section.settings.show_sun -%}<div class="whi__sun" aria-hidden="true"></div>{%- endif -%}
+
+  <div class="whi__inner">
+    <div class="whi__content">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="whi__eyebrow whi__in">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h1 class="whi__title whi__in" style="transition-delay: .15s">{{ section.settings.heading }}</h1>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="whi__text whi__in" style="transition-delay: .3s">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- if section.settings.button_text != blank or section.settings.button2_text != blank -%}
+        <div class="whi__actions whi__in" style="transition-delay: .45s">
+          {%- if section.settings.button_text != blank -%}
+            <a class="whi__btn" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
+              {{ section.settings.button_text }} <span aria-hidden="true">→</span>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.button2_text != blank -%}
+            <a class="whi__btn whi__btn--ghost" href="{{ section.settings.button2_link | default: '#' }}">
+              {{ section.settings.button2_text }}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="whi__figure" aria-hidden="true">
+      <div class="whi__parallax">
+        <div class="whi__fall">
+          <div class="whi__float">
+            {%- if section.settings.icarus != blank -%}
+              {{ section.settings.icarus
+                | image_url: width: 1200
+                | image_tag:
+                  class: 'whi__icarus',
+                  alt: '',
+                  loading: 'eager',
+                  fetchpriority: 'high',
+                  sizes: '(min-width: 850px) 560px, 78vw',
+                  widths: '400, 600, 800, 1000, 1200'
+              }}
+            {%- else -%}
+              <img class="whi__icarus" src="{{ 'weax-icarus.png' | asset_url }}" alt="" width="735" height="987" loading="eager" fetchpriority="high">
+            {%- endif -%}
+            {%- if section.settings.show_drops -%}
+              <span class="whi__drops"><i class="whi__drop"></i><i class="whi__drop"></i><i class="whi__drop"></i></span>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="whi__scroll" aria-hidden="true"></div>
+</section>
+
+{%- if section.settings.intro_mode != 'off' -%}
+  <div class="whi-intro-{{ sid }}" id="whi-intro-{{ sid }}" style="--whi-bg: {{ section.settings.bg_color }}" hidden>
+    <span class="whi-intro__streak" style="--t: 18%"></span>
+    <span class="whi-intro__streak whi-intro__streak--2" style="--t: 6%"></span>
+    <p class="whi-intro__word" aria-label="{{ section.settings.intro_word | escape }}">
+      {%- assign letters = section.settings.intro_word | split: '' -%}
+      {%- for l in letters -%}
+        <span aria-hidden="true" style="animation-delay: {{ forloop.index0 | times: 0.12 | plus: 0.7 }}s, 0s">{{ l }}</span>
+      {%- endfor -%}
+    </p>
+    {%- if section.settings.intro_sub != blank -%}
+      <p class="whi-intro__sub">{{ section.settings.intro_sub }}</p>
+    {%- endif -%}
+    <button type="button" class="whi-intro__skip">Skip</button>
+  </div>
+{%- endif -%}
+
+<script>
+  (function () {
+    var root = document.getElementById('whi-{{ sid }}');
+    if (!root) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var inEditor = window.Shopify && window.Shopify.designMode;
+
+    /* ---------- Intro ---------- */
+    var intro = document.getElementById('whi-intro-{{ sid }}');
+    var mode = {{ section.settings.intro_mode | json }};
+    var key = 'weax-intro-seen';
+    var seen = false;
+    try { seen = sessionStorage.getItem(key) === '1'; } catch (e) {}
+
+    function ready() { root.classList.add('is-ready'); }
+
+    if (intro && !reduce && !inEditor && !(mode === 'session' && seen)) {
+      intro.hidden = false;
+      document.documentElement.style.overflow = 'hidden';
+      var closed = false;
+      var close = function () {
+        if (closed) return;
+        closed = true;
+        intro.classList.add('is-done');
+        document.documentElement.style.overflow = '';
+        try { sessionStorage.setItem(key, '1'); } catch (e) {}
+        setTimeout(ready, 250);
+        setTimeout(function () { intro.remove(); }, 1200);
+      };
+      intro.addEventListener('click', close);
+      document.addEventListener('keydown', function onKey(e) {
+        if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') { close(); document.removeEventListener('keydown', onKey); }
+      });
+      setTimeout(close, {{ section.settings.intro_duration | times: 1000 }});
+    } else {
+      if (intro) intro.remove();
+      requestAnimationFrame(ready);
+    }
+
+    /* ---------- Sternenhimmel + Sternschnuppen ---------- */
+    var canvas = root.querySelector('.whi__sky');
+    var ctx = canvas.getContext('2d');
+    var STAR_COUNT = {{ section.settings.star_count }};
+    var RATE = {{ section.settings.meteor_rate }};
+    var w, h, dpr, stars = [], meteors = [], running = false, nextMeteor = 0, last = 0;
+
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = root.clientWidth; h = root.clientHeight;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var count = Math.round(STAR_COUNT * Math.min(1, (w * h) / (1440 * 900)) + STAR_COUNT * .25);
+      stars = [];
+      for (var i = 0; i < count; i++) {
+        stars.push({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.2 + .2, p: Math.random() * 6.28, s: Math.random() * 1.5 + .4 });
+      }
+      if (reduce) draw(0);
+    }
+
+    function spawnMeteor(big) {
+      var angle = (200 + Math.random() * 25) * Math.PI / 180; // nach links unten
+      meteors.push({
+        x: w * (.35 + Math.random() * .75), y: -20 + Math.random() * h * .35,
+        vx: Math.cos(angle), vy: -Math.sin(angle),
+        speed: (big ? 1100 : 650 + Math.random() * 500),
+        len: big ? 320 : 120 + Math.random() * 160,
+        life: 0, max: big ? 1.4 : .9 + Math.random() * .6,
+        width: big ? 2.4 : 1 + Math.random()
+      });
+    }
+
+    function draw(t) {
+      ctx.clearRect(0, 0, w, h);
+      var time = t / 1000;
+      for (var i = 0; i < stars.length; i++) {
+        var s = stars[i];
+        ctx.globalAlpha = reduce ? .6 : .25 + .75 * Math.abs(Math.sin(time * s.s + s.p));
+        ctx.fillStyle = '#fff';
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 6.283); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function frame(t) {
+      if (!running) return;
+      var dt = Math.min((t - (last || t)) / 1000, .05); last = t;
+      draw(t);
+      if (t > nextMeteor) {
+        spawnMeteor(false);
+        nextMeteor = t + (6000 / RATE) * (.4 + Math.random());
+      }
+      for (var i = meteors.length - 1; i >= 0; i--) {
+        var m = meteors[i];
+        m.life += dt;
+        m.x += m.vx * m.speed * dt; m.y += m.vy * m.speed * dt;
+        var fade = Math.sin(Math.min(m.life / m.max, 1) * Math.PI);
+        var tx = m.x - m.vx * m.len, ty = m.y - m.vy * m.len;
+        var g = ctx.createLinearGradient(m.x, m.y, tx, ty);
+        g.addColorStop(0, 'rgba(255,255,255,' + fade + ')');
+        g.addColorStop(.3, 'rgba(210,220,235,' + fade * .45 + ')');
+        g.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.strokeStyle = g; ctx.lineWidth = m.width; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(tx, ty); ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,' + fade + ')';
+        ctx.shadowColor = '#fff'; ctx.shadowBlur = 12;
+        ctx.beginPath(); ctx.arc(m.x, m.y, m.width * .9, 0, 6.283); ctx.fill();
+        ctx.shadowBlur = 0;
+        if (m.life > m.max) meteors.splice(i, 1);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    function start() { if (running || reduce) return; running = true; last = 0; requestAnimationFrame(frame); }
+    function stop() { running = false; }
+
+    resize();
+    window.addEventListener('resize', resize);
+    if (!reduce) {
+      setTimeout(function () { spawnMeteor(true); }, 900);
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (e) { e[0].isIntersecting ? start() : stop(); }).observe(root);
+      } else { start(); }
+      document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    }
+
+    /* ---------- Leichte Parallaxe für Ikarus ---------- */
+    var par = root.querySelector('.whi__parallax');
+    if (par && !reduce && window.matchMedia('(pointer: fine)').matches) {
+      root.addEventListener('mousemove', function (e) {
+        var r = root.getBoundingClientRect();
+        var x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+        par.style.transform = 'translate(' + (x * -18) + 'px,' + (y * -14) + 'px)';
+      });
+      par.style.transition = 'transform .6s cubic-bezier(.16,1,.3,1)';
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "WEAX Intro & Hero",
+  "tag": "div",
+  "class": "section-weax-home-intro",
+  "settings": [
+    { "type": "header", "content": "Intro" },
+    {
+      "type": "select", "id": "intro_mode", "label": "Intro anzeigen",
+      "options": [
+        { "value": "session", "label": "Einmal pro Besuch" },
+        { "value": "always", "label": "Bei jedem Seitenaufruf" },
+        { "value": "off", "label": "Aus" }
+      ],
+      "default": "session",
+      "info": "Im Theme-Editor wird das Intro übersprungen."
+    },
+    { "type": "text", "id": "intro_word", "label": "Intro-Schriftzug", "default": "WEAX" },
+    { "type": "text", "id": "intro_sub", "label": "Intro-Unterzeile", "default": "Fly too close" },
+    { "type": "range", "id": "intro_duration", "label": "Intro-Dauer", "min": 2, "max": 6, "step": 1, "unit": "s", "default": 3 },
+
+    { "type": "header", "content": "Ikarus" },
+    { "type": "image_picker", "id": "icarus", "label": "Bild", "info": "Leer lassen = weax-icarus.png aus den Assets. Am besten ein PNG mit transparentem Hintergrund und hellen Linien." },
+    { "type": "checkbox", "id": "show_drops", "label": "Tropfendes Wachs an den Flügeln", "default": true },
+
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "Drop 02" },
+    { "type": "text", "id": "heading", "label": "Überschrift", "default": "Wings of Wax" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Gemacht für alle, die zu nah an die Sonne fliegen. Schwere Stoffe, klare Schnitte, kein Plan B.</p>" },
+    { "type": "text", "id": "button_text", "label": "Button 1 – Text", "default": "Zum Shop" },
+    { "type": "url", "id": "button_link", "label": "Button 1 – Link", "info": "Leer lassen = alle Produkte" },
+    { "type": "text", "id": "button2_text", "label": "Button 2 – Text", "default": "Die Story" },
+    { "type": "url", "id": "button2_link", "label": "Button 2 – Link" },
+
+    { "type": "header", "content": "Himmel" },
+    { "type": "range", "id": "star_count", "label": "Anzahl Sterne", "min": 50, "max": 300, "step": 10, "default": 160 },
+    { "type": "range", "id": "meteor_rate", "label": "Sternschnuppen-Häufigkeit", "min": 1, "max": 10, "step": 1, "default": 4 },
+    { "type": "checkbox", "id": "show_sun", "label": "Sonnen-Glow oben rechts", "default": true },
+
+    { "type": "header", "content": "Farben" },
+    { "type": "color", "id": "bg_color", "label": "Hintergrund", "default": "#050507" },
+    { "type": "color", "id": "chrome_color", "label": "Chrome / Text", "default": "#dfe3e8" },
+    { "type": "color", "id": "sun_color", "label": "Sonne", "default": "#ffd9a0" }
+  ],
+  "presets": [{ "name": "WEAX Intro & Hero" }]
+}
+{% endschema %}

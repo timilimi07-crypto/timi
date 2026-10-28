@@ -1,0 +1,139 @@
+{%- comment -%}
+  WEAX Kollektion auf der Startseite – Produkt-Grid im Chrome-/Sternen-Look.
+  Datei: sections/weax-featured-collection.liquid
+{%- endcomment -%}
+
+{%- assign sid = section.id -%}
+{%- assign collection = section.settings.collection -%}
+{% render 'weax-fonts' %}
+
+<style>
+  #wfc-{{ sid }} {
+    --bg: {{ section.settings.bg_color }};
+    --chrome: {{ section.settings.chrome_color }};
+    padding: clamp(64px, 9vw, 120px) 20px;
+    background: var(--bg); color: var(--chrome);
+  }
+  #wfc-{{ sid }} .wfc__inner { max-width: 1280px; margin: 0 auto; }
+  #wfc-{{ sid }} .wfc__head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 44px; }
+  #wfc-{{ sid }} .wfc__eyebrow { font-size: 12px; letter-spacing: .4em; text-transform: uppercase; opacity: .6; margin: 0; }
+  #wfc-{{ sid }} .wfc__title {
+    font-family: 'Cinzel', 'Times New Roman', serif; font-weight: 700;
+    font-size: clamp(28px, 4.5vw, 56px); letter-spacing: .14em; line-height: 1.1; margin: 12px 0 0;
+    background: linear-gradient(100deg, #6f757d 0%, #fff 25%, #9aa0a8 45%, #fff 60%, #7b8189 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  #wfc-{{ sid }} .wfc__all {
+    color: var(--chrome); text-decoration: none; font-size: 12px; letter-spacing: .3em; text-transform: uppercase;
+    padding-bottom: 4px; border-bottom: 1px solid color-mix(in srgb, var(--chrome) 40%, transparent);
+  }
+  #wfc-{{ sid }} .wfc__all:hover { border-color: var(--chrome); }
+
+  #wfc-{{ sid }} .wfc__grid {
+    display: grid; gap: 1px; list-style: none; margin: 0; padding: 0;
+    grid-template-columns: repeat({{ section.settings.columns }}, 1fr);
+    background: color-mix(in srgb, var(--chrome) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--chrome) 16%, transparent);
+  }
+  #wfc-{{ sid }} .wfc__card { background: var(--bg); }
+  #wfc-{{ sid }} .wfc__link { display: block; color: inherit; text-decoration: none; padding: 18px 18px 24px; }
+  #wfc-{{ sid }} .wfc__media { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: color-mix(in srgb, var(--chrome) 5%, var(--bg)); }
+  #wfc-{{ sid }} .wfc__media img, #wfc-{{ sid }} .wfc__media svg {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    transition: opacity .6s ease, transform 1s cubic-bezier(.16,1,.3,1);
+  }
+  #wfc-{{ sid }} .wfc__media svg { fill: color-mix(in srgb, var(--chrome) 25%, transparent); }
+  #wfc-{{ sid }} .wfc__media .wfc__img2 { opacity: 0; }
+  #wfc-{{ sid }} .wfc__link:hover .wfc__img1 { transform: scale(1.04); }
+  #wfc-{{ sid }} .wfc__link:hover .wfc__img2 { opacity: 1; transform: scale(1.04); }
+  #wfc-{{ sid }} .wfc__badge {
+    position: absolute; top: 12px; left: 12px; z-index: 1; padding: 6px 10px; border-radius: 99px;
+    font-size: 10px; letter-spacing: .25em; text-transform: uppercase; color: #0b0b0d;
+    background: linear-gradient(180deg, #fff, #c9cdd3);
+  }
+  #wfc-{{ sid }} .wfc__name {
+    font-family: 'Cinzel', 'Times New Roman', serif; font-weight: 500; color: #fff;
+    font-size: 15px; letter-spacing: .18em; text-transform: uppercase; margin: 18px 0 0;
+  }
+  #wfc-{{ sid }} .wfc__price { margin-top: 8px; font-size: 14px; opacity: .7; }
+  #wfc-{{ sid }} .wfc__price s { opacity: .6; margin-right: 8px; }
+
+  @media (max-width: 989px) { #wfc-{{ sid }} .wfc__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 479px) { #wfc-{{ sid }} .wfc__link { padding: 12px 12px 18px; } #wfc-{{ sid }} .wfc__name { font-size: 13px; } }
+  @media (prefers-reduced-motion: reduce) { #wfc-{{ sid }} * { transition: none !important; } }
+</style>
+
+<section id="wfc-{{ sid }}">
+  <div class="wfc__inner">
+    <div class="wfc__head">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="wfc__eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+        <h2 class="wfc__title">{{ section.settings.heading | default: collection.title }}</h2>
+      </div>
+      {%- if collection != blank and section.settings.show_all -%}
+        <a class="wfc__all" href="{{ collection.url }}">Alle ansehen →</a>
+      {%- endif -%}
+    </div>
+
+    <ul class="wfc__grid">
+      {%- if collection != blank and collection.products_count > 0 -%}
+        {%- for product in collection.products limit: section.settings.limit -%}
+          <li class="wfc__card">
+            <a class="wfc__link" href="{{ product.url }}">
+              <div class="wfc__media">
+                {%- unless product.available -%}
+                  <span class="wfc__badge">Sold out</span>
+                {%- else -%}
+                  {%- if product.compare_at_price > product.price -%}<span class="wfc__badge">Sale</span>{%- endif -%}
+                {%- endunless -%}
+                {%- if product.featured_media -%}
+                  {{ product.featured_media | image_url: width: 900 | image_tag: class: 'wfc__img1', loading: 'lazy', sizes: '(min-width: 990px) 33vw, 50vw', widths: '400, 600, 900', alt: product.title }}
+                {%- else -%}
+                  {{ 'product-apparel-1' | placeholder_svg_tag: 'wfc__img1' }}
+                {%- endif -%}
+                {%- if product.media.size > 1 -%}
+                  {{ product.media[1] | image_url: width: 900 | image_tag: class: 'wfc__img2', loading: 'lazy', sizes: '(min-width: 990px) 33vw, 50vw', widths: '400, 600, 900', alt: '' }}
+                {%- endif -%}
+              </div>
+              <h3 class="wfc__name">{{ product.title }}</h3>
+              <div class="wfc__price">
+                {%- if product.compare_at_price > product.price -%}<s>{{ product.compare_at_price | money }}</s>{%- endif -%}
+                {%- if product.price_varies -%}ab {% endif -%}{{ product.price | money }}
+              </div>
+            </a>
+          </li>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..section.settings.limit) -%}
+          <li class="wfc__card">
+            <div class="wfc__link">
+              <div class="wfc__media">{{ 'product-apparel-1' | placeholder_svg_tag }}</div>
+              <h3 class="wfc__name">Produkt {{ i }}</h3>
+              <div class="wfc__price">{{ 6900 | money }}</div>
+            </div>
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "WEAX Kollektion",
+  "tag": "div",
+  "class": "section-weax-featured-collection",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Kollektion" },
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "Jetzt erhältlich" },
+    { "type": "text", "id": "heading", "label": "Überschrift", "info": "Leer lassen = Name der Kollektion", "default": "The Drop" },
+    { "type": "range", "id": "limit", "label": "Anzahl Produkte", "min": 2, "max": 12, "step": 1, "default": 6 },
+    { "type": "range", "id": "columns", "label": "Spalten (Desktop)", "min": 2, "max": 4, "step": 1, "default": 3 },
+    { "type": "checkbox", "id": "show_all", "label": "Link „Alle ansehen“ zeigen", "default": true },
+    { "type": "header", "content": "Farben" },
+    { "type": "color", "id": "bg_color", "label": "Hintergrund", "default": "#050507" },
+    { "type": "color", "id": "chrome_color", "label": "Chrome / Text", "default": "#dfe3e8" }
+  ],
+  "presets": [{ "name": "WEAX Kollektion" }]
+}
+{% endschema %}

@@ -1,0 +1,26 @@
+{
+  "sections": {
+    "intro": {
+      "type": "weax-home-intro",
+      "settings": {
+        "intro_mode": "session",
+        "intro_word": "WEAX",
+        "intro_sub": "Fly too close",
+        "eyebrow": "Drop 02",
+        "heading": "Wings of Wax",
+        "button_text": "Zum Shop",
+        "button2_text": "Die Story"
+      }
+    },
+    "drop": {
+      "type": "weax-featured-collection",
+      "settings": {
+        "eyebrow": "Jetzt erhältlich",
+        "heading": "The Drop",
+        "limit": 6,
+        "columns": 3
+      }
+    }
+  },
+  "order": ["intro", "drop"]
+}
