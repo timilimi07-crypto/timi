@@ -1,0 +1,177 @@
+//@version=6
+// SMT Divergence NQ ↔ ES
+// Vergleicht die Swing-Highs und Swing-Lows des Chart-Symbols mit einem
+// korrelierten Symbol (Standard: NQ ↔ ES automatisch) und zeichnet
+// Divergenzen direkt in den Chart.
+//
+//  Bearish SMT: ein Markt macht ein höheres Hoch, der andere nicht.
+//  Bullish SMT: ein Markt macht ein tieferes Tief, der andere nicht.
+//
+//  Zwei Modi:
+//   • Bestätigt – Swing gegen Swing, sobald der neue Pivot bestätigt ist
+//                (durchgezogene Linie, kommt "Pivot rechts" Kerzen verspätet).
+//   • Live      – sobald ein Markt das letzte Swing-High/-Low nimmt und der
+//                andere nicht (gepunktete Linie, früher, aber vorläufig).
+indicator("SMT Divergence NQ/ES", "SMT", overlay = true, max_lines_count = 500, max_labels_count = 500)
+
+// ───────────────────────── Inputs ─────────────────────────
+grpS     = "Vergleichssymbol"
+autoSym  = input.bool(true, "Automatisch (NQ ↔ ES)", group = grpS, tooltip = "Auf NQ wird ES verglichen, auf ES wird NQ verglichen (MNQ ↔ MES ebenso). Bei anderen Symbolen gilt das manuelle Symbol.")
+manSym   = input.symbol("CME_MINI:ES1!", "Manuelles Symbol", group = grpS)
+
+grpP     = "Swings"
+leftLen  = input.int(5, "Pivot links", minval = 1, group = grpP)
+rightLen = input.int(3, "Pivot rechts", minval = 1, group = grpP, tooltip = "Anzahl Kerzen zur Bestätigung eines Swings.")
+tol      = input.int(1, "Toleranz (Kerzen)", minval = 0, maxval = 10, group = grpP, tooltip = "Das Vergleichssymbol darf sein Hoch/Tief bis zu so vielen Kerzen neben dem Swing des Charts gemacht haben.")
+minDist  = input.int(3, "Min. Abstand zwischen Swings", minval = 1, group = grpP)
+maxDist  = input.int(60, "Max. Abstand zwischen Swings", minval = 2, group = grpP)
+
+grpM      = "Anzeige"
+showConf  = input.bool(true, "Bestätigte SMT (Swing vs. Swing)", group = grpM)
+showLive  = input.bool(true, "Live SMT (Sweep des letzten Swings)", group = grpM)
+showHigh  = input.bool(true, "Highs vergleichen (bearish)", group = grpM)
+showLow   = input.bool(true, "Lows vergleichen (bullish)", group = grpM)
+showSwing = input.bool(false, "Swing-Punkte markieren", group = grpM)
+
+grpC     = "Stil"
+bearCol  = input.color(color.new(#F23645, 0), "Bearish", group = grpC)
+bullCol  = input.color(color.new(#089981, 0), "Bullish", group = grpC)
+lw       = input.int(2, "Linienstärke", minval = 1, maxval = 4, group = grpC)
+lblSize  = input.string("Klein", "Label-Größe", options = ["Winzig", "Klein", "Normal"], group = grpC)
+
+sz = lblSize == "Winzig" ? size.tiny : lblSize == "Normal" ? size.normal : size.small
+
+// ───────────────────────── Vergleichssymbol ─────────────────────────
+root    = syminfo.root
+compSym = autoSym ? (root == "NQ" ? "CME_MINI:ES1!" : root == "MNQ" ? "CME_MINI:MES1!" : root == "ES" ? "CME_MINI:NQ1!" : root == "MES" ? "CME_MINI:MNQ1!" : manSym) : manSym
+
+parts = str.split(compSym, ":")
+cName = array.get(parts, array.size(parts) - 1)
+me    = syminfo.ticker
+
+[cH, cL] = request.security(compSym, timeframe.period, [high, low], lookahead = barmerge.lookahead_off)
+
+// Höchstes Hoch / tiefstes Tief des Vergleichssymbols rund um den Pivot
+f_extreme(series float src, int center, int t, bool isHigh) =>
+    float v = na
+    for i = math.max(center - t, 0) to center + t
+        float x = src[i]
+        if not na(x)
+            v := na(v) ? x : isHigh ? math.max(v, x) : math.min(v, x)
+    v
+
+ph  = ta.pivothigh(high, leftLen, rightLen)
+pl  = ta.pivotlow(low, leftLen, rightLen)
+cHp = f_extreme(cH, rightLen, tol, true)
+cLp = f_extreme(cL, rightLen, tol, false)
+
+fmt(float v) => str.tostring(v, format.mintick)
+
+// ───────────────────────── Zustand ─────────────────────────
+var float prevPH    = na
+var float prevPHc   = na
+var int   prevPHbar = na
+var float prevPL    = na
+var float prevPLc   = na
+var int   prevPLbar = na
+
+var bool hChart = false
+var bool hComp  = false
+var bool hDone  = true
+var bool lChart = false
+var bool lComp  = false
+var bool lDone  = true
+
+bool bearConf = false
+bool bullConf = false
+bool bearLive = false
+bool bullLive = false
+
+// ───────────────────────── Live SMT (Sweep) ─────────────────────────
+if not hDone and not na(cH)
+    if bar_index - prevPHbar > maxDist
+        hDone := true
+    else
+        if high > prevPH
+            hChart := true
+        if cH > prevPHc
+            hComp := true
+        if hChart and hComp
+            hDone := true
+        else if hChart != hComp
+            hDone    := true
+            bearLive := showHigh
+            if showLive and showHigh
+                line.new(prevPHbar, prevPH, bar_index, prevPH, color = bearCol, width = 1, style = line.style_dotted)
+                tip = hChart ? me + " nimmt das Hoch " + fmt(prevPH) + ", " + cName + " nicht (" + cName + "-Hoch: " + str.tostring(prevPHc) + ")" : cName + " nimmt sein Hoch " + str.tostring(prevPHc) + ", " + me + " nicht (" + fmt(prevPH) + ")"
+                label.new(bar_index, high, "SMT?", yloc = yloc.abovebar, style = label.style_label_down, color = color.new(bearCol, 80), textcolor = bearCol, size = size.tiny, tooltip = "Live Bearish SMT\n" + tip)
+
+if not lDone and not na(cL)
+    if bar_index - prevPLbar > maxDist
+        lDone := true
+    else
+        if low < prevPL
+            lChart := true
+        if cL < prevPLc
+            lComp := true
+        if lChart and lComp
+            lDone := true
+        else if lChart != lComp
+            lDone    := true
+            bullLive := showLow
+            if showLive and showLow
+                line.new(prevPLbar, prevPL, bar_index, prevPL, color = bullCol, width = 1, style = line.style_dotted)
+                tip = lChart ? me + " nimmt das Tief " + fmt(prevPL) + ", " + cName + " nicht (" + cName + "-Tief: " + str.tostring(prevPLc) + ")" : cName + " nimmt sein Tief " + str.tostring(prevPLc) + ", " + me + " nicht (" + fmt(prevPL) + ")"
+                label.new(bar_index, low, "SMT?", yloc = yloc.belowbar, style = label.style_label_up, color = color.new(bullCol, 80), textcolor = bullCol, size = size.tiny, tooltip = "Live Bullish SMT\n" + tip)
+
+// ───────────────────────── Bestätigte SMT (Swing vs. Swing) ─────────────────────────
+if not na(ph)
+    int pBar = bar_index - rightLen
+    if not na(prevPH) and not na(cHp) and not na(prevPHc)
+        int d = pBar - prevPHbar
+        if d >= minDist and d <= maxDist
+            bool chartHH = ph > prevPH
+            bool compHH  = cHp > prevPHc
+            if chartHH != compHH
+                bearConf := showHigh
+                if showConf and showHigh
+                    line.new(prevPHbar, prevPH, pBar, ph, color = bearCol, width = lw)
+                    tip = (chartHH ? me + " HH / " + cName + " LH" : me + " LH / " + cName + " HH") + "\n" + me + ": " + fmt(prevPH) + " → " + fmt(ph) + "\n" + cName + ": " + str.tostring(prevPHc) + " → " + str.tostring(cHp)
+                    label.new(pBar, ph, "▼ SMT", yloc = yloc.abovebar, style = label.style_label_down, color = color.new(bearCol, 85), textcolor = bearCol, size = sz, tooltip = "Bearish SMT\n" + tip)
+    prevPH    := ph
+    prevPHc   := cHp
+    prevPHbar := pBar
+    hChart    := false
+    hComp     := false
+    hDone     := na(cHp)
+
+if not na(pl)
+    int pBar = bar_index - rightLen
+    if not na(prevPL) and not na(cLp) and not na(prevPLc)
+        int d = pBar - prevPLbar
+        if d >= minDist and d <= maxDist
+            bool chartLL = pl < prevPL
+            bool compLL  = cLp < prevPLc
+            if chartLL != compLL
+                bullConf := showLow
+                if showConf and showLow
+                    line.new(prevPLbar, prevPL, pBar, pl, color = bullCol, width = lw)
+                    tip = (chartLL ? me + " LL / " + cName + " HL" : me + " HL / " + cName + " LL") + "\n" + me + ": " + fmt(prevPL) + " → " + fmt(pl) + "\n" + cName + ": " + str.tostring(prevPLc) + " → " + str.tostring(cLp)
+                    label.new(pBar, pl, "▲ SMT", yloc = yloc.belowbar, style = label.style_label_up, color = color.new(bullCol, 85), textcolor = bullCol, size = sz, tooltip = "Bullish SMT\n" + tip)
+    prevPL    := pl
+    prevPLc   := cLp
+    prevPLbar := pBar
+    lChart    := false
+    lComp     := false
+    lDone     := na(cLp)
+
+// ───────────────────────── Swing-Punkte ─────────────────────────
+plotshape(showSwing and not na(ph), "Swing High", shape.circle, location.abovebar, color.new(bearCol, 50), offset = -rightLen, size = size.tiny)
+plotshape(showSwing and not na(pl), "Swing Low", shape.circle, location.belowbar, color.new(bullCol, 50), offset = -rightLen, size = size.tiny)
+
+// ───────────────────────── Alerts ─────────────────────────
+alertcondition(bearConf, "Bearish SMT (bestätigt)", "Bearish SMT bestätigt auf {{ticker}} ({{interval}})")
+alertcondition(bullConf, "Bullish SMT (bestätigt)", "Bullish SMT bestätigt auf {{ticker}} ({{interval}})")
+alertcondition(bearLive, "Bearish SMT (live)", "Live Bearish SMT auf {{ticker}} ({{interval}}): ein Markt nimmt das Hoch, der andere nicht")
+alertcondition(bullLive, "Bullish SMT (live)", "Live Bullish SMT auf {{ticker}} ({{interval}}): ein Markt nimmt das Tief, der andere nicht")
+alertcondition(bearConf or bullConf or bearLive or bullLive, "Jede SMT", "SMT Divergenz auf {{ticker}} ({{interval}})")
