@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>WEAX Reel – Das Set</title>
+<style>
+  @font-face { font-family: 'Cinzel'; font-weight: 400 900; src: url(Cinzel.woff2) format('woff2'); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; background: #050506; overflow: hidden; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; color: #fff; font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; background: #050506; }
+  .full { position: absolute; inset: 0; }
+  #photoWrap { opacity: 0; }
+  #photo { position: absolute; left: 0; top: 0; transform-origin: 0 0; filter: contrast(1.12) saturate(.7) brightness(.92); }
+  #shade {
+    background:
+      radial-gradient(ellipse at 50% 45%, transparent 35%, rgba(0,0,0,.55) 100%),
+      linear-gradient(180deg, rgba(0,0,0,.35) 0%, transparent 22%, transparent 50%, rgba(0,0,0,.8) 78%, rgba(0,0,0,.9) 100%);
+  }
+  #space { opacity: 0; background: radial-gradient(ellipse at 50% 42%, #1c1e24 0%, #08080a 60%, #030304 100%); }
+  .layer { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; text-align: center; opacity: 0; }
+  .chrome {
+    font-family: 'Cinzel', serif; font-weight: 700;
+    background: linear-gradient(100deg, #6a7078 0%, #fff 22%, #8f959d 42%, #fff 58%, #6b7179 80%, #fff 100%);
+    background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .shadow { text-shadow: 0 4px 30px rgba(0,0,0,.6); }
+  .eyebrow { font-size: 30px; letter-spacing: .5em; text-transform: uppercase; font-weight: 600; }
+  .hook { font-weight: 900; font-size: 106px; line-height: .98; letter-spacing: -.03em; text-transform: uppercase; }
+  .tag { font-family: 'Cinzel', serif; font-weight: 700; font-size: 130px; letter-spacing: .12em; }
+  .logoBox { position: relative; width: 900px; height: 538px; }
+  .logoBox img { width: 100%; height: 100%; display: block; }
+  .logoBox .shine {
+    position: absolute; inset: 0;
+    -webkit-mask: url(assets/weax-logo.png) center / 100% 100% no-repeat; mask: url(assets/weax-logo.png) center / 100% 100% no-repeat;
+    background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.95) 50%, transparent 60%); background-size: 300% 100%;
+    mix-blend-mode: screen;
+  }
+  .logoBox .glint { position: absolute; left: 76.5%; top: 9%; width: 260px; height: 260px; margin: -130px 0 0 -130px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(255,255,255,.25) 18%, transparent 60%); mix-blend-mode: screen; }
+  .logoBox .glint::before, .logoBox .glint::after { content: ''; position: absolute; left: 50%; top: 50%; background: linear-gradient(90deg, transparent, #fff, transparent); }
+  .logoBox .glint::before { width: 420px; height: 3px; margin: -1.5px 0 0 -210px; }
+  .logoBox .glint::after { width: 3px; height: 420px; margin: -210px 0 0 -1.5px; background: linear-gradient(180deg, transparent, #fff, transparent); }
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+  #grain { position: absolute; inset: 0; opacity: .08; mix-blend-mode: overlay; }
+  .pill {
+    margin-top: 56px; padding: 30px 64px; border-radius: 999px; font-weight: 800; font-size: 34px; letter-spacing: .22em; text-transform: uppercase;
+    color: #0b0b0d; background: linear-gradient(180deg, #fff, #c9cdd3 55%, #eef0f2);
+    box-shadow: 0 0 0 2px rgba(255,255,255,.4) inset, 0 20px 80px -10px rgba(220,225,235,.55);
+  }
+  .bar { width: 120px; height: 3px; background: linear-gradient(90deg, transparent, #fff, transparent); margin: 34px auto; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="full" id="space"><canvas id="stars" width="1080" height="1920"></canvas></div>
+
+  <div class="full" id="photoWrap">
+    <img id="photo" src="assets/model-set.jpg" width="2000" height="1333" alt="">
+    <div class="full" id="shade"></div>
+  </div>
+
+  <!-- 1 HOOK (frame 0 = thumbnail) -->
+  <div class="layer" id="hook" style="justify-content:flex-end; padding-bottom:440px;">
+    <div class="eyebrow shadow" style="opacity:.85">Jeder fragt mich:</div>
+    <div class="hook shadow" style="margin-top:26px;">Was ist das<br>für 'ne <span class="chrome" id="hookChrome" style="font-family:Inter,sans-serif;font-weight:900">Marke?</span></div>
+  </div>
+
+  <!-- 2 LOGO REVEAL -->
+  <div class="layer" id="reveal" style="justify-content:center;">
+    <div class="logoBox" id="logo1"><img src="assets/weax-logo.png" alt=""><div class="shine" id="shine1"></div><div class="glint" id="glint1"></div></div>
+    <div class="chrome" id="name1" style="font-size:120px; letter-spacing:.3em; margin:40px 0 0 .3em;">WEAX</div>
+  </div>
+
+  <!-- 3 PRODUCT CUTS -->
+  <div class="layer" id="cutA" style="justify-content:flex-end; padding-bottom:420px;"><div class="eyebrow shadow" style="opacity:.8">01</div><div class="tag chrome shadow">HOODIE</div></div>
+  <div class="layer" id="cutB" style="justify-content:flex-end; padding-bottom:420px;"><div class="eyebrow shadow" style="opacity:.8">02</div><div class="tag chrome shadow">PANTS</div></div>
+  <div class="layer" id="cutC" style="justify-content:flex-end; padding-bottom:400px;"><div class="eyebrow shadow" style="opacity:.8">Das komplette</div><div class="tag chrome shadow" style="font-size:170px;">SET.</div></div>
+
+  <!-- 4 STATEMENT -->
+  <div class="layer" id="state" style="justify-content:flex-end; padding-bottom:420px;">
+    <div class="hook shadow" style="font-size:96px;">Nicht für jeden.</div>
+    <div class="hook chrome shadow" style="font-size:96px; font-family:Inter,sans-serif; margin-top:10px;">Für dich.</div>
+  </div>
+
+  <!-- 5 CTA -->
+  <div class="layer" id="cta" style="justify-content:center;">
+    <div class="logoBox" style="width:560px;height:335px;"><img src="assets/weax-logo.png" alt=""><div class="shine" id="shine2"></div></div>
+    <div class="eyebrow" style="margin-top:50px; opacity:.75">Drop 01 · Limitiert</div>
+    <div class="bar"></div>
+    <div class="hook" style="font-size:84px;">Kein Restock.</div>
+    <div class="pill">Link in Bio</div>
+  </div>
+
+  <svg id="grain" width="1080" height="1920"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+  <div id="flash"></div>
+</div>
+
+<script>
+  const DURATION = 13;
+  const $ = id => document.getElementById(id);
+  const clamp = v => Math.max(0, Math.min(1, v));
+  const prog = (t, a, b) => clamp((t - a) / (b - a));
+  const easeOut = x => 1 - Math.pow(1 - x, 3);
+  const easeInOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  const lerp = (a, b, p) => a + (b - a) * p;
+  const win = (t, a, b, fi = .2, fo = .15) => Math.min(prog(t, a, a + fi), 1 - prog(t, b - fo, b));
+  const set = (id, o, tf = '', f = '') => { const e = $(id); e.style.opacity = o; e.style.transform = tf; e.style.filter = f; };
+
+  // Camera on the photo: focus point in source pixels + zoom relative to "cover" scale.
+  const COVER = 1920 / 1333;
+  function camera(fx, fy, z, shakeX = 0) {
+    const s = COVER * z;
+    let x = 540 - fx * s, y = 960 - fy * s;
+    x = Math.min(0, Math.max(1080 - 2000 * s, x)); y = Math.min(0, Math.max(1920 - 1333 * s, y));
+    $('photo').style.transform = `translate(${x + shakeX}px, ${y}px) scale(${s})`;
+  }
+  // Shots: [start, end, from{fx,fy,z}, to{fx,fy,z}]
+  const shots = [
+    [0.0, 1.5, { fx: 1085, fy: 700, z: 1.32 }, { fx: 1085, fy: 690, z: 1.18 }],
+    [4.0, 5.0, { fx: 1150, fy: 500, z: 2.4 }, { fx: 1145, fy: 520, z: 2.0 }],
+    [5.0, 6.0, { fx: 1120, fy: 760, z: 2.2 }, { fx: 1090, fy: 960, z: 1.9 }],
+    [6.0, 7.8, { fx: 1085, fy: 700, z: 1.75 }, { fx: 1085, fy: 720, z: 1.15 }],
+    [7.8, 10.2, { fx: 1085, fy: 720, z: 1.15 }, { fx: 1085, fy: 640, z: 1.35 }],
+    [10.2, 13, { fx: 1085, fy: 640, z: 1.35 }, { fx: 1085, fy: 600, z: 1.45 }],
+  ];
+
+  let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const stars = Array.from({ length: 240 }, () => ({ x: rnd() * 1080, y: rnd() * 1920, r: rnd() * 1.8 + .3, p: rnd() * 6.28, z: rnd() * .8 + .2 }));
+  const ctx = $('stars').getContext('2d');
+  function drawStars(t, warp) {
+    ctx.clearRect(0, 0, 1080, 1920); ctx.strokeStyle = ctx.fillStyle = '#fff';
+    for (const s of stars) {
+      const dx = s.x - 540, dy = s.y - 900, k = 1 + warp * s.z * 2.4;
+      ctx.globalAlpha = (.45 + .55 * Math.abs(Math.sin(t * 1.6 + s.p))) * (.35 + s.z * .65);
+      if (warp > .02) { ctx.lineWidth = s.r; ctx.beginPath(); ctx.moveTo(540 + dx * (1 + (k - 1) * .55), 900 + dy * (1 + (k - 1) * .55)); ctx.lineTo(540 + dx * k, 900 + dy * k); ctx.stroke(); }
+      else { ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 6.28); ctx.fill(); }
+    }
+  }
+
+  window.render = function (t) {
+    // --- photo camera
+    const shot = shots.find(([a, b]) => t >= a && t < b) || shots[shots.length - 1];
+    const [a, b, f, g] = shot, p = easeInOut(prog(t, a, b));
+    const punch = t < .25 ? (1 - easeOut(prog(t, 0, .25))) * .12 : 0; // punch-in on the very first frames
+    camera(lerp(f.fx, g.fx, p), lerp(f.fy, g.fy, p), lerp(f.z, g.z, p) + punch, t < .3 ? Math.sin(t * 90) * 6 * (1 - t / .3) : 0);
+
+    const inPhoto = (t < 1.5) || (t >= 4.0);
+    const blurCta = easeOut(prog(t, 10.2, 10.8));
+    $('photoWrap').style.opacity = inPhoto ? (t >= 10.2 ? lerp(1, .45, blurCta) : 1) : 0;
+    $('photo').style.filter = `contrast(1.12) saturate(${.7 - blurCta * .5}) brightness(${.92 - blurCta * .35}) blur(${blurCta * 14}px)`;
+
+    // --- space / logo
+    $('space').style.opacity = (t >= 1.5 && t < 4.0) ? 1 : 0;
+    drawStars(t, Math.sin(Math.PI * prog(t, 1.5, 2.1)) * 1.1 + Math.sin(Math.PI * prog(t, 3.75, 4.05)) * .9);
+
+    // --- flashes on cuts
+    const cuts = [1.5, 4.0, 5.0, 6.0, 10.2];
+    $('flash').style.opacity = .9 * Math.max(...cuts.map(c => t < c ? 0 : 1 - prog(t, c, c + .16)));
+
+    // 1 hook – text is fully visible on frame 0 so the thumbnail already carries the hook
+    set('hook', 1 - prog(t, 1.38, 1.5), `scale(${1.08 - .08 * easeOut(prog(t, 0, .3))})`);
+    $('hookChrome').style.backgroundPosition = `${100 - prog(t, 0, 1.5) * 220}% 0`;
+
+    // 2 logo reveal
+    const pr = easeOut(prog(t, 1.5, 2.2));
+    set('reveal', win(t, 1.5, 4.0, .08, .12), `scale(${lerp(1.6, 1, pr) + prog(t, 2.2, 4.0) * .06})`, `blur(${(1 - pr) * 18}px)`);
+    $('shine1').style.backgroundPosition = `${100 - prog(t, 2.1, 3.0) * 100}% 0`;
+    const gl = Math.sin(Math.PI * prog(t, 2.9, 3.5));
+    $('glint1').style.opacity = gl; $('glint1').style.transform = `scale(${.4 + gl * .8}) rotate(${prog(t, 2.9, 3.5) * 60}deg)`;
+    $('name1').style.opacity = easeOut(prog(t, 2.5, 3.0)); $('name1').style.backgroundPosition = `${100 - prog(t, 2.5, 4) * 200}% 0`;
+
+    // 3 product cuts
+    [['cutA', 4.0, 5.0], ['cutB', 5.0, 6.0], ['cutC', 6.0, 7.8]].forEach(([id, a, b]) => {
+      const q = easeOut(prog(t, a, a + .3));
+      set(id, t >= a && t < b ? Math.min(1, prog(t, a, a + .08)) * (1 - prog(t, b - .1, b)) : 0, `translateY(${(1 - q) * 50}px) scale(${1.1 - .1 * q})`);
+      $(id).querySelector('.tag').style.backgroundPosition = `${100 - prog(t, a, b) * 200}% 0`;
+    });
+
+    // 4 statement
+    set('state', win(t, 8.0, 10.2, .3, .2), `translateY(${(1 - easeOut(prog(t, 8.0, 8.5))) * 40}px)`);
+
+    // 5 CTA, fades to black at the end for a clean loop
+    const pc = easeOut(prog(t, 10.3, 10.9));
+    set('cta', Math.min(pc, 1 - prog(t, 12.6, 13)), `scale(${lerp(1.08, 1, pc)})`);
+    $('shine2').style.backgroundPosition = `${100 - prog(t, 10.8, 11.8) * 100}% 0`;
+    if (t > 12.6) $('photoWrap').style.opacity = .45 * (1 - prog(t, 12.6, 13));
+  };
+
+  window.DURATION = DURATION;
+  window.ready = Promise.all([...document.images].map(i => i.decode()));
+  render(0);
+</script>
+</body>
+</html>
