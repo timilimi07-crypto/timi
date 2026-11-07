@@ -6,8 +6,8 @@
 <title>BeatCut</title>
 <style>
   :root{
-    --bg:#0a0a0b; --panel:#131316; --panel2:#1b1b20; --line:#2a2a31;
-    --txt:#f2f2f4; --muted:#8b8b95; --accent:#ff3b30; --accent2:#4f7cff;
+    --bg:#08080a; --panel:#121216; --panel2:#1a1a20; --line:#2a2a33;
+    --txt:#f2f2f4; --muted:#8a8a95; --accent:#ff3b30; --accent2:#4f7cff;
     --ok:#30d158; --radius:14px;
   }
   *{box-sizing:border-box}
@@ -19,7 +19,7 @@
   }
   header{
     display:flex; align-items:center; gap:14px; padding:14px 20px;
-    border-bottom:1px solid var(--line); position:sticky; top:0; background:rgba(10,10,11,.85);
+    border-bottom:1px solid var(--line); position:sticky; top:0; background:rgba(8,8,10,.86);
     backdrop-filter:blur(10px); z-index:10;
   }
   .logo{font-weight:800; letter-spacing:-.5px; font-size:20px}
@@ -34,17 +34,17 @@
   button:disabled{opacity:.4; cursor:not-allowed}
   .btn-accent{background:var(--accent); border-color:var(--accent); color:#fff}
   .btn-accent:hover:not(:disabled){filter:brightness(1.08)}
-  main{flex:1; display:grid; grid-template-columns:320px 1fr 300px; gap:16px; padding:16px; max-width:1500px; width:100%; margin:0 auto}
-  @media(max-width:1100px){ main{grid-template-columns:1fr} }
+  main{flex:1; display:grid; grid-template-columns:320px 1fr 330px; gap:16px; padding:16px; max-width:1560px; width:100%; margin:0 auto}
+  @media(max-width:1150px){ main{grid-template-columns:1fr} }
   .col{display:flex; flex-direction:column; gap:16px; min-width:0}
   .card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:16px}
   .card h3{margin:0 0 12px; font-size:13px; text-transform:uppercase; letter-spacing:.8px; color:var(--muted)}
   .drop{
-    border:1.5px dashed var(--line); border-radius:12px; padding:22px 14px; text-align:center;
+    border:1.5px dashed var(--line); border-radius:12px; padding:20px 14px; text-align:center;
     color:var(--muted); cursor:pointer; transition:.15s; font-size:14px;
   }
   .drop:hover,.drop.hot{border-color:var(--accent); color:var(--txt); background:#17171b}
-  .clips{display:flex; flex-direction:column; gap:8px; margin-top:12px; max-height:360px; overflow:auto}
+  .clips{display:flex; flex-direction:column; gap:8px; margin-top:12px; max-height:320px; overflow:auto}
   .clip{display:flex; gap:10px; align-items:center; background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:8px}
   .clip canvas{width:64px; height:40px; border-radius:6px; object-fit:cover; background:#000; flex:none}
   .clip .meta{flex:1; min-width:0}
@@ -54,21 +54,28 @@
   .clip .ctr button{padding:2px 7px; font-size:11px; line-height:1.3}
   .stage{background:#000; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; display:flex; flex-direction:column}
   .canvas-wrap{flex:1; display:flex; align-items:center; justify-content:center; padding:14px; min-height:360px}
-  canvas#preview{max-width:100%; max-height:62vh; background:#000; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,.6)}
+  canvas#preview{max-width:100%; max-height:60vh; background:#000; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,.6)}
   .transport{display:flex; align-items:center; gap:12px; padding:12px 16px; border-top:1px solid var(--line)}
   .scrub{flex:1; appearance:none; height:6px; border-radius:4px; background:var(--panel2); outline:none}
   .scrub::-webkit-slider-thumb{appearance:none; width:16px; height:16px; border-radius:50%; background:var(--accent); cursor:pointer}
   .time{font-variant-numeric:tabular-nums; font-size:13px; color:var(--muted); min-width:92px; text-align:right}
-  .wave{position:relative; width:100%; height:64px; background:var(--panel2); border-radius:8px; margin-top:12px; overflow:hidden}
+  .wave{position:relative; width:100%; height:60px; background:var(--panel2); border-radius:8px; margin-top:12px; overflow:hidden}
   .wave canvas{width:100%; height:100%; display:block}
-  .field{display:flex; flex-direction:column; gap:6px; margin-bottom:14px}
+  .field{display:flex; flex-direction:column; gap:6px; margin-bottom:13px}
   .field label{font-size:12px; color:var(--muted); display:flex; justify-content:space-between}
   .field .val{color:var(--txt); font-weight:700}
   input[type=range]{width:100%; accent-color:var(--accent)}
+  input[type=text]{width:100%; padding:9px 11px; background:var(--panel2); color:var(--txt); border:1px solid var(--line); border-radius:9px; font:inherit}
   select{width:100%; padding:9px; background:var(--panel2); color:var(--txt); border:1px solid var(--line); border-radius:9px; font:inherit}
   .seg{display:flex; gap:6px}
   .seg button{flex:1; text-align:center; padding:9px 0}
   .seg button.on{background:var(--accent); border-color:var(--accent); color:#fff}
+  .styles{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+  .style-btn{text-align:left; padding:11px 12px; border-radius:11px; background:var(--panel2); border:1px solid var(--line); cursor:pointer; transition:.15s}
+  .style-btn:hover{border-color:#444}
+  .style-btn.on{border-color:var(--accent); background:#20141480; box-shadow:0 0 0 1px var(--accent) inset}
+  .style-btn .t{font-weight:800; font-size:14px}
+  .style-btn .d{font-size:11px; color:var(--muted); margin-top:3px; line-height:1.35}
   .hint{font-size:12px; color:var(--muted); line-height:1.5}
   .badge{display:inline-block; background:var(--panel2); border:1px solid var(--line); border-radius:999px; padding:3px 10px; font-size:12px; color:var(--muted)}
   .badge b{color:var(--txt)}
@@ -79,20 +86,22 @@
   .bar.show{display:block}
   .bar i{display:block; height:100%; width:0; background:var(--accent); transition:width .1s}
   footer{padding:10px 20px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; text-align:center}
-  .empty{color:var(--muted); font-size:13px; text-align:center; padding:20px 0}
+  .empty{color:var(--muted); font-size:13px; text-align:center; padding:18px 0}
+  details{margin-top:4px} summary{cursor:pointer; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.6px}
+  details[open] summary{margin-bottom:12px}
 </style>
 </head>
 <body>
 <header>
   <div class="logo">Beat<span>Cut</span></div>
-  <div class="tag">Video-Editor mit Beat-Sync · läuft komplett im Browser</div>
+  <div class="tag">Auto-Editor für Social-Media-Clips · Schnitt auf den Bass · läuft komplett im Browser</div>
   <div class="grow"></div>
   <span class="badge" id="beatBadge">keine Musik</span>
-  <button id="exportBtn" class="btn-accent" disabled>Video exportieren</button>
+  <button id="exportBtn" class="btn-accent" disabled>Diese Version exportieren</button>
 </header>
 
 <main>
-  <!-- LINKS: Clips -->
+  <!-- LINKS: Medien -->
   <div class="col">
     <div class="card">
       <h3>1 · Clips &amp; Bilder</h3>
@@ -100,11 +109,11 @@
         Videos &amp; Bilder hierher ziehen<br><span style="font-size:12px">oder klicken zum Auswählen</span>
       </div>
       <input type="file" id="clipInput" accept="video/*,image/*" multiple hidden>
-      <div class="clips" id="clipList"><div class="empty">Noch keine Clips</div></div>
+      <div class="clips" id="clipList"><div class="empty">Noch keine Medien</div></div>
     </div>
 
     <div class="card">
-      <h3>2 · Musik</h3>
+      <h3>2 · Musik (Bass = Schnitt)</h3>
       <div class="drop" id="musicDrop">
         Song hierher ziehen<br><span style="font-size:12px">oder klicken (MP3, WAV, …)</span>
       </div>
@@ -128,86 +137,123 @@
     <div class="status" id="mainStatus"></div>
   </div>
 
-  <!-- RECHTS: Einstellungen -->
+  <!-- RECHTS: Version & Einstellungen -->
   <div class="col">
     <div class="card">
-      <h3>3 · Schnitt & Sync</h3>
-
-      <div class="field">
-        <label>Schnitt alle … Beats</label>
-        <div class="seg" id="cutSeg">
-          <button data-n="1">1</button>
-          <button data-n="2" class="on">2</button>
-          <button data-n="4">4</button>
-          <button data-n="8">8</button>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Beat-Empfindlichkeit <span class="val" id="sensVal">Mittel</span></label>
-        <input type="range" id="sens" min="1" max="5" value="3">
-      </div>
-
-      <div class="field">
-        <label>Format</label>
-        <select id="aspect">
-          <option value="9:16" selected>9:16 — Hochformat (Reels/TikTok)</option>
-          <option value="1:1">1:1 — Quadrat</option>
-          <option value="16:9">16:9 — Querformat</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>Clip-Reihenfolge</label>
-        <select id="order">
-          <option value="seq">Der Reihe nach</option>
-          <option value="shuffle">Zufällig mischen</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label style="cursor:pointer; align-items:center">
-          <input type="checkbox" id="photoZoom" checked style="width:auto; margin-right:8px; accent-color:var(--accent)">
-          Foto-Zoom (sanfter Zoom pro Bild)
-        </label>
-      </div>
-
-      <button id="buildBtn" style="width:100%" disabled>Takt neu berechnen</button>
+      <h3>3 · Version / Style</h3>
+      <div class="styles" id="styles"></div>
       <div class="status" id="buildStatus"></div>
     </div>
 
     <div class="card">
-      <h3>Info</h3>
-      <div class="hint" id="infoBox">
-        Lade <b>Videos und/oder Bilder</b> und einen Song. BeatCut erkennt die Beats und schneidet
-        deine Clips automatisch im Takt — Fotos bekommen einen sanften Zoom. Du kannst Videos und
-        Bilder frei mischen. Alles bleibt auf deinem Gerät — es wird nichts hochgeladen.
+      <h3>4 · Format &amp; Text</h3>
+      <div class="field">
+        <label>Format</label>
+        <select id="aspect">
+          <option value="9:16" selected>9:16 — Hochformat (Reels/TikTok)</option>
+          <option value="1:1">1:1 — Feed</option>
+          <option value="16:9">16:9 — YouTube</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Hook-Text (erste Sekunden)</label>
+        <input type="text" id="hookText" placeholder="z. B. NEW DROP" maxlength="24">
+      </div>
+      <div class="field">
+        <label>Brand / Logo-Text (dauerhaft)</label>
+        <input type="text" id="brandText" placeholder="z. B. WEAX" maxlength="18" value="WEAX">
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Feintuning</h3>
+      <details>
+        <summary>Erweitert</summary>
+        <div class="field">
+          <label>Schnitt alle … Bass-Beats</label>
+          <div class="seg" id="cutSeg">
+            <button data-n="1">1</button>
+            <button data-n="2" class="on">2</button>
+            <button data-n="4">4</button>
+            <button data-n="8">8</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Beat-Empfindlichkeit <span class="val" id="sensVal">Mittel</span></label>
+          <input type="range" id="sens" min="1" max="5" value="3">
+        </div>
+        <div class="field">
+          <label>Clip-Reihenfolge</label>
+          <select id="order">
+            <option value="seq">Der Reihe nach</option>
+            <option value="shuffle">Zufällig mischen</option>
+          </select>
+        </div>
+        <button id="buildBtn" style="width:100%" disabled>Takt neu berechnen</button>
+      </details>
+    </div>
+
+    <div class="card">
+      <h3>So gehst du vor</h3>
+      <div class="hint">
+        1. Clips/Bilder + Song laden.<br>
+        2. Eine <b>Version</b> wählen — der Schnitt sitzt automatisch auf dem Bass.<br>
+        3. <b>Format</b> + Text einstellen.<br>
+        4. <b>Exportieren.</b> Für mehrere Versionen einfach Style/Format wechseln und erneut exportieren.
       </div>
     </div>
   </div>
 </main>
 
-<footer>BeatCut · lokaler Browser-Editor · Export als .webm (lässt sich z.&nbsp;B. mit Handbrake/CapCut in MP4 umwandeln)</footer>
+<footer>BeatCut · lokaler Browser-Editor · Export als .webm · es wird nichts hochgeladen</footer>
 
 <script>
 "use strict";
 /* ============================================================
-   BeatCut – reiner Browser-Video-Editor mit Beat-Sync
-   Keine externen Abhängigkeiten, kein Server.
+   BeatCut – Auto-Editor mit Beat/Bass-Sync & Style-Versionen
+   Reiner Browser-Code, keine externen Abhängigkeiten.
    ============================================================ */
 
 const $ = s => document.querySelector(s);
 const fmt = t => { t=Math.max(0,t||0); const m=Math.floor(t/60), s=Math.floor(t%60); return m+":"+String(s).padStart(2,"0"); };
+const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+
+/* ---------- Style-Presets (die "Versionen") ---------- */
+const PRESETS = {
+  hype: {
+    name:"Hype", desc:"Schnelle harte Cuts, starker Punch-Zoom. Max. Energie.",
+    cutEvery:1, punch:0.15, drift:0.05, flash:0.35, shake:7, glitch:false,
+    grade:"contrast(1.15) saturate(1.28) brightness(1.03)", letterbox:0, transition:"cut"
+  },
+  street: {
+    name:"Streetwear", desc:"Harte Cuts auf den Bass, Glitch & Flash auf Drops.",
+    cutEvery:2, punch:0.11, drift:0.03, flash:0.30, shake:4, glitch:true,
+    grade:"contrast(1.28) saturate(0.88) brightness(0.98)", letterbox:0, transition:"cut"
+  },
+  clean: {
+    name:"Clean", desc:"Ruhige Schnitte, sanfter Zoom, weiche Übergänge. Ästhetisch.",
+    cutEvery:4, punch:0.02, drift:0.10, flash:0.05, shake:0, glitch:false,
+    grade:"contrast(1.06) saturate(1.12) brightness(1.05)", letterbox:0, transition:"fade"
+  },
+  luxury: {
+    name:"Luxury", desc:"Cinematisch mit Balken, langsamer Zoom, edel.",
+    cutEvery:4, punch:0.05, drift:0.12, flash:0.08, shake:0, glitch:false,
+    grade:"contrast(1.10) saturate(0.95) brightness(1.0)", letterbox:0.11, transition:"fade"
+  }
+};
 
 const state = {
-  clips: [],            // {id,name,url,video,duration,thumb}
-  music: null,          // {url, audioBuffer, duration, beats:[], audioEl}
+  clips: [],            // {id,name,url,type,video|img,duration,thumb}
+  music: null,          // {url,audioBuffer,duration,beats[],beatAmp[],accentThresh,audioEl}
+  preset: "street",
   cutEvery: 2,
   sensitivity: 3,
   aspect: "9:16",
   order: "seq",
-  photoZoom: true,
-  segments: [],         // {start,end,clipIndex,clipOffset}
+  hookText: "",
+  brandText: "WEAX",
+  hookSeconds: 2.6,
+  segments: [],         // {start,end,clipIndex,clipOffset,accent}
   duration: 0,
   playing: false,
   exporting: false,
@@ -216,16 +262,19 @@ const state = {
 
 const preview = $("#preview");
 const pctx = preview.getContext("2d");
+const snap = document.createElement("canvas");   // Crossfade-Snapshot
+let snapT = -1;
 
 /* ---------- Format / Canvas-Größe ---------- */
 function applyAspect(){
   const map = {"9:16":[720,1280], "1:1":[1000,1000], "16:9":[1280,720]};
   const [w,h] = map[state.aspect] || map["9:16"];
   preview.width = w; preview.height = h;
+  activeSegRef = null; snapT = -1;
   drawFrame(currentTime());
 }
 
-/* ---------- Datei-Helfer ---------- */
+/* ---------- Medien laden ---------- */
 function loadVideo(file){
   return new Promise((res,rej)=>{
     const url = URL.createObjectURL(file);
@@ -233,37 +282,16 @@ function loadVideo(file){
     v.src = url; v.muted = true; v.playsInline = true; v.preload = "auto";
     v.onloadedmetadata = ()=>{
       const clip = {id:crypto.randomUUID(), name:file.name, url, type:"video", video:v, duration:v.duration||0, thumb:null};
-      // Thumbnail vom ersten Frame
       v.currentTime = Math.min(0.1, (v.duration||1)/2);
       v.onseeked = ()=>{
         const c = document.createElement("canvas"); c.width=128; c.height=80;
-        const cx = c.getContext("2d");
-        drawCover(cx, v, 128, 80);
-        clip.thumb = c;
-        v.onseeked = null;
-        res(clip);
+        drawCover(c.getContext("2d"), v, 128, 80);
+        clip.thumb = c; v.onseeked = null; res(clip);
       };
     };
     v.onerror = ()=>rej(new Error("Video konnte nicht geladen werden: "+file.name));
   });
 }
-
-async function addClips(files){
-  for(const f of files){
-    try{
-      let clip;
-      if(f.type.startsWith("video/")) clip = await loadVideo(f);
-      else if(f.type.startsWith("image/")) clip = await loadImage(f);
-      else continue;
-      state.clips.push(clip);
-    }catch(e){ console.warn(e); setMain("⚠ "+e.message); }
-  }
-  renderClipList();
-  maybeBuild();
-  updateExportBtn();
-}
-
-/* Bild als Clip laden (statisch, füllt sein Beat-Segment) */
 function loadImage(file){
   return new Promise((res,rej)=>{
     const url = URL.createObjectURL(file);
@@ -277,11 +305,22 @@ function loadImage(file){
     img.src = url;
   });
 }
+async function addClips(files){
+  for(const f of files){
+    try{
+      let clip;
+      if(f.type.startsWith("video/")) clip = await loadVideo(f);
+      else if(f.type.startsWith("image/")) clip = await loadImage(f);
+      else continue;
+      state.clips.push(clip);
+    }catch(e){ console.warn(e); setMain("⚠ "+e.message); }
+  }
+  renderClipList(); maybeBuild(); updateExportBtn();
+}
 
-/* ---------- Clip-Liste rendern ---------- */
 function renderClipList(){
   const box = $("#clipList");
-  if(!state.clips.length){ box.innerHTML = '<div class="empty">Noch keine Clips</div>'; return; }
+  if(!state.clips.length){ box.innerHTML = '<div class="empty">Noch keine Medien</div>'; return; }
   box.innerHTML = "";
   state.clips.forEach((c,i)=>{
     const el = document.createElement("div");
@@ -293,9 +332,7 @@ function renderClipList(){
         <div class="sub">${c.type==="image" ? "Bild" : c.duration.toFixed(1)+"s"}</div>
       </div>
       <div class="ctr">
-        <button data-up>▲</button>
-        <button data-down>▼</button>
-        <button data-del>✕</button>
+        <button data-up>▲</button><button data-down>▼</button><button data-del>✕</button>
       </div>`;
     const cc = el.querySelector("canvas").getContext("2d");
     if(c.thumb) cc.drawImage(c.thumb,0,0,64,40);
@@ -307,10 +344,10 @@ function renderClipList(){
 }
 
 /* ============================================================
-   BEAT-ERKENNUNG
+   BEAT / BASS-ERKENNUNG
    ============================================================ */
 async function loadMusic(file){
-  setMusic("Analysiere Musik …", "work");
+  setMusic("Analysiere Bass & Beats …", "work");
   const url = URL.createObjectURL(file);
   const arrBuf = await file.arrayBuffer();
   const ac = new (window.AudioContext||window.webkitAudioContext)();
@@ -318,382 +355,367 @@ async function loadMusic(file){
   try{ audioBuffer = await ac.decodeAudioData(arrBuf.slice(0)); }
   catch(e){ setMusic("⚠ Audiodatei konnte nicht gelesen werden.", ""); return; }
   const audioEl = new Audio(url); audioEl.preload="auto";
-  state.music = {url, audioBuffer, duration:audioBuffer.duration, beats:[], audioEl};
+  state.music = {url, audioBuffer, duration:audioBuffer.duration, beats:[], beatAmp:[], accentThresh:1, audioEl};
   await detectBeats();
   drawWaveform();
   $("#waveWrap").style.display = "block";
-  setMusic(`✓ ${state.music.beats.length} Beats erkannt · ~${estimateBPM()} BPM · ${fmt(state.music.duration)}`, "ok");
+  setMusic(`✓ ${state.music.beats.length} Bass-Beats · ~${estimateBPM()} BPM · ${fmt(state.music.duration)}`, "ok");
   $("#beatBadge").innerHTML = `<b>${state.music.beats.length}</b> Beats`;
-  maybeBuild();
-  updateExportBtn();
+  maybeBuild(); updateExportBtn();
 }
 
 async function detectBeats(){
-  const buf = state.music.audioBuffer;
-  const sr = buf.sampleRate;
-  // Offline durch Tiefpass (Kick/Bass isolieren)
+  const buf = state.music.audioBuffer, sr = buf.sampleRate;
+  // Tiefpass -> Kick/Bass isolieren
   const off = new OfflineAudioContext(1, buf.length, sr);
   const src = off.createBufferSource(); src.buffer = buf;
   const lp = off.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=150; lp.Q.value=1;
-  const hp = off.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=100;
+  const hp = off.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=90;
   src.connect(lp); lp.connect(hp); hp.connect(off.destination);
   src.start(0);
   const rendered = await off.startRendering();
   const data = rendered.getChannelData(0);
 
-  // Max-Amplitude
   let maxA = 0;
-  for(let i=0;i<data.length;i+=1){ const v=Math.abs(data[i]); if(v>maxA) maxA=v; }
-  if(maxA===0){ state.music.beats=[]; return; }
+  for(let i=0;i<data.length;i++){ const v=Math.abs(data[i]); if(v>maxA) maxA=v; }
+  if(maxA===0){ state.music.beats=[]; state.music.beatAmp=[]; return; }
 
-  // Empfindlichkeit -> Startschwelle & minimaler Abstand
-  const sens = state.sensitivity;                 // 1..5
-  const startThresh = 0.95 - (sens-1)*0.10;       // höher = weniger Beats
-  const minGap = Math.floor((0.33 - (sens-1)*0.03) * sr); // größerer Abstand bei kleiner sens
+  const sens = state.sensitivity;
+  const startThresh = 0.95 - (sens-1)*0.10;
+  const minGap = Math.floor((0.33 - (sens-1)*0.03) * sr);
   const wantMin = Math.max(8, Math.floor(buf.duration/0.7));
 
-  let beats = [];
-  let thr = startThresh;
+  let beats=[], amps=[], thr=startThresh;
   while(thr > 0.12){
-    beats = [];
-    let last = -minGap;
+    beats=[]; amps=[]; let last=-minGap;
     for(let i=0;i<data.length;i++){
-      if(Math.abs(data[i]) > thr*maxA && (i-last) > minGap){ beats.push(i/sr); last=i; }
+      const v=Math.abs(data[i]);
+      if(v > thr*maxA && (i-last) > minGap){ beats.push(i/sr); amps.push(v); last=i; }
     }
     if(beats.length >= wantMin) break;
     thr -= 0.05;
   }
   state.music.beats = beats;
+  state.music.beatAmp = amps;
+  // Accent-Schwelle = 65. Perzentil der Beat-Stärke (die "Drops")
+  const sorted = [...amps].sort((a,b)=>a-b);
+  state.music.accentThresh = sorted.length ? sorted[Math.floor(sorted.length*0.65)] : maxA;
 }
 
 function estimateBPM(){
   const b = state.music.beats;
   if(b.length < 2) return "?";
-  const gaps = [];
-  for(let i=1;i<b.length;i++) gaps.push(b[i]-b[i-1]);
+  const gaps=[]; for(let i=1;i<b.length;i++) gaps.push(b[i]-b[i-1]);
   gaps.sort((a,b)=>a-b);
   const med = gaps[Math.floor(gaps.length/2)];
   return med>0 ? Math.round(60/med) : "?";
 }
 
-/* ---------- Waveform + Beat-Marker ---------- */
 function drawWaveform(){
-  const cv = $("#wave"); const W=cv.width=cv.clientWidth||600, H=cv.height=64;
-  const cx = cv.getContext("2d");
-  cx.clearRect(0,0,W,H);
+  const cv = $("#wave"); const W=cv.width=cv.clientWidth||600, H=cv.height=60;
+  const cx = cv.getContext("2d"); cx.clearRect(0,0,W,H);
   const data = state.music.audioBuffer.getChannelData(0);
   const step = Math.floor(data.length / W);
   cx.fillStyle = "#3a3a44";
   for(let x=0;x<W;x++){
     let min=1,max=-1;
     for(let j=0;j<step;j++){ const v=data[x*step+j]||0; if(v<min)min=v; if(v>max)max=v; }
-    const y1=(1+min)*H/2, y2=(1+max)*H/2;
-    cx.fillRect(x, y1, 1, Math.max(1,y2-y1));
+    cx.fillRect(x, (1+min)*H/2, 1, Math.max(1,(max-min)*H/2));
   }
-  // Beat-Marker (nur die Schnitt-Beats hervorheben)
   const dur = state.music.duration;
   state.music.beats.forEach((t,i)=>{
     const x = t/dur*W;
     const isCut = (i % state.cutEvery)===0;
-    cx.fillStyle = isCut ? "#ff3b30" : "rgba(255,255,255,.12)";
-    cx.fillRect(x, 0, isCut?2:1, H);
+    const isAccent = state.music.beatAmp[i] >= state.music.accentThresh;
+    if(isCut){ cx.fillStyle = isAccent ? "#ff3b30" : "#ff8f3b"; cx.fillRect(x,0,2,H); }
+    else { cx.fillStyle = "rgba(255,255,255,.10)"; cx.fillRect(x,0,1,H); }
   });
 }
 
 /* ============================================================
-   TIMELINE / SEGMENTE BAUEN
+   TIMELINE
    ============================================================ */
 function maybeBuild(){
-  if(state.clips.length && state.music && state.music.beats.length){
-    buildTimeline();
-  } else {
-    state.segments = []; state.duration = state.music ? state.music.duration : 0;
-    updateScrub();
-  }
+  if(state.clips.length && state.music && state.music.beats.length) buildTimeline();
+  else { state.segments=[]; state.duration = state.music?state.music.duration:0; updateScrub(); }
 }
-
 function buildTimeline(){
-  const beats = state.music.beats;
-  const dur = state.music.duration;
-  // Schnittpunkte = jeder N-te Beat (plus 0 und Ende)
-  const cuts = [0];
-  for(let i=0;i<beats.length;i+=state.cutEvery){ if(beats[i]>0.05) cuts.push(beats[i]); }
-  cuts.push(dur);
-  // dedupe + sortieren
-  const uniq = [...new Set(cuts.map(c=>+c.toFixed(3)))].sort((a,b)=>a-b);
+  const beats = state.music.beats, amp = state.music.beatAmp, dur = state.music.duration;
+  // Schnittpunkte = jeder N-te Bass-Beat, mit Accent-Flag
+  const cuts = [{t:0, accent:false}];
+  for(let i=0;i<beats.length;i+=state.cutEvery){
+    if(beats[i]>0.05) cuts.push({t:beats[i], accent: amp[i] >= state.music.accentThresh});
+  }
+  cuts.push({t:dur, accent:false});
+  // nach Zeit sortieren/dedupen
+  const uniq=[]; const seen=new Set();
+  cuts.sort((a,b)=>a.t-b.t).forEach(c=>{ const k=+c.t.toFixed(3); if(!seen.has(k)){ seen.add(k); uniq.push(c); } });
 
-  // Clip-Reihenfolge
   let idxOrder = state.clips.map((_,i)=>i);
   if(state.order==="shuffle"){
     for(let i=idxOrder.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [idxOrder[i],idxOrder[j]]=[idxOrder[j],idxOrder[i]]; }
   }
 
-  const segs = [];
-  const playhead = new Array(state.clips.length).fill(0); // fortlaufende Position pro Clip
+  const segs=[]; const playhead=new Array(state.clips.length).fill(0);
   for(let i=0;i<uniq.length-1;i++){
-    const start=uniq[i], end=uniq[i+1];
-    const segDur = end-start;
-    if(segDur <= 0.02) continue;
-    const clipIndex = idxOrder[i % idxOrder.length];
+    const start=uniq[i].t, end=uniq[i+1].t, segDur=end-start;
+    if(segDur<=0.02) continue;
+    const clipIndex = idxOrder[segs.length % idxOrder.length];
     const clip = state.clips[clipIndex];
-    let off = 0;
-    if(clip.type === "video"){
+    let off=0;
+    if(clip.type==="video"){
       off = playhead[clipIndex];
-      if(off + segDur > clip.duration) off = 0;    // Clip loopen wenn zu kurz
-      playhead[clipIndex] = off + segDur;
+      if(off+segDur > clip.duration) off=0;
+      playhead[clipIndex]=off+segDur;
     }
-    segs.push({start, end, clipIndex, clipOffset:off});
+    segs.push({start,end,clipIndex,clipOffset:off,accent:uniq[i].accent});
   }
-  state.segments = segs;
-  state.duration = dur;
-  drawWaveform();
-  updateScrub();
-  setBuild(`✓ ${segs.length} Schnitte · ${state.clips.length} Clips im Wechsel`, "ok");
-  drawFrame(0);
+  state.segments=segs; state.duration=dur;
+  drawWaveform(); updateScrub(); drawFrame(0);
+  const nAcc = segs.filter(s=>s.accent).length;
+  setBuild(`✓ ${segs.length} Schnitte · ${nAcc} auf Bass-Drops · Style „${PRESETS[state.preset].name}"`, "ok");
 }
 
 /* ============================================================
-   WIEDERGABE / RENDERN
+   RENDERN mit Effekten
    ============================================================ */
-function currentTime(){
-  if(state.exporting) return state.exportClock;
-  return state.music ? state.music.audioEl.currentTime : 0;
-}
-
-function segAt(t){
-  const s = state.segments;
-  for(let i=0;i<s.length;i++){ if(t>=s[i].start && t<s[i].end) return s[i]; }
-  return s[s.length-1] || null;
-}
+function currentTime(){ return state.exporting ? state.exportClock : (state.music ? state.music.audioEl.currentTime : 0); }
+function segAt(t){ const s=state.segments; for(let i=0;i<s.length;i++){ if(t>=s[i].start && t<s[i].end) return s[i]; } return s[s.length-1]||null; }
 
 let activeSegRef = null;
 function drawFrame(t){
-  const W=preview.width, H=preview.height;
-  pctx.fillStyle="#000"; pctx.fillRect(0,0,W,H);
+  const W=preview.width, H=preview.height, ctx=pctx;
   const seg = segAt(t);
   if(!seg){
-    pctx.fillStyle="#555"; pctx.font="bold 28px sans-serif"; pctx.textAlign="center";
-    pctx.fillText("Vorschau", W/2, H/2);
-    return;
+    ctx.fillStyle="#000"; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle="#555"; ctx.font="bold 28px sans-serif"; ctx.textAlign="center";
+    ctx.fillText("Vorschau", W/2, H/2); activeSegRef=null; return;
   }
+  const p = PRESETS[state.preset];
+  const isCut = seg !== activeSegRef;
+
+  // Crossfade: vorherigen Frame einfrieren bevor neu gezeichnet wird
+  if(isCut && p.transition==="fade" && activeSegRef){
+    snap.width=W; snap.height=H;
+    snap.getContext("2d").drawImage(preview,0,0,W,H); snapT=t;
+  }
+
   const clip = state.clips[seg.clipIndex];
-  const segProg = Math.min(1, Math.max(0, (t - seg.start) / Math.max(0.0001, seg.end - seg.start)));
-
-  if(clip.type === "image"){
-    if(seg !== activeSegRef){
-      const prev = activeSegRef && state.clips[activeSegRef.clipIndex];
-      if(prev && prev.type==="video"){ try{prev.video.pause();}catch(e){} }
-      activeSegRef = seg;
+  // Medien-Steuerung
+  if(isCut){
+    const prev = activeSegRef && state.clips[activeSegRef.clipIndex];
+    if(prev && prev.type==="video"){ try{prev.video.pause();}catch(e){} }
+    activeSegRef = seg;
+    if(clip.type==="video"){
+      try{ clip.video.currentTime = Math.min(seg.clipOffset, Math.max(0,clip.duration-0.05)); }catch(e){}
+      if(state.playing||state.exporting) clip.video.play().catch(()=>{});
     }
-    const zoom = state.photoZoom ? (1 + 0.08*segProg) : 1;   // sanfter Zoom pro Bild
-    if(clip.img) drawCover(pctx, clip.img, W, H, zoom);
-  } else {
-    const v = clip.video;
-    // Segmentwechsel: Video an die richtige Stelle setzen & abspielen
-    if(seg !== activeSegRef){
-      const prev = activeSegRef && state.clips[activeSegRef.clipIndex];
-      if(prev && prev.type==="video"){ try{prev.video.pause();}catch(e){} }
-      activeSegRef = seg;
-      const want = seg.clipOffset + (t - seg.start);
-      try{ v.currentTime = Math.min(want, Math.max(0, clip.duration-0.05)); }catch(e){}
-      if(state.playing || state.exporting){ v.play().catch(()=>{}); }
-    } else {
-      // Drift korrigieren falls nötig
-      const want = seg.clipOffset + (t - seg.start);
-      if(Math.abs(v.currentTime - want) > 0.35){ try{ v.currentTime = Math.min(want, clip.duration-0.05);}catch(e){} }
-    }
-    if(v.readyState>=2) drawCover(pctx, v, W, H);
+  } else if(clip.type==="video"){
+    const want = seg.clipOffset + (t-seg.start);
+    if(Math.abs(clip.video.currentTime - want) > 0.35){ try{clip.video.currentTime=Math.min(want,clip.duration-0.05);}catch(e){} }
   }
 
-  // kurzer Blitz direkt nach einem Schnitt
-  const sinceCut = t - seg.start;
-  if(sinceCut < 0.06){
-    pctx.fillStyle = `rgba(255,255,255,${(0.06-sinceCut)/0.06*0.25})`;
-    pctx.fillRect(0,0,W,H);
+  // Effekt-Parameter
+  const sinceCut = t-seg.start;
+  const segLen = Math.max(0.0001, seg.end-seg.start);
+  const segProg = clamp(sinceCut/segLen, 0, 1);
+  const acc = seg.accent ? 1.6 : 1;
+  const punch = (p.punch||0) * Math.exp(-sinceCut/0.18) * acc;
+  const drift = (p.drift||0) * segProg;
+  const zoom = 1 + drift + punch;
+  let dx=0, dy=0;
+  if(p.shake){ const s = p.shake*Math.exp(-sinceCut/0.12)*acc; dx=(Math.random()*2-1)*s; dy=(Math.random()*2-1)*s; }
+
+  // Hintergrund + Media mit Grade
+  ctx.fillStyle="#000"; ctx.fillRect(0,0,W,H);
+  const src = clip.type==="image" ? clip.img : clip.video;
+  const ready = clip.type==="image" ? !!clip.img : (clip.video.readyState>=2);
+  ctx.save(); ctx.filter = p.grade || "none";
+  if(ready && src) drawCover(ctx, src, W, H, zoom, dx, dy);
+  ctx.restore();
+
+  // Crossfade-Overlay
+  if(p.transition==="fade" && snapT>=0){
+    const a = 1 - ((t-snapT)/0.22);
+    if(a>0){ ctx.save(); ctx.globalAlpha=a; ctx.drawImage(snap,0,0,W,H); ctx.restore(); }
+    else snapT=-1;
   }
+  // Glitch (RGB-Ghost) auf Bass-Drops
+  if(p.glitch && seg.accent && sinceCut<0.10 && ready && src){
+    ctx.save(); ctx.globalCompositeOperation="screen"; ctx.globalAlpha=0.45;
+    const o=Math.round(W*0.015);
+    drawCover(ctx, src, W, H, zoom, -o+dx, dy); drawCover(ctx, src, W, H, zoom, o+dx, dy);
+    ctx.restore();
+  }
+  // Flash
+  const fl = (p.flash||0)*Math.exp(-sinceCut/0.10)*acc;
+  if(fl>0.01){ ctx.fillStyle=`rgba(255,255,255,${Math.min(0.65,fl)})`; ctx.fillRect(0,0,W,H); }
+  // Letterbox
+  if(p.letterbox){ const b=H*p.letterbox; ctx.fillStyle="#000"; ctx.fillRect(0,0,W,b); ctx.fillRect(0,H-b,W,b); }
+  // Text
+  drawOverlays(ctx, t, W, H, seg, sinceCut);
 }
 
-function drawCover(ctx, src, W, H, zoom){
+function drawCover(ctx, src, W, H, zoom, dx, dy){
   const vw = src.videoWidth || src.naturalWidth || src.width || 16;
   const vh = src.videoHeight || src.naturalHeight || src.height || 9;
-  let scale = Math.max(W/vw, H/vh);
-  if(zoom) scale *= zoom;
-  const dw = vw*scale, dh = vh*scale;
-  ctx.drawImage(src, (W-dw)/2, (H-dh)/2, dw, dh);
+  let scale = Math.max(W/vw, H/vh); if(zoom) scale *= zoom;
+  const dw=vw*scale, dh=vh*scale;
+  ctx.drawImage(src, (W-dw)/2+(dx||0), (H-dh)/2+(dy||0), dw, dh);
 }
 
-/* ---------- Render-Loop ---------- */
+function drawOverlays(ctx, t, W, H, seg, sinceCut){
+  ctx.textAlign="center"; ctx.textBaseline="middle";
+  if(state.hookText && t < state.hookSeconds){
+    const a = clamp(Math.min(t/0.3, (state.hookSeconds-t)/0.3), 0, 1);
+    const pop = t<0.25 ? (0.85+0.15*(t/0.25)) : 1;
+    drawText(ctx, state.hookText.toUpperCase(), W/2, H*0.17, Math.round(W*0.085*pop), a);
+  }
+  if(state.brandText){
+    const pop = seg.accent && sinceCut<0.15 ? 1+0.12*(1-sinceCut/0.15) : 1;
+    drawText(ctx, state.brandText.toUpperCase(), W/2, H*0.9, Math.round(W*0.052*pop), 0.95);
+  }
+}
+function drawText(ctx, txt, x, y, size, alpha){
+  ctx.save(); ctx.filter="none"; ctx.globalAlpha=alpha;
+  ctx.font=`800 ${size}px -apple-system,"Segoe UI",Roboto,Arial,sans-serif`;
+  ctx.lineJoin="round";
+  ctx.lineWidth=Math.max(2,size*0.14); ctx.strokeStyle="rgba(0,0,0,.6)"; ctx.strokeText(txt,x,y);
+  ctx.fillStyle="#fff"; ctx.fillText(txt,x,y);
+  ctx.restore();
+}
+
+/* ---------- Loop ---------- */
 function loop(){
   if(state.playing && !state.exporting){
-    const t = currentTime();
-    drawFrame(t);
-    updateScrub(t);
-    if(state.music && t >= state.duration-0.03){ pausePlay(); seek(0); }
+    const t=currentTime(); drawFrame(t); updateScrub(t);
+    if(state.music && t>=state.duration-0.03){ pausePlay(); seek(0); }
   }
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
 
 function playPause(){ state.playing ? pausePlay() : startPlay(); }
-function startPlay(){
-  if(!state.music || !state.segments.length) return;
-  state.playing = true; $("#playBtn").textContent="⏸";
-  state.music.audioEl.play().catch(()=>{});
-}
-function pausePlay(){
-  state.playing=false; $("#playBtn").textContent="▶";
-  if(state.music) state.music.audioEl.pause();
-  state.clips.forEach(c=>{ try{c.video.pause();}catch(e){} });
-}
-function seek(t){
-  if(!state.music) return;
-  t = Math.max(0, Math.min(t, state.duration));
-  state.music.audioEl.currentTime = t;
-  activeSegRef = null;
-  drawFrame(t);
-  updateScrub(t);
-}
-function updateScrub(t){
-  t = (t==null)?currentTime():t;
-  const sc=$("#scrub");
-  if(state.duration>0){ sc.value = Math.round(t/state.duration*1000); }
-  $("#timeLbl").textContent = fmt(t)+" / "+fmt(state.duration);
-}
+function startPlay(){ if(!state.music||!state.segments.length) return; state.playing=true; $("#playBtn").textContent="⏸"; state.music.audioEl.play().catch(()=>{}); }
+function pausePlay(){ state.playing=false; $("#playBtn").textContent="▶"; if(state.music) state.music.audioEl.pause(); state.clips.forEach(c=>{ if(c.video){try{c.video.pause();}catch(e){}} }); }
+function seek(t){ if(!state.music) return; t=clamp(t,0,state.duration); state.music.audioEl.currentTime=t; activeSegRef=null; snapT=-1; drawFrame(t); updateScrub(t); }
+function updateScrub(t){ t=(t==null)?currentTime():t; if(state.duration>0) $("#scrub").value=Math.round(t/state.duration*1000); $("#timeLbl").textContent=fmt(t)+" / "+fmt(state.duration); }
 
 /* ============================================================
-   EXPORT  (Canvas-Stream + Musik -> MediaRecorder -> .webm)
+   EXPORT
    ============================================================ */
 async function exportVideo(){
   if(!state.segments.length || state.exporting) return;
-  pausePlay();
-  state.exporting = true;
-  const bar=$("#expBar"), barI=$("#expBarI");
-  bar.classList.add("show"); barI.style.width="0%";
-  setMain("Export läuft … bitte Tab im Vordergrund lassen (Aufnahme in Echtzeit).", "work");
-  $("#exportBtn").disabled = true;
+  pausePlay(); state.exporting=true;
+  const bar=$("#expBar"), barI=$("#expBarI"); bar.classList.add("show"); barI.style.width="0%";
+  setMain(`Exportiere Version „${PRESETS[state.preset].name}" (${state.aspect}) … Tab im Vordergrund lassen.`, "work");
+  $("#exportBtn").disabled=true;
 
-  // Audio-Graph für den Export
   const ac = new (window.AudioContext||window.webkitAudioContext)();
   const dest = ac.createMediaStreamDestination();
-  const src = ac.createBufferSource(); src.buffer = state.music.audioBuffer;
+  const src = ac.createBufferSource(); src.buffer=state.music.audioBuffer;
   src.connect(dest); src.connect(ac.destination);
 
-  const fps = 30;
+  const fps=30;
   const vStream = preview.captureStream(fps);
-  const stream = new MediaStream([ ...vStream.getVideoTracks(), ...dest.stream.getAudioTracks() ]);
+  const stream = new MediaStream([...vStream.getVideoTracks(), ...dest.stream.getAudioTracks()]);
+  const types=["video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"];
+  const mime=types.find(t=>MediaRecorder.isTypeSupported(t))||"";
+  const rec = new MediaRecorder(stream, mime?{mimeType:mime,videoBitsPerSecond:9_000_000}:{});
+  const chunks=[]; rec.ondataavailable=e=>{ if(e.data.size) chunks.push(e.data); };
+  const done = new Promise(r=>rec.onstop=r);
 
-  const types = ["video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"];
-  const mime = types.find(t=>MediaRecorder.isTypeSupported(t)) || "";
-  const rec = new MediaRecorder(stream, mime?{mimeType:mime,videoBitsPerSecond:8_000_000}:{});
-  const chunks=[];
-  rec.ondataavailable = e=>{ if(e.data.size) chunks.push(e.data); };
+  state.clips.forEach(c=>{ if(c.video){try{c.video.pause(); c.video.currentTime=0;}catch(e){}} });
+  activeSegRef=null; snapT=-1;
 
-  const done = new Promise(res=> rec.onstop = res);
-
-  // Clips vorbereiten
-  state.clips.forEach(c=>{ try{ c.video.pause(); c.video.currentTime=0; }catch(e){} });
-  activeSegRef = null;
-
-  const t0 = ac.currentTime;
-  src.start();
-  rec.start(100);
-
-  // eigene Render-Schleife mit AudioContext als Uhr
+  const t0=ac.currentTime; src.start(); rec.start(100);
   await new Promise(resolve=>{
     function tick(){
-      const t = ac.currentTime - t0;
-      state.exportClock = t;
-      drawFrame(t);
-      barI.style.width = Math.min(100, t/state.duration*100).toFixed(1)+"%";
-      if(t >= state.duration){ resolve(); return; }
+      const t=ac.currentTime-t0; state.exportClock=t; drawFrame(t);
+      barI.style.width=Math.min(100,t/state.duration*100).toFixed(1)+"%";
+      if(t>=state.duration){ resolve(); return; }
       requestAnimationFrame(tick);
-    }
-    tick();
+    } tick();
   });
+  try{src.stop();}catch(e){} rec.stop(); await done; ac.close();
 
-  try{ src.stop(); }catch(e){}
-  rec.stop();
-  await done;
-  ac.close();
+  const blob=new Blob(chunks,{type:"video/webm"});
+  const fn=`weax-${state.preset}-${state.aspect.replace(":","x")}-${Date.now()}.webm`;
+  const saved=await saveFile(blob, fn);
 
-  const blob = new Blob(chunks, {type:"video/webm"});
-  const filename = `beatcut-${Date.now()}.webm`;
-  const saved = await saveFile(blob, filename);
-
-  state.exporting=false; state.exportClock=0; activeSegRef=null;
-  state.clips.forEach(c=>{ try{c.video.pause();}catch(e){} });
-  bar.classList.remove("show");
-  $("#exportBtn").disabled=false;
-  setMain(saved===false ? "Export abgebrochen." : "✓ Fertig! Die Videodatei wurde gespeichert.", saved===false?"":"ok");
+  state.exporting=false; state.exportClock=0; activeSegRef=null; snapT=-1;
+  state.clips.forEach(c=>{ if(c.video){try{c.video.pause();}catch(e){}} });
+  bar.classList.remove("show"); $("#exportBtn").disabled=false;
+  setMain(saved===false ? "Export abgebrochen." : "✓ Fertig! Video gespeichert. Für weitere Versionen Style/Format wechseln & erneut exportieren.", saved===false?"":"ok");
   drawFrame(0);
 }
-
-/* Datei speichern: im claude.ai-Artifact über die downloads-Capability,
-   sonst (eigene Datei / GitHub Pages) klassisch per Download-Link. */
 async function saveFile(blob, filename){
   try{
-    if(window.claude && typeof window.claude.use === "function"){
+    if(window.claude && typeof window.claude.use==="function"){
       const dl = await window.claude.use("downloads");
-      if(dl){
-        try{ await dl.save({filename, data:blob}); return true; }
-        catch(err){ if(err && err.code==="declined") return false; /* sonst Fallback */ }
-      }
+      if(dl){ try{ await dl.save({filename, data:blob}); return true; }
+        catch(err){ if(err && err.code==="declined") return false; } }
     }
-  }catch(e){ /* Fallback unten */ }
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url), 4000);
-  return true;
+  }catch(e){}
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),4000); return true;
 }
 
 /* ============================================================
-   UI-VERDRAHTUNG
+   UI
    ============================================================ */
 function setMusic(m,c){ const e=$("#musicStatus"); e.textContent=m; e.className="status "+(c||""); }
 function setBuild(m,c){ const e=$("#buildStatus"); e.textContent=m; e.className="status "+(c||""); }
 function setMain(m,c){ const e=$("#mainStatus"); e.textContent=m; e.className="status "+(c||""); }
 function updateExportBtn(){
   const ready = state.clips.length && state.music && state.segments.length;
-  $("#exportBtn").disabled = !ready;
-  $("#playBtn").disabled = !ready;
-  $("#scrub").disabled = !ready;
-  $("#buildBtn").disabled = !(state.clips.length && state.music);
+  $("#exportBtn").disabled=!ready; $("#playBtn").disabled=!ready; $("#scrub").disabled=!ready;
+  $("#buildBtn").disabled=!(state.clips.length && state.music);
 }
 
-// Drag & Drop + Klick für Clips
-function wireDrop(dropEl, inputEl, handler){
-  dropEl.onclick = ()=>inputEl.click();
-  inputEl.onchange = e=>{ handler(e.target.files); inputEl.value=""; };
+// Style-Buttons bauen
+function renderStyles(){
+  const box=$("#styles"); box.innerHTML="";
+  Object.entries(PRESETS).forEach(([key,p])=>{
+    const b=document.createElement("div");
+    b.className="style-btn"+(key===state.preset?" on":"");
+    b.innerHTML=`<div class="t">${p.name}</div><div class="d">${p.desc}</div>`;
+    b.onclick=()=>{
+      state.preset=key; state.cutEvery=p.cutEvery;
+      [...$("#cutSeg").children].forEach(x=>x.classList.toggle("on", +x.dataset.n===p.cutEvery));
+      renderStyles(); maybeBuild();
+      if(!state.music || !state.clips.length) drawFrame(currentTime());
+    };
+    box.appendChild(b);
+  });
+}
+renderStyles();
+
+function wireDrop(dropEl,inputEl,handler){
+  dropEl.onclick=()=>inputEl.click();
+  inputEl.onchange=e=>{ handler(e.target.files); inputEl.value=""; };
   ["dragover","dragenter"].forEach(ev=>dropEl.addEventListener(ev,e=>{e.preventDefault(); dropEl.classList.add("hot");}));
   ["dragleave","drop"].forEach(ev=>dropEl.addEventListener(ev,e=>{e.preventDefault(); dropEl.classList.remove("hot");}));
-  dropEl.addEventListener("drop", e=>{ if(e.dataTransfer.files.length) handler(e.dataTransfer.files); });
+  dropEl.addEventListener("drop",e=>{ if(e.dataTransfer.files.length) handler(e.dataTransfer.files); });
 }
 wireDrop($("#clipDrop"), $("#clipInput"), addClips);
 wireDrop($("#musicDrop"), $("#musicInput"), files=>{ if(files[0]) loadMusic(files[0]); });
 
-$("#playBtn").onclick = playPause;
-$("#exportBtn").onclick = exportVideo;
-$("#buildBtn").onclick = ()=>{ if(state.music){ detectBeats().then(()=>{ drawWaveform(); maybeBuild(); }); } };
-
-$("#scrub").oninput = e=>{ seek(e.target.value/1000*state.duration); };
-
-$("#cutSeg").onclick = e=>{
-  const b=e.target.closest("button"); if(!b) return;
-  [...$("#cutSeg").children].forEach(x=>x.classList.remove("on"));
-  b.classList.add("on"); state.cutEvery = +b.dataset.n; maybeBuild();
-};
+$("#playBtn").onclick=playPause;
+$("#exportBtn").onclick=exportVideo;
+$("#buildBtn").onclick=()=>{ if(state.music) detectBeats().then(()=>{ drawWaveform(); maybeBuild(); }); };
+$("#scrub").oninput=e=>seek(e.target.value/1000*state.duration);
+$("#cutSeg").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; [...$("#cutSeg").children].forEach(x=>x.classList.remove("on")); b.classList.add("on"); state.cutEvery=+b.dataset.n; maybeBuild(); };
 const sensNames={1:"Sehr niedrig",2:"Niedrig",3:"Mittel",4:"Hoch",5:"Sehr hoch"};
-$("#sens").oninput = e=>{ state.sensitivity=+e.target.value; $("#sensVal").textContent=sensNames[state.sensitivity]; };
-$("#aspect").onchange = e=>{ state.aspect=e.target.value; applyAspect(); };
-$("#order").onchange = e=>{ state.order=e.target.value; maybeBuild(); };
-$("#photoZoom").onchange = e=>{ state.photoZoom=e.target.checked; drawFrame(currentTime()); };
-
-// Space = Play/Pause
+$("#sens").oninput=e=>{ state.sensitivity=+e.target.value; $("#sensVal").textContent=sensNames[state.sensitivity]; };
+$("#aspect").onchange=e=>{ state.aspect=e.target.value; applyAspect(); };
+$("#order").onchange=e=>{ state.order=e.target.value; maybeBuild(); };
+$("#hookText").oninput=e=>{ state.hookText=e.target.value; drawFrame(currentTime()); };
+$("#brandText").oninput=e=>{ state.brandText=e.target.value; drawFrame(currentTime()); };
 document.addEventListener("keydown",e=>{ if(e.code==="Space" && !/input|select|textarea/i.test(e.target.tagName)){ e.preventDefault(); playPause(); }});
 
-applyAspect();
-drawFrame(0);
+applyAspect(); drawFrame(0);
 </script>
 </body>
 </html>
