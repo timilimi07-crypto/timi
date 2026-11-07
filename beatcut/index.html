@@ -95,11 +95,11 @@
   <!-- LINKS: Clips -->
   <div class="col">
     <div class="card">
-      <h3>1 · Clips</h3>
+      <h3>1 · Clips &amp; Bilder</h3>
       <div class="drop" id="clipDrop">
-        Videos hierher ziehen<br><span style="font-size:12px">oder klicken zum Auswählen</span>
+        Videos &amp; Bilder hierher ziehen<br><span style="font-size:12px">oder klicken zum Auswählen</span>
       </div>
-      <input type="file" id="clipInput" accept="video/*" multiple hidden>
+      <input type="file" id="clipInput" accept="video/*,image/*" multiple hidden>
       <div class="clips" id="clipList"><div class="empty">Noch keine Clips</div></div>
     </div>
 
@@ -165,6 +165,13 @@
         </select>
       </div>
 
+      <div class="field">
+        <label style="cursor:pointer; align-items:center">
+          <input type="checkbox" id="photoZoom" checked style="width:auto; margin-right:8px; accent-color:var(--accent)">
+          Foto-Zoom (sanfter Zoom pro Bild)
+        </label>
+      </div>
+
       <button id="buildBtn" style="width:100%" disabled>Takt neu berechnen</button>
       <div class="status" id="buildStatus"></div>
     </div>
@@ -172,8 +179,9 @@
     <div class="card">
       <h3>Info</h3>
       <div class="hint" id="infoBox">
-        Lade ein paar Clips und einen Song. BeatCut erkennt die Beats und schneidet
-        deine Clips automatisch im Takt. Alles bleibt auf deinem Gerät — es wird nichts hochgeladen.
+        Lade <b>Videos und/oder Bilder</b> und einen Song. BeatCut erkennt die Beats und schneidet
+        deine Clips automatisch im Takt — Fotos bekommen einen sanften Zoom. Du kannst Videos und
+        Bilder frei mischen. Alles bleibt auf deinem Gerät — es wird nichts hochgeladen.
       </div>
     </div>
   </div>
@@ -198,6 +206,7 @@ const state = {
   sensitivity: 3,
   aspect: "9:16",
   order: "seq",
+  photoZoom: true,
   segments: [],         // {start,end,clipIndex,clipOffset}
   duration: 0,
   playing: false,
@@ -223,7 +232,7 @@ function loadVideo(file){
     const v = document.createElement("video");
     v.src = url; v.muted = true; v.playsInline = true; v.preload = "auto";
     v.onloadedmetadata = ()=>{
-      const clip = {id:crypto.randomUUID(), name:file.name, url, video:v, duration:v.duration||0, thumb:null};
+      const clip = {id:crypto.randomUUID(), name:file.name, url, type:"video", video:v, duration:v.duration||0, thumb:null};
       // Thumbnail vom ersten Frame
       v.currentTime = Math.min(0.1, (v.duration||1)/2);
       v.onseeked = ()=>{
@@ -241,15 +250,32 @@ function loadVideo(file){
 
 async function addClips(files){
   for(const f of files){
-    if(!f.type.startsWith("video/")) continue;
     try{
-      const clip = await loadVideo(f);
+      let clip;
+      if(f.type.startsWith("video/")) clip = await loadVideo(f);
+      else if(f.type.startsWith("image/")) clip = await loadImage(f);
+      else continue;
       state.clips.push(clip);
     }catch(e){ console.warn(e); setMain("⚠ "+e.message); }
   }
   renderClipList();
   maybeBuild();
   updateExportBtn();
+}
+
+/* Bild als Clip laden (statisch, füllt sein Beat-Segment) */
+function loadImage(file){
+  return new Promise((res,rej)=>{
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = ()=>{
+      const c = document.createElement("canvas"); c.width=128; c.height=80;
+      drawCover(c.getContext("2d"), img, 128, 80);
+      res({id:crypto.randomUUID(), name:file.name, url, type:"image", img, duration:0, thumb:c});
+    };
+    img.onerror = ()=>rej(new Error("Bild konnte nicht geladen werden: "+file.name));
+    img.src = url;
+  });
 }
 
 /* ---------- Clip-Liste rendern ---------- */
@@ -264,7 +290,7 @@ function renderClipList(){
       <canvas width="64" height="40"></canvas>
       <div class="meta">
         <div class="name">${c.name}</div>
-        <div class="sub">${c.duration.toFixed(1)}s</div>
+        <div class="sub">${c.type==="image" ? "Bild" : c.duration.toFixed(1)+"s"}</div>
       </div>
       <div class="ctr">
         <button data-up>▲</button>
@@ -410,9 +436,12 @@ function buildTimeline(){
     if(segDur <= 0.02) continue;
     const clipIndex = idxOrder[i % idxOrder.length];
     const clip = state.clips[clipIndex];
-    let off = playhead[clipIndex];
-    if(off + segDur > clip.duration) off = 0;      // Clip loopen wenn zu kurz
-    playhead[clipIndex] = off + segDur;
+    let off = 0;
+    if(clip.type === "video"){
+      off = playhead[clipIndex];
+      if(off + segDur > clip.duration) off = 0;    // Clip loopen wenn zu kurz
+      playhead[clipIndex] = off + segDur;
+    }
     segs.push({start, end, clipIndex, clipOffset:off});
   }
   state.segments = segs;
@@ -448,21 +477,33 @@ function drawFrame(t){
     return;
   }
   const clip = state.clips[seg.clipIndex];
-  const v = clip.video;
+  const segProg = Math.min(1, Math.max(0, (t - seg.start) / Math.max(0.0001, seg.end - seg.start)));
 
-  // Segmentwechsel: Video an die richtige Stelle setzen & abspielen
-  if(seg !== activeSegRef){
-    if(activeSegRef){ const pv=state.clips[activeSegRef.clipIndex].video; try{pv.pause();}catch(e){} }
-    activeSegRef = seg;
-    const want = seg.clipOffset + (t - seg.start);
-    try{ v.currentTime = Math.min(want, Math.max(0, clip.duration-0.05)); }catch(e){}
-    if(state.playing || state.exporting){ v.play().catch(()=>{}); }
+  if(clip.type === "image"){
+    if(seg !== activeSegRef){
+      const prev = activeSegRef && state.clips[activeSegRef.clipIndex];
+      if(prev && prev.type==="video"){ try{prev.video.pause();}catch(e){} }
+      activeSegRef = seg;
+    }
+    const zoom = state.photoZoom ? (1 + 0.08*segProg) : 1;   // sanfter Zoom pro Bild
+    if(clip.img) drawCover(pctx, clip.img, W, H, zoom);
   } else {
-    // Drift korrigieren falls nötig
-    const want = seg.clipOffset + (t - seg.start);
-    if(Math.abs(v.currentTime - want) > 0.35){ try{ v.currentTime = Math.min(want, clip.duration-0.05);}catch(e){} }
+    const v = clip.video;
+    // Segmentwechsel: Video an die richtige Stelle setzen & abspielen
+    if(seg !== activeSegRef){
+      const prev = activeSegRef && state.clips[activeSegRef.clipIndex];
+      if(prev && prev.type==="video"){ try{prev.video.pause();}catch(e){} }
+      activeSegRef = seg;
+      const want = seg.clipOffset + (t - seg.start);
+      try{ v.currentTime = Math.min(want, Math.max(0, clip.duration-0.05)); }catch(e){}
+      if(state.playing || state.exporting){ v.play().catch(()=>{}); }
+    } else {
+      // Drift korrigieren falls nötig
+      const want = seg.clipOffset + (t - seg.start);
+      if(Math.abs(v.currentTime - want) > 0.35){ try{ v.currentTime = Math.min(want, clip.duration-0.05);}catch(e){} }
+    }
+    if(v.readyState>=2) drawCover(pctx, v, W, H);
   }
-  if(v.readyState>=2) drawCover(pctx, v, W, H);
 
   // kurzer Blitz direkt nach einem Schnitt
   const sinceCut = t - seg.start;
@@ -472,11 +513,13 @@ function drawFrame(t){
   }
 }
 
-function drawCover(ctx, v, W, H){
-  const vw = v.videoWidth||16, vh = v.videoHeight||9;
-  const scale = Math.max(W/vw, H/vh);
+function drawCover(ctx, src, W, H, zoom){
+  const vw = src.videoWidth || src.naturalWidth || src.width || 16;
+  const vh = src.videoHeight || src.naturalHeight || src.height || 9;
+  let scale = Math.max(W/vw, H/vh);
+  if(zoom) scale *= zoom;
   const dw = vw*scale, dh = vh*scale;
-  ctx.drawImage(v, (W-dw)/2, (H-dh)/2, dw, dh);
+  ctx.drawImage(src, (W-dw)/2, (H-dh)/2, dw, dh);
 }
 
 /* ---------- Render-Loop ---------- */
@@ -644,6 +687,7 @@ const sensNames={1:"Sehr niedrig",2:"Niedrig",3:"Mittel",4:"Hoch",5:"Sehr hoch"}
 $("#sens").oninput = e=>{ state.sensitivity=+e.target.value; $("#sensVal").textContent=sensNames[state.sensitivity]; };
 $("#aspect").onchange = e=>{ state.aspect=e.target.value; applyAspect(); };
 $("#order").onchange = e=>{ state.order=e.target.value; maybeBuild(); };
+$("#photoZoom").onchange = e=>{ state.photoZoom=e.target.checked; drawFrame(currentTime()); };
 
 // Space = Play/Pause
 document.addEventListener("keydown",e=>{ if(e.code==="Space" && !/input|select|textarea/i.test(e.target.tagName)){ e.preventDefault(); playPause(); }});
