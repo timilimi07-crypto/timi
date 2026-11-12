@@ -1,0 +1,165 @@
+//@version=6
+// SPY/QQQ Put- & Call-Walls → ES / NQ
+//
+// Zeichnet die Put- und Call-Walls aus den SPY- bzw. QQQ-Optionen in den
+// ES- bzw. NQ-Chart (auch MES/MNQ). Die Umrechnung läuft live über das
+// Verhältnis Future ÷ ETF, d. h. die Linien wandern mit der Basis mit.
+//
+//   ES / MES  → SPY-Walls
+//   NQ / MNQ  → QQQ-Walls
+//   SPY / QQQ → Walls direkt auf den ETF-Strikes
+//
+// TradingView liefert in Pine KEINE Options-Daten (Open Interest).
+// Darum werden die Walls jede Woche in die Felder "SPY Walls" / "QQQ Walls"
+// eingefügt. Das Skript tradingview/options_walls.py holt sie automatisch
+// (Verfall = Freitag der laufenden Woche, nur Strikes mit OI über 20.000)
+// und gibt genau die Zeilen aus, die hier eingefügt werden.
+//
+// Format:  Datum; Strike+C/P=OpenInterest; ...
+//   2026-11-13; 600C=45210; 610C=28800; 580P=52100; 570P=31050
+// Trennzeichen ; , oder Zeilenumbruch. Ohne "=OI" wird der Strike immer gezeigt.
+indicator("SPY/QQQ Options-Walls → ES/NQ", "Walls", overlay = true, max_lines_count = 200, max_labels_count = 200)
+
+// ───────────────────────── Inputs ─────────────────────────
+grpD    = "Daten (jeden Freitag/Wochenende neu einfügen)"
+spyData = input.text_area("2026-11-13; 600C=45210; 610C=28800; 580P=52100; 570P=31050", "SPY Walls", group = grpD, tooltip = "Ausgabe von options_walls.py einfügen.\nFormat: JJJJ-MM-TT; 600C=45210; 580P=52100")
+qqqData = input.text_area("2026-11-13; 620C=33400; 630C=24100; 600P=41800; 590P=22600", "QQQ Walls", group = grpD, tooltip = "Ausgabe von options_walls.py einfügen.\nFormat: JJJJ-MM-TT; 620C=33400; 600P=41800")
+minOI   = input.int(20000, "Mindest-Open-Interest (über)", minval = 0, step = 1000, group = grpD)
+
+grpS      = "Symbol & Umrechnung"
+srcMode   = input.string("Auto", "ETF-Quelle", options = ["Auto", "SPY", "QQQ"], group = grpS, tooltip = "Auto: NQ/MNQ → QQQ, sonst SPY.")
+spySym    = input.symbol("AMEX:SPY", "SPY-Symbol", group = grpS)
+qqqSym    = input.symbol("NASDAQ:QQQ", "QQQ-Symbol", group = grpS)
+ratioMode = input.string("Live", "Umrechnung", options = ["Live", "Fester Faktor"], group = grpS, tooltip = "Live: Faktor = Future ÷ ETF aus der letzten Kerze, auf der beide gehandelt haben.")
+fixSpy    = input.float(10.05, "Fester Faktor ES/SPY", step = 0.01, group = grpS)
+fixQqq    = input.float(41.0, "Fester Faktor NQ/QQQ", step = 0.01, group = grpS)
+
+grpC      = "Call-Walls"
+callCol   = input.color(#089981, "Farbe", group = grpC)
+callW     = input.int(2, "Dicke", minval = 1, maxval = 10, group = grpC)
+callStyle = input.string("Durchgezogen", "Stil", options = ["Durchgezogen", "Gestrichelt", "Gepunktet"], group = grpC)
+
+grpP     = "Put-Walls"
+putCol   = input.color(#F23645, "Farbe", group = grpP)
+putW     = input.int(2, "Dicke", minval = 1, maxval = 10, group = grpP)
+putStyle = input.string("Durchgezogen", "Stil", options = ["Durchgezogen", "Gestrichelt", "Gepunktet"], group = grpP)
+
+grpM      = "Anzeige"
+hlMax     = input.bool(true, "Größte Call-/Put-Wall dicker", group = grpM)
+hlExtra   = input.int(2, "Zusatz-Dicke größte Wall", minval = 0, maxval = 5, group = grpM)
+extRight  = input.bool(false, "Linien nach rechts verlängern", group = grpM)
+showLbl   = input.bool(true, "Labels zeigen", group = grpM)
+showOI    = input.bool(true, "Strike & OI im Label", group = grpM)
+lblSize   = input.string("Klein", "Label-Größe", options = ["Winzig", "Klein", "Normal"], group = grpM)
+showTable = input.bool(true, "Status-Box zeigen", group = grpM)
+
+// ───────────────────────── Helfer ─────────────────────────
+f_style(string s) => s == "Gestrichelt" ? line.style_dashed : s == "Gepunktet" ? line.style_dotted : line.style_solid
+sz = lblSize == "Winzig" ? size.tiny : lblSize == "Normal" ? size.normal : size.small
+
+f_k(float v) => na(v) ? "" : v >= 1000 ? str.tostring(v / 1000, "#.#") + "k" : str.tostring(v, "#")
+
+type Wall
+    float strike
+    bool  isCall
+    float oi
+
+// Parst "2026-11-13; 600C=45210; 580P=52100" → [Walls, Verfallszeit]
+f_parse(string raw, int minOi) =>
+    string s = str.replace_all(str.replace_all(str.upper(raw), "\n", ";"), ",", ";")
+    walls = array.new<Wall>()
+    int expT = na
+    for p in str.split(s, ";")
+        string e = str.replace_all(str.trim(p), " ", "")
+        if str.length(e) == 0
+            continue
+        if str.match(e, "^[0-9]{4}-[0-9]{2}-[0-9]{2}$") != ""
+            d = str.split(e, "-")
+            expT := timestamp("America/New_York", int(str.tonumber(d.get(0))), int(str.tonumber(d.get(1))), int(str.tonumber(d.get(2))), 16, 0)
+            continue
+        kv = str.split(e, "=")
+        string left = kv.get(0)
+        float oi = kv.size() > 1 ? str.tonumber(kv.get(1)) : na
+        bool isC = str.endswith(left, "C")
+        bool isP = str.endswith(left, "P")
+        if (isC or isP) and str.length(left) > 1
+            float k = str.tonumber(str.substring(left, 0, str.length(left) - 1))
+            if not na(k) and (na(oi) or oi > minOi)
+                walls.push(Wall.new(k, isC, oi))
+    [walls, expT]
+
+// ───────────────────────── Symbol & Faktor ─────────────────────────
+string root  = syminfo.root
+bool   isNQ  = root == "NQ" or root == "MNQ"
+bool   useQ  = srcMode == "QQQ" or (srcMode == "Auto" and (isNQ or syminfo.ticker == "QQQ"))
+bool   onEtf = syminfo.ticker == "SPY" or syminfo.ticker == "QQQ"
+string etfSym  = useQ ? qqqSym : spySym
+string etfName = useQ ? "QQQ" : "SPY"
+
+// gaps_on: nur echte gemeinsame Kerzen → kein veralteter ETF-Kurs über Nacht
+etfClose = request.security(etfSym, timeframe.period, close, gaps = barmerge.gaps_on, lookahead = barmerge.lookahead_off)
+var float liveRatio = na
+if not na(etfClose) and etfClose > 0
+    liveRatio := close / etfClose
+
+float ratio = onEtf ? 1.0 : ratioMode == "Fester Faktor" ? (useQ ? fixQqq : fixSpy) : liveRatio
+
+// ───────────────────────── Zeichnen ─────────────────────────
+var line[]  lines  = array.new<line>()
+var label[] labels = array.new<label>()
+var table   tbl    = table.new(position.top_right, 1, 4, bgcolor = color.new(color.black, 80), border_width = 0)
+
+if barstate.islast
+    for l in lines
+        l.delete()
+    lines.clear()
+    for lb in labels
+        lb.delete()
+    labels.clear()
+
+    [walls, expT] = f_parse(useQ ? qqqData : spyData, minOI)
+
+    // größte Walls je Seite
+    float maxC = na
+    float maxP = na
+    for w in walls
+        if not na(w.oi)
+            if w.isCall
+                maxC := na(maxC) ? w.oi : math.max(maxC, w.oi)
+            else
+                maxP := na(maxP) ? w.oi : math.max(maxP, w.oi)
+
+    // Zeitraum: Sonntag 18:00 ET (Wochenstart Futures) bis Freitag 16:00 ET (Verfall)
+    int x2 = na(expT) ? time + 5 * 86400000 : expT
+    int x1 = na(expT) ? time - 5 * 86400000 : expT - 4 * 86400000 - 22 * 3600000
+    int nC = 0
+    int nP = 0
+
+    if not na(ratio)
+        for w in walls
+            float px  = math.round_to_mintick(w.strike * ratio)
+            bool  big = hlMax and not na(w.oi) and w.oi == (w.isCall ? maxC : maxP)
+            color col = w.isCall ? callCol : putCol
+            int   wd  = (w.isCall ? callW : putW) + (big ? hlExtra : 0)
+            lines.push(line.new(x1, px, x2, px, xloc = xloc.bar_time, extend = extRight ? extend.right : extend.none, color = col, width = wd, style = f_style(w.isCall ? callStyle : putStyle)))
+            if w.isCall
+                nC += 1
+            else
+                nP += 1
+            if showLbl
+                string txt = (w.isCall ? "Call-Wall " : "Put-Wall ") + str.tostring(px, format.mintick)
+                if showOI and not onEtf
+                    txt += "  (" + etfName + " " + str.tostring(w.strike) + (w.isCall ? "C" : "P") + (na(w.oi) ? "" : " · " + f_k(w.oi)) + ")"
+                else if showOI and not na(w.oi)
+                    txt += "  (OI " + f_k(w.oi) + ")"
+                labels.push(label.new(x2, px, txt, xloc = xloc.bar_time, style = label.style_label_left, color = color.new(col, 100), textcolor = col, size = sz))
+
+    if showTable
+        bool stale = na(expT) or timenow > expT + 2 * 3600000
+        string hdr = etfName + (onEtf ? "" : " → " + root) + (onEtf ? "" : "  ·  Faktor " + (na(ratio) ? "–" : str.tostring(ratio, "#.####")))
+        string vf  = na(expT) ? "Verfall: kein Datum" : "Verfall: " + str.format_time(expT, "EEE dd.MM.yyyy", "America/New_York")
+        string cnt = str.tostring(nC) + " Call- / " + str.tostring(nP) + " Put-Walls · OI > " + f_k(minOI)
+        tbl.cell(0, 0, hdr, text_color = color.white, text_size = size.small, text_halign = text.align_left)
+        tbl.cell(0, 1, vf, text_color = color.white, text_size = size.small, text_halign = text.align_left)
+        tbl.cell(0, 2, cnt, text_color = color.white, text_size = size.small, text_halign = text.align_left)
+        tbl.cell(0, 3, stale ? "⚠ Daten abgelaufen – neue Woche einfügen" : "✓ Daten aktuell", text_color = stale ? color.orange : color.lime, text_size = size.small, text_halign = text.align_left)
