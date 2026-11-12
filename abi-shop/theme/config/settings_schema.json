@@ -1,0 +1,47 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "ABIversum",
+    "theme_version": "1.0.0",
+    "theme_author": "Abiturjahrgang 2027",
+    "theme_documentation_url": "https://help.shopify.com/de/manual/online-store/themes",
+    "theme_support_url": "https://help.shopify.com/de"
+  },
+  {
+    "name": "Farben",
+    "settings": [
+      { "type": "color", "id": "color_bg", "label": "Hintergrund", "default": "#0b0820" },
+      { "type": "color", "id": "color_bg_2", "label": "Hintergrund 2 (Karten)", "default": "#1a1240" },
+      { "type": "color", "id": "color_text", "label": "Text", "default": "#f5f2ff" },
+      { "type": "color", "id": "color_accent_1", "label": "Akzent 1 (Pink)", "default": "#ff3d9a" },
+      { "type": "color", "id": "color_accent_2", "label": "Akzent 2 (Lila)", "default": "#8b5cf6" },
+      { "type": "color", "id": "color_accent_3", "label": "Akzent 3 (Cyan)", "default": "#22d3ee" }
+    ]
+  },
+  {
+    "name": "Schrift & Form",
+    "settings": [
+      { "type": "font_picker", "id": "type_heading_font", "label": "Überschriften", "default": "montserrat_n4" },
+      { "type": "font_picker", "id": "type_body_font", "label": "Fließtext", "default": "assistant_n4" },
+      { "type": "range", "id": "radius", "label": "Ecken-Rundung", "min": 0, "max": 36, "step": 2, "unit": "px", "default": 22 }
+    ]
+  },
+  {
+    "name": "Coole Effekte ✨",
+    "settings": [
+      { "type": "paragraph", "content": "Alle Effekte schalten sich automatisch ab, wenn jemand auf dem Handy/PC „Bewegung reduzieren“ aktiviert hat." },
+      { "type": "checkbox", "id": "fx_stars", "label": "Sternenhimmel mit Sternschnuppen", "default": true },
+      { "type": "checkbox", "id": "fx_sparkles", "label": "Glitzer-Spur hinter der Maus", "default": true },
+      { "type": "checkbox", "id": "fx_confetti", "label": "Konfetti beim In-den-Warenkorb-Legen", "default": true },
+      { "type": "checkbox", "id": "fx_tilt", "label": "3D-Kippeffekt bei Produktkarten", "default": true },
+      { "type": "checkbox", "id": "fx_grain", "label": "Leichtes Film-Korn", "default": true },
+      { "type": "text", "id": "text_added", "label": "Text nach „In den Warenkorb“", "default": "Yeah! Liegt im Warenkorb 🎉" }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      { "type": "image_picker", "id": "favicon", "label": "Favicon", "info": "Quadratisch, mind. 64 × 64 px" }
+    ]
+  }
+]

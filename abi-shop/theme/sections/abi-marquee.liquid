@@ -1,0 +1,35 @@
+<section class="marquee {% if section.settings.tilt %}marquee--tilt{% endif %}" {{ section.shopify_attributes }}>
+  <div class="marquee__track" style="--speed: {{ section.settings.speed }}s">
+    {%- for n in (1..4) -%}
+      <div class="marquee__group" {% if n > 1 %}aria-hidden="true"{% endif %}>
+        {%- for block in section.blocks -%}
+          <span class="marquee__item" {% if n == 1 %}{{ block.shopify_attributes }}{% endif %}>{{ block.settings.text }}</span>
+          <span class="marquee__sep">✦</span>
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Laufschrift groß",
+  "class": "section-marquee",
+  "settings": [
+    { "type": "range", "id": "speed", "label": "Dauer pro Runde", "min": 10, "max": 80, "step": 5, "unit": "s", "default": 30 },
+    { "type": "checkbox", "id": "tilt", "label": "Schräg stellen", "default": true }
+  ],
+  "blocks": [
+    { "type": "item", "name": "Textstück", "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "ABI 2027" } ] }
+  ],
+  "presets": [{
+    "name": "Laufschrift groß",
+    "blocks": [
+      { "type": "item", "settings": { "text": "ABI 2027" } },
+      { "type": "item", "settings": { "text": "MERCH DROP" } },
+      { "type": "item", "settings": { "text": "KUCHEN VORBESTELLEN" } },
+      { "type": "item", "settings": { "text": "CRÊPES 🥞" } }
+    ]
+  }]
+}
+{% endschema %}

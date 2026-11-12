@@ -1,0 +1,126 @@
+{%- comment -%}
+  Vorbestell-Produktseite für Kuchen, Crêpes, Waffeln, Muffins usw.
+  Benutzt von templates/product.vorbestellung.json.
+
+  So legt ihr einen neuen Kuchen an:
+  1. Shopify-Admin → Produkte → Produkt hinzufügen (Name, Bild, Preis, Beschreibung)
+  2. Rechts unter „Theme-Vorlage“: „vorbestellung“ auswählen
+  3. Optional: Varianten anlegen (z. B. „1 Stück“ / „Ganzer Kuchen“ oder „Nutella“ / „Zimt & Zucker“)
+  4. Optional: Allergene im Metafeld „Allergene“ (custom.allergene) eintragen
+  5. Produkt zur Kollektion „Kuchen & Crêpes“ hinzufügen
+
+  Die Abholtermine stellt ihr im Theme-Editor ein (Produktseite „vorbestellung“ → „Abholtermine“).
+  Name, Termin und Anmerkung erscheinen in der Bestellung als Zusatzinfos (Line-Item-Properties).
+{%- endcomment -%}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign slots = section.settings.pickup_dates | newline_to_br | split: '<br />' -%}
+<section class="section product product--preorder" data-product-section {{ section.shopify_attributes }}>
+  <div class="container product__grid">
+    {%- render 'product-gallery', product: product, placeholder_emoji: '🍰' -%}
+
+    <div class="product__info">
+      <p class="eyebrow eyebrow--warm">⏰ {{ section.settings.eyebrow }}</p>
+      <h1 class="product__title">{{ product.title }}</h1>
+      {%- render 'price', variant: current_variant -%}
+      <p class="product__tax">{{ section.settings.tax_line }}</p>
+
+      {%- if section.settings.deadline != blank -%}
+        <p class="deadline">🔥 {{ section.settings.deadline }}</p>
+      {%- endif -%}
+
+      {%- form 'product', product, class: 'buy buy--preorder', data-ajax-cart: 'true' -%}
+        <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+        {%- render 'variant-picker', product: product -%}
+
+        <div class="fields">
+          <label class="field">
+            <span>📅 Abholtermin *</span>
+            {%- assign has_slots = false -%}
+            {%- for s in slots -%}{%- assign t = s | strip -%}{%- if t != blank -%}{%- assign has_slots = true -%}{%- endif -%}{%- endfor -%}
+            {%- if has_slots -%}
+              <select name="properties[Abholtermin]" required>
+                <option value="" disabled selected>Bitte wählen …</option>
+                {%- for s in slots -%}
+                  {%- assign t = s | strip -%}
+                  {%- if t != blank -%}<option value="{{ t | escape }}">{{ t }}</option>{%- endif -%}
+                {%- endfor -%}
+              </select>
+            {%- else -%}
+              <input type="date" name="properties[Abholdatum]" required data-min-days="{{ section.settings.min_days }}">
+            {%- endif -%}
+          </label>
+
+          <label class="field">
+            <span>🙋 {{ section.settings.name_label }} *</span>
+            <input type="text" name="properties[Name / Kurs]" required maxlength="60" placeholder="{{ section.settings.name_placeholder | escape }}" autocomplete="name">
+          </label>
+
+          {%- if section.settings.show_note -%}
+            <label class="field">
+              <span>💬 Anmerkung <small>(optional, z. B. Allergien, Wunschsorte)</small></span>
+              <textarea name="properties[Anmerkung]" rows="2" maxlength="200"></textarea>
+            </label>
+          {%- endif -%}
+        </div>
+
+        <div class="buy__row">
+          <div class="qty" data-qty>
+            <button type="button" data-qty-minus aria-label="Weniger">−</button>
+            <input type="number" name="quantity" value="1" min="1" max="{{ section.settings.max_qty }}" aria-label="Menge">
+            <button type="button" data-qty-plus aria-label="Mehr">+</button>
+          </div>
+          <button type="submit" class="btn btn--warm btn--block" data-add-btn {% unless current_variant.available %}disabled{% endunless %}>
+            <span data-add-label>{% if current_variant.available %}{{ section.settings.button_text }}{% else %}Leider weg 😢{% endif %}</span>
+          </button>
+        </div>
+        <p class="buy__error" data-buy-error hidden></p>
+      {%- endform -%}
+
+      <div class="paypal-note">
+        <span class="paypal-note__logo"><b>Pay</b><i>Pal</i></span>
+        <span>{{ section.settings.paypal_text }}</span>
+      </div>
+
+      <div class="product__desc rte">{{ product.description }}</div>
+
+      <details class="faq__item" open>
+        <summary>⚠️ Allergene & Zutaten<span class="faq__plus" aria-hidden="true"></span></summary>
+        <div class="faq__answer rte">
+          {%- if product.metafields.custom.allergene != blank -%}
+            <p><strong>Enthält:</strong> {{ product.metafields.custom.allergene }}</p>
+          {%- endif -%}
+          {{ section.settings.allergen_text }}
+        </div>
+      </details>
+      <details class="faq__item">
+        <summary>📍 Abholung<span class="faq__plus" aria-hidden="true"></span></summary>
+        <div class="faq__answer rte">{{ section.settings.pickup_text }}</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Produkt (Vorbestellung)",
+  "class": "section-main-product",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Kleine Zeile", "default": "Jetzt vorbestellen" },
+    { "type": "text", "id": "deadline", "label": "Bestellschluss-Hinweis", "default": "Bestellschluss: immer am Vortag um 18 Uhr" },
+    { "type": "header", "content": "Abholtermine" },
+    { "type": "textarea", "id": "pickup_dates", "label": "Abholtermine (einer pro Zeile)", "default": "Fr, 27.11.2026 · 1. große Pause\nFr, 27.11.2026 · 2. große Pause\nFr, 04.12.2026 · 1. große Pause\nFr, 04.12.2026 · 2. große Pause\nSa, 12.12.2026 · Weihnachtsbasar 10–14 Uhr", "info": "Einfach Zeilen hinzufügen/löschen. Leer lassen = Kund*innen wählen ein Datum im Kalender." },
+    { "type": "range", "id": "min_days", "label": "Nur Kalender: frühestens in X Tagen", "min": 0, "max": 14, "step": 1, "default": 2 },
+    { "type": "header", "content": "Felder" },
+    { "type": "text", "id": "name_label", "label": "Name-Feld Beschriftung", "default": "Dein Name & Kurs/Klasse" },
+    { "type": "text", "id": "name_placeholder", "label": "Name-Feld Platzhalter", "default": "z. B. Mia Schulz, Q2" },
+    { "type": "checkbox", "id": "show_note", "label": "Anmerkungsfeld anzeigen", "default": true },
+    { "type": "range", "id": "max_qty", "label": "Maximale Menge pro Bestellung", "min": 1, "max": 30, "step": 1, "default": 10 },
+    { "type": "text", "id": "button_text", "label": "Button-Text", "default": "Vorbestellen 🍰" },
+    { "type": "header", "content": "Texte" },
+    { "type": "text", "id": "tax_line", "label": "Steuer-Hinweis", "default": "Endpreis – gem. § 19 UStG wird keine Umsatzsteuer ausgewiesen" },
+    { "type": "text", "id": "paypal_text", "label": "PayPal-Hinweis", "default": "Du zahlst jetzt per PayPal und holst einfach ab – kein Bargeld nötig." },
+    { "type": "richtext", "id": "allergen_text", "label": "Allergen-Hinweis", "default": "<p>Unsere Kuchen und Crêpes werden privat von Schüler*innen und Eltern gebacken. Sie können Spuren von Gluten, Ei, Milch, Nüssen, Erdnüssen, Soja und Sesam enthalten. Bei Fragen zu Allergenen schreib uns vor der Bestellung.</p>" },
+    { "type": "richtext", "id": "pickup_text", "label": "Abhol-Info", "default": "<p>Abholung am Abi-Stand in der Aula. Bitte nenne einfach deinen Namen. Nicht abgeholte Ware kann nach Ende des Termins leider nicht erstattet werden.</p>" }
+  ]
+}
+{% endschema %}

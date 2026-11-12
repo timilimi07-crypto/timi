@@ -1,0 +1,46 @@
+<section class="section steps" {{ section.shopify_attributes }}>
+  <div class="container">
+    <header class="section__head reveal">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="section__title glow-text">{{ section.settings.title }}</h2>
+    </header>
+    <ol class="steps__list">
+      {%- for block in section.blocks -%}
+        <li class="steps__item reveal" style="--d: {{ forloop.index0 | times: 90 }}ms" {{ block.shopify_attributes }} data-tilt>
+          <span class="steps__num">{{ forloop.index }}</span>
+          <span class="steps__icon" aria-hidden="true">{{ block.settings.icon }}</span>
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.text }}</p>
+        </li>
+      {%- endfor -%}
+    </ol>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "So funktioniert's",
+  "class": "section-steps",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Kleine Zeile", "default": "Easy wie 1, 2, 3" },
+    { "type": "text", "id": "title", "label": "Überschrift", "default": "So funktioniert die Vorbestellung" }
+  ],
+  "blocks": [
+    { "type": "step", "name": "Schritt", "settings": [
+      { "type": "text", "id": "icon", "label": "Emoji", "default": "🍰" },
+      { "type": "text", "id": "title", "label": "Titel", "default": "Aussuchen" },
+      { "type": "textarea", "id": "text", "label": "Text", "default": "Kuchen, Crêpes oder Merch auswählen." }
+    ] }
+  ],
+  "max_blocks": 6,
+  "presets": [{
+    "name": "So funktioniert's",
+    "blocks": [
+      { "type": "step", "settings": { "icon": "🍰", "title": "Aussuchen", "text": "Kuchen, Crêpes oder Merch auswählen." } },
+      { "type": "step", "settings": { "icon": "📅", "title": "Termin wählen", "text": "Abholtermin und Name + Kurs angeben." } },
+      { "type": "step", "settings": { "icon": "💸", "title": "Per PayPal zahlen", "text": "Sicher an der Kasse bezahlen." } },
+      { "type": "step", "settings": { "icon": "🎉", "title": "Abholen", "text": "Am Stand vorbeikommen, Namen sagen, genießen!" } }
+    ]
+  }]
+}
+{% endschema %}

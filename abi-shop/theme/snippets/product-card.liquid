@@ -1,0 +1,36 @@
+{%- comment -%}
+  Produktkarte. Aufruf: {% render 'product-card', product: product, index: forloop.index %}
+  Produkte mit der Vorlage „vorbestellung“ (Kuchen, Crêpes …) bekommen automatisch das Vorbestell-Badge.
+{%- endcomment -%}
+{%- liquid
+  assign is_preorder = false
+  if product.template_suffix == 'vorbestellung'
+    assign is_preorder = true
+  endif
+  assign second = product.media[1]
+-%}
+<article class="card reveal" style="--d: {{ index | default: 1 | modulo: 6 | times: 70 }}ms" data-tilt>
+  <a href="{{ product.url }}" class="card__link" aria-label="{{ product.title | escape }}">
+    <div class="card__media">
+      {%- if product.featured_media -%}
+        {{ product.featured_media | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '(min-width: 990px) 25vw, 50vw', class: 'card__img card__img--1', alt: product.featured_media.alt | default: product.title }}
+        {%- if second and second.media_type == 'image' -%}
+          {{ second | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '(min-width: 990px) 25vw, 50vw', class: 'card__img card__img--2', alt: '' }}
+        {%- endif -%}
+      {%- else -%}
+        <div class="card__placeholder" aria-hidden="true">{% if is_preorder %}🍰{% else %}👕{% endif %}</div>
+      {%- endif -%}
+
+      <div class="card__badges">
+        {%- if is_preorder -%}<span class="badge badge--pre">⏰ Vorbestellen</span>{%- endif -%}
+        {%- unless product.available -%}<span class="badge badge--out">Ausverkauft</span>{%- endunless -%}
+        {%- if product.compare_at_price > product.price -%}<span class="badge badge--sale">Sale</span>{%- endif -%}
+      </div>
+      <span class="card__shine" aria-hidden="true"></span>
+    </div>
+    <div class="card__body">
+      <h3 class="card__title">{{ product.title }}</h3>
+      {%- render 'price', product: product -%}
+    </div>
+  </a>
+</article>

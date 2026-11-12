@@ -1,0 +1,82 @@
+<section class="section cart" {{ section.shopify_attributes }}>
+  <div class="container">
+    <header class="section__head reveal">
+      <p class="eyebrow">Fast geschafft</p>
+      <h1 class="section__title glow-text">Dein Warenkorb 🛒</h1>
+    </header>
+
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post" class="cart__grid" id="cart-form">
+        <div class="cart__items">
+          {%- for item in cart.items -%}
+            <div class="cart-item glass">
+              <a href="{{ item.url }}" class="cart-item__img">
+                {%- if item.image -%}{{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', alt: item.title }}{%- else -%}<span aria-hidden="true">🎁</span>{%- endif -%}
+              </a>
+              <div class="cart-item__info">
+                <a href="{{ item.url }}" class="cart-item__title">{{ item.product.title }}</a>
+                {%- unless item.product.has_only_default_variant -%}<p class="cart-item__meta">{{ item.variant.title }}</p>{%- endunless -%}
+                {%- for p in item.properties -%}
+                  {%- assign first_char = p.first | slice: 0 -%}
+                  {%- if p.last != blank and first_char != '_' -%}
+                    <p class="cart-item__meta"><strong>{{ p.first }}:</strong> {{ p.last }}</p>
+                  {%- endif -%}
+                {%- endfor -%}
+                <p class="cart-item__price">{{ item.final_price | money }}</p>
+              </div>
+              <div class="cart-item__actions">
+                <div class="qty" data-qty>
+                  <button type="button" data-qty-minus aria-label="Weniger">−</button>
+                  <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" aria-label="Menge für {{ item.title | escape }}" data-autosubmit>
+                  <button type="button" data-qty-plus aria-label="Mehr">+</button>
+                </div>
+                <a href="{{ item.url_to_remove }}" class="cart-item__remove">Entfernen</a>
+                <p class="cart-item__total">{{ item.final_line_price | money }}</p>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <aside class="cart__summary glass">
+          <h2>Zusammenfassung</h2>
+          <div class="cart__row"><span>Zwischensumme</span><strong>{{ cart.total_price | money }}</strong></div>
+          <p class="cart__small">{{ section.settings.shipping_text }}</p>
+
+          {%- if section.settings.show_note -%}
+            <label class="field">
+              <span>💬 Nachricht an uns (optional)</span>
+              <textarea name="note" rows="2">{{ cart.note }}</textarea>
+            </label>
+          {%- endif -%}
+
+          <label class="check">
+            <input type="checkbox" required id="cart-terms">
+            <div>{{ section.settings.terms_text }}</div>
+          </label>
+
+          <button type="submit" name="checkout" class="btn btn--paypal btn--block" data-magnetic>
+            Weiter zur Kasse · <b>Pay</b><i>Pal</i>
+          </button>
+          <button type="submit" name="update" formnovalidate class="btn btn--ghost btn--block btn--small">Warenkorb aktualisieren</button>
+        </aside>
+      </form>
+    {%- else -%}
+      <div class="empty center glass">
+        <p class="empty__emoji" aria-hidden="true">🫙</p>
+        <p>Dein Warenkorb ist leer – das ist trauriger als eine 5 in Mathe.</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--glow" data-magnetic>Jetzt stöbern</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Warenkorb",
+  "settings": [
+    { "type": "text", "id": "shipping_text", "label": "Versand-/Abholhinweis", "default": "Abholung an der Schule ist kostenlos. Die Abholung wählst du an der Kasse aus." },
+    { "type": "checkbox", "id": "show_note", "label": "Nachrichtenfeld anzeigen", "default": true },
+    { "type": "richtext", "id": "terms_text", "label": "Text an der Checkbox", "default": "<p>Ich habe die <a href=\"/policies/terms-of-service\">AGB</a> und die <a href=\"/policies/privacy-policy\">Datenschutzerklärung</a> gelesen. Bei Lebensmitteln und personalisierter Kleidung besteht kein Widerrufsrecht (<a href=\"/policies/refund-policy\">Details</a>).</p>" }
+  ]
+}
+{% endschema %}

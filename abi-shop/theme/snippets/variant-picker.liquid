@@ -1,0 +1,22 @@
+{%- comment -%}
+  Größen/Farben als Buttons. Die Varianten (z. B. S, M, L, XL) legt ihr im Shopify-Admin beim Produkt an.
+{%- endcomment -%}
+{%- unless product.has_only_default_variant -%}
+  <div class="vp" data-variant-picker>
+    {%- for option in product.options_with_values -%}
+      <fieldset class="vp__group">
+        <legend>{{ option.name }}: <strong data-option-label="{{ forloop.index0 }}">{{ option.selected_value }}</strong></legend>
+        <div class="vp__pills">
+          {%- for value in option.values -%}
+            {%- assign oid = section.id | append: '-' | append: forloop.parentloop.index0 | append: '-' | append: forloop.index0 -%}
+            <input type="radio" class="vp__input" id="{{ oid }}" name="option-{{ section.id }}-{{ forloop.parentloop.index0 }}" value="{{ value | escape }}" data-option-index="{{ forloop.parentloop.index0 }}" {% if option.selected_value == value %}checked{% endif %}>
+            <label class="vp__pill" for="{{ oid }}">{{ value }}</label>
+          {%- endfor -%}
+        </div>
+      </fieldset>
+    {%- endfor -%}
+    <script type="application/json" data-variants>
+      {{ product.variants | json }}
+    </script>
+  </div>
+{%- endunless -%}

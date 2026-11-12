@@ -1,0 +1,21 @@
+{
+  "type": "header",
+  "name": "Header",
+  "sections": {
+    "announcement": {
+      "type": "abi-announcement",
+      "settings": {
+        "text": "🎓 Abi 2027 · Merch & Kuchen jetzt vorbestellen · Bezahlung sicher per PayPal 💸",
+        "link": ""
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "menu": "main-menu",
+        "logo_width": 120
+      }
+    }
+  },
+  "order": ["announcement", "header"]
+}

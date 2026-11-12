@@ -1,0 +1,95 @@
+{
+  "sections": {
+    "hero": {
+      "type": "abi-hero",
+      "settings": {
+        "kicker": "Abiturjahrgang 2027 · Offizieller Shop",
+        "motto": "ABIversum",
+        "year": "2027",
+        "slogan": "12 Jahre im Orbit – jetzt starten wir durch. 🚀",
+        "hint": "Psst: Klick mal 5× aufs Motto 👀",
+        "floaters": "🎓 🚀 🍰 👕 🥞 ⭐ 🪐 🧁 🎉 💜 🌙 🧢",
+        "btn1_label": "👕 Zum Abi-Merch",
+        "btn1_link": "#merch",
+        "btn2_label": "🍰 Kuchen vorbestellen",
+        "btn2_link": "#kuchen",
+        "countdown_label": "Countdown bis zum Abiball 🪩",
+        "countdown_date": "2027-07-03T19:00",
+        "countdown_done": "WIR HABEN FERTIG! 🎉"
+      }
+    },
+    "marquee_1": {
+      "type": "abi-marquee",
+      "blocks": {
+        "m1": { "type": "item", "settings": { "text": "ABIVERSUM 2027" } },
+        "m2": { "type": "item", "settings": { "text": "MERCH DROP 👕" } },
+        "m3": { "type": "item", "settings": { "text": "KUCHEN VORBESTELLEN 🍰" } },
+        "m4": { "type": "item", "settings": { "text": "CRÊPES 🥞" } },
+        "m5": { "type": "item", "settings": { "text": "PAYPAL 💸" } }
+      },
+      "block_order": ["m1", "m2", "m3", "m4", "m5"],
+      "settings": { "speed": 30, "tilt": true }
+    },
+    "merch": {
+      "type": "abi-collection",
+      "settings": {
+        "collection": "abi-merch",
+        "eyebrow": "Drop 01 · Limited",
+        "title": "Abi-Merch 👕",
+        "text": "<p>Hoodies, Shirts, Caps & Co. mit unserem Motto. Größe wählen, ab in den Warenkorb – fertig.</p>",
+        "style": "merch",
+        "limit": 8,
+        "columns": "4",
+        "show_all": true,
+        "anchor": "merch"
+      }
+    },
+    "steps": {
+      "type": "abi-steps",
+      "blocks": {
+        "s1": { "type": "step", "settings": { "icon": "🍰", "title": "Aussuchen", "text": "Kuchen, Crêpes, Muffins oder Merch auswählen." } },
+        "s2": { "type": "step", "settings": { "icon": "📅", "title": "Termin wählen", "text": "Abholtermin aussuchen und Name + Kurs eintragen." } },
+        "s3": { "type": "step", "settings": { "icon": "💸", "title": "Per PayPal zahlen", "text": "Sicher an der Kasse bezahlen – kein Bargeld nötig." } },
+        "s4": { "type": "step", "settings": { "icon": "🎉", "title": "Abholen & genießen", "text": "Am Abi-Stand Namen sagen und Leckerei mitnehmen." } }
+      },
+      "block_order": ["s1", "s2", "s3", "s4"],
+      "settings": { "eyebrow": "Easy wie 1, 2, 3", "title": "So funktioniert's" }
+    },
+    "bakery": {
+      "type": "abi-collection",
+      "settings": {
+        "collection": "kuchen-crepes",
+        "eyebrow": "Frisch gebacken · nur auf Vorbestellung",
+        "title": "Kuchen, Crêpes & mehr 🥞",
+        "text": "<p>Reservier dir dein Stück, bevor's weg ist! Jeder Euro geht in unseren Abiball.</p>",
+        "style": "bakery",
+        "limit": 12,
+        "columns": "3",
+        "show_all": true,
+        "anchor": "kuchen"
+      }
+    },
+    "marquee_2": {
+      "type": "abi-marquee",
+      "blocks": {
+        "n1": { "type": "item", "settings": { "text": "DANKE FÜR EUREN SUPPORT 💜" } },
+        "n2": { "type": "item", "settings": { "text": "JEDER EURO → ABIBALL 🪩" } }
+      },
+      "block_order": ["n1", "n2"],
+      "settings": { "speed": 40, "tilt": false }
+    },
+    "faq": {
+      "type": "abi-faq",
+      "blocks": {
+        "q1": { "type": "qa", "settings": { "question": "Wie kann ich bezahlen?", "answer": "<p>Ausschließlich per <strong>PayPal</strong>. Über PayPal kannst du auch ohne Konto per Lastschrift oder Kreditkarte zahlen.</p>" } },
+        "q2": { "type": "qa", "settings": { "question": "Wo und wann hole ich meinen Kuchen ab?", "answer": "<p>Am Abi-Stand in der Aula zu dem Termin, den du bei der Bestellung gewählt hast. Einfach deinen Namen sagen.</p>" } },
+        "q3": { "type": "qa", "settings": { "question": "Wann kommt mein Merch?", "answer": "<p>Wir sammeln die Bestellungen bis zum Bestellschluss und bestellen dann gesammelt. Die Lieferzeit steht beim Produkt – wir verteilen alles in der Schule.</p>" } },
+        "q4": { "type": "qa", "settings": { "question": "Kann ich eine Bestellung zurückgeben?", "answer": "<p>Bei Lebensmitteln und personalisierter Kleidung gibt es kein Widerrufsrecht. Bei normalem Merch hast du 14 Tage Widerrufsrecht – nutze dafür einfach unseren Button „Vertrag widerrufen“ im Footer.</p>" } },
+        "q5": { "type": "qa", "settings": { "question": "Gibt es Infos zu Allergenen?", "answer": "<p>Ja, bei jedem Kuchen steht, was drin ist. Bei Allergien schreib uns vorher über das Kontaktformular.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5"],
+      "settings": { "eyebrow": "FAQ", "title": "Noch Fragen? 🤔" }
+    }
+  },
+  "order": ["hero", "marquee_1", "merch", "steps", "bakery", "marquee_2", "faq"]
+}

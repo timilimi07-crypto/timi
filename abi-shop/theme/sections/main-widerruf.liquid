@@ -1,0 +1,55 @@
+{%- comment -%}
+  Elektronische Widerrufsfunktion („Vertrag widerrufen“-Button), Pflicht für Online-Shops seit 19.06.2026
+  (§ 356a BGB, Umsetzung der EU-Richtlinie 2023/2673).
+  Seite anlegen: Onlineshop → Seiten → „Vertrag widerrufen“, Theme-Vorlage „widerruf“.
+  WICHTIG: Nach Eingang sofort eine Eingangsbestätigung per E-Mail an die Kundin/den Kunden schicken
+  (Inhalt der Erklärung + Datum/Uhrzeit des Eingangs). Vorlage: rechtstexte/05-Widerrufsbestaetigung-Vorlage.md
+{%- endcomment -%}
+<section class="section page" {{ section.shopify_attributes }}>
+  <div class="container container--narrow">
+    <header class="section__head reveal">
+      <p class="eyebrow">Rechtliches</p>
+      <h1 class="section__title glow-text">{{ page.title | default: 'Vertrag widerrufen' }}</h1>
+    </header>
+
+    <div class="glass form-card" data-withdraw>
+      {%- form 'contact', id: 'WithdrawForm' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="success">
+            <h2>✅ Dein Widerruf ist eingegangen</h2>
+            <p>Eingang: <strong data-now></strong>. Du bekommst zusätzlich eine Bestätigung per E-Mail.</p>
+          </div>
+        {%- else -%}
+          {%- if form.errors -%}<p class="buy__error">{{ form.errors | default_errors }}</p>{%- endif -%}
+          <p>{{ section.settings.intro }}</p>
+          <button type="button" class="btn btn--glow" data-withdraw-open>Vertrag widerrufen</button>
+
+          <div class="fields" data-withdraw-form hidden>
+            <input type="hidden" name="contact[Betreff]" value="WIDERRUF eines Vertrags">
+            <label class="field"><span>Vor- und Nachname *</span><input type="text" name="contact[Name]" required autocomplete="name"></label>
+            <label class="field"><span>E-Mail-Adresse *</span><input type="email" name="contact[email]" required autocomplete="email"></label>
+            <label class="field"><span>Bestellnummer *</span><input type="text" name="contact[Bestellnummer]" required placeholder="#1001"></label>
+            <label class="field"><span>Welche Artikel? <small>(leer = ganze Bestellung)</small></span><input type="text" name="contact[Artikel]"></label>
+            <input type="hidden" name="contact[body]" value="Hiermit widerrufe ich den von mir abgeschlossenen Vertrag über die oben genannte Bestellung.">
+            <p class="cart__small">„Hiermit widerrufe ich den von mir abgeschlossenen Vertrag über die oben genannte Bestellung.“</p>
+            <button type="submit" class="btn btn--warm">Widerruf bestätigen</button>
+          </div>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+
+    {%- if section.settings.info != blank -%}
+      <div class="rte page__content glass">{{ section.settings.info }}</div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Vertrag widerrufen",
+  "settings": [
+    { "type": "textarea", "id": "intro", "label": "Einleitung", "default": "Du möchtest einen Kauf widerrufen? Klick auf „Vertrag widerrufen“, gib deine Daten ein und bestätige. Hinweis: Bei Lebensmitteln (Kuchen, Crêpes …) und bei personalisierter Kleidung (z. B. mit deinem Namen) gibt es kein Widerrufsrecht." },
+    { "type": "richtext", "id": "info", "label": "Zusatzinfo", "default": "<p>Die vollständige Widerrufsbelehrung findest du <a href=\"/policies/refund-policy\">hier</a>.</p>" }
+  ]
+}
+{% endschema %}

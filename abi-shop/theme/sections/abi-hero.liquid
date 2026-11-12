@@ -1,0 +1,82 @@
+{%- comment -%}
+  Startseiten-Hero mit Abimotto, Countdown und schwebenden Emojis.
+  Alles im Theme-Editor änderbar: Onlineshop → Themes → Anpassen → „Abi-Hero“.
+{%- endcomment -%}
+<section class="hero" data-hero {{ section.shopify_attributes }}>
+  <div class="hero__floaters" aria-hidden="true">
+    {%- assign floaters = section.settings.floaters | split: ' ' -%}
+    {%- for f in floaters -%}
+      {%- if f != blank -%}
+        <span class="floater" style="--i: {{ forloop.index }}; --x: {{ forloop.index | times: 37 | modulo: 92 | plus: 4 }}%; --y: {{ forloop.index | times: 53 | modulo: 80 | plus: 6 }}%;" data-depth="{{ forloop.index | modulo: 4 | plus: 1 }}">{{ f }}</span>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  <div class="container hero__inner">
+    {%- if section.settings.kicker != blank -%}
+      <p class="hero__kicker reveal"><span class="pulse-dot"></span>{{ section.settings.kicker }}</p>
+    {%- endif -%}
+
+    <h1 class="hero__title" data-split data-easter>
+      <span class="hero__title-main">{{ section.settings.motto }}</span>
+      {%- if section.settings.year != blank -%}<span class="hero__title-year">{{ section.settings.year }}</span>{%- endif -%}
+    </h1>
+
+    {%- if section.settings.slogan != blank -%}
+      <p class="hero__slogan reveal">{{ section.settings.slogan }}</p>
+    {%- endif -%}
+
+    <div class="hero__ctas reveal">
+      {%- if section.settings.btn1_label != blank -%}
+        <a href="{{ section.settings.btn1_link | default: routes.all_products_collection_url }}" class="btn btn--glow" data-magnetic>{{ section.settings.btn1_label }}</a>
+      {%- endif -%}
+      {%- if section.settings.btn2_label != blank -%}
+        <a href="{{ section.settings.btn2_link | default: routes.all_products_collection_url }}" class="btn btn--ghost" data-magnetic>{{ section.settings.btn2_label }}</a>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.countdown_date != blank -%}
+      <div class="countdown reveal" data-countdown="{{ section.settings.countdown_date }}" data-done="{{ section.settings.countdown_done | escape }}">
+        <p class="countdown__label">{{ section.settings.countdown_label }}</p>
+        <div class="countdown__grid">
+          <div class="countdown__cell"><span data-cd="d">--</span><small>Tage</small></div>
+          <div class="countdown__cell"><span data-cd="h">--</span><small>Std</small></div>
+          <div class="countdown__cell"><span data-cd="m">--</span><small>Min</small></div>
+          <div class="countdown__cell"><span data-cd="s">--</span><small>Sek</small></div>
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.hint != blank -%}
+      <p class="hero__hint">{{ section.settings.hint }}</p>
+    {%- endif -%}
+  </div>
+
+  <div class="hero__scroll" aria-hidden="true"><span></span></div>
+</section>
+
+{% schema %}
+{
+  "name": "Abi-Hero (Motto)",
+  "class": "section-hero",
+  "settings": [
+    { "type": "header", "content": "Abimotto" },
+    { "type": "text", "id": "kicker", "label": "Kleine Zeile über dem Motto", "default": "Abiturjahrgang 2027 · Offizieller Shop" },
+    { "type": "text", "id": "motto", "label": "Abimotto", "default": "ABIversum" },
+    { "type": "text", "id": "year", "label": "Jahrgang", "default": "2027" },
+    { "type": "text", "id": "slogan", "label": "Abispruch", "default": "12 Jahre im Orbit – jetzt starten wir durch. 🚀" },
+    { "type": "text", "id": "hint", "label": "Hinweis unten (optional)", "default": "Psst: Klick mal 5× aufs Motto 👀" },
+    { "type": "text", "id": "floaters", "label": "Schwebende Emojis (mit Leerzeichen trennen)", "default": "🎓 🚀 🍰 👕 🥞 ⭐ 🪐 🧁 🎉 💜 🌙 🧢" },
+    { "type": "header", "content": "Buttons" },
+    { "type": "text", "id": "btn1_label", "label": "Button 1 Text", "default": "👕 Zum Abi-Merch" },
+    { "type": "url", "id": "btn1_link", "label": "Button 1 Link" },
+    { "type": "text", "id": "btn2_label", "label": "Button 2 Text", "default": "🍰 Kuchen vorbestellen" },
+    { "type": "url", "id": "btn2_link", "label": "Button 2 Link" },
+    { "type": "header", "content": "Countdown" },
+    { "type": "text", "id": "countdown_label", "label": "Countdown-Überschrift", "default": "Countdown bis zum Abiball 🪩" },
+    { "type": "text", "id": "countdown_date", "label": "Zieldatum", "default": "2027-07-03T19:00", "info": "Format: JJJJ-MM-TTTHH:MM, z. B. 2027-07-03T19:00. Leer lassen = kein Countdown." },
+    { "type": "text", "id": "countdown_done", "label": "Text, wenn der Countdown abgelaufen ist", "default": "WIR HABEN FERTIG! 🎉" }
+  ],
+  "presets": [{ "name": "Abi-Hero (Motto)" }]
+}
+{% endschema %}

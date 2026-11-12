@@ -1,0 +1,47 @@
+<header class="header" data-header {{ section.shopify_attributes }}>
+  <div class="header__inner container">
+    <a href="{{ routes.root_url }}" class="header__logo" aria-label="{{ shop.name }} – Startseite">
+      {%- if section.settings.logo != blank -%}
+        {{ section.settings.logo | image_url: width: 400 | image_tag: width: section.settings.logo_width, height: nil, alt: shop.name, style: 'height:auto' }}
+      {%- else -%}
+        <span class="header__logo-cap" aria-hidden="true">🎓</span>
+        <span class="header__logo-text">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+
+    <nav class="header__nav" id="abi-nav" aria-label="Hauptnavigation">
+      <ul>
+        {%- for link in section.settings.menu.links -%}
+          <li><a href="{{ link.url }}" {% if link.active %}aria-current="page"{% endif %}>{{ link.title }}</a></li>
+        {%- else -%}
+          <li><a href="{{ routes.collections_url }}">Shop</a></li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a href="{{ routes.search_url }}" class="icon-btn" aria-label="Suche">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </a>
+      <a href="{{ routes.cart_url }}" class="icon-btn cart-btn" aria-label="Warenkorb">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1.2 12.2a1 1 0 0 1-1 .8H8.2a1 1 0 0 1-1-.8z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+        <span class="cart-btn__count" data-cart-count {% if cart.item_count == 0 %}hidden{% endif %}>{{ cart.item_count }}</span>
+      </a>
+      <button class="icon-btn header__burger" type="button" aria-controls="abi-nav" aria-expanded="false" data-burger aria-label="Menü öffnen">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Kopfzeile",
+  "class": "section-header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo (optional)", "info": "Ohne Logo wird der Shop-Name mit 🎓 angezeigt." },
+    { "type": "range", "id": "logo_width", "label": "Logo-Breite", "min": 50, "max": 250, "step": 10, "unit": "px", "default": 120 },
+    { "type": "link_list", "id": "menu", "label": "Menü", "default": "main-menu" }
+  ]
+}
+{% endschema %}

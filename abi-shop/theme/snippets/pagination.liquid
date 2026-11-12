@@ -1,0 +1,10 @@
+{%- if paginate.pages > 1 -%}
+  <nav class="pagination" aria-label="Seiten">
+    {%- if paginate.previous -%}<a class="chip" href="{{ paginate.previous.url }}">← Zurück</a>{%- endif -%}
+    {%- for part in paginate.parts -%}
+      {%- if part.is_link -%}<a class="chip" href="{{ part.url }}">{{ part.title }}</a>
+      {%- else -%}<span class="chip {% if part.title == paginate.current_page %}chip--active{% endif %}">{{ part.title }}</span>{%- endif -%}
+    {%- endfor -%}
+    {%- if paginate.next -%}<a class="chip" href="{{ paginate.next.url }}">Weiter →</a>{%- endif -%}
+  </nav>
+{%- endif -%}

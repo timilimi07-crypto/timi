@@ -1,0 +1,71 @@
+{%- comment -%}
+  Produktseite für Abi-Klamotten / Merch.
+  Bilder, Preis, Größen (Varianten), Beschreibung → alles im Shopify-Admin unter „Produkte“ pflegen.
+{%- endcomment -%}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+<section class="section product" data-product-section {{ section.shopify_attributes }}>
+  <div class="container product__grid">
+    {%- render 'product-gallery', product: product, placeholder_emoji: '👕' -%}
+
+    <div class="product__info">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h1 class="product__title">{{ product.title }}</h1>
+      {%- render 'price', variant: current_variant -%}
+      <p class="product__tax">{{ section.settings.tax_line }}{% if section.settings.tax_note != blank %} · {{ section.settings.tax_note }}{% endif %}</p>
+
+      {%- form 'product', product, class: 'buy', data-ajax-cart: 'true' -%}
+        <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+        {%- render 'variant-picker', product: product -%}
+
+        <div class="buy__row">
+          <div class="qty" data-qty>
+            <button type="button" data-qty-minus aria-label="Weniger">−</button>
+            <input type="number" name="quantity" value="1" min="1" max="20" aria-label="Menge">
+            <button type="button" data-qty-plus aria-label="Mehr">+</button>
+          </div>
+          <button type="submit" class="btn btn--glow btn--block" data-add-btn {% unless current_variant.available %}disabled{% endunless %}>
+            <span data-add-label>{% if current_variant.available %}{{ section.settings.button_text }}{% else %}Ausverkauft{% endif %}</span>
+          </button>
+        </div>
+        <p class="buy__error" data-buy-error hidden></p>
+      {%- endform -%}
+
+      <div class="paypal-note">
+        <span class="paypal-note__logo"><b>Pay</b><i>Pal</i></span>
+        <span>{{ section.settings.paypal_text }}</span>
+      </div>
+
+      <div class="product__desc rte">{{ product.description }}</div>
+
+      {%- if section.settings.size_chart != blank -%}
+        <details class="faq__item">
+          <summary>📏 Größentabelle<span class="faq__plus" aria-hidden="true"></span></summary>
+          <div class="faq__answer rte">{{ section.settings.size_chart.content }}</div>
+        </details>
+      {%- endif -%}
+      {%- if section.settings.extra_title != blank -%}
+        <details class="faq__item">
+          <summary>{{ section.settings.extra_title }}<span class="faq__plus" aria-hidden="true"></span></summary>
+          <div class="faq__answer rte">{{ section.settings.extra_text }}</div>
+        </details>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Produkt (Merch)",
+  "class": "section-main-product",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Kleine Zeile", "default": "Abi 2027 Merch" },
+    { "type": "text", "id": "button_text", "label": "Button-Text", "default": "In den Warenkorb 🛒" },
+    { "type": "text", "id": "tax_line", "label": "Steuer-Hinweis", "default": "Endpreis – gem. § 19 UStG wird keine Umsatzsteuer ausgewiesen", "info": "Falls ihr umsatzsteuerpflichtig seid: „inkl. MwSt.“ eintragen." },
+    { "type": "text", "id": "tax_note", "label": "Zusatz-Hinweis", "default": "Abholung an der Schule kostenlos" },
+    { "type": "text", "id": "paypal_text", "label": "PayPal-Hinweis", "default": "Sicher bezahlen mit PayPal – auch ohne Konto per Lastschrift oder Karte." },
+    { "type": "page", "id": "size_chart", "label": "Größentabelle (Seite auswählen)", "info": "Leg unter Onlineshop → Seiten eine Seite „Größentabelle“ an." },
+    { "type": "text", "id": "extra_title", "label": "Extra-Aufklapper Titel", "default": "🚚 Lieferung & Abholung" },
+    { "type": "richtext", "id": "extra_text", "label": "Extra-Aufklapper Text", "default": "<p>Merch wird gesammelt bestellt und in der Schule verteilt. Wir sagen euch Bescheid, sobald alles da ist.</p>" }
+  ]
+}
+{% endschema %}

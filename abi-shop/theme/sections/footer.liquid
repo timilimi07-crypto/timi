@@ -1,0 +1,56 @@
+<footer class="footer" {{ section.shopify_attributes }}>
+  <div class="container footer__grid">
+    <div class="footer__col footer__col--about">
+      <p class="footer__brand">🎓 {{ shop.name }}</p>
+      {%- if section.settings.about_title != blank -%}<h2 class="footer__title">{{ section.settings.about_title }}</h2>{%- endif -%}
+      <div class="footer__text rte">{{ section.settings.about_text }}</div>
+      {%- if section.settings.instagram != blank or section.settings.tiktok != blank -%}
+        <div class="footer__social">
+          {%- if section.settings.instagram != blank -%}<a href="{{ section.settings.instagram }}" target="_blank" rel="noopener" class="chip">📸 Instagram</a>{%- endif -%}
+          {%- if section.settings.tiktok != blank -%}<a href="{{ section.settings.tiktok }}" target="_blank" rel="noopener" class="chip">🎵 TikTok</a>{%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__title">Infos & Rechtliches</h2>
+      <ul class="footer__links">
+        {%- for link in section.settings.menu.links -%}
+          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {%- endfor -%}
+        {%- for policy in shop.policies -%}
+          {%- unless section.settings.menu.links.size > 0 -%}
+            <li><a href="{{ policy.url }}">{{ policy.title }}</a></li>
+          {%- endunless -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="footer__title">Bezahlung</h2>
+      <div class="paypal-badge" aria-label="Bezahlung per PayPal">
+        <svg viewBox="0 0 124 33" width="110" height="30" aria-hidden="true"><text x="0" y="25" font-family="Verdana, Arial, sans-serif" font-weight="700" font-style="italic" font-size="26"><tspan fill="#ffffff">Pay</tspan><tspan fill="#53c6ff">Pal</tspan></text></svg>
+      </div>
+      <p class="footer__small">{{ section.settings.payment_text }}</p>
+    </div>
+  </div>
+  <div class="container footer__bottom">
+    <span>© {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
+    <span class="footer__heart">mit 💜, 🍰 und viel zu wenig Schlaf gebaut</span>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Fußzeile",
+  "class": "section-footer",
+  "settings": [
+    { "type": "text", "id": "about_title", "label": "Überschrift Über uns", "default": "Wer wir sind" },
+    { "type": "richtext", "id": "about_text", "label": "Text Über uns", "default": "<p>Wir sind der Abiturjahrgang 2027 und finanzieren mit Merch, Kuchen und Crêpes unseren Abiball.</p>" },
+    { "type": "link_list", "id": "menu", "label": "Menü für Rechtliches", "default": "footer", "info": "Hier AGB, Datenschutz, Impressum, Widerruf und „Vertrag widerrufen“ verlinken. Ist das Menü leer, werden automatisch die Shopify-Richtlinien angezeigt." },
+    { "type": "text", "id": "payment_text", "label": "Text unter PayPal", "default": "Wir akzeptieren ausschließlich PayPal. Du kannst dort auch per Lastschrift oder Karte zahlen – ganz ohne PayPal-Konto." },
+    { "type": "url", "id": "instagram", "label": "Instagram-Link" },
+    { "type": "url", "id": "tiktok", "label": "TikTok-Link" }
+  ]
+}
+{% endschema %}

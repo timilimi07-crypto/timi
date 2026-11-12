@@ -1,0 +1,32 @@
+<section class="section" {{ section.shopify_attributes }}>
+  <div class="container">
+    <header class="section__head reveal">
+      <h1 class="section__title glow-text">Suche</h1>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="searchbar">
+        <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Hoodie, Schokokuchen, Crêpes …" aria-label="Suchbegriff">
+        <input type="hidden" name="type" value="product">
+        <button class="btn btn--glow" type="submit">Suchen</button>
+      </form>
+    </header>
+    {%- if search.performed -%}
+      {%- paginate search.results by 24 -%}
+        <p class="center">{{ search.results_count }} Ergebnis{% if search.results_count != 1 %}se{% endif %} für „{{ search.terms }}“</p>
+        <div class="grid grid--4">
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              {%- render 'product-card', product: item, index: forloop.index -%}
+            {%- else -%}
+              <a class="card glass" href="{{ item.url }}"><div class="card__body"><h3 class="card__title">{{ item.title }}</h3></div></a>
+            {%- endif -%}
+          {%- else -%}
+            <p class="empty">Nix gefunden. Probier's mal mit „Kuchen“. 🍰</p>
+          {%- endfor -%}
+        </div>
+        {%- render 'pagination', paginate: paginate -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+  </div>
+</section>
+{% schema %}
+{ "name": "Suche", "settings": [] }
+{% endschema %}

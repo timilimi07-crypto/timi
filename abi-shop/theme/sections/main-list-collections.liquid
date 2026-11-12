@@ -1,0 +1,22 @@
+<section class="section" {{ section.shopify_attributes }}>
+  <div class="container">
+    <header class="section__head reveal"><h1 class="section__title glow-text">{{ section.settings.title }}</h1></header>
+    <div class="grid grid--3">
+      {%- for collection in collections -%}
+        {%- unless collection.handle == 'frontpage' -%}
+          <a href="{{ collection.url }}" class="card card--collection reveal" data-tilt>
+            <div class="card__media">
+              {%- if collection.featured_image -%}
+                {{ collection.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', class: 'card__img card__img--1', alt: collection.title }}
+              {%- else -%}<div class="card__placeholder" aria-hidden="true">✨</div>{%- endif -%}
+            </div>
+            <div class="card__body"><h2 class="card__title">{{ collection.title }}</h2><p class="price">{{ collection.products_count }} Produkte</p></div>
+          </a>
+        {%- endunless -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{ "name": "Alle Kollektionen", "settings": [ { "type": "text", "id": "title", "label": "Überschrift", "default": "Unser Sortiment" } ] }
+{% endschema %}

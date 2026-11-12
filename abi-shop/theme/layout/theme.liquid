@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_bg }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 64, height: 64 }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} – {{ current_tags | join: ', ' }}{% endif -%}
+      {%- if current_page != 1 %} – Seite {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} – {{ shop.name }}{% endunless -%}
+    </title>
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {%- render 'meta-tags' -%}
+
+    {%- liquid
+      assign heading_font = settings.type_heading_font
+      assign heading_bold = heading_font | font_modify: 'weight', 'bolder'
+      assign body_font = settings.type_body_font
+      assign body_bold = body_font | font_modify: 'weight', 'bold'
+    -%}
+    <style>
+      {{ heading_font | font_face: font_display: 'swap' }}
+      {%- if heading_bold %}{{ heading_bold | font_face: font_display: 'swap' }}{% endif %}
+      {{ body_font | font_face: font_display: 'swap' }}
+      {%- if body_bold %}{{ body_bold | font_face: font_display: 'swap' }}{% endif %}
+
+      :root {
+        --c-bg: {{ settings.color_bg }};
+        --c-bg-2: {{ settings.color_bg_2 }};
+        --c-text: {{ settings.color_text }};
+        --c-a1: {{ settings.color_accent_1 }};
+        --c-a2: {{ settings.color_accent_2 }};
+        --c-a3: {{ settings.color_accent_3 }};
+        --f-head: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+        --f-head-w: {% if heading_bold %}{{ heading_bold.weight }}{% else %}{{ heading_font.weight }}{% endif %};
+        --f-body: {{ body_font.family }}, {{ body_font.fallback_families }};
+        --f-body-w: {{ body_font.weight }};
+        --radius: {{ settings.radius }}px;
+      }
+    </style>
+
+    {{ 'abi.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'abi.js' | asset_url }}" defer="defer"></script>
+
+    {{ content_for_header }}
+  </head>
+
+  <body class="abi {% if settings.fx_grain %}abi--grain{% endif %} template-{{ template.name }}">
+    <a class="skip-link" href="#MainContent">Zum Inhalt springen</a>
+
+    {%- if settings.fx_stars -%}
+      <canvas class="fx-stars" id="fx-stars" aria-hidden="true"></canvas>
+    {%- endif -%}
+    <div class="fx-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" class="main" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    <div class="toast" id="abi-toast" role="status" aria-live="polite"></div>
+    <canvas class="fx-confetti" id="fx-confetti" aria-hidden="true"></canvas>
+
+    <script>
+      window.abi = {
+        routes: {
+          cart: {{ routes.cart_url | json }},
+          cartAdd: {{ routes.cart_add_url | json }},
+          cartJs: {{ routes.cart_url | append: '.js' | json }}
+        },
+        fx: {
+          stars: {{ settings.fx_stars | json }},
+          sparkles: {{ settings.fx_sparkles | json }},
+          confetti: {{ settings.fx_confetti | json }},
+          tilt: {{ settings.fx_tilt | json }}
+        },
+        colors: [{{ settings.color_accent_1 | json }}, {{ settings.color_accent_2 | json }}, {{ settings.color_accent_3 | json }}, '#ffffff'],
+        text: {
+          added: {{ settings.text_added | json }},
+          toCart: 'Zum Warenkorb',
+          error: 'Hoppla, das hat nicht geklappt. Bitte versuch es nochmal.'
+        }
+      };
+    </script>
+  </body>
+</html>

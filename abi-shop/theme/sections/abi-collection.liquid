@@ -1,0 +1,59 @@
+{%- comment -%}
+  Zeigt eine Kollektion als Produkt-Grid. Wird auf der Startseite zweimal benutzt:
+  1× für „Abi-Merch“ (Klamotten) und 1× für „Kuchen & Crêpes“ (Vorbestellungen).
+{%- endcomment -%}
+{%- assign collection = section.settings.collection -%}
+<section class="section shelf shelf--{{ section.settings.style }}" id="{{ section.settings.anchor | default: section.id | handleize }}" {{ section.shopify_attributes }}>
+  <div class="container">
+    <header class="section__head reveal">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="section__title glow-text">{{ section.settings.title }}</h2>
+      {%- if section.settings.text != blank -%}<div class="section__text rte">{{ section.settings.text }}</div>{%- endif -%}
+    </header>
+
+    <div class="grid grid--{{ section.settings.columns }}">
+      {%- if collection != blank and collection.products_count > 0 -%}
+        {%- for product in collection.products limit: section.settings.limit -%}
+          {%- render 'product-card', product: product, index: forloop.index -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..section.settings.columns) -%}
+          <article class="card card--empty reveal">
+            <div class="card__media"><div class="card__placeholder" aria-hidden="true">{% if section.settings.style == 'bakery' %}🧁{% else %}🧢{% endif %}</div></div>
+            <div class="card__body"><h3 class="card__title">Produkt {{ i }}</h3><p class="price">Kollektion im Editor auswählen</p></div>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if collection != blank and section.settings.show_all -%}
+      <div class="section__foot reveal">
+        <a href="{{ collection.url }}" class="btn btn--ghost" data-magnetic>Alle ansehen →</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Produkt-Kollektion",
+  "class": "section-collection",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Kollektion" },
+    { "type": "text", "id": "eyebrow", "label": "Kleine Zeile", "default": "Drop 01" },
+    { "type": "text", "id": "title", "label": "Überschrift", "default": "Abi-Merch 👕" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "select", "id": "style", "label": "Stil", "default": "merch", "options": [
+      { "value": "merch", "label": "Merch (lila/pink)" },
+      { "value": "bakery", "label": "Bäckerei (warm/orange)" }
+    ] },
+    { "type": "range", "id": "limit", "label": "Max. Produkte", "min": 2, "max": 24, "step": 1, "default": 8 },
+    { "type": "select", "id": "columns", "label": "Spalten (Desktop)", "default": "4", "options": [
+      { "value": "2", "label": "2" }, { "value": "3", "label": "3" }, { "value": "4", "label": "4" }
+    ] },
+    { "type": "checkbox", "id": "show_all", "label": "Button „Alle ansehen“ zeigen", "default": true },
+    { "type": "text", "id": "anchor", "label": "Sprungmarke (z. B. merch → Link „/#merch“)" }
+  ],
+  "presets": [{ "name": "Produkt-Kollektion" }]
+}
+{% endschema %}

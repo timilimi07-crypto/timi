@@ -1,0 +1,31 @@
+<div class="gallery" data-gallery>
+  <div class="gallery__main" data-tilt>
+    {%- if product.media.size > 0 -%}
+      {%- for media in product.media -%}
+        <div class="gallery__slide {% if forloop.first %}is-active{% endif %}" data-media-id="{{ media.id }}">
+          {%- case media.media_type -%}
+            {%- when 'image' -%}
+              {{ media | image_url: width: 1400 | image_tag: widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 55vw, 100vw', alt: media.alt | default: product.title, loading: 'eager' }}
+            {%- when 'video' -%}
+              {{ media | video_tag: autoplay: true, loop: true, muted: true, controls: true, image_size: '1100x' }}
+            {%- when 'external_video' -%}
+              {{ media | external_video_tag }}
+            {%- else -%}
+              {{ media | media_tag }}
+          {%- endcase -%}
+        </div>
+      {%- endfor -%}
+    {%- else -%}
+      <div class="gallery__slide is-active"><div class="card__placeholder card__placeholder--big" aria-hidden="true">{{ placeholder_emoji | default: '👕' }}</div></div>
+    {%- endif -%}
+  </div>
+  {%- if product.media.size > 1 -%}
+    <div class="gallery__thumbs" role="list">
+      {%- for media in product.media -%}
+        <button type="button" class="gallery__thumb" data-thumb="{{ media.id }}" role="listitem" aria-label="Bild {{ forloop.index }} zeigen">
+          {{ media.preview_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}
+        </button>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>

@@ -1,0 +1,22 @@
+{
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "color_bg": "#0b0820",
+      "color_bg_2": "#1a1240",
+      "color_text": "#f5f2ff",
+      "color_accent_1": "#ff3d9a",
+      "color_accent_2": "#8b5cf6",
+      "color_accent_3": "#22d3ee",
+      "type_heading_font": "montserrat_n4",
+      "type_body_font": "assistant_n4",
+      "radius": 22,
+      "fx_stars": true,
+      "fx_sparkles": true,
+      "fx_confetti": true,
+      "fx_tilt": true,
+      "fx_grain": true,
+      "text_added": "Yeah! Liegt im Warenkorb 🎉"
+    }
+  }
+}

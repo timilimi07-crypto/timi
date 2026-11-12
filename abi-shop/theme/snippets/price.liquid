@@ -1,0 +1,18 @@
+{%- comment -%}
+  Preis. Aufruf mit product (Karte) oder variant (Produktseite, wird per JS aktualisiert).
+{%- endcomment -%}
+{%- liquid
+  if variant
+    assign p = variant.price
+    assign cp = variant.compare_at_price
+    assign varies = false
+  else
+    assign p = product.price
+    assign cp = product.compare_at_price
+    assign varies = product.price_varies
+  endif
+-%}
+<div class="price" data-price>
+  <span class="price__now" data-price-now>{% if varies %}ab {% endif %}{{ p | money }}</span>
+  <s class="price__old" data-price-old {% unless cp > p %}hidden{% endunless %}>{{ cp | money }}</s>
+</div>

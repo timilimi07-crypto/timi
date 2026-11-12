@@ -1,0 +1,9 @@
+{
+  "general": {
+    "password_page": {
+      "login_form_heading": "Shop mit Passwort betreten",
+      "login_form_password_label": "Passwort",
+      "login_form_submit": "Eintreten"
+    }
+  }
+}

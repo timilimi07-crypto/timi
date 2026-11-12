@@ -1,0 +1,30 @@
+<section class="section" {{ section.shopify_attributes }}>
+  <div class="container">
+    <header class="section__head reveal">
+      <p class="eyebrow">Kollektion</p>
+      <h1 class="section__title glow-text">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}<div class="section__text rte">{{ collection.description }}</div>{%- endif -%}
+    </header>
+
+    {%- paginate collection.products by section.settings.per_page -%}
+      <div class="grid grid--{{ section.settings.columns }}">
+        {%- for product in collection.products -%}
+          {%- render 'product-card', product: product, index: forloop.index -%}
+        {%- else -%}
+          <p class="empty">Hier ist noch nichts drin – bald kommt was! 👀</p>
+        {%- endfor -%}
+      </div>
+      {%- render 'pagination', paginate: paginate -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Kollektion",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Produkte pro Seite", "min": 4, "max": 48, "step": 4, "default": 24 },
+    { "type": "select", "id": "columns", "label": "Spalten", "default": "4", "options": [ { "value": "2", "label": "2" }, { "value": "3", "label": "3" }, { "value": "4", "label": "4" } ] }
+  ]
+}
+{% endschema %}

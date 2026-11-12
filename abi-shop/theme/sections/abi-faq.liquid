@@ -1,0 +1,34 @@
+<section class="section faq" id="faq" {{ section.shopify_attributes }}>
+  <div class="container container--narrow">
+    <header class="section__head reveal">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="section__title glow-text">{{ section.settings.title }}</h2>
+    </header>
+    <div class="faq__list">
+      {%- for block in section.blocks -%}
+        <details class="faq__item reveal" {{ block.shopify_attributes }}>
+          <summary>{{ block.settings.question }}<span class="faq__plus" aria-hidden="true"></span></summary>
+          <div class="faq__answer rte">{{ block.settings.answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Fragen & Antworten",
+  "class": "section-faq",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Kleine Zeile", "default": "FAQ" },
+    { "type": "text", "id": "title", "label": "Überschrift", "default": "Noch Fragen? 🤔" }
+  ],
+  "blocks": [
+    { "type": "qa", "name": "Frage", "settings": [
+      { "type": "text", "id": "question", "label": "Frage", "default": "Wie kann ich bezahlen?" },
+      { "type": "richtext", "id": "answer", "label": "Antwort", "default": "<p>Nur per PayPal.</p>" }
+    ] }
+  ],
+  "presets": [{ "name": "Fragen & Antworten", "blocks": [ { "type": "qa" } ] }]
+}
+{% endschema %}

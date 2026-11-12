@@ -1,0 +1,22 @@
+{% layout none %}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gutschein – {{ shop.name }}</title>
+    {{ 'abi.css' | asset_url | stylesheet_tag }}
+    {{ content_for_header }}
+  </head>
+  <body class="abi" style="--c-bg:#0b0820;--c-bg-2:#1a1240;--c-text:#f5f2ff;--c-a1:#ff3d9a;--c-a2:#8b5cf6;--c-a3:#22d3ee;--f-head:system-ui,sans-serif;--f-body:system-ui,sans-serif;--radius:22px;">
+    <main class="section"><div class="container container--narrow center">
+      <h1 class="section__title glow-text">🎁 Dein Gutschein</h1>
+      <div class="glass form-card">
+        <p style="font-size:2.2rem;font-weight:800">{{ gift_card.balance | money }}</p>
+        <p>Code: <strong>{{ gift_card.code | format_code }}</strong></p>
+        {%- if gift_card.expired -%}<p>Abgelaufen am {{ gift_card.expires_on | date: '%d.%m.%Y' }}</p>{%- elsif gift_card.expires_on -%}<p>Gültig bis {{ gift_card.expires_on | date: '%d.%m.%Y' }}</p>{%- endif -%}
+        <a class="btn btn--glow" href="{{ shop.url }}">Jetzt einlösen</a>
+      </div>
+    </div></main>
+  </body>
+</html>

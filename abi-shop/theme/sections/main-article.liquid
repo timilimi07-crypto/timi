@@ -1,0 +1,13 @@
+<article class="section page">
+  <div class="container container--narrow">
+    <header class="section__head reveal">
+      <p class="eyebrow">{{ article.published_at | date: '%d.%m.%Y' }}</p>
+      <h1 class="section__title glow-text">{{ article.title }}</h1>
+    </header>
+    {%- if article.image -%}<div class="page__hero">{{ article.image | image_url: width: 1400 | image_tag }}</div>{%- endif -%}
+    <div class="rte page__content glass">{{ article.content }}</div>
+  </div>
+</article>
+{% schema %}
+{ "name": "Blogbeitrag", "settings": [] }
+{% endschema %}
