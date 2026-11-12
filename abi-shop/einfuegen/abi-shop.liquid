@@ -1,0 +1,655 @@
+{%- comment -%}
+  ============================================================
+  ABIversum 2027 – Komplette Abi-Shop-Sektion (eine Datei)
+  ============================================================
+  Einfügen: Onlineshop → Themes → ⋯ neben „Theme bearbeiten“ → „Code bearbeiten“
+            → Ordner „sections“ → „Neue Datei/Section hinzufügen“ → Name: abi-shop
+            → alles löschen, diesen Code einfügen → Speichern.
+  Danach:   „Theme bearbeiten“ → Startseite → „Abschnitt hinzufügen“ → „ABI Shop 2027“.
+
+  Enthält: Motto-Hero mit Countdown, Laufschrift, Merch-Grid (Größe wählen + Warenkorb),
+  Kuchen/Crêpes-Vorbestellung (Abholtermin, Name/Kurs, Anmerkung), So-geht's, FAQ,
+  Effekte (Sternenhimmel, Sternschnuppen, Konfetti, 3D-Karten, Glitzer, Easter Egg).
+  Produkte, Bilder, Preise pflegt ihr ganz normal unter „Produkte“ im Shopify-Admin.
+{%- endcomment -%}
+{%- liquid
+  assign sid = 'abx-' | append: section.id
+  assign merch = section.settings.merch_collection
+  assign bakery = section.settings.bakery_collection
+  assign slots = section.settings.pickup_dates | newline_to_br | split: '<br />'
+  assign has_slots = false
+  for s in slots
+    assign t = s | strip
+    if t != blank
+      assign has_slots = true
+    endif
+  endfor
+-%}
+
+<style>
+  #{{ sid }} {
+    --bg: {{ section.settings.c_bg }}; --bg2: {{ section.settings.c_bg2 }}; --tx: #f5f2ff;
+    --a1: {{ section.settings.c_a1 }}; --a2: {{ section.settings.c_a2 }}; --a3: {{ section.settings.c_a3 }};
+    --grad: linear-gradient(100deg, var(--a1), var(--a2) 45%, var(--a3));
+    --warm: linear-gradient(100deg, #ffb703, #fb5607 50%, var(--a1));
+    --glass: color-mix(in srgb, var(--bg2) 65%, transparent);
+    --line: rgba(255,255,255,.13); --muted: rgba(245,242,255,.7);
+    --ease: cubic-bezier(.2,.8,.2,1); --bounce: cubic-bezier(.34,1.56,.64,1); --r: 22px;
+    position: relative; overflow: hidden; isolation: isolate; background: var(--bg); color: var(--tx);
+    font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  #{{ sid }} *, #{{ sid }} *::before, #{{ sid }} *::after { box-sizing: border-box; }
+  #{{ sid }} img { max-width: 100%; display: block; }
+  #{{ sid }} h1, #{{ sid }} h2, #{{ sid }} h3 { color: inherit; font-weight: 800; line-height: 1.08; margin: 0 0 .5em; letter-spacing: -.01em; }
+  #{{ sid }} p { margin: 0 0 1em; }
+  #{{ sid }} a { color: inherit; }
+  #{{ sid }} [hidden] { display: none !important; }
+  #{{ sid }} .x-wrap { width: min(1200px, 100% - 32px); margin-inline: auto; position: relative; z-index: 2; }
+  #{{ sid }} .x-narrow { width: min(820px, 100% - 32px); }
+
+  /* Hintergrund */
+  #{{ sid }} .x-stars { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  #{{ sid }} .x-blobs { position: absolute; inset: 0; z-index: 0; pointer-events: none; filter: blur(70px); opacity: .5; }
+  #{{ sid }} .x-blobs span { position: absolute; width: 40vmax; height: 40vmax; border-radius: 50%; mix-blend-mode: screen; animation: x-blob 22s var(--ease) infinite alternate; }
+  #{{ sid }} .x-blobs span:nth-child(1) { background: var(--a2); top: -14vmax; left: -12vmax; }
+  #{{ sid }} .x-blobs span:nth-child(2) { background: var(--a1); top: 40%; right: -16vmax; opacity: .6; animation-delay: -8s; }
+  #{{ sid }} .x-blobs span:nth-child(3) { background: var(--a3); bottom: -10vmax; left: 30%; width: 26vmax; height: 26vmax; opacity: .4; animation-delay: -14s; }
+  @keyframes x-blob { to { transform: translate(8vmax, 6vmax) scale(1.18) rotate(40deg); } }
+
+  /* Buttons */
+  #{{ sid }} .x-btn { --bx: 0px; --by: 0px; position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 15px 26px; border-radius: 999px; border: 0; cursor: pointer;
+    font: inherit; font-weight: 800; font-size: 16px; text-decoration: none; color: #fff; overflow: hidden; isolation: isolate;
+    transform: translate(var(--bx), var(--by)); transition: transform .25s var(--ease), box-shadow .3s, opacity .2s; }
+  #{{ sid }} .x-btn:active { transform: translate(var(--bx), var(--by)) scale(.96); }
+  #{{ sid }} .x-btn[disabled] { opacity: .45; cursor: not-allowed; }
+  #{{ sid }} .x-btn--glow { background: var(--grad); background-size: 200% 100%; box-shadow: 0 10px 34px -10px var(--a1); animation: x-grad 6s linear infinite; }
+  #{{ sid }} .x-btn--warm { background: var(--warm); background-size: 200% 100%; box-shadow: 0 10px 34px -10px #fb5607; animation: x-grad 6s linear infinite; }
+  #{{ sid }} .x-btn--ghost { background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 1.5px var(--line); }
+  #{{ sid }} .x-btn--block { width: 100%; }
+  #{{ sid }} .x-btn::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.45) 50%, transparent 70%); transform: translateX(-120%); transition: transform .8s var(--ease); }
+  #{{ sid }} .x-btn:hover::after { transform: translateX(120%); }
+  @keyframes x-grad { to { background-position: 200% 0; } }
+
+  /* Hero */
+  #{{ sid }} .x-hero { position: relative; min-height: min(92vh, 880px); display: grid; place-items: center; text-align: center; padding: 90px 0 110px; }
+  #{{ sid }} .x-kicker { display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: 999px; background: var(--glass); box-shadow: inset 0 0 0 1px var(--line); font-weight: 700; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 26px; }
+  #{{ sid }} .x-dot { width: 9px; height: 9px; border-radius: 50%; background: #3dff9a; animation: x-pulse 1.8s infinite; }
+  @keyframes x-pulse { 0% { box-shadow: 0 0 0 0 #3dff9a; } 70%, 100% { box-shadow: 0 0 0 12px transparent; } }
+  #{{ sid }} .x-title { font-size: clamp(54px, 13vw, 176px); line-height: .9; letter-spacing: -.04em; text-transform: uppercase; margin: 0 0 22px; cursor: pointer; user-select: none; display: flex; flex-direction: column; align-items: center; }
+  #{{ sid }} .x-title-main { filter: drop-shadow(0 0 40px color-mix(in srgb, var(--a2) 55%, transparent)); background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #{{ sid }} .x-title-year { font-size: .42em; letter-spacing: .3em; padding-left: .3em; margin-top: .12em; -webkit-text-stroke: 2px #fff; color: transparent; }
+  #{{ sid }} .x-ch { display: inline-block; animation: x-in .9s var(--bounce) both; animation-delay: calc(var(--ci) * 55ms + 150ms);
+    background: var(--grad); background-size: calc(var(--n) * 100%) 100%; background-position: calc(var(--ci) / max(var(--n) - 1, 1) * 100%) 0; -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #{{ sid }} .x-ch:hover { animation: x-jump .5s var(--bounce); }
+  @keyframes x-in { from { opacity: 0; transform: translateY(.6em) rotate(12deg) scale(.6); filter: blur(10px); } }
+  @keyframes x-jump { 40% { transform: translateY(-.18em) rotate(-6deg); } }
+  #{{ sid }} .x-title.is-wobble { animation: x-wobble .6s var(--bounce); }
+  @keyframes x-wobble { 25% { transform: rotate(-3deg) scale(1.04); } 50% { transform: rotate(2deg); } 75% { transform: rotate(-1deg); } }
+  #{{ sid }} .x-slogan { font-size: clamp(19px, 2.6vw, 28px); font-weight: 600; color: var(--muted); max-width: 720px; margin: 0 auto 34px; }
+  #{{ sid }} .x-ctas { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+  #{{ sid }} .x-hint { margin: 26px 0 0; font-size: 13px; opacity: .5; }
+  #{{ sid }} .x-floaters { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+  #{{ sid }} .x-fl { --px: 0px; --py: 0px; position: absolute; left: var(--x); top: var(--y); font-size: clamp(26px, 4vw, 52px); translate: var(--px) var(--py); transition: translate .4s var(--ease);
+    animation: x-float calc(6s + var(--i) * .7s) ease-in-out infinite alternate; animation-delay: calc(var(--i) * -1.3s); filter: drop-shadow(0 8px 18px rgba(0,0,0,.35)); }
+  @keyframes x-float { from { transform: translateY(-14px) rotate(-10deg); } to { transform: translateY(18px) rotate(12deg); } }
+
+  #{{ sid }} .x-cd { margin: 42px auto 0; max-width: 540px; }
+  #{{ sid }} .x-cd-label { font-weight: 700; color: var(--muted); margin-bottom: 12px; }
+  #{{ sid }} .x-cd-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  #{{ sid }} .x-cd-cell { padding: 16px 6px 12px; border-radius: var(--r); background: var(--glass); box-shadow: inset 0 0 0 1px var(--line); }
+  #{{ sid }} .x-cd-cell span { display: block; font-weight: 800; font-size: clamp(28px, 6vw, 44px); line-height: 1; font-variant-numeric: tabular-nums; }
+  #{{ sid }} .x-cd-cell span.is-tick { animation: x-tick .45s var(--bounce); }
+  @keyframes x-tick { 0% { transform: translateY(-40%); opacity: 0; } }
+  #{{ sid }} .x-cd-cell small { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; opacity: .6; }
+  #{{ sid }} .x-cd-done { font-weight: 800; font-size: clamp(26px, 5vw, 42px); background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  /* Laufschrift */
+  #{{ sid }} .x-marquee { position: relative; z-index: 2; overflow: hidden; padding: 16px 0; background: var(--grad); color: #fff; transform: rotate(-2.5deg) scale(1.05); box-shadow: 0 20px 60px -20px var(--a1); margin: 10px 0 30px; }
+  #{{ sid }} .x-track { display: flex; width: max-content; animation: x-scroll 30s linear infinite; }
+  #{{ sid }} .x-marquee:hover .x-track { animation-play-state: paused; }
+  #{{ sid }} .x-track span { font-weight: 800; font-size: clamp(24px, 4.5vw, 50px); text-transform: uppercase; white-space: nowrap; padding: 0 22px; }
+  #{{ sid }} .x-track i { font-style: normal; display: inline-block; animation: x-spin 6s linear infinite; }
+  @keyframes x-scroll { to { transform: translateX(-50%); } }
+  @keyframes x-spin { to { transform: rotate(360deg); } }
+
+  /* Abschnitte */
+  #{{ sid }} .x-sec { position: relative; z-index: 2; padding: clamp(56px, 8vw, 110px) 0; }
+  #{{ sid }} .x-head { text-align: center; max-width: 760px; margin: 0 auto clamp(28px, 5vw, 52px); }
+  #{{ sid }} .x-h2 { font-size: clamp(34px, 6vw, 68px); color: #fff; text-shadow: 0 0 34px color-mix(in srgb, var(--a2) 70%, transparent), 0 0 80px color-mix(in srgb, var(--a1) 35%, transparent); }
+  #{{ sid }} .x-bakery .x-h2 { color: #ffe6bf; text-shadow: 0 0 34px rgba(251,86,7,.65), 0 0 80px rgba(255,183,3,.35); }
+  #{{ sid }} .x-eyebrow { display: inline-block; margin: 0 0 14px; padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; background: color-mix(in srgb, var(--a2) 24%, transparent); color: #e6dcff; }
+  #{{ sid }} .x-bakery .x-eyebrow { background: rgba(251,86,7,.22); color: #ffd1a8; }
+  #{{ sid }} .x-lead { color: var(--muted); font-size: 18px; }
+  #{{ sid }} .x-reveal { opacity: 0; transform: translateY(40px) scale(.97); transition: opacity .8s var(--ease), transform .9s var(--ease); transition-delay: var(--d, 0ms); }
+  #{{ sid }} .x-reveal.is-in { opacity: 1; transform: none; }
+
+  /* Karten */
+  #{{ sid }} .x-grid { display: grid; gap: clamp(14px, 2vw, 24px); grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); }
+  #{{ sid }} .x-card { --rx: 0deg; --ry: 0deg; --mx: 50%; --my: 50%; position: relative; display: flex; flex-direction: column; border-radius: var(--r); background: var(--glass); box-shadow: inset 0 0 0 1px var(--line);
+    transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)); transition: transform .5s var(--ease), box-shadow .4s, opacity .8s var(--ease); }
+  #{{ sid }} .x-card.x-reveal { transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(40px); }
+  #{{ sid }} .x-card.x-reveal.is-in { transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)); }
+  #{{ sid }} .x-card.is-tilting { transition: transform .1s linear, box-shadow .4s, opacity .8s; }
+  #{{ sid }} .x-card:hover { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--a1) 60%, transparent), 0 30px 60px -30px var(--a1); }
+  #{{ sid }} .x-bakery .x-card:hover { box-shadow: inset 0 0 0 1px #ff9f43, 0 30px 60px -30px #fb5607; }
+  #{{ sid }} .x-media { position: relative; display: block; aspect-ratio: 4 / 5; border-radius: var(--r) var(--r) 0 0; overflow: hidden; background: radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--a2) 45%, transparent), transparent 60%), radial-gradient(circle at 80% 90%, color-mix(in srgb, var(--a1) 40%, transparent), transparent 55%), #120c30; }
+  #{{ sid }} .x-bakery .x-media { aspect-ratio: 1; }
+  #{{ sid }} .x-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease), opacity .5s; }
+  #{{ sid }} .x-media .x-img2 { opacity: 0; }
+  #{{ sid }} .x-card:hover .x-img1 { transform: scale(1.07); }
+  #{{ sid }} .x-card:hover .x-img2 { opacity: 1; }
+  #{{ sid }} .x-ph { position: absolute; inset: 0; display: grid; place-items: center; font-size: 90px; }
+  #{{ sid }} .x-shine { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s; background: radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,.35), transparent 45%); mix-blend-mode: overlay; }
+  #{{ sid }} .x-card:hover .x-shine { opacity: 1; }
+  #{{ sid }} .x-badges { position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; flex-wrap: wrap; }
+  #{{ sid }} .x-badge { padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; color: #fff; background: rgba(0,0,0,.55); }
+  #{{ sid }} .x-badge--pre { background: var(--warm); } #{{ sid }} .x-badge--sale { background: var(--a1); }
+  #{{ sid }} .x-body { padding: 16px 18px 20px; display: grid; gap: 12px; flex: 1; align-content: start; }
+  #{{ sid }} .x-name { font-size: 19px; margin: 0; text-decoration: none; font-weight: 800; }
+  #{{ sid }} .x-desc { font-size: 14px; color: var(--muted); margin: 0; }
+  #{{ sid }} .x-allerg { font-size: 13px; margin: 0; padding: 8px 10px; border-radius: 10px; background: rgba(255,183,3,.12); color: #ffe1b0; }
+  #{{ sid }} .x-price { display: flex; gap: 10px; align-items: baseline; font-weight: 800; font-size: 20px; margin: 0; }
+  #{{ sid }} .x-price s { opacity: .55; font-weight: 500; font-size: 15px; }
+
+  /* Formularfelder */
+  #{{ sid }} .x-form { display: grid; gap: 10px; margin-top: auto; }
+  #{{ sid }} .x-field { display: grid; gap: 4px; font-weight: 700; font-size: 13px; }
+  #{{ sid }} .x-field input, #{{ sid }} .x-field select, #{{ sid }} .x-field textarea {
+    width: 100%; font: inherit; font-weight: 500; font-size: 16px; color: #fff; padding: 11px 13px; border-radius: 12px; border: 0; margin: 0;
+    background: rgba(0,0,0,.3); box-shadow: inset 0 0 0 1.5px var(--line); color-scheme: dark; transition: box-shadow .25s; min-height: 0; }
+  #{{ sid }} .x-field select option { background: var(--bg2); color: #fff; }
+  #{{ sid }} .x-field input:focus, #{{ sid }} .x-field select:focus, #{{ sid }} .x-field textarea:focus { outline: 0; box-shadow: inset 0 0 0 2px var(--a1), 0 0 22px -6px var(--a1); }
+  #{{ sid }} .x-bakery .x-field input:focus, #{{ sid }} .x-bakery .x-field select:focus, #{{ sid }} .x-bakery .x-field textarea:focus { box-shadow: inset 0 0 0 2px #ff9f43, 0 0 22px -6px #fb5607; }
+  #{{ sid }} .x-field :user-invalid { box-shadow: inset 0 0 0 2px #ff6b6b; animation: x-shake .4s; }
+  @keyframes x-shake { 25% { transform: translateX(-6px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-3px); } }
+  #{{ sid }} .x-row { display: flex; gap: 8px; }
+  #{{ sid }} .x-qty { display: flex; align-items: center; border-radius: 999px; background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 1.5px var(--line); flex: none; }
+  #{{ sid }} .x-qty button { width: 36px; height: 48px; border: 0; background: none; color: #fff; font-size: 20px; font-weight: 700; cursor: pointer; padding: 0; }
+  #{{ sid }} .x-qty input { width: 32px; text-align: center; border: 0; background: none; color: #fff; font: inherit; font-weight: 800; padding: 0; -moz-appearance: textfield; appearance: textfield; box-shadow: none; }
+  #{{ sid }} .x-qty input::-webkit-outer-spin-button, #{{ sid }} .x-qty input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  #{{ sid }} .x-row .x-btn { flex: 1; padding: 12px 16px; font-size: 15px; }
+  #{{ sid }} .x-err { color: #ff9a9a; font-weight: 700; font-size: 14px; margin: 0; }
+  #{{ sid }} .x-empty { grid-column: 1 / -1; text-align: center; padding: 30px; border-radius: var(--r); background: var(--glass); color: var(--muted); }
+  #{{ sid }} .x-deadline { display: inline-block; padding: 8px 14px; border-radius: 12px; font-weight: 700; font-size: 14px; background: rgba(251,86,7,.18); color: #ffd1a8; }
+  #{{ sid }} .x-foot { text-align: center; margin-top: 36px; }
+
+  /* Steps */
+  #{{ sid }} .x-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  #{{ sid }} .x-step { position: relative; padding: 28px 24px; border-radius: var(--r); background: var(--glass); box-shadow: inset 0 0 0 1px var(--line); }
+  #{{ sid }} .x-step b { position: absolute; top: 12px; right: 18px; font-size: 54px; line-height: 1; -webkit-text-stroke: 1.5px var(--line); color: transparent; }
+  #{{ sid }} .x-step-ic { display: inline-grid; place-items: center; width: 62px; height: 62px; border-radius: 20px; font-size: 30px; background: var(--grad); margin-bottom: 16px; box-shadow: 0 14px 30px -12px var(--a1); transition: transform .5s var(--bounce); }
+  #{{ sid }} .x-step:hover .x-step-ic { transform: rotate(-12deg) scale(1.12); }
+  #{{ sid }} .x-step h3 { font-size: 21px; margin-bottom: 4px; }
+  #{{ sid }} .x-step p { margin: 0; color: var(--muted); }
+
+  /* FAQ */
+  #{{ sid }} .x-faq { display: grid; gap: 12px; }
+  #{{ sid }} .x-faq details { border-radius: var(--r); background: var(--glass); box-shadow: inset 0 0 0 1px var(--line); }
+  #{{ sid }} .x-faq summary { list-style: none; cursor: pointer; padding: 18px 22px; font-weight: 800; font-size: 18px; display: flex; justify-content: space-between; gap: 14px; align-items: center; }
+  #{{ sid }} .x-faq summary::-webkit-details-marker { display: none; }
+  #{{ sid }} .x-plus { position: relative; flex: none; width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,.1); transition: transform .4s var(--bounce), background .3s; }
+  #{{ sid }} .x-plus::before, #{{ sid }} .x-plus::after { content: ""; position: absolute; left: 8px; right: 8px; top: 13px; height: 2px; background: #fff; border-radius: 2px; }
+  #{{ sid }} .x-plus::after { transform: rotate(90deg); transition: transform .3s; }
+  #{{ sid }} details[open] .x-plus { transform: rotate(180deg); background: var(--a1); }
+  #{{ sid }} details[open] .x-plus::after { transform: rotate(0); }
+  #{{ sid }} .x-faq .x-ans { padding: 0 22px 18px; color: var(--muted); }
+  #{{ sid }} .x-ans a { color: #9fe8ff; }
+  #{{ sid }} .x-paypal { display: inline-flex; gap: 10px; align-items: center; padding: 12px 18px; border-radius: 16px; background: rgba(0,156,222,.12); box-shadow: inset 0 0 0 1px rgba(0,156,222,.35); font-size: 14px; color: var(--muted); }
+  #{{ sid }} .x-paypal b { color: #fff; font-style: italic; font-size: 20px; } #{{ sid }} .x-paypal b i { color: #53c6ff; }
+
+  /* Effekte außerhalb der Sektion */
+  .abx-confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2147483000; }
+  .abx-spark { position: fixed; z-index: 2147483001; pointer-events: none; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: radial-gradient(circle, #fff 0 30%, var(--sc) 60%, transparent 70%); animation: abx-spark .8s cubic-bezier(.2,.8,.2,1) forwards; }
+  @keyframes abx-spark { to { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; } }
+  .abx-rain { position: fixed; top: -60px; z-index: 2147483001; pointer-events: none; animation: abx-rain linear forwards; }
+  @keyframes abx-rain { to { transform: translateY(calc(100vh + 120px)) rotate(var(--r)); } }
+  .abx-toast { position: fixed; left: 50%; bottom: 24px; z-index: 2147483002; display: flex; gap: 14px; align-items: center; padding: 12px 14px 12px 20px; border-radius: 999px; background: #1a1240; color: #fff; font: 700 16px/1.3 system-ui, sans-serif;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.15), 0 20px 50px -10px rgba(0,0,0,.6); transform: translate(-50%, 160%); transition: transform .6s cubic-bezier(.34,1.56,.64,1); max-width: calc(100% - 32px); }
+  .abx-toast.is-on { transform: translate(-50%, 0); }
+  .abx-toast a { color: #fff; background: linear-gradient(100deg, #ff3d9a, #8b5cf6); padding: 8px 14px; border-radius: 999px; text-decoration: none; white-space: nowrap; }
+
+  @media (max-width: 600px) { #{{ sid }} .x-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (prefers-reduced-motion: reduce) {
+    #{{ sid }} *, #{{ sid }} *::before, #{{ sid }} *::after { animation: none !important; transition: none !important; }
+    #{{ sid }} .x-reveal { opacity: 1; transform: none; }
+    #{{ sid }} .x-stars, #{{ sid }} .x-blobs { display: none; }
+  }
+</style>
+
+<div id="{{ sid }}" data-abx data-confetti="{{ section.settings.fx_confetti }}" data-sparkles="{{ section.settings.fx_sparkles }}" data-added="{{ section.settings.text_added | escape }}">
+  <canvas class="x-stars" aria-hidden="true"></canvas>
+  <div class="x-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  {%- comment -%} ===== HERO ===== {%- endcomment -%}
+  <section class="x-hero" data-hero>
+    <div class="x-floaters" aria-hidden="true">
+      {%- assign floaters = section.settings.floaters | split: ' ' -%}
+      {%- for f in floaters -%}
+        {%- if f != blank -%}
+          <span class="x-fl" style="--i: {{ forloop.index }}; --x: {{ forloop.index | times: 37 | modulo: 90 | plus: 4 }}%; --y: {{ forloop.index | times: 53 | modulo: 78 | plus: 6 }}%;" data-depth="{{ forloop.index | modulo: 4 | plus: 1 }}">{{ f }}</span>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    <div class="x-wrap">
+      {%- if section.settings.kicker != blank -%}<p class="x-kicker x-reveal"><span class="x-dot"></span>{{ section.settings.kicker }}</p>{%- endif -%}
+      <h1 class="x-title" data-easter>
+        <span class="x-title-main" data-split>{{ section.settings.motto }}</span>
+        {%- if section.settings.year != blank -%}<span class="x-title-year">{{ section.settings.year }}</span>{%- endif -%}
+      </h1>
+      {%- if section.settings.slogan != blank -%}<p class="x-slogan x-reveal">{{ section.settings.slogan }}</p>{%- endif -%}
+      <div class="x-ctas x-reveal">
+        <a href="#{{ sid }}-merch" class="x-btn x-btn--glow" data-magnetic>{{ section.settings.btn1 }}</a>
+        <a href="#{{ sid }}-kuchen" class="x-btn x-btn--ghost" data-magnetic>{{ section.settings.btn2 }}</a>
+      </div>
+      {%- if section.settings.countdown_date != blank -%}
+        <div class="x-cd x-reveal" data-countdown="{{ section.settings.countdown_date }}" data-done="{{ section.settings.countdown_done | escape }}">
+          <p class="x-cd-label">{{ section.settings.countdown_label }}</p>
+          <div class="x-cd-grid">
+            <div class="x-cd-cell"><span data-cd="d">--</span><small>Tage</small></div>
+            <div class="x-cd-cell"><span data-cd="h">--</span><small>Std</small></div>
+            <div class="x-cd-cell"><span data-cd="m">--</span><small>Min</small></div>
+            <div class="x-cd-cell"><span data-cd="s">--</span><small>Sek</small></div>
+          </div>
+        </div>
+      {%- endif -%}
+      <p class="x-hint">Psst: Klick mal 5× aufs Motto 👀</p>
+    </div>
+  </section>
+
+  {%- comment -%} ===== LAUFSCHRIFT ===== {%- endcomment -%}
+  {%- if section.settings.marquee != blank -%}
+    {%- assign mq = section.settings.marquee | split: ',' -%}
+    <div class="x-marquee" aria-hidden="true">
+      <div class="x-track">
+        {%- for n in (1..4) -%}{%- for m in mq -%}<span>{{ m | strip }}</span><span><i>✦</i></span>{%- endfor -%}{%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} ===== MERCH ===== {%- endcomment -%}
+  <section class="x-sec x-merch" id="{{ sid }}-merch">
+    <div class="x-wrap">
+      <header class="x-head x-reveal">
+        <p class="x-eyebrow">{{ section.settings.merch_eyebrow }}</p>
+        <h2 class="x-h2">{{ section.settings.merch_title }}</h2>
+        {%- if section.settings.merch_text != blank -%}<p class="x-lead">{{ section.settings.merch_text }}</p>{%- endif -%}
+      </header>
+      <div class="x-grid">
+        {%- if merch != blank and merch.products_count > 0 -%}
+          {%- for product in merch.products limit: section.settings.merch_limit -%}
+            {%- assign v = product.selected_or_first_available_variant -%}
+            <article class="x-card x-reveal" style="--d: {{ forloop.index0 | modulo: 4 | times: 80 }}ms" data-tilt>
+              <a href="{{ product.url }}" class="x-media" aria-label="{{ product.title | escape }}">
+                {%- if product.featured_image -%}
+                  {{ product.featured_image | image_url: width: 700 | image_tag: loading: 'lazy', class: 'x-img1', alt: product.title }}
+                  {%- if product.images[1] -%}{{ product.images[1] | image_url: width: 700 | image_tag: loading: 'lazy', class: 'x-img2', alt: '' }}{%- endif -%}
+                {%- else -%}<span class="x-ph">👕</span>{%- endif -%}
+                <span class="x-badges">
+                  {%- if product.compare_at_price > product.price -%}<span class="x-badge x-badge--sale">Sale</span>{%- endif -%}
+                  {%- unless product.available -%}<span class="x-badge">Ausverkauft</span>{%- endunless -%}
+                </span>
+                <span class="x-shine"></span>
+              </a>
+              <div class="x-body">
+                <a href="{{ product.url }}" class="x-name">{{ product.title }}</a>
+                <p class="x-price"><span data-price>{{ v.price | money }}</span>{%- if v.compare_at_price > v.price -%}<s>{{ v.compare_at_price | money }}</s>{%- endif -%}</p>
+                {%- form 'product', product, class: 'x-form', data-abx-cart: 'true' -%}
+                  {%- if product.has_only_default_variant -%}
+                    <input type="hidden" name="id" value="{{ v.id }}">
+                  {%- else -%}
+                    <label class="x-field"><span>{{ product.options | join: ' / ' }}</span>
+                      <select name="id" data-variant-select>
+                        {%- for variant in product.variants -%}
+                          <option value="{{ variant.id }}" data-price="{{ variant.price | money | escape }}" {% if variant.id == v.id %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>{{ variant.title }}{% unless variant.available %} – ausverkauft{% endunless %}</option>
+                        {%- endfor -%}
+                      </select>
+                    </label>
+                  {%- endif -%}
+                  <div class="x-row">
+                    <div class="x-qty"><button type="button" data-minus aria-label="Weniger">−</button><input type="number" name="quantity" value="1" min="1" max="20" aria-label="Menge"><button type="button" data-plus aria-label="Mehr">+</button></div>
+                    <button type="submit" class="x-btn x-btn--glow" {% unless product.available %}disabled{% endunless %}>{% if product.available %}In den Warenkorb{% else %}Ausverkauft{% endif %}</button>
+                  </div>
+                  <p class="x-err" data-err hidden></p>
+                {%- endform -%}
+              </div>
+            </article>
+          {%- endfor -%}
+        {%- else -%}
+          <p class="x-empty">👕 Wähle im Theme-Editor rechts unter „Merch-Kollektion“ deine Kollektion mit den Abi-Klamotten aus.</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ===== SO GEHT'S ===== {%- endcomment -%}
+  <section class="x-sec">
+    <div class="x-wrap">
+      <header class="x-head x-reveal"><p class="x-eyebrow">Easy wie 1, 2, 3</p><h2 class="x-h2">So funktioniert's</h2></header>
+      <ol class="x-steps">
+        <li class="x-step x-reveal" style="--d:0ms"><b>1</b><span class="x-step-ic">🍰</span><h3>Aussuchen</h3><p>Kuchen, Crêpes oder Merch auswählen.</p></li>
+        <li class="x-step x-reveal" style="--d:90ms"><b>2</b><span class="x-step-ic">📅</span><h3>Termin wählen</h3><p>Abholtermin + Name und Kurs eintragen.</p></li>
+        <li class="x-step x-reveal" style="--d:180ms"><b>3</b><span class="x-step-ic">💸</span><h3>Per PayPal zahlen</h3><p>Sicher an der Kasse bezahlen.</p></li>
+        <li class="x-step x-reveal" style="--d:270ms"><b>4</b><span class="x-step-ic">🎉</span><h3>Abholen</h3><p>Am Abi-Stand Namen sagen und genießen!</p></li>
+      </ol>
+    </div>
+  </section>
+
+  {%- comment -%} ===== KUCHEN & CRÊPES VORBESTELLEN ===== {%- endcomment -%}
+  <section class="x-sec x-bakery" id="{{ sid }}-kuchen">
+    <div class="x-wrap">
+      <header class="x-head x-reveal">
+        <p class="x-eyebrow">{{ section.settings.bakery_eyebrow }}</p>
+        <h2 class="x-h2">{{ section.settings.bakery_title }}</h2>
+        {%- if section.settings.bakery_text != blank -%}<p class="x-lead">{{ section.settings.bakery_text }}</p>{%- endif -%}
+        {%- if section.settings.deadline != blank -%}<p class="x-deadline">🔥 {{ section.settings.deadline }}</p>{%- endif -%}
+      </header>
+      <div class="x-grid">
+        {%- if bakery != blank and bakery.products_count > 0 -%}
+          {%- for product in bakery.products limit: section.settings.bakery_limit -%}
+            {%- assign v = product.selected_or_first_available_variant -%}
+            <article class="x-card x-reveal" style="--d: {{ forloop.index0 | modulo: 3 | times: 80 }}ms" data-tilt>
+              <a href="{{ product.url }}" class="x-media" aria-label="{{ product.title | escape }}">
+                {%- if product.featured_image -%}
+                  {{ product.featured_image | image_url: width: 700 | image_tag: loading: 'lazy', class: 'x-img1', alt: product.title }}
+                {%- else -%}<span class="x-ph">🍰</span>{%- endif -%}
+                <span class="x-badges"><span class="x-badge x-badge--pre">⏰ Vorbestellen</span>{%- unless product.available -%}<span class="x-badge">Leider weg</span>{%- endunless -%}</span>
+                <span class="x-shine"></span>
+              </a>
+              <div class="x-body">
+                <a href="{{ product.url }}" class="x-name">{{ product.title }}</a>
+                <p class="x-price"><span data-price>{{ v.price | money }}</span></p>
+                {%- if product.description != blank -%}<p class="x-desc">{{ product.description | strip_html | truncate: 120 }}</p>{%- endif -%}
+                {%- if product.metafields.custom.allergene != blank -%}<p class="x-allerg">⚠️ Enthält: {{ product.metafields.custom.allergene }}</p>{%- endif -%}
+                {%- form 'product', product, class: 'x-form', data-abx-cart: 'true' -%}
+                  {%- if product.has_only_default_variant -%}
+                    <input type="hidden" name="id" value="{{ v.id }}">
+                  {%- else -%}
+                    <label class="x-field"><span>{{ product.options | join: ' / ' }}</span>
+                      <select name="id" data-variant-select>
+                        {%- for variant in product.variants -%}
+                          <option value="{{ variant.id }}" data-price="{{ variant.price | money | escape }}" {% if variant.id == v.id %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>{{ variant.title }}{% unless variant.available %} – weg{% endunless %}</option>
+                        {%- endfor -%}
+                      </select>
+                    </label>
+                  {%- endif -%}
+                  <label class="x-field"><span>📅 Abholtermin *</span>
+                    {%- if has_slots -%}
+                      <select name="properties[Abholtermin]" required>
+                        <option value="" disabled selected>Bitte wählen …</option>
+                        {%- for s in slots -%}{%- assign t = s | strip -%}{%- if t != blank -%}<option value="{{ t | escape }}">{{ t }}</option>{%- endif -%}{%- endfor -%}
+                      </select>
+                    {%- else -%}
+                      <input type="date" name="properties[Abholdatum]" required data-min-days="{{ section.settings.min_days }}">
+                    {%- endif -%}
+                  </label>
+                  <label class="x-field"><span>🙋 Name & Kurs/Klasse *</span><input type="text" name="properties[Name / Kurs]" required maxlength="60" placeholder="z. B. Mia Schulz, Q2" autocomplete="name"></label>
+                  <label class="x-field"><span>💬 Anmerkung (optional, z. B. Allergien)</span><input type="text" name="properties[Anmerkung]" maxlength="200"></label>
+                  <div class="x-row">
+                    <div class="x-qty"><button type="button" data-minus aria-label="Weniger">−</button><input type="number" name="quantity" value="1" min="1" max="{{ section.settings.max_qty }}" aria-label="Menge"><button type="button" data-plus aria-label="Mehr">+</button></div>
+                    <button type="submit" class="x-btn x-btn--warm" {% unless product.available %}disabled{% endunless %}>{% if product.available %}Vorbestellen 🍰{% else %}Leider weg 😢{% endif %}</button>
+                  </div>
+                  <p class="x-err" data-err hidden></p>
+                {%- endform -%}
+              </div>
+            </article>
+          {%- endfor -%}
+        {%- else -%}
+          <p class="x-empty">🍰 Wähle im Theme-Editor rechts unter „Kuchen-Kollektion“ deine Kollektion mit Kuchen, Crêpes usw. aus.</p>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.allergen_text != blank -%}<p class="x-desc" style="text-align:center;margin-top:28px">{{ section.settings.allergen_text }}</p>{%- endif -%}
+    </div>
+  </section>
+
+  {%- comment -%} ===== FAQ ===== {%- endcomment -%}
+  {%- if section.blocks.size > 0 -%}
+    <section class="x-sec" id="{{ sid }}-faq">
+      <div class="x-wrap x-narrow">
+        <header class="x-head x-reveal"><p class="x-eyebrow">FAQ</p><h2 class="x-h2">Noch Fragen? 🤔</h2></header>
+        <div class="x-faq">
+          {%- for block in section.blocks -%}
+            <details class="x-reveal" {{ block.shopify_attributes }}>
+              <summary>{{ block.settings.question }}<span class="x-plus" aria-hidden="true"></span></summary>
+              <div class="x-ans">{{ block.settings.answer }}</div>
+            </details>
+          {%- endfor -%}
+        </div>
+        <p class="x-foot"><span class="x-paypal"><b>Pay<i>Pal</i></b> Wir akzeptieren ausschließlich PayPal – auch ohne Konto per Lastschrift oder Karte.</span></p>
+      </div>
+    </section>
+  {%- endif -%}
+</div>
+
+<script>
+(() => {
+  const root = document.getElementById({{ sid | json }});
+  if (!root || root.dataset.ready) return;
+  root.dataset.ready = '1';
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = matchMedia('(pointer: fine)').matches;
+  const colors = [{{ section.settings.c_a1 | json }}, {{ section.settings.c_a2 | json }}, {{ section.settings.c_a3 | json }}, '#ffffff'];
+  const $$ = (s, r = root) => Array.from(r.querySelectorAll(s));
+
+  /* Reveal */
+  const rev = $$('.x-reveal');
+  if ('IntersectionObserver' in window && !reduce) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }), { threshold: .12 });
+    rev.forEach((el) => io.observe(el));
+  } else rev.forEach((el) => el.classList.add('is-in'));
+
+  /* Motto in Buchstaben */
+  $$('[data-split]').forEach((el) => {
+    const chars = Array.from(el.textContent.trim());
+    el.setAttribute('aria-label', el.textContent.trim());
+    el.textContent = '';
+    chars.forEach((c, i) => { const s = document.createElement('span'); s.className = 'x-ch'; s.setAttribute('aria-hidden', 'true'); s.style.setProperty('--ci', i); s.style.setProperty('--n', chars.length); s.textContent = c === ' ' ? ' ' : c; el.appendChild(s); });
+  });
+
+  /* Konfetti */
+  let cv = document.querySelector('.abx-confetti');
+  if (!cv) { cv = document.createElement('canvas'); cv.className = 'abx-confetti'; document.body.appendChild(cv); }
+  let parts = [], running = false;
+  const confetti = (x, y, n = 130) => {
+    if (reduce || root.dataset.confetti !== 'true') return;
+    const ctx = cv.getContext('2d'), dpr = Math.min(devicePixelRatio || 1, 2);
+    cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    for (let i = 0; i < n; i++) { const a = Math.random() * 6.283, v = 6 + Math.random() * 10; parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 7, w: 6 + Math.random() * 8, h: 4 + Math.random() * 6, r: Math.random() * 6, vr: (Math.random() - .5) * .4, c: colors[i % 4], s: i % 3, l: 0 }); }
+    if (running) return; running = true;
+    const tick = () => {
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      parts.forEach((p) => { p.vy += .32; p.vx *= .985; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.l++;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.globalAlpha = Math.max(0, 1 - p.l / 160);
+        if (p.s === 0) ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.l / 8)));
+        else if (p.s === 1) { ctx.beginPath(); ctx.arc(0, 0, p.h / 1.6, 0, 6.283); ctx.fill(); }
+        else { ctx.font = (p.w + 6) + 'px sans-serif'; ctx.fillText('★', -p.w / 2, p.h / 2); }
+        ctx.restore(); });
+      parts = parts.filter((p) => p.l < 160 && p.y < innerHeight + 40);
+      if (parts.length) requestAnimationFrame(tick); else { running = false; ctx.clearRect(0, 0, innerWidth, innerHeight); }
+    };
+    requestAnimationFrame(tick);
+  };
+
+  /* Toast */
+  let toastEl = document.querySelector('.abx-toast'), tt;
+  if (!toastEl) { toastEl = document.createElement('div'); toastEl.className = 'abx-toast'; toastEl.setAttribute('role', 'status'); document.body.appendChild(toastEl); }
+  const toast = (msg, link) => {
+    toastEl.textContent = msg;
+    if (link) { const a = document.createElement('a'); a.href = {{ routes.cart_url | json }}; a.textContent = 'Zum Warenkorb'; toastEl.appendChild(a); }
+    toastEl.classList.add('is-on'); clearTimeout(tt); tt = setTimeout(() => toastEl.classList.remove('is-on'), 4200);
+  };
+
+  /* Easter Egg */
+  $$('[data-easter]').forEach((el) => {
+    let c = 0, t;
+    el.addEventListener('click', (e) => {
+      c++; el.classList.remove('is-wobble'); void el.offsetWidth; el.classList.add('is-wobble');
+      clearTimeout(t); t = setTimeout(() => { c = 0; }, 1500);
+      if (c < 5) return; c = 0;
+      confetti(e.clientX, e.clientY, 220); toast('🎓 ABI 2027 – WIR HABEN FERTIG! 🎉');
+      if (reduce) return;
+      const em = ['🎓', '🎉', '🍰', '🥞', '🚀', '⭐', '💜', '🧁'];
+      for (let i = 0; i < 42; i++) { const s = document.createElement('span'); s.className = 'abx-rain'; s.textContent = em[i % em.length];
+        s.style.cssText = `left:${Math.random() * 100}vw;font-size:${22 + Math.random() * 30}px;animation-duration:${2.2 + Math.random() * 2.5}s;animation-delay:${Math.random() * 1.2}s;--r:${Math.random() * 720 - 360}deg`;
+        document.body.appendChild(s); s.addEventListener('animationend', () => s.remove()); }
+    });
+  });
+
+  /* Sternenhimmel */
+  const sc = root.querySelector('.x-stars');
+  if (sc && !reduce) {
+    const ctx = sc.getContext('2d'); let w, h, stars = [], shoot = [], visible = true;
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const size = () => { w = root.offsetWidth; h = root.offsetHeight; sc.width = w * dpr; sc.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      stars = Array.from({ length: Math.min(420, Math.floor(w * h / 6500)) }, () => ({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.4 + .2, t: Math.random() * 6.3, s: .01 + Math.random() * .03 })); };
+    size(); if ('ResizeObserver' in window) new ResizeObserver(size).observe(root);
+    if ('IntersectionObserver' in window) new IntersectionObserver((es) => { visible = es[0].isIntersecting; }).observe(root);
+    const draw = () => {
+      requestAnimationFrame(draw); if (!visible) return;
+      ctx.clearRect(0, 0, w, h); ctx.fillStyle = '#fff';
+      stars.forEach((s) => { s.t += s.s; ctx.globalAlpha = .45 + Math.sin(s.t) * .4; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 6.283); ctx.fill(); });
+      if (Math.random() < .008 && shoot.length < 3) { const top = scrollY - root.offsetTop; shoot.push({ x: Math.random() * w * .8 + w * .2, y: Math.max(0, top) + Math.random() * innerHeight * .5, vx: -(7 + Math.random() * 5), vy: 3 + Math.random() * 2, l: 0 }); }
+      shoot.forEach((p) => { p.x += p.vx; p.y += p.vy; p.l++; const g = ctx.createLinearGradient(p.x, p.y, p.x - p.vx * 14, p.y - p.vy * 14);
+        g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(1, 'rgba(255,255,255,0)'); ctx.globalAlpha = Math.max(0, 1 - p.l / 70); ctx.strokeStyle = g; ctx.lineWidth = 2; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * 14, p.y - p.vy * 14); ctx.stroke(); });
+      shoot = shoot.filter((p) => p.l < 70); ctx.globalAlpha = 1;
+    };
+    requestAnimationFrame(draw);
+  }
+
+  /* Glitzer, Tilt, Magnet, Parallax (nur mit Maus) */
+  if (!reduce && fine) {
+    if (root.dataset.sparkles === 'true') {
+      let last = 0;
+      root.addEventListener('pointermove', (e) => { const n = performance.now(); if (n - last < 35) return; last = n;
+        const s = document.createElement('span'); s.className = 'abx-spark';
+        s.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;--dx:${Math.random() * 40 - 20}px;--dy:${Math.random() * 30 + 10}px;--sc:${colors[Math.floor(Math.random() * 3)]}`;
+        document.body.appendChild(s); s.addEventListener('animationend', () => s.remove()); }, { passive: true });
+    }
+    $$('[data-tilt]').forEach((el) => {
+      el.addEventListener('pointermove', (e) => { if (e.target.closest('input,select,button')) return; const r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+        el.classList.add('is-tilting'); el.style.setProperty('--ry', ((px - .5) * 10).toFixed(2) + 'deg'); el.style.setProperty('--rx', ((.5 - py) * 8).toFixed(2) + 'deg');
+        el.style.setProperty('--mx', (px * 100) + '%'); el.style.setProperty('--my', (py * 100) + '%'); });
+      el.addEventListener('pointerleave', () => { el.classList.remove('is-tilting'); el.style.setProperty('--rx', '0deg'); el.style.setProperty('--ry', '0deg'); });
+    });
+    $$('[data-magnetic]').forEach((b) => {
+      b.addEventListener('pointermove', (e) => { const r = b.getBoundingClientRect(); b.style.setProperty('--bx', ((e.clientX - r.left - r.width / 2) * .25) + 'px'); b.style.setProperty('--by', ((e.clientY - r.top - r.height / 2) * .35) + 'px'); });
+      b.addEventListener('pointerleave', () => { b.style.setProperty('--bx', '0px'); b.style.setProperty('--by', '0px'); });
+    });
+    const hero = root.querySelector('[data-hero]'), fl = $$('.x-fl');
+    if (hero) hero.addEventListener('pointermove', (e) => { const cx = e.clientX / innerWidth - .5, cy = e.clientY / innerHeight - .5;
+      fl.forEach((f) => { const d = (+f.dataset.depth || 1) * 14; f.style.setProperty('--px', (-cx * d) + 'px'); f.style.setProperty('--py', (-cy * d) + 'px'); }); });
+  }
+
+  /* Countdown */
+  $$('[data-countdown]').forEach((el) => {
+    const raw = el.dataset.countdown.trim(), target = new Date(raw.length === 10 ? raw + 'T00:00' : raw).getTime();
+    if (isNaN(target)) { el.hidden = true; return; }
+    const cell = (k) => el.querySelector(`[data-cd="${k}"]`);
+    const set = (k, v) => { const c = cell(k), t = String(v).padStart(2, '0'); if (c.textContent !== t) { c.textContent = t; c.classList.remove('is-tick'); void c.offsetWidth; c.classList.add('is-tick'); } };
+    const up = () => { let d = target - Date.now();
+      if (d <= 0) { el.querySelector('.x-cd-grid').innerHTML = '<p class="x-cd-done"></p>'; el.querySelector('.x-cd-done').textContent = el.dataset.done; return; }
+      const D = Math.floor(d / 864e5); d -= D * 864e5; const H = Math.floor(d / 36e5); d -= H * 36e5; const M = Math.floor(d / 6e4); d -= M * 6e4;
+      set('d', D); set('h', H); set('m', M); set('s', Math.floor(d / 1000)); setTimeout(up, 1000); };
+    up();
+  });
+
+  /* Menge +/- , Varianten-Preis, Datum */
+  $$('.x-qty').forEach((q) => { const i = q.querySelector('input');
+    const st = (n) => { i.value = Math.min(+i.max || 99, Math.max(+i.min || 1, (+i.value || 1) + n)); };
+    q.querySelector('[data-minus]').addEventListener('click', () => st(-1)); q.querySelector('[data-plus]').addEventListener('click', () => st(1)); });
+  $$('[data-variant-select]').forEach((s) => s.addEventListener('change', () => { const p = s.closest('.x-card').querySelector('[data-price]'); const o = s.selectedOptions[0]; if (p && o) p.textContent = o.dataset.price; }));
+  $$('input[type="date"][data-min-days]').forEach((i) => { const d = new Date(); d.setDate(d.getDate() + (+i.dataset.minDays || 0)); i.min = d.toISOString().slice(0, 10); });
+
+  /* In den Warenkorb ohne Neuladen */
+  $$('form[data-abx-cart]').forEach((f) => f.addEventListener('submit', async (e) => {
+    if (!window.fetch) return;
+    e.preventDefault();
+    const btn = f.querySelector('[type="submit"]'), err = f.querySelector('[data-err]');
+    err.hidden = true; btn.disabled = true;
+    try {
+      const res = await fetch({{ routes.cart_add_url | json }} + '.js', { method: 'POST', body: new FormData(f), headers: { Accept: 'application/json' } });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.description || data.message || 'Das hat nicht geklappt.');
+      const r = btn.getBoundingClientRect(); confetti(r.left + r.width / 2, r.top + r.height / 2);
+      toast(root.dataset.added || 'Liegt im Warenkorb 🎉', true);
+      try { const c = await (await fetch({{ routes.cart_url | append: '.js' | json }})).json();
+        document.querySelectorAll('.cart-count-bubble span, [data-cart-count], cart-count, .cart-bubble__text-count').forEach((b) => { if (b.children.length === 0) b.textContent = c.item_count; });
+        document.dispatchEvent(new CustomEvent('cart:refresh')); } catch (_) {}
+    } catch (ex) { err.textContent = ex.message; err.hidden = false; }
+    finally { btn.disabled = false; }
+  }));
+})();
+</script>
+
+{% schema %}
+{
+  "name": "ABI Shop 2027",
+  "tag": "section",
+  "class": "abx-section",
+  "settings": [
+    { "type": "header", "content": "🎓 Abimotto" },
+    { "type": "text", "id": "kicker", "label": "Kleine Zeile über dem Motto", "default": "Abiturjahrgang 2027 · Offizieller Shop" },
+    { "type": "text", "id": "motto", "label": "Abimotto", "default": "ABIversum" },
+    { "type": "text", "id": "year", "label": "Jahrgang", "default": "2027" },
+    { "type": "text", "id": "slogan", "label": "Abispruch", "default": "12 Jahre im Orbit – jetzt starten wir durch. 🚀" },
+    { "type": "text", "id": "floaters", "label": "Schwebende Emojis (mit Leerzeichen trennen)", "default": "🎓 🚀 🍰 👕 🥞 ⭐ 🪐 🧁 🎉 💜 🌙 🧢" },
+    { "type": "text", "id": "btn1", "label": "Button 1", "default": "👕 Zum Abi-Merch" },
+    { "type": "text", "id": "btn2", "label": "Button 2", "default": "🍰 Kuchen vorbestellen" },
+    { "type": "text", "id": "countdown_label", "label": "Countdown-Überschrift", "default": "Countdown bis zum Abiball 🪩" },
+    { "type": "text", "id": "countdown_date", "label": "Countdown-Datum", "default": "2027-07-03T19:00", "info": "Format JJJJ-MM-TTTHH:MM. Leer = kein Countdown." },
+    { "type": "text", "id": "countdown_done", "label": "Text nach Ablauf", "default": "WIR HABEN FERTIG! 🎉" },
+    { "type": "text", "id": "marquee", "label": "Laufschrift (mit Komma trennen)", "default": "ABIVERSUM 2027, MERCH DROP 👕, KUCHEN VORBESTELLEN 🍰, CRÊPES 🥞, PAYPAL 💸" },
+
+    { "type": "header", "content": "👕 Abi-Merch" },
+    { "type": "collection", "id": "merch_collection", "label": "Merch-Kollektion" },
+    { "type": "text", "id": "merch_eyebrow", "label": "Kleine Zeile", "default": "Drop 01 · Limited" },
+    { "type": "text", "id": "merch_title", "label": "Überschrift", "default": "Abi-Merch 👕" },
+    { "type": "text", "id": "merch_text", "label": "Text", "default": "Hoodies, Shirts, Caps & Co. mit unserem Motto – Größe wählen und ab in den Warenkorb." },
+    { "type": "range", "id": "merch_limit", "label": "Max. Produkte", "min": 1, "max": 24, "step": 1, "default": 12 },
+
+    { "type": "header", "content": "🍰 Kuchen, Crêpes & Co." },
+    { "type": "collection", "id": "bakery_collection", "label": "Kuchen-Kollektion" },
+    { "type": "text", "id": "bakery_eyebrow", "label": "Kleine Zeile", "default": "Frisch gebacken · nur auf Vorbestellung" },
+    { "type": "text", "id": "bakery_title", "label": "Überschrift", "default": "Kuchen, Crêpes & mehr 🥞" },
+    { "type": "text", "id": "bakery_text", "label": "Text", "default": "Reservier dir dein Stück, bevor's weg ist! Jeder Euro geht in unseren Abiball." },
+    { "type": "text", "id": "deadline", "label": "Bestellschluss-Hinweis", "default": "Bestellschluss: immer am Vortag um 18 Uhr" },
+    { "type": "textarea", "id": "pickup_dates", "label": "Abholtermine (einer pro Zeile)", "default": "Fr, 27.11.2026 · 1. große Pause\nFr, 27.11.2026 · 2. große Pause\nFr, 04.12.2026 · 1. große Pause\nFr, 04.12.2026 · 2. große Pause\nSa, 12.12.2026 · Weihnachtsbasar 10–14 Uhr", "info": "Leer lassen = freie Datumsauswahl im Kalender." },
+    { "type": "range", "id": "min_days", "label": "Nur Kalender: frühestens in X Tagen", "min": 0, "max": 14, "step": 1, "default": 2 },
+    { "type": "range", "id": "max_qty", "label": "Max. Menge pro Produkt", "min": 1, "max": 30, "step": 1, "default": 10 },
+    { "type": "range", "id": "bakery_limit", "label": "Max. Produkte", "min": 1, "max": 24, "step": 1, "default": 12 },
+    { "type": "textarea", "id": "allergen_text", "label": "Allergen-Hinweis", "default": "Unsere Kuchen und Crêpes werden privat von Schüler*innen und Eltern gebacken und können Spuren von Gluten, Ei, Milch, Nüssen, Erdnüssen, Soja und Sesam enthalten. Bei Allergien schreib uns bitte vorher." },
+
+    { "type": "header", "content": "✨ Effekte & Farben" },
+    { "type": "checkbox", "id": "fx_confetti", "label": "Konfetti beim In-den-Warenkorb-Legen", "default": true },
+    { "type": "checkbox", "id": "fx_sparkles", "label": "Glitzer-Spur hinter der Maus", "default": true },
+    { "type": "text", "id": "text_added", "label": "Text nach dem Hinzufügen", "default": "Yeah! Liegt im Warenkorb 🎉" },
+    { "type": "color", "id": "c_bg", "label": "Hintergrund", "default": "#0b0820" },
+    { "type": "color", "id": "c_bg2", "label": "Karten", "default": "#1a1240" },
+    { "type": "color", "id": "c_a1", "label": "Akzent Pink", "default": "#ff3d9a" },
+    { "type": "color", "id": "c_a2", "label": "Akzent Lila", "default": "#8b5cf6" },
+    { "type": "color", "id": "c_a3", "label": "Akzent Cyan", "default": "#22d3ee" }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ-Frage",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Frage", "default": "Wie kann ich bezahlen?" },
+        { "type": "richtext", "id": "answer", "label": "Antwort", "default": "<p>Nur per PayPal.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "ABI Shop 2027",
+      "blocks": [
+        { "type": "faq", "settings": { "question": "Wie kann ich bezahlen?", "answer": "<p>Ausschließlich per <strong>PayPal</strong> – auch ohne Konto per Lastschrift oder Kreditkarte.</p>" } },
+        { "type": "faq", "settings": { "question": "Wo und wann hole ich meinen Kuchen ab?", "answer": "<p>Am Abi-Stand in der Aula zu dem Termin, den du bei der Bestellung gewählt hast. Einfach deinen Namen sagen.</p>" } },
+        { "type": "faq", "settings": { "question": "Wann kommt mein Merch?", "answer": "<p>Wir sammeln alle Bestellungen bis zum Bestellschluss, bestellen gesammelt und verteilen alles in der Schule.</p>" } },
+        { "type": "faq", "settings": { "question": "Kann ich etwas zurückgeben?", "answer": "<p>Bei Lebensmitteln und personalisierter Kleidung gibt es kein Widerrufsrecht. Bei normalem Merch hast du 14 Tage – nutze dafür den Button „Vertrag widerrufen“ im Footer.</p>" } },
+        { "type": "faq", "settings": { "question": "Gibt es Infos zu Allergenen?", "answer": "<p>Ja, bei jedem Kuchen steht, was drin ist. Bei Allergien schreib uns vorher über das Kontaktformular.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
