@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000"><g transform="translate(500 400) scale(1.05)"><g>
+  <defs><clipPath id="chc"><circle r="110"/></clipPath></defs>
+  <g transform="rotate(-18)"><path d="M-175,0 A175,48 0 0 1 175,0" fill="none" stroke="#22d3ee" stroke-width="16" stroke-linecap="round"/></g>
+  <circle r="110" fill="#8b5cf6"/>
+  <g clip-path="url(#chc)" transform="rotate(-18)">
+    <rect x="-130" y="-62" width="260" height="20" fill="#ff3d9a"/>
+    <rect x="-130" y="8" width="260" height="34" fill="#ff3d9a"/>
+    <rect x="-130" y="64" width="260" height="12" fill="#ff3d9a"/>
+  </g>
+  <g transform="rotate(-18)"><path d="M-175,0 A175,48 0 0 0 175,0" fill="none" stroke="#22d3ee" stroke-width="16" stroke-linecap="round"/></g>
+  <g transform="translate(6 -118) rotate(-10)">
+    <path d="M-52,-14 L52,-14 L46,22 Q0,36 -46,22 Z" fill="#ffffff"/>
+    <path d="M0,-62 L104,-26 L0,10 L-104,-26 Z" fill="#ffffff"/>
+    <path d="M0,-26 L78,-10 L78,40" fill="none" stroke="#ff3d9a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="70" y="36" width="16" height="30" rx="5" fill="#ff3d9a"/>
+    <circle cy="-26" r="9" fill="#ff3d9a"/>
+  </g>
+</g></g>
+<text x="500" y="820" text-anchor="middle" font-family="'Inter Display','Inter',Arial,sans-serif" font-weight="900" font-size="150" fill="#ffffff" letter-spacing="-4">ABIversum</text>
+<text x="500" y="940" text-anchor="middle" font-family="'Inter Display','Inter',Arial,sans-serif" font-weight="800" font-size="78" fill="#ff3d9a" letter-spacing="40">2027</text></svg>
