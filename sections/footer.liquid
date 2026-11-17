@@ -69,13 +69,7 @@
                 <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
               {%- endfor -%}
             {%- else -%}
-              {%- for policy in shop.policies -%}
-                <li><a href="{{ policy.url }}">{{ policy.title }}</a></li>
-              {%- endfor -%}
-            {%- endif -%}
-            {%- assign withdraw_page = pages['vertrag-widerrufen'] -%}
-            {%- if withdraw_page != empty and withdraw_page.url -%}
-              <li><a href="{{ withdraw_page.url }}"><strong>{{ withdraw_page.title }}</strong></a></li>
+              {% render 'legal-links' %}
             {%- endif -%}
           </ul>
         </nav>
@@ -98,7 +92,7 @@
   "settings": [
     { "type": "checkbox", "id": "show_giant", "label": "Riesiger Schriftzug unten", "default": true },
     { "type": "text", "id": "giant_text", "label": "Schriftzug-Text", "default": "WEAX" },
-    { "type": "link_list", "id": "legal_menu", "label": "Menü für Rechtliches", "info": "Leer lassen = automatisch alle Richtlinien (Impressum, AGB, Widerruf, Datenschutz) aus Einstellungen → Richtlinien." },
+    { "type": "link_list", "id": "legal_menu", "label": "Menü für Rechtliches", "info": "Leer lassen = automatisch alle Rechtstext-Seiten (Impressum, AGB, Widerrufsbelehrung, Datenschutz, Versand & Zahlung, Rückgabe, Vertrag widerrufen)." },
     { "type": "text", "id": "copyright", "label": "Zusatz neben ©", "default": "Reach for the stars" },
     { "type": "checkbox", "id": "show_payment", "label": "Zahlungs-Icons zeigen", "default": true }
   ],

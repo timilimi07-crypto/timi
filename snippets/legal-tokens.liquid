@@ -1,0 +1,105 @@
+{%- comment -%}
+  Ersetzt Platzhalter-Kürzel in Rechtstexten durch die Stammdaten aus
+  Theme-Einstellungen → Rechtliches & Stammdaten. Leere Felder werden als
+  sichtbarer [PLATZHALTER: …] ausgegeben.
+  Parameter: text
+  Kürzel: [[FIRMA]] [[INHABER]] [[STRASSE]] [[PLZ_ORT]] [[LAND]] [[EMAIL]] [[TELEFON]] [[DOMAIN]]
+          [[USTID_ZEILE]] [[VERSANDKOSTEN]] [[LIEFERZEIT]] [[VERSANDDIENSTLEISTER]] [[GRATIS_AB]]
+          [[RUECKSENDEADRESSE]] [[RUECKSENDEKOSTEN]] [[AUFSICHTSBEHOERDE]] [[STAND]] [[ANSCHRIFT]]
+{%- endcomment -%}
+{%- liquid
+  assign ph_open = '<mark class="legal-ph">[PLATZHALTER: '
+  assign ph_close = ']</mark>'
+
+  assign v_firma = settings.legal_company | escape
+  if v_firma == blank
+    assign v_firma = ph_open | append: 'Firmen-/Markenname' | append: ph_close
+  endif
+  assign v_owner = settings.legal_owner | escape
+  if v_owner == blank
+    assign v_owner = ph_open | append: 'Vor- und Nachname Inhaber' | append: ph_close
+  endif
+  assign v_street = settings.legal_street | escape
+  if v_street == blank
+    assign v_street = ph_open | append: 'Straße und Hausnummer' | append: ph_close
+  endif
+  assign v_zip = settings.legal_zip_city | escape
+  if v_zip == blank
+    assign v_zip = ph_open | append: 'PLZ und Ort' | append: ph_close
+  endif
+  assign v_country = settings.legal_country | default: 'Deutschland' | escape
+  assign v_email = settings.service_email | escape
+  if v_email == blank
+    assign v_email = ph_open | append: 'E-Mail-Adresse' | append: ph_close
+  else
+    assign v_email = '<a href="mailto:' | append: v_email | append: '">' | append: v_email | append: '</a>'
+  endif
+  assign v_phone = settings.legal_phone | escape
+  if v_phone == blank
+    assign v_phone = ph_open | append: 'Telefonnummer' | append: ph_close
+  endif
+  assign v_domain = settings.legal_domain | default: request.host | escape
+  assign v_vat = settings.legal_vat_id | escape
+  if v_vat != blank
+    assign v_vat = '<br>Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: ' | append: v_vat
+  elsif settings.legal_no_vat_id
+    assign v_vat = ''
+  else
+    assign v_vat = '<br>Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: ' | append: ph_open | append: 'USt-IdNr. eintragen – oder in den Theme-Einstellungen „Ich habe keine USt-IdNr.“ aktivieren' | append: ph_close
+  endif
+  assign v_ship = settings.legal_shipping_cost | escape
+  if v_ship == blank
+    assign v_ship = ph_open | append: 'Versandkosten, z. B. 4,90 €' | append: ph_close
+  endif
+  assign v_time = settings.legal_delivery_time | escape
+  if v_time == blank
+    assign v_time = ph_open | append: 'Lieferzeit, z. B. 2–4 Werktage' | append: ph_close
+  endif
+  assign v_carrier = settings.legal_carrier | escape
+  if v_carrier == blank
+    assign v_carrier = ph_open | append: 'Versanddienstleister, z. B. DHL' | append: ph_close
+  endif
+  if settings.free_shipping_enable and settings.free_shipping_threshold > 0
+    assign v_free = settings.free_shipping_threshold | times: 100 | money
+  else
+    assign v_free = ph_open | append: 'Betrag für Gratis-Versand oder Satz löschen' | append: ph_close
+  endif
+  assign v_address = v_firma | append: ', Inhaber ' | append: v_owner | append: ', ' | append: v_street | append: ', ' | append: v_zip | append: ', ' | append: v_country
+  assign v_return = settings.legal_return_address | escape | newline_to_br
+  if v_return == blank
+    assign v_return = v_address
+  endif
+  if settings.legal_return_costs == 'merchant'
+    assign v_rcosts = 'Wir tragen die Kosten der Rücksendung der Waren.'
+  else
+    assign v_rcosts = 'Sie tragen die unmittelbaren Kosten der Rücksendung der Waren.'
+  endif
+  assign v_auth = settings.legal_authority | escape
+  if v_auth == blank
+    assign v_auth = ph_open | append: 'Datenschutz-Aufsichtsbehörde deines Bundeslandes mit Anschrift' | append: ph_close
+  endif
+  assign v_stand = settings.legal_updated | default: '' | escape
+  if v_stand == blank
+    assign v_stand = ph_open | append: 'Datum' | append: ph_close
+  endif
+-%}
+{{- text
+  | replace: '[[ANSCHRIFT]]', v_address
+  | replace: '[[FIRMA]]', v_firma
+  | replace: '[[INHABER]]', v_owner
+  | replace: '[[STRASSE]]', v_street
+  | replace: '[[PLZ_ORT]]', v_zip
+  | replace: '[[LAND]]', v_country
+  | replace: '[[EMAIL]]', v_email
+  | replace: '[[TELEFON]]', v_phone
+  | replace: '[[DOMAIN]]', v_domain
+  | replace: '[[USTID_ZEILE]]', v_vat
+  | replace: '[[VERSANDKOSTEN]]', v_ship
+  | replace: '[[LIEFERZEIT]]', v_time
+  | replace: '[[VERSANDDIENSTLEISTER]]', v_carrier
+  | replace: '[[GRATIS_AB]]', v_free
+  | replace: '[[RUECKSENDEADRESSE]]', v_return
+  | replace: '[[RUECKSENDEKOSTEN]]', v_rcosts
+  | replace: '[[AUFSICHTSBEHOERDE]]', v_auth
+  | replace: '[[STAND]]', v_stand
+-}}

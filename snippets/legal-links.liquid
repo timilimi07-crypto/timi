@@ -1,0 +1,25 @@
+{%- comment -%}
+  Links zu allen Rechtstext-Seiten (für Footer und die Leiste über den Rechtstexten).
+  Sucht die Seiten über ihren Handle (URL). Findet sie keine, nimmt sie die Shopify-Richtlinien.
+  Parameter: link_class (optional)
+{%- endcomment -%}
+{%- liquid
+  assign groups = 'impressum|agb|widerrufsbelehrung,widerruf,widerrufsrecht|datenschutz,datenschutzerklaerung,datenschutzerklarung|versand-und-zahlung,versand-zahlung,versand|rueckgabe,ruckgabe,retouren,ruecksendung|vertrag-widerrufen' | split: '|'
+  assign found = 0
+-%}
+{%- for group in groups -%}
+  {%- assign handles = group | split: ',' -%}
+  {%- for h in handles -%}
+    {%- assign lp = pages[h] -%}
+    {%- if lp != empty and lp.url != blank -%}
+      {%- assign found = found | plus: 1 -%}
+      <li><a class="{{ link_class }}" href="{{ lp.url }}">{%- if h == 'vertrag-widerrufen' -%}<strong>{{ lp.title }}</strong>{%- else -%}{{ lp.title }}{%- endif -%}</a></li>
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor -%}
+{%- if found == 0 -%}
+  {%- for policy in shop.policies -%}
+    <li><a class="{{ link_class }}" href="{{ policy.url }}">{{ policy.title }}</a></li>
+  {%- endfor -%}
+{%- endif -%}

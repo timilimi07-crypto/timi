@@ -33,7 +33,8 @@
   <p class="price-note">
     {%- if settings.small_business -%}{{ settings.small_business_text }}{%- else -%}{{ 'products.product.tax_included' | t }}{%- endif -%}
     {%- if settings.show_shipping_note -%}
-      {{ ' ' }}{%- if settings.shipping_page != blank -%}<a href="{{ settings.shipping_page.url }}">{{ 'products.product.shipping_excluded' | t }}</a>{%- else -%}{{ 'products.product.shipping_excluded' | t }}{%- endif -%}
+      {%- assign ship_page = settings.shipping_page | default: pages['versand-und-zahlung'] -%}
+      {{ ' ' }}{%- if ship_page != blank and ship_page.url -%}<a href="{{ ship_page.url }}">{{ 'products.product.shipping_excluded' | t }}</a>{%- else -%}{{ 'products.product.shipping_excluded' | t }}{%- endif -%}
     {%- endif -%}
   </p>
 {%- endif -%}

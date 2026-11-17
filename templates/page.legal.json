@@ -1,8 +1,527 @@
 {
   "sections": {
-    "main": {
+    "legal-impressum": {
+      "type": "legal-text",
+      "blocks": {
+        "impressum-01": {
+          "type": "section",
+          "settings": {
+            "heading": "Angaben gemäß § 5 DDG",
+            "text": "<p>[[FIRMA]]<br>Inhaber: [[INHABER]]<br>[[STRASSE]]<br>[[PLZ_ORT]]<br>[[LAND]]</p><p>Rechtsform: Einzelunternehmen</p>"
+          }
+        },
+        "impressum-02": {
+          "type": "section",
+          "settings": {
+            "heading": "Kontakt",
+            "text": "<p>E-Mail: [[EMAIL]]<br>Telefon: [[TELEFON]]</p>"
+          }
+        },
+        "impressum-03": {
+          "type": "section",
+          "settings": {
+            "heading": "Umsatzsteuer",
+            "text": "<p>Gemäß § 19 UStG wird keine Umsatzsteuer berechnet (Kleinunternehmerregelung).[[USTID_ZEILE]]</p>"
+          }
+        },
+        "impressum-04": {
+          "type": "section",
+          "settings": {
+            "heading": "Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV",
+            "text": "<p>[[INHABER]], Anschrift wie oben</p>"
+          }
+        },
+        "impressum-05": {
+          "type": "section",
+          "settings": {
+            "heading": "Verbraucherstreitbeilegung",
+            "text": "<p>Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>"
+          }
+        },
+        "impressum-06": {
+          "type": "section",
+          "settings": {
+            "heading": "Haftung für Links",
+            "text": "<p>Unser Angebot enthält Links zu externen Websites Dritter (z. B. Instagram und TikTok), auf deren Inhalte wir keinen Einfluss haben. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber verantwortlich. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.</p>"
+          }
+        },
+        "impressum-07": {
+          "type": "section",
+          "settings": {
+            "heading": "Urheberrecht",
+            "text": "<p>Die Inhalte dieser Website, insbesondere Texte, Fotos, Grafiken und das Logo, unterliegen dem deutschen Urheberrecht. Jede Verwertung außerhalb der Grenzen des Urheberrechts bedarf unserer vorherigen schriftlichen Zustimmung.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "impressum-01",
+        "impressum-02",
+        "impressum-03",
+        "impressum-04",
+        "impressum-05",
+        "impressum-06",
+        "impressum-07"
+      ],
+      "settings": {
+        "handles": "impressum",
+        "eyebrow": "Rechtliches",
+        "title": "Impressum",
+        "show_updated": true,
+        "show_contact": false,
+        "contact_heading": "Fragen?",
+        "contact_text": "Schreiben Sie uns an [[EMAIL]] – wir antworten in der Regel innerhalb von 1–2 Werktagen.",
+        "contact_link_text": "",
+        "contact_link": ""
+      }
+    },
+    "legal-agb": {
+      "type": "legal-text",
+      "blocks": {
+        "agb-01": {
+          "type": "section",
+          "settings": {
+            "heading": "§ 1 Geltungsbereich",
+            "text": "<p>(1) Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Verträge, die Verbraucher über unseren Online-Shop unter [[DOMAIN]] mit uns schließen.</p><p>(2) Verbraucher ist jede natürliche Person, die ein Rechtsgeschäft zu Zwecken abschließt, die überwiegend weder ihrer gewerblichen noch ihrer selbständigen beruflichen Tätigkeit zugerechnet werden können (§ 13 BGB).</p><p>(3) Abweichende Bedingungen des Kunden erkennen wir nicht an, es sei denn, wir stimmen ihrer Geltung ausdrücklich zu.</p>"
+          }
+        },
+        "agb-02": {
+          "type": "section",
+          "settings": {
+            "heading": "§ 2 Vertragspartner",
+            "text": "<p>Der Kaufvertrag kommt zustande mit [[FIRMA]], Inhaber [[INHABER]], [[STRASSE]], [[PLZ_ORT]], [[LAND]], E-Mail: [[EMAIL]].</p>"
+          }
+        },
+        "agb-03": {
+          "type": "section",
+          "settings": {
+            "heading": "§ 3 Vertragsschluss",
+            "text": "<p>(1) Die Darstellung der Produkte im Online-Shop stellt kein rechtlich bindendes Angebot dar, sondern eine unverbindliche Aufforderung zur Bestellung.</p><p>(2) Bestellvorgang: Sie wählen ein Produkt sowie gegebenenfalls Größe und Farbe aus und legen es über die Schaltfläche „In den Warenkorb“ in den Warenkorb. Über „Zur Kasse“ gelangen Sie zum Checkout, geben dort Ihre Kontakt- und Lieferdaten ein und wählen Versand- und Zahlungsart. Vor dem Absenden werden alle Angaben noch einmal angezeigt; Eingabefehler können Sie jederzeit über die Bearbeiten-Funktionen bzw. die Zurück-Navigation Ihres Browsers korrigieren. Mit Klick auf die Schaltfläche „Jetzt bezahlen“ geben Sie ein verbindliches Angebot zum Kauf der Waren im Warenkorb ab.</p><p>(3) Unmittelbar nach Absenden der Bestellung erhalten Sie eine Bestellbestätigung per E-Mail. Mit dieser Bestellbestätigung nehmen wir Ihr Angebot an; der Vertrag kommt damit zustande. Bei Zahlung über PayPal oder eine sofort belastete Zahlungsart kommt der Vertrag spätestens mit der Durchführung des Zahlungsvorgangs zustande.</p><p>(4) Die Vertragssprache ist Deutsch.</p><p>(5) Wir speichern den Vertragstext. Die Bestelldaten, diese AGB und die Widerrufsbelehrung senden wir Ihnen mit der Bestellbestätigung per E-Mail zu. Die AGB können Sie außerdem jederzeit auf dieser Seite abrufen und ausdrucken. Wenn Sie ein Kundenkonto angelegt haben, können Sie Ihre Bestellungen dort einsehen.</p><p>(6) Minderjährige dürfen Bestellungen nur mit Zustimmung ihrer gesetzlichen Vertreter aufgeben.</p>"
+          }
+        },
+        "agb-04": {
+          "type": "section",
+          "settings": {
+            "heading": "§ 4 Preise und Versandkosten",
+            "text": "<p>(1) Alle angegebenen Preise sind Endpreise. Als Kleinunternehmer im Sinne von § 19 UStG berechnen wir keine Umsatzsteuer und weisen diese daher auch nicht aus.</p><p>(2) Zusätzlich zu den angegebenen Preisen fallen Versandkosten an, sofern nicht ausdrücklich ein kostenloser Versand angegeben ist. Die Versandkosten finden Sie auf der Seite <a href=\"/pages/versand-und-zahlung\">Versand &amp; Zahlung</a>; sie werden Ihnen außerdem im Checkout vor Abgabe der Bestellung angezeigt.</p>"
+          }
+        },
+        "agb-05": {
+          "type": "section",
+          "settings": {
+            "heading": "§ 5 Lieferung",
+            "text": "<p>(1) Wir liefern ausschließlich innerhalb Deutschlands an die von Ihnen angegebene Lieferadresse.</p><p>(2) Die Lieferzeit beträgt [[LIEFERZEIT]], sofern bei dem jeweiligen Produkt nichts anderes angegeben ist. Die Frist beginnt bei Zahlung per PayPal oder einer anderen sofort belasteten Zahlungsart am Tag nach Erteilung des Zahlungsauftrags, im Übrigen am Tag nach Vertragsschluss.</p><p>(3) Für Artikel, die als Vorbestellung oder mit einem späteren Drop-Datum gekennzeichnet sind, gilt die auf der Produktseite angegebene Lieferzeit.</p><p>(4) Sollte ein bestellter Artikel nicht verfügbar sein, informieren wir Sie unverzüglich und erstatten bereits geleistete Zahlungen umgehend.</p>"
+          }
+        },
+        "agb-06": {
+          "type": "section",
+          "settings": {
+            "heading": "§ 6 Zahlung",
+            "text": "<p>(1) Die Zahlung erfolgt wahlweise über PayPal oder über die im Checkout angezeigten Zahlungsarten von Shopify Payments (z. B. Kredit- und Debitkarte, Apple Pay, Google Pay). Welche Zahlungsarten im Einzelfall zur Verfügung stehen, sehen Sie im Checkout.</p><p>(2) Der Kaufpreis ist mit Vertragsschluss sofort fällig. Bei PayPal und Kartenzahlung wird der Betrag mit Abschluss der Bestellung belastet.</p>"
+          }
+        },
+        "agb-07": {
+          "type": "section",
+          "settings": {
+            "heading": "§ 7 Eigentumsvorbehalt",
+            "text": "<p>Die Ware bleibt bis zur vollständigen Bezahlung unser Eigentum.</p>"
+          }
+        },
+        "agb-08": {
+          "type": "section",
+          "settings": {
+            "heading": "§ 8 Widerrufsrecht",
+            "text": "<p>Verbrauchern steht ein gesetzliches Widerrufsrecht zu. Einzelheiten finden Sie in unserer <a href=\"/pages/widerrufsbelehrung\">Widerrufsbelehrung</a>. Den Widerruf können Sie auch direkt über die Schaltfläche <a href=\"/pages/vertrag-widerrufen\">„Vertrag widerrufen“</a> erklären.</p>"
+          }
+        },
+        "agb-09": {
+          "type": "section",
+          "settings": {
+            "heading": "§ 9 Gewährleistung",
+            "text": "<p>(1) Es gelten die gesetzlichen Mängelhaftungsrechte (§§ 434 ff. BGB).</p><p>(2) Erhalten Sie Ware mit offensichtlichen Transportschäden, bitten wir Sie, dies möglichst sofort beim Zusteller zu reklamieren und uns zu informieren. Ihre gesetzlichen Ansprüche bleiben davon unberührt; die Rüge ist keine Voraussetzung für Ihre Gewährleistungsrechte.</p>"
+          }
+        },
+        "agb-10": {
+          "type": "section",
+          "settings": {
+            "heading": "§ 10 Haftung",
+            "text": "<p>(1) Wir haften unbeschränkt bei Vorsatz und grober Fahrlässigkeit, bei Verletzung von Leben, Körper oder Gesundheit, nach dem Produkthaftungsgesetz sowie im Umfang einer übernommenen Garantie.</p><p>(2) Bei leicht fahrlässiger Verletzung einer wesentlichen Vertragspflicht, deren Erfüllung die ordnungsgemäße Durchführung des Vertrags überhaupt erst ermöglicht und auf deren Einhaltung Sie regelmäßig vertrauen dürfen (Kardinalpflicht), ist unsere Haftung auf den vertragstypischen, vorhersehbaren Schaden begrenzt.</p><p>(3) Im Übrigen ist die Haftung für leicht fahrlässig verursachte Schäden ausgeschlossen.</p>"
+          }
+        },
+        "agb-11": {
+          "type": "section",
+          "settings": {
+            "heading": "§ 11 Verbraucherstreitbeilegung",
+            "text": "<p>Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>"
+          }
+        },
+        "agb-12": {
+          "type": "section",
+          "settings": {
+            "heading": "§ 12 Schlussbestimmungen",
+            "text": "<p>(1) Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts. Gegenüber Verbrauchern gilt diese Rechtswahl nur insoweit, als dadurch nicht der Schutz entzogen wird, der durch zwingende Bestimmungen des Rechts des Staates gewährt wird, in dem der Verbraucher seinen gewöhnlichen Aufenthalt hat.</p><p>(2) Sollten einzelne Bestimmungen dieser AGB unwirksam sein, bleibt der Vertrag im Übrigen wirksam. An die Stelle der unwirksamen Bestimmung treten die gesetzlichen Vorschriften.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "agb-01",
+        "agb-02",
+        "agb-03",
+        "agb-04",
+        "agb-05",
+        "agb-06",
+        "agb-07",
+        "agb-08",
+        "agb-09",
+        "agb-10",
+        "agb-11",
+        "agb-12"
+      ],
+      "settings": {
+        "handles": "agb",
+        "eyebrow": "Rechtliches",
+        "title": "Allgemeine Geschäftsbedingungen",
+        "show_updated": true,
+        "show_contact": true,
+        "contact_heading": "Fragen?",
+        "contact_text": "Schreiben Sie uns an [[EMAIL]] – wir antworten in der Regel innerhalb von 1–2 Werktagen.",
+        "contact_link_text": "",
+        "contact_link": ""
+      }
+    },
+    "legal-widerrufsbelehrung": {
+      "type": "legal-text",
+      "blocks": {
+        "widerrufsb-01": {
+          "type": "box",
+          "settings": {
+            "style": "note",
+            "heading": "Schnell widerrufen",
+            "text": "<p>Sie können Ihren Vertrag auch ganz einfach online widerrufen: <a href=\"/pages/vertrag-widerrufen\">Vertrag widerrufen</a>.</p>"
+          }
+        },
+        "widerrufsb-02": {
+          "type": "section",
+          "settings": {
+            "heading": "Widerrufsrecht",
+            "text": "<p>Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen.</p><p>Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag, an dem Sie oder ein von Ihnen benannter Dritter, der nicht der Beförderer ist, die Waren in Besitz genommen haben bzw. hat. Haben Sie mehrere Waren im Rahmen einer einheitlichen Bestellung bestellt, die getrennt geliefert werden, beträgt die Widerrufsfrist vierzehn Tage ab dem Tag, an dem Sie oder ein von Ihnen benannter Dritter, der nicht der Beförderer ist, die letzte Ware in Besitz genommen haben bzw. hat.</p><p>Um Ihr Widerrufsrecht auszuüben, müssen Sie uns ([[FIRMA]], Inhaber [[INHABER]], [[STRASSE]], [[PLZ_ORT]], [[LAND]], Telefon: [[TELEFON]], E-Mail: [[EMAIL]]) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das beigefügte Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist. Sie können Ihren Widerruf außerdem über die Widerrufsfunktion auf unserer Website erklären (Schaltfläche „<a href=\"/pages/vertrag-widerrufen\">Vertrag widerrufen</a>“).</p><p>Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.</p>"
+          }
+        },
+        "widerrufsb-03": {
+          "type": "section",
+          "settings": {
+            "heading": "Folgen des Widerrufs",
+            "text": "<p>Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, einschließlich der Lieferkosten (mit Ausnahme der zusätzlichen Kosten, die sich daraus ergeben, dass Sie eine andere Art der Lieferung als die von uns angebotene, günstigste Standardlieferung gewählt haben), unverzüglich und spätestens binnen vierzehn Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf dieses Vertrags bei uns eingegangen ist. Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde ausdrücklich etwas anderes vereinbart; in keinem Fall werden Ihnen wegen dieser Rückzahlung Entgelte berechnet.</p><p>Wir können die Rückzahlung verweigern, bis wir die Waren wieder zurückerhalten haben oder bis Sie den Nachweis erbracht haben, dass Sie die Waren zurückgesandt haben, je nachdem, welches der frühere Zeitpunkt ist.</p><p>Sie haben die Waren unverzüglich und in jedem Fall spätestens binnen vierzehn Tagen ab dem Tag, an dem Sie uns über den Widerruf dieses Vertrags unterrichten, an [[RUECKSENDEADRESSE]] zurückzusenden oder zu übergeben. Die Frist ist gewahrt, wenn Sie die Waren vor Ablauf der Frist von vierzehn Tagen absenden.</p><p>[[RUECKSENDEKOSTEN]]</p><p>Sie müssen für einen etwaigen Wertverlust der Waren nur aufkommen, wenn dieser Wertverlust auf einen zur Prüfung der Beschaffenheit, Eigenschaften und Funktionsweise der Waren nicht notwendigen Umgang mit ihnen zurückzuführen ist.</p>"
+          }
+        },
+        "widerrufsb-05": {
+          "type": "box",
+          "settings": {
+            "style": "form",
+            "heading": "Muster-Widerrufsformular",
+            "text": "<p>(Wenn Sie den Vertrag widerrufen wollen, dann füllen Sie bitte dieses Formular aus und senden Sie es zurück.)</p><ul><li>An [[FIRMA]], Inhaber [[INHABER]], [[STRASSE]], [[PLZ_ORT]], [[LAND]], E-Mail: [[EMAIL]]:</li><li>Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren (*)/die Erbringung der folgenden Dienstleistung (*)</li><li>Bestellt am (*)/erhalten am (*)</li><li>Name des/der Verbraucher(s)</li><li>Anschrift des/der Verbraucher(s)</li><li>Unterschrift des/der Verbraucher(s) (nur bei Mitteilung auf Papier)</li><li>Datum</li></ul><p>(*) Unzutreffendes streichen.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "widerrufsb-01",
+        "widerrufsb-02",
+        "widerrufsb-03",
+        "widerrufsb-05"
+      ],
+      "settings": {
+        "handles": "widerrufsbelehrung,widerruf,widerrufsrecht",
+        "eyebrow": "Rechtliches",
+        "title": "Widerrufsbelehrung",
+        "show_updated": true,
+        "show_contact": true,
+        "contact_heading": "Fragen?",
+        "contact_text": "Schreiben Sie uns an [[EMAIL]] – wir antworten in der Regel innerhalb von 1–2 Werktagen.",
+        "contact_link_text": "",
+        "contact_link": ""
+      }
+    },
+    "legal-datenschutz": {
+      "type": "legal-text",
+      "blocks": {
+        "datenschut-01": {
+          "type": "section",
+          "settings": {
+            "heading": "1. Verantwortlicher",
+            "text": "<p>Verantwortlich für die Datenverarbeitung auf dieser Website im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:</p><p>[[FIRMA]]<br>Inhaber: [[INHABER]]<br>[[STRASSE]]<br>[[PLZ_ORT]]<br>[[LAND]]<br>E-Mail: [[EMAIL]]<br>Telefon: [[TELEFON]]</p><p>Ein Datenschutzbeauftragter ist nicht bestellt, da hierzu keine gesetzliche Pflicht besteht.</p>"
+          }
+        },
+        "datenschut-02": {
+          "type": "section",
+          "settings": {
+            "heading": "2. Überblick und Rechtsgrundlagen",
+            "text": "<p>Wir verarbeiten personenbezogene Daten nur, soweit dies für den Betrieb des Online-Shops, die Abwicklung von Bestellungen und die Kommunikation mit Ihnen erforderlich ist oder Sie eingewilligt haben. Rechtsgrundlagen sind insbesondere:</p><ul><li>Art. 6 Abs. 1 lit. a DSGVO – Einwilligung (z. B. Newsletter, nicht notwendige Cookies)</li><li>Art. 6 Abs. 1 lit. b DSGVO – Vertrag und vorvertragliche Maßnahmen (z. B. Bestellung, Kundenkonto)</li><li>Art. 6 Abs. 1 lit. c DSGVO – rechtliche Verpflichtung (z. B. steuer- und handelsrechtliche Aufbewahrung)</li><li>Art. 6 Abs. 1 lit. f DSGVO – berechtigtes Interesse (z. B. sicherer und stabiler Betrieb der Website)</li><li>§ 25 Abs. 1 und 2 TDDDG – Speichern und Auslesen von Informationen auf Ihrem Endgerät (Cookies)</li></ul>"
+          }
+        },
+        "datenschut-03": {
+          "type": "section",
+          "settings": {
+            "heading": "3. Hosting und Shop-System (Shopify)",
+            "text": "<p>Unser Online-Shop wird auf der Plattform Shopify betrieben. Anbieter für Händler in Europa ist die Shopify International Limited, Victoria Buildings, 2. Etage, 1-2 Haddington Road, Dublin 4, D04 XN32, Irland („Shopify“). Shopify speichert und verarbeitet in unserem Auftrag die Daten, die beim Besuch des Shops und bei Bestellungen anfallen (Hosting, Shop-Software, Checkout, E-Mail-Versand von Bestell- und Versandbestätigungen).</p><p>Mit Shopify besteht ein Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO. Shopify kann Daten an die Shopify Inc. in Kanada sowie an Unterauftragnehmer, u. a. in den USA, übermitteln. Für Kanada besteht ein Angemessenheitsbeschluss der EU-Kommission; für Übermittlungen in die USA stützt sich Shopify auf das EU-U.S. Data Privacy Framework bzw. auf Standardvertragsklauseln der EU-Kommission (Art. 45, 46 DSGVO).</p><p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, soweit die Verarbeitung der Vertragsabwicklung dient, im Übrigen unser berechtigtes Interesse an einem professionellen und sicheren Online-Shop (Art. 6 Abs. 1 lit. f DSGVO). Weitere Informationen: <a href=\"https://www.shopify.com/de/legal/datenschutz\">Datenschutzerklärung von Shopify</a>.</p>"
+          }
+        },
+        "datenschut-04": {
+          "type": "section",
+          "settings": {
+            "heading": "4. Server-Logfiles",
+            "text": "<p>Beim Aufruf unserer Website werden automatisch Informationen erfasst, die Ihr Browser übermittelt: IP-Adresse, Datum und Uhrzeit des Zugriffs, aufgerufene Seite, Referrer-URL, Browsertyp und -version sowie Betriebssystem. Diese Daten sind technisch erforderlich, um die Website auszuliefern und ihre Sicherheit und Stabilität zu gewährleisten (Art. 6 Abs. 1 lit. f DSGVO). Die Logfiles werden von Shopify verarbeitet und nach kurzer Zeit gelöscht bzw. anonymisiert.</p>"
+          }
+        },
+        "datenschut-05": {
+          "type": "section",
+          "settings": {
+            "heading": "5. Cookies und Einwilligung",
+            "text": "<p>Unser Shop verwendet Cookies und ähnliche Technologien (z. B. Local Storage). Technisch notwendige Cookies – etwa für den Warenkorb, den Checkout, das Kundenkonto, die Sicherheit und die Speicherung Ihrer Cookie-Auswahl – setzen wir auf Grundlage von § 25 Abs. 2 Nr. 2 TDDDG und Art. 6 Abs. 1 lit. b bzw. f DSGVO ein. Alle übrigen Cookies, z. B. für Statistik oder Marketing, setzen wir nur mit Ihrer Einwilligung über unser Cookie-Banner ein (§ 25 Abs. 1 TDDDG, Art. 6 Abs. 1 lit. a DSGVO).</p><p>Sie können Ihre Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen oder ändern, indem Sie die Cookie-Einstellungen erneut aufrufen. Eine Übersicht der von Shopify verwendeten Cookies finden Sie <a href=\"https://www.shopify.com/de/legal/cookies\">hier</a>.</p><p>Für unsere Seitenübergänge und Animationen speichern wir im Sitzungsspeicher Ihres Browsers lediglich, ob der Begrüßungs-Ladebildschirm bereits angezeigt wurde. Diese Information enthält keine personenbezogenen Daten und wird beim Schließen des Browsers gelöscht.</p>"
+          }
+        },
+        "datenschut-06": {
+          "type": "section",
+          "settings": {
+            "heading": "6. Bestellungen und Kundenkonto",
+            "text": "<p>Wenn Sie bei uns bestellen, verarbeiten wir die Daten, die Sie im Checkout angeben (Name, Liefer- und Rechnungsanschrift, E-Mail-Adresse, ggf. Telefonnummer, Bestell- und Zahlungsinformationen), um den Vertrag zu erfüllen (Art. 6 Abs. 1 lit. b DSGVO). Pflichtfelder sind gekennzeichnet; ohne diese Angaben können wir die Bestellung nicht abwickeln.</p><p>Sie können freiwillig ein Kundenkonto anlegen. Dort werden Ihre Daten gespeichert, damit Sie künftige Bestellungen schneller abschließen und Ihre Bestellhistorie einsehen können. Sie können Ihr Kundenkonto jederzeit löschen lassen; eine Nachricht an [[EMAIL]] genügt.</p>"
+          }
+        },
+        "datenschut-07": {
+          "type": "section",
+          "settings": {
+            "heading": "7. Zahlungsdienstleister",
+            "text": "<p><strong>PayPal:</strong> Wenn Sie mit PayPal bezahlen, werden Ihre Zahlungsdaten an die PayPal (Europe) S.à r.l. et Cie, S.C.A., 22–24 Boulevard Royal, L-2449 Luxemburg, übermittelt. PayPal ist für die Zahlungsabwicklung eigenständig verantwortlich und kann Daten zur Identitäts- und Bonitätsprüfung verarbeiten. Weitere Informationen: <a href=\"https://www.paypal.com/de/legalhub/privacy-full\">Datenschutzerklärung von PayPal</a>.</p><p><strong>Shopify Payments:</strong> Sofern Sie per Kredit- oder Debitkarte, Apple Pay, Google Pay oder eine andere über Shopify Payments angebotene Zahlungsart bezahlen, erfolgt die Abwicklung über Shopify Payments. Zahlungsdienstleister ist dabei die Stripe Payments Europe, Limited, 1 Grand Canal Street Lower, Grand Canal Dock, Dublin, D02 H210, Irland. Ihre Zahlungsdaten (z. B. Kartennummer) werden direkt an den Zahlungsdienstleister übertragen und nicht von uns gespeichert. Weitere Informationen: <a href=\"https://stripe.com/de/privacy\">Datenschutzerklärung von Stripe</a>.</p><p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO. Auf unseren Produktseiten können Express-Checkout-Schaltflächen (z. B. PayPal, Apple Pay) angezeigt werden, die von Shopify bzw. dem jeweiligen Anbieter geladen werden.</p>"
+          }
+        },
+        "datenschut-08": {
+          "type": "section",
+          "settings": {
+            "heading": "8. Versand",
+            "text": "<p>Zur Zustellung Ihrer Bestellung übermitteln wir Ihren Namen und Ihre Lieferanschrift an den beauftragten Versanddienstleister ([[VERSANDDIENSTLEISTER]]) (Art. 6 Abs. 1 lit. b DSGVO). Ihre E-Mail-Adresse bzw. Telefonnummer geben wir nur weiter, wenn Sie im Checkout ausdrücklich eingewilligt haben, damit der Versanddienstleister Sie über die Zustellung informieren kann (Art. 6 Abs. 1 lit. a DSGVO). Diese Einwilligung können Sie jederzeit widerrufen.</p>"
+          }
+        },
+        "datenschut-09": {
+          "type": "section",
+          "settings": {
+            "heading": "9. Newsletter und „Notify me“",
+            "text": "<p>Wenn Sie sich für unseren Newsletter oder für eine Benachrichtigung zu einem Drop („Notify me“) anmelden, speichern wir Ihre E-Mail-Adresse über das Kundenformular von Shopify und versenden die E-Mails über Shopify. Rechtsgrundlage ist Ihre Einwilligung (Art. 6 Abs. 1 lit. a DSGVO).</p><p>Wir verwenden das Double-Opt-in-Verfahren: Nach der Anmeldung erhalten Sie eine E-Mail, in der Sie die Anmeldung bestätigen müssen. Wir speichern Zeitpunkt der Anmeldung und Bestätigung, um die Einwilligung nachweisen zu können. Sie können sich jederzeit über den Abmeldelink in jeder E-Mail oder per Nachricht an [[EMAIL]] abmelden. Ihre E-Mail-Adresse wird danach aus dem Verteiler entfernt, soweit wir sie nicht für andere Zwecke (z. B. Bestellungen) benötigen.</p>"
+          }
+        },
+        "datenschut-10": {
+          "type": "section",
+          "settings": {
+            "heading": "10. Kontakt und Widerrufsformular",
+            "text": "<p>Wenn Sie uns per E-Mail, über das Kontaktformular oder über die Funktion „Vertrag widerrufen“ kontaktieren, verarbeiten wir Ihre Angaben (z. B. Name, E-Mail-Adresse, Bestellnummer, Nachricht), um Ihre Anfrage zu bearbeiten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, soweit Ihre Anfrage mit einem Vertrag zusammenhängt, im Übrigen unser berechtigtes Interesse an der Beantwortung von Anfragen (Art. 6 Abs. 1 lit. f DSGVO); bei Widerrufserklärungen zusätzlich Art. 6 Abs. 1 lit. c DSGVO. Die Formulare werden über Shopify verarbeitet und an unser E-Mail-Postfach weitergeleitet.</p>"
+          }
+        },
+        "datenschut-11": {
+          "type": "section",
+          "settings": {
+            "heading": "11. Links zu Instagram und TikTok",
+            "text": "<p>Auf unserer Website verlinken wir auf unsere Profile bei Instagram (Meta Platforms Ireland Limited, Merrion Road, Dublin 4, D04 X2K5, Irland) und TikTok (TikTok Technology Limited, 10 Earlsfort Terrace, Dublin, D02 T380, Irland). Es handelt sich um einfache Links, keine eingebetteten Inhalte oder Plugins. Daten werden an diese Anbieter erst übertragen, wenn Sie einen Link anklicken und die jeweilige Plattform aufrufen. Bilder in unserem Instagram-Bereich werden von uns selbst hochgeladen und nicht von Instagram nachgeladen.</p>"
+          }
+        },
+        "datenschut-12": {
+          "type": "section",
+          "settings": {
+            "heading": "12. Schriftarten",
+            "text": "<p>Die auf dieser Website verwendeten Schriftarten sind lokal in unser Theme eingebunden und werden zusammen mit der Website von Shopify ausgeliefert. Es wird keine Verbindung zu Servern Dritter wie Google Fonts oder Adobe Fonts aufgebaut.</p>"
+          }
+        },
+        "datenschut-13": {
+          "type": "section",
+          "settings": {
+            "heading": "13. SSL-/TLS-Verschlüsselung",
+            "text": "<p>Diese Website nutzt aus Sicherheitsgründen eine SSL- bzw. TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie an „https://“ und dem Schloss-Symbol in der Adresszeile Ihres Browsers.</p>"
+          }
+        },
+        "datenschut-14": {
+          "type": "section",
+          "settings": {
+            "heading": "14. Speicherdauer",
+            "text": "<p>Wir speichern personenbezogene Daten nur so lange, wie es für den jeweiligen Zweck erforderlich ist oder gesetzliche Aufbewahrungsfristen bestehen. Rechnungen und Buchungsbelege bewahren wir acht Jahre, Bücher und Aufzeichnungen zehn Jahre auf (§ 147 AO, § 257 HGB), Handels- und Geschäftsbriefe sechs Jahre. Newsletter-Daten speichern wir bis zu Ihrer Abmeldung, Daten aus Anfragen in der Regel bis zur abschließenden Bearbeitung.</p>"
+          }
+        },
+        "datenschut-15": {
+          "type": "section",
+          "settings": {
+            "heading": "15. Ihre Rechte",
+            "text": "<p>Sie haben im Rahmen der gesetzlichen Vorgaben jederzeit das Recht auf:</p><ul><li>Auskunft über Ihre gespeicherten Daten (Art. 15 DSGVO)</li><li>Berichtigung unrichtiger Daten (Art. 16 DSGVO)</li><li>Löschung (Art. 17 DSGVO)</li><li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li><li>Datenübertragbarkeit (Art. 20 DSGVO)</li><li>Widerruf erteilter Einwilligungen mit Wirkung für die Zukunft (Art. 7 Abs. 3 DSGVO)</li></ul><p>Wenden Sie sich dazu einfach an [[EMAIL]].</p><p><strong>Widerspruchsrecht (Art. 21 DSGVO):</strong> Soweit wir Daten auf Grundlage berechtigter Interessen (Art. 6 Abs. 1 lit. f DSGVO) verarbeiten, haben Sie das Recht, aus Gründen, die sich aus Ihrer besonderen Situation ergeben, jederzeit Widerspruch gegen die Verarbeitung einzulegen. Werden Ihre Daten für Direktwerbung verarbeitet, können Sie jederzeit ohne Angabe von Gründen widersprechen.</p><p><strong>Beschwerderecht:</strong> Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Für uns zuständig ist: [[AUFSICHTSBEHOERDE]].</p>"
+          }
+        },
+        "datenschut-16": {
+          "type": "section",
+          "settings": {
+            "heading": "16. Automatisierte Entscheidungen und Änderungen",
+            "text": "<p>Eine automatisierte Entscheidungsfindung einschließlich Profiling nach Art. 22 DSGVO findet nicht statt.</p><p>Wir passen diese Datenschutzerklärung an, wenn sich unser Angebot oder die Rechtslage ändert. Es gilt die jeweils aktuelle Fassung auf dieser Seite.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "datenschut-01",
+        "datenschut-02",
+        "datenschut-03",
+        "datenschut-04",
+        "datenschut-05",
+        "datenschut-06",
+        "datenschut-07",
+        "datenschut-08",
+        "datenschut-09",
+        "datenschut-10",
+        "datenschut-11",
+        "datenschut-12",
+        "datenschut-13",
+        "datenschut-14",
+        "datenschut-15",
+        "datenschut-16"
+      ],
+      "settings": {
+        "handles": "datenschutz,datenschutzerklaerung,datenschutzerklarung",
+        "eyebrow": "Rechtliches",
+        "title": "Datenschutzerklärung",
+        "show_updated": true,
+        "show_contact": true,
+        "contact_heading": "Fragen?",
+        "contact_text": "Schreiben Sie uns an [[EMAIL]] – wir antworten in der Regel innerhalb von 1–2 Werktagen.",
+        "contact_link_text": "",
+        "contact_link": ""
+      }
+    },
+    "legal-versand-und-zahlung": {
+      "type": "legal-text",
+      "blocks": {
+        "versand-un-01": {
+          "type": "section",
+          "settings": {
+            "heading": "Liefergebiet",
+            "text": "<p>Wir liefern derzeit ausschließlich innerhalb Deutschlands.</p>"
+          }
+        },
+        "versand-un-02": {
+          "type": "section",
+          "settings": {
+            "heading": "Versandkosten",
+            "text": "<p>Der Versand innerhalb Deutschlands kostet [[VERSANDKOSTEN]] pro Bestellung.</p><p>Ab einem Bestellwert von [[GRATIS_AB]] versenden wir kostenlos. Die Versandkosten werden Ihnen im Warenkorb und im Checkout vor Abschluss der Bestellung angezeigt.</p>"
+          }
+        },
+        "versand-un-03": {
+          "type": "section",
+          "settings": {
+            "heading": "Lieferzeit",
+            "text": "<p>Die Lieferzeit beträgt [[LIEFERZEIT]], sofern beim Produkt nichts anderes angegeben ist. Die Frist beginnt bei Zahlung per PayPal oder Karte am Tag nach der Zahlung. Fällt das Ende der Frist auf einen Samstag, Sonntag oder gesetzlichen Feiertag am Lieferort, endet sie am nächsten Werktag.</p><p>Artikel aus Vorbestellungen oder mit einem späteren Drop-Datum versenden wir zu der auf der Produktseite angegebenen Zeit.</p>"
+          }
+        },
+        "versand-un-04": {
+          "type": "section",
+          "settings": {
+            "heading": "Versanddienstleister und Sendungsverfolgung",
+            "text": "<p>Wir versenden mit [[VERSANDDIENSTLEISTER]]. Sobald Ihre Bestellung unterwegs ist, erhalten Sie eine Versandbestätigung per E-Mail mit Link zur Sendungsverfolgung.</p>"
+          }
+        },
+        "versand-un-05": {
+          "type": "section",
+          "settings": {
+            "heading": "Zahlungsarten",
+            "text": "<p>Sie können bei uns wie folgt bezahlen:</p><ul><li><strong>PayPal</strong> – Sie werden im Checkout zu PayPal weitergeleitet und melden sich dort an. Der Betrag wird mit Abschluss der Bestellung belastet.</li><li><strong>Shopify Payments</strong> – Kredit- und Debitkarte sowie, je nach Gerät, Apple Pay oder Google Pay. Die Belastung erfolgt mit Abschluss der Bestellung.</li></ul><p>Welche Zahlungsarten im Einzelfall zur Verfügung stehen, sehen Sie im Checkout.</p>"
+          }
+        },
+        "versand-un-06": {
+          "type": "section",
+          "settings": {
+            "heading": "Preise",
+            "text": "<p>Alle Preise sind Endpreise zuzüglich Versandkosten. Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "versand-un-01",
+        "versand-un-02",
+        "versand-un-03",
+        "versand-un-04",
+        "versand-un-05",
+        "versand-un-06"
+      ],
+      "settings": {
+        "handles": "versand-und-zahlung,versand-zahlung,versand",
+        "eyebrow": "Service",
+        "title": "Versand & Zahlung",
+        "show_updated": true,
+        "show_contact": true,
+        "contact_heading": "Fragen?",
+        "contact_text": "Schreiben Sie uns an [[EMAIL]] – wir antworten in der Regel innerhalb von 1–2 Werktagen.",
+        "contact_link_text": "",
+        "contact_link": ""
+      }
+    },
+    "legal-rueckgabe": {
+      "type": "legal-text",
+      "blocks": {
+        "rueckgabe-01": {
+          "type": "section",
+          "settings": {
+            "heading": "14 Tage Widerrufsrecht",
+            "text": "<p>Passt nicht oder gefällt nicht? Sie können Ihre Bestellung innerhalb von 14 Tagen ab Erhalt der Ware ohne Angabe von Gründen widerrufen. Die vollständigen rechtlichen Informationen finden Sie in unserer <a href=\"/pages/widerrufsbelehrung\">Widerrufsbelehrung</a>.</p>"
+          }
+        },
+        "rueckgabe-02": {
+          "type": "section",
+          "settings": {
+            "heading": "So funktioniert die Rücksendung",
+            "text": "<ol><li>Widerruf erklären: am schnellsten über <a href=\"/pages/vertrag-widerrufen\">Vertrag widerrufen</a> oder per E-Mail an [[EMAIL]]. Bitte nennen Sie Ihre Bestellnummer und die Artikel, die Sie zurückgeben möchten.</li><li>Ware verpacken: möglichst in der Originalverpackung oder einem anderen geeigneten Karton.</li><li>Paket innerhalb von 14 Tagen nach Ihrem Widerruf an folgende Adresse senden: [[RUECKSENDEADRESSE]].</li><li>Erstattung erhalten: Nach Eingang der Ware bzw. eines Nachweises über die Rücksendung erstatten wir den Betrag über dasselbe Zahlungsmittel, spätestens innerhalb von 14 Tagen nach Eingang Ihres Widerrufs.</li></ol>"
+          }
+        },
+        "rueckgabe-03": {
+          "type": "section",
+          "settings": {
+            "heading": "Rücksendekosten",
+            "text": "<p>[[RUECKSENDEKOSTEN]] Bitte verwenden Sie einen Versand mit Sendungsverfolgung, damit Sie die Rücksendung nachweisen können.</p>"
+          }
+        },
+        "rueckgabe-04": {
+          "type": "section",
+          "settings": {
+            "heading": "Zustand der Ware",
+            "text": "<p>Sie dürfen die Ware so prüfen, wie Sie es auch im Laden tun würden, also zum Beispiel anprobieren. Bitte tragen Sie die Kleidung nicht und waschen Sie sie nicht. Für einen Wertverlust, der durch einen darüber hinausgehenden Umgang entsteht, müssen Sie nur aufkommen, soweit er nicht zur Prüfung der Ware notwendig war. Bitte lassen Sie Etiketten nach Möglichkeit an der Ware; Ihr Widerrufsrecht hängt davon aber nicht ab.</p>"
+          }
+        },
+        "rueckgabe-05": {
+          "type": "section",
+          "settings": {
+            "heading": "Umtausch",
+            "text": "<p>Sie möchten eine andere Größe oder Farbe? Senden Sie den Artikel wie oben beschrieben zurück und bestellen Sie die gewünschte Variante einfach neu. So erhalten Sie Ihr Wunschteil am schnellsten, solange es verfügbar ist.</p>"
+          }
+        },
+        "rueckgabe-06": {
+          "type": "section",
+          "settings": {
+            "heading": "Reklamation",
+            "text": "<p>Ist ein Artikel beschädigt oder mangelhaft, melden Sie sich bitte mit Bestellnummer und einem Foto bei [[EMAIL]]. Es gelten die gesetzlichen Gewährleistungsrechte.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "rueckgabe-01",
+        "rueckgabe-02",
+        "rueckgabe-03",
+        "rueckgabe-04",
+        "rueckgabe-05",
+        "rueckgabe-06"
+      ],
+      "settings": {
+        "handles": "rueckgabe,ruckgabe,retouren,ruecksendung",
+        "eyebrow": "Service",
+        "title": "Rückgabe & Retouren",
+        "show_updated": true,
+        "show_contact": true,
+        "contact_heading": "Fragen?",
+        "contact_text": "Schreiben Sie uns an [[EMAIL]] – wir antworten in der Regel innerhalb von 1–2 Werktagen.",
+        "contact_link_text": "",
+        "contact_link": ""
+      }
+    },
+    "page-content": {
       "type": "weax-legal",
       "settings": {
+        "exclude_handles": "impressum,agb,widerrufsbelehrung,widerruf,widerrufsrecht,datenschutz,datenschutzerklaerung,datenschutzerklarung,versand-und-zahlung,versand-zahlung,versand,rueckgabe,ruckgabe,retouren,ruecksendung",
         "eyebrow": "Rechtliches",
         "show_updated": true,
         "show_contact": true,
@@ -13,5 +532,13 @@
       }
     }
   },
-  "order": ["main"]
+  "order": [
+    "legal-impressum",
+    "legal-agb",
+    "legal-widerrufsbelehrung",
+    "legal-datenschutz",
+    "legal-versand-und-zahlung",
+    "legal-rueckgabe",
+    "page-content"
+  ]
 }

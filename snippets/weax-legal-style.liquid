@@ -46,6 +46,9 @@
     background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent !important;
     animation: wl-shine 6s linear infinite;
   }
+  .legal-ph { background: #ffd23f; color: #050507; padding: 0 4px; border-radius: 3px; font-weight: 700; }
+  .wl__box { margin-top: 1.4em; padding: 20px 22px; border-radius: 14px; border: 1px solid var(--wl-line); background: rgba(255,255,255,.03); }
+  .wl__box--form { border-style: dashed; }
   .wl__meta { margin: 16px 0 0; font-size: 13px; letter-spacing: .08em; opacity: .6; color: var(--wl-chrome); }
 
   /* Leiste mit allen Rechtstexten */
@@ -140,15 +143,9 @@
 </style>
 
 {%- comment -%} Liste aller Rechtstexte – wird per Skript in den Kopf eingesetzt {%- endcomment -%}
-{%- assign wl_withdraw = pages['vertrag-widerrufen'] -%}
 <template id="wl-docs-tpl">
   <ul class="wl__docs" aria-label="Alle Rechtstexte">
-    {%- for policy in shop.policies -%}
-      <li><a href="{{ policy.url }}">{{ policy.title }}</a></li>
-    {%- endfor -%}
-    {%- if wl_withdraw != empty and wl_withdraw.url -%}
-      <li><a href="{{ wl_withdraw.url }}">{{ wl_withdraw.title }}</a></li>
-    {%- endif -%}
+    {% render 'legal-links' %}
   </ul>
 </template>
 

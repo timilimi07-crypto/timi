@@ -1,8 +1,20 @@
 {%- comment -%}
   WEAX Rechtstext-Seite – für Seiten unter /pages/... (z. B. Impressum).
   Datei: sections/weax-legal.liquid  →  wird von templates/page.legal.json benutzt.
-  Den Text selbst schreibst du wie gewohnt unter Onlineshop → Seiten.
+  Zeigt den Seiteninhalt aus dem Admin (Onlineshop → Seiten) – aber NICHT auf Seiten,
+  die schon eine eigene „Rechtstext“-Section haben (siehe „Ausblenden auf Seiten“).
 {%- endcomment -%}
+{%- liquid
+  assign excluded = section.settings.exclude_handles | remove: ' ' | split: ','
+  assign show_page = true
+  for h in excluded
+    if page.handle == h
+      assign show_page = false
+      break
+    endif
+  endfor
+-%}
+{%- if show_page -%}
 {% render 'weax-legal-style' %}
 
 <article class="wl">
@@ -37,12 +49,15 @@
   </div>
 </article>
 
+{%- endif -%}
+
 {% schema %}
 {
-  "name": "WEAX Rechtstext",
+  "name": "Seiteninhalt (Admin)",
   "tag": "section",
   "class": "section-weax-legal",
   "settings": [
+    { "type": "text", "id": "exclude_handles", "label": "Ausblenden auf Seiten (Handles)", "default": "impressum,agb,widerrufsbelehrung,widerruf,widerrufsrecht,datenschutz,datenschutzerklaerung,datenschutzerklarung,versand-und-zahlung,versand-zahlung,versand,rueckgabe,ruckgabe,retouren,ruecksendung", "info": "Auf diesen Seiten werden stattdessen die Texte aus den „Rechtstext“-Sections gezeigt." },
     { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "Rechtliches" },
     { "type": "checkbox", "id": "show_updated", "label": "„Stand“-Datum zeigen", "default": true, "info": "Zeigt das Datum der letzten Änderung der Seite." },
     { "type": "header", "content": "Kontakt-Box unten" },

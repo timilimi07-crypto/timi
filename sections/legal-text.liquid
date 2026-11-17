@@ -1,0 +1,110 @@
+{%- comment -%}
+  WEAX Rechtstext (Impressum, AGB, Widerrufsbelehrung, Datenschutz, Versand & Zahlung, Rückgabe …).
+  Alle Texte sind Blöcke und im Theme-Editor bearbeitbar.
+  Die Section erscheint nur auf der Seite, deren Handle (URL) unter „Zeigen auf Seite“ steht.
+  Kürzel wie [[INHABER]] oder [[STRASSE]] werden automatisch durch die Angaben aus
+  Theme-Einstellungen → Rechtliches & Stammdaten ersetzt (siehe snippets/legal-tokens.liquid).
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign show = false
+  if request.design_mode and page == blank
+    assign show = true
+  endif
+  assign handles = s.handles | remove: ' ' | split: ','
+  for h in handles
+    if page.handle == h
+      assign show = true
+      break
+    endif
+  endfor
+-%}
+{%- if show -%}
+  {%- render 'weax-legal-style' -%}
+  {%- capture body -%}
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'section' -%}
+          <div {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}<h2>{{ block.settings.heading | escape }}</h2>{%- endif -%}
+            {{ block.settings.text }}
+          </div>
+        {%- when 'box' -%}
+          <div class="wl__box{% if block.settings.style == 'form' %} wl__box--form{% endif %}" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}<p><strong>{{ block.settings.heading | escape }}</strong></p>{%- endif -%}
+            {{ block.settings.text }}
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
+    {%- if s.show_updated -%}<p class="wl__meta" style="text-align:left; margin-top: 3em;">Stand: [[STAND]]</p>{%- endif -%}
+  {%- endcapture -%}
+
+  <article class="wl">
+    <header class="wl__hero">
+      {%- if s.eyebrow != blank -%}<span class="wl__eyebrow">{{ s.eyebrow | escape }}</span>{%- endif -%}
+      <h1 class="wl__title">{{ s.title | default: page.title | escape }}</h1>
+      <div data-wl-docs></div>
+    </header>
+    <div class="wl__layout">
+      <nav class="wl__toc" aria-label="Inhalt" hidden></nav>
+      <div>
+        <div class="wl__content">
+          {% render 'legal-tokens', text: body %}
+        </div>
+        {%- if s.show_contact -%}
+          <aside class="wl__contact">
+            <h2>{{ s.contact_heading | escape }}</h2>
+            <p>{% render 'legal-tokens', text: s.contact_text %}</p>
+            {%- if s.contact_link_text != blank -%}
+              <a class="wl__btn" href="{{ s.contact_link | default: '/pages/contact' }}">{{ s.contact_link_text | escape }} <span aria-hidden="true">→</span></a>
+            {%- endif -%}
+          </aside>
+        {%- endif -%}
+      </div>
+    </div>
+  </article>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Rechtstext",
+  "tag": "section",
+  "class": "section-legal-text",
+  "max_blocks": 40,
+  "settings": [
+    { "type": "paragraph", "content": "Kürzel wie [[INHABER]], [[STRASSE]], [[PLZ_ORT]], [[EMAIL]], [[TELEFON]], [[VERSANDKOSTEN]], [[LIEFERZEIT]] werden automatisch aus Theme-Einstellungen → Rechtliches & Stammdaten eingesetzt." },
+    { "type": "text", "id": "handles", "label": "Zeigen auf Seite (Handle)", "default": "impressum", "info": "Der letzte Teil der Seiten-URL, z. B. „impressum“ für /pages/impressum. Mehrere mit Komma trennen." },
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "Rechtliches" },
+    { "type": "text", "id": "title", "label": "Titel", "info": "Leer = Titel der Seite." },
+    { "type": "checkbox", "id": "show_updated", "label": "„Stand“-Datum zeigen", "default": true },
+    { "type": "header", "content": "Kontakt-Box unten" },
+    { "type": "checkbox", "id": "show_contact", "label": "Kontakt-Box zeigen", "default": true },
+    { "type": "text", "id": "contact_heading", "label": "Überschrift", "default": "Fragen?" },
+    { "type": "text", "id": "contact_text", "label": "Text", "default": "Schreiben Sie uns an [[EMAIL]] – wir antworten in der Regel innerhalb von 1–2 Werktagen." },
+    { "type": "text", "id": "contact_link_text", "label": "Button-Text", "default": "Kontakt" },
+    { "type": "url", "id": "contact_link", "label": "Button-Link" }
+  ],
+  "blocks": [
+    {
+      "type": "section",
+      "name": "Abschnitt",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Überschrift" },
+        { "type": "richtext", "id": "text", "label": "Text" }
+      ]
+    },
+    {
+      "type": "box",
+      "name": "Hinweis-Box / Formular",
+      "settings": [
+        { "type": "select", "id": "style", "label": "Stil", "default": "note", "options": [
+          { "value": "note", "label": "Hinweis" }, { "value": "form", "label": "Formular (gestrichelt)" }
+        ] },
+        { "type": "text", "id": "heading", "label": "Überschrift" },
+        { "type": "richtext", "id": "text", "label": "Text" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Rechtstext" }]
+}
+{% endschema %}
