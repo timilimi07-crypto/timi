@@ -1,0 +1,32 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "badges": { "type": "badges", "settings": {} },
+        "title": { "type": "title", "settings": { "show_vendor": false } },
+        "price": { "type": "price", "settings": {} },
+        "drop": { "type": "drop_date", "settings": {} },
+        "variants": { "type": "variant_picker", "settings": {} },
+        "buy": { "type": "buy_buttons", "settings": { "show_quantity": true, "show_stock": true, "show_dynamic_checkout": true } },
+        "usps": { "type": "usps", "settings": { "usp_1": "Gratis Versand ab 80 €", "usp_2": "14 Tage Widerrufsrecht", "usp_3": "Sichere Zahlung mit PayPal" } },
+        "description": { "type": "description", "settings": {} },
+        "material": { "type": "collapsible", "settings": { "heading": "Material & Fit", "icon": "sparkle", "source": "material", "content": "<p>84 % Baumwolle, 16 % Polyester · 380 gsm Heavyweight · Oversized Fit</p>", "open": true } },
+        "care": { "type": "collapsible", "settings": { "heading": "Pflege", "icon": "shield", "source": "care", "content": "<p>Auf links bei 30 °C waschen. Nicht in den Trockner. Nicht direkt auf dem Print bügeln.</p>", "open": false } },
+        "shipping": { "type": "collapsible", "settings": { "heading": "Versand & Rückgabe", "icon": "truck", "source": "shipping", "content": "<p>Versand innerhalb Deutschlands, gratis ab 80 €. 14 Tage Widerrufsrecht – alle Infos unter <a href=\"/pages/versand-und-zahlung\">Versand &amp; Zahlung</a> und <a href=\"/pages/rueckgabe\">Rückgabe</a>.</p>", "open": false } },
+        "share": { "type": "share", "settings": {} }
+      },
+      "block_order": ["badges", "title", "price", "drop", "variants", "buy", "usps", "description", "material", "care", "shipping", "share"],
+      "settings": { "gallery_layout": "grid", "media_size": "large", "sticky_atc": true, "padding_bottom": 60 }
+    },
+    "complete": {
+      "type": "product-recommendations",
+      "settings": { "heading": "Complete the Look", "eyebrow": "Styled with", "intent": "complementary", "limit": 4, "columns": 4, "padding_top": 60, "padding_bottom": 60 }
+    },
+    "related": {
+      "type": "product-recommendations",
+      "settings": { "heading": "Das könnte dir gefallen", "eyebrow": "More", "intent": "related", "limit": 8, "columns": 4, "padding_top": 60, "padding_bottom": 100 }
+    }
+  },
+  "order": ["main", "complete", "related"]
+}

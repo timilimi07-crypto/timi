@@ -358,6 +358,7 @@ html.menu-open, html.drawer-open { overflow: hidden; }
   box-shadow: -40px 0 80px -40px rgba(0,0,0,.8);
 }
 .drawer.is-open .drawer__panel { transform: none; }
+.no-anim .drawer__panel, .no-anim .drawer__backdrop { transition: none !important; }
 .drawer__head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--c-border); }
 .drawer__title { font-family: var(--font-display); font-size: 1.5rem; text-transform: var(--h-case); letter-spacing: var(--h-tracking); }
 .drawer__title sup { font-family: var(--font-body); font-size: .7rem; color: var(--c-muted); margin-left: 4px; }

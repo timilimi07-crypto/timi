@@ -1,0 +1,4 @@
+{
+  "sections": { "main": { "type": "main-list-collections", "settings": { "eyebrow": "Shop", "title": "Collections", "columns": 3 } } },
+  "order": ["main"]
+}

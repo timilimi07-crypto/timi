@@ -1,0 +1,6 @@
+{
+  "sections": {
+    "main": { "type": "main-collection", "settings": { "eyebrow": "Collection", "show_image": true, "show_description": true, "enable_filtering": true, "per_page": 24, "columns": 4, "columns_mobile": "2" } }
+  },
+  "order": ["main"]
+}

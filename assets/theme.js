@@ -430,8 +430,83 @@
     updateScrollTexts();
   }
 
+  /* ---------- Produktempfehlungen (AJAX) ---------- */
+  function initRecommendations(root = document) {
+    $$('[data-recommendations]', root).forEach((el) => {
+      if (el._recs) return; el._recs = true;
+      const load = async () => {
+        try {
+          const res = await fetch(el.dataset.recommendations);
+          const html = await res.text();
+          const doc = new DOMParser().parseFromString(html, 'text/html');
+          const fresh = $('.section', doc);
+          if (fresh && fresh.innerHTML.trim()) { el.innerHTML = fresh.innerHTML; el.removeAttribute('data-recommendations'); initAll(el); document.dispatchEvent(new CustomEvent('weax:section-load', { detail: el })); }
+        } catch (e) {}
+      };
+      if (!('IntersectionObserver' in window)) { load(); return; }
+      const io = new IntersectionObserver((ens) => { if (ens[0].isIntersecting) { io.disconnect(); load(); } }, { rootMargin: '400px' });
+      io.observe(el);
+    });
+  }
+
+  /* ---------- Filter & Sortierung (Collection / Suche) ---------- */
+  function initFacets() {
+    const getForm = () => $('[data-facets-form]');
+    const render = async (params, push = true) => {
+      const sec = $('[data-facets-section]');
+      if (!sec) return;
+      const url = `${location.pathname}?${params}`;
+      sec.classList.add('is-loading');
+      try {
+        const res = await fetch(`${location.pathname}?section_id=${sec.dataset.facetsSection}&${params}`);
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const fresh = $('[data-facets-section]', doc);
+        const openDrawer = $('.facets-drawer.is-open', sec);
+        if (fresh) {
+          if (openDrawer) closeOverlay(openDrawer);
+          sec.innerHTML = fresh.innerHTML;
+          if (openDrawer) { const d = $('.facets-drawer', sec); if (d) { d.classList.add('no-anim'); openOverlay(d); setTimeout(() => d.classList.remove('no-anim'), 50); } }
+          initAll(sec);
+          document.dispatchEvent(new CustomEvent('weax:section-load', { detail: sec }));
+        }
+        if (push) history.pushState({ facets: params }, '', url);
+      } catch (e) { location.href = url; }
+      finally { sec.classList.remove('is-loading'); }
+    };
+    const serialize = (form) => {
+      const fd = new FormData(form);
+      const p = new URLSearchParams();
+      for (const [k, v] of fd.entries()) if (v !== '') p.append(k, v);
+      return p.toString();
+    };
+    document.addEventListener('change', (e) => {
+      const form = e.target.closest('[data-facets-form]') || (e.target.form && e.target.form.matches('[data-facets-form]') ? e.target.form : null);
+      if (!form) return;
+      if (e.target.closest('[data-price-range]')) return; // Preis erst beim „Anwenden“
+      render(serialize(form));
+    });
+    document.addEventListener('submit', (e) => {
+      const form = e.target.closest('[data-facets-form]');
+      if (!form) return;
+      e.preventDefault();
+      render(serialize(form)).then(() => { const d = $('.facets-drawer.is-open'); if (d) closeOverlay(d); });
+    });
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('[data-facet-link]');
+      if (!a || !a.closest('[data-facets-section]')) return;
+      e.preventDefault();
+      const sec = a.closest('[data-facets-section]');
+      render(new URL(a.href, location.href).searchParams.toString()).then(() => {
+        if (a.closest('.pagination')) sec.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      });
+    });
+    window.addEventListener('popstate', (e) => { if (e.state && 'facets' in e.state && getForm()) render(e.state.facets, false); });
+  }
+
   /* ---------- Init ---------- */
   function initAll(root = document) {
+    initRecommendations(root);
     initScrollText(root);
     initReveal(root);
     initMarquees(root);
@@ -442,6 +517,7 @@
   function boot() {
     initHeader();
     initSearch();
+    initFacets();
     initAll();
     requestAnimationFrame(() => document.documentElement.classList.add('is-loaded'));
   }

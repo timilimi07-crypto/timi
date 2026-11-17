@@ -1,0 +1,7 @@
+{
+  "sections": {
+    "main": { "type": "main-cart", "settings": { "eyebrow": "Checkout", "show_express": true, "trust_text": "Sichere Zahlung · 14 Tage Widerrufsrecht" } },
+    "recs": { "type": "featured-collection", "settings": { "collection": "all", "eyebrow": "Don't miss", "heading": "Add to your fit", "align": "left", "layout": "slider", "products_to_show": 8, "columns": 4, "columns_mobile": "2", "hide_quick_add": false, "show_view_all": false, "view_all_label": "Alle ansehen", "scramble": false, "padding_top": 40, "padding_bottom": 100 } }
+  },
+  "order": ["main", "recs"]
+}

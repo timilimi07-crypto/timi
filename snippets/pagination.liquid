@@ -1,0 +1,20 @@
+{%- comment -%} Seitennavigation. Parameter: paginate {%- endcomment -%}
+{%- if paginate.pages > 1 -%}
+  <nav class="pagination" aria-label="{{ 'general.pagination.label' | t }}">
+    {%- if paginate.previous -%}
+      <a href="{{ paginate.previous.url }}" data-facet-link aria-label="{{ 'general.pagination.previous' | t }}">{% render 'icon', name: 'arrow-left' %}</a>
+    {%- endif -%}
+    {%- for part in paginate.parts -%}
+      {%- if part.is_link -%}
+        <a href="{{ part.url }}" data-facet-link aria-label="{{ 'general.pagination.page' | t: number: part.title }}">{{ part.title }}</a>
+      {%- elsif part.title == paginate.current_page -%}
+        <span class="is-current" aria-current="page">{{ part.title }}</span>
+      {%- else -%}
+        <span>{{ part.title }}</span>
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if paginate.next -%}
+      <a href="{{ paginate.next.url }}" data-facet-link aria-label="{{ 'general.pagination.next' | t }}">{% render 'icon', name: 'arrow-right' %}</a>
+    {%- endif -%}
+  </nav>
+{%- endif -%}

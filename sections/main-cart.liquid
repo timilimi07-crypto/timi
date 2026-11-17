@@ -1,0 +1,83 @@
+{%- assign s = section.settings -%}
+<div class="page-width section main-cart" data-main-cart data-section-id="{{ section.id }}" style="--pt: .6; --pb: 1; padding-top: calc(var(--header-h) + 32px);">
+  <span hidden data-item-count="{{ cart.item_count }}"></span>
+  <div class="section-head">
+    <div class="section-head__text">
+      <p class="eyebrow">{{ s.eyebrow | escape }}</p>
+      <h1 class="h1"><span class="text-chrome">{{ 'cart.general.title' | t }}</span></h1>
+    </div>
+    {%- if cart.item_count > 0 -%}
+      <a class="btn btn--ghost" href="{{ routes.all_products_collection_url }}"><span class="btn__label">{{ 'cart.general.continue' | t }}</span>{% render 'icon', name: 'arrow-right' %}</a>
+    {%- endif -%}
+  </div>
+
+  {%- if cart.item_count > 0 -%}
+    <div class="main-cart__grid">
+      <div class="main-cart__items">
+        {% render 'free-shipping-bar' %}
+        {%- for item in cart.items -%}
+          {% render 'cart-line-item', item: item %}
+        {%- endfor -%}
+        {%- if settings.cart_note_enable -%}
+          <div class="field" style="margin-top: 24px;">
+            <label class="field__label" for="CartNote">{{ 'cart.general.note' | t }}</label>
+            <textarea id="CartNote" class="textarea" data-cart-note>{{ cart.note }}</textarea>
+          </div>
+        {%- endif -%}
+      </div>
+      <aside class="main-cart__summary surface">
+        {%- for discount in cart.cart_level_discount_applications -%}
+          <div class="totals" style="font-weight:400;"><span>✦ {{ discount.title }}</span><span>−{{ discount.total_allocated_amount | money }}</span></div>
+        {%- endfor -%}
+        <div class="totals">
+          <span>{{ 'cart.general.subtotal' | t }}</span>
+          <span class="totals__value">{{ cart.total_price | money_with_currency }}</span>
+        </div>
+        <p class="tax-note">
+          {%- if settings.small_business -%}{{ settings.small_business_text }}{%- else -%}{{ 'cart.general.taxes_included' | t }}{%- endif %}
+          {{ 'cart.general.shipping_at_checkout' | t }}
+        </p>
+        <form action="{{ routes.cart_url }}" method="post">
+          <button type="submit" name="checkout" class="btn btn--primary btn--block{% if settings.magnetic_enable %} is-magnetic{% endif %}" data-no-transition>
+            <span class="btn__label">{{ 'cart.general.checkout' | t }}</span>{% render 'icon', name: 'arrow-right' %}
+          </button>
+          {%- if additional_checkout_buttons and s.show_express -%}
+            <div class="main-cart__express">{{ content_for_additional_checkout_buttons }}</div>
+          {%- endif -%}
+        </form>
+        {%- if s.trust_text != blank -%}<p class="tax-note" style="display:flex; gap:8px; align-items:center;">{% render 'icon', name: 'shield' %}{{ s.trust_text | escape }}</p>{%- endif -%}
+        {% render 'payment-icons' %}
+      </aside>
+    </div>
+  {%- else -%}
+    <div class="empty-state">
+      {% render 'icon', name: 'cart' %}
+      <p class="h3">{{ 'cart.general.empty' | t }}</p>
+      {%- assign cont_label = 'cart.general.continue' | t -%}
+      {% render 'button', label: cont_label, url: routes.all_products_collection_url, icon: 'arrow-right' %}
+    </div>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .main-cart__grid { display: grid; gap: 32px; align-items: start; }
+  @media (min-width: 990px) { .main-cart__grid { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 56px; } .main-cart__summary { position: sticky; top: calc(var(--header-h) + 24px); } }
+  .main-cart__items .line-item { grid-template-columns: 110px 1fr; }
+  .main-cart__summary { display: grid; gap: 16px; padding: clamp(20px, 3vw, 32px); }
+  .main-cart__express { margin-top: 12px; }
+  .main-cart .empty-state .icon { width: 48px; height: 48px; color: var(--c-muted); }
+  .main-cart__summary .icon-shield { width: 16px; height: 16px; flex-shrink: 0; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Warenkorb",
+  "tag": "section",
+  "class": "section-main-cart",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "Checkout" },
+    { "type": "checkbox", "id": "show_express", "label": "Express-Checkout-Buttons (PayPal, Apple Pay …)", "default": true },
+    { "type": "text", "id": "trust_text", "label": "Vertrauens-Hinweis", "default": "Sichere Zahlung · 14 Tage Widerrufsrecht" }
+  ]
+}
+{% endschema %}

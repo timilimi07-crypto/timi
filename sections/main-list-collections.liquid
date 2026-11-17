@@ -1,0 +1,44 @@
+{{ 'collection.css' | asset_url | stylesheet_tag }}
+{%- assign s = section.settings -%}
+<div class="coll-banner">
+  <div class="page-width coll-banner__inner">
+    <p class="eyebrow">{{ s.eyebrow | escape }}</p>
+    <h1 class="h1"><span class="text-chrome is-animated">{{ s.title | escape }}</span></h1>
+  </div>
+</div>
+<div class="page-width" style="padding-bottom: var(--section-gap);">
+  {%- paginate collections by 24 -%}
+    <div class="grid" style="--cols: {{ s.columns }}; --cols-tablet: 2; --cols-mobile: 1;">
+      {%- for coll in collections -%}
+        <a class="coll-card" href="{{ coll.url }}" data-reveal style="--d: {{ forloop.index0 | modulo: 3 }}">
+          <div class="media coll-card__media">
+            {%- assign coll_img = coll.image | default: coll.products.first.featured_media -%}
+            {%- if coll_img -%}
+              {% render 'image', image: coll_img, sizes: '(min-width: 990px) 33vw, 100vw', alt: coll.title %}
+            {%- else -%}
+              {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+          </div>
+          <div class="coll-card__info">
+            <span><span class="h3">{{ coll.title | escape }}</span><br><span class="text-muted" style="font-size: var(--fs-xs);">{{ 'products.facets.results' | t: count: coll.all_products_count }}</span></span>
+            {% render 'icon', name: 'arrow-right' %}
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+    {% render 'pagination', paginate: paginate %}
+  {%- endpaginate -%}
+</div>
+
+{% schema %}
+{
+  "name": "Alle Kollektionen",
+  "tag": "section",
+  "class": "section-list-collections",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "Shop" },
+    { "type": "text", "id": "title", "label": "Titel", "default": "Collections" },
+    { "type": "range", "id": "columns", "label": "Spalten (Desktop)", "min": 2, "max": 4, "step": 1, "default": 3 }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,7 @@
+{
+  "sections": {
+    "main": { "type": "main-search", "settings": { "heading": "Find your fit", "enable_filtering": true, "per_page": 24, "columns": 4 } },
+    "popular": { "type": "featured-collection", "settings": { "collection": "all", "eyebrow": "Trending", "heading": "Beliebt gerade", "align": "left", "layout": "slider", "products_to_show": 8, "columns": 4, "columns_mobile": "2", "hide_quick_add": false, "show_view_all": true, "view_all_label": "Alle ansehen", "scramble": false, "padding_top": 40, "padding_bottom": 100 } }
+  },
+  "order": ["main", "popular"]
+}
