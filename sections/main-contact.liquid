@@ -1,0 +1,79 @@
+{%- assign s = section.settings -%}
+<div class="section page-width contact" style="--pt: .6; --pb: 1; padding-top: calc(var(--header-h) + 40px);">
+  <div class="contact__intro">
+    {%- if s.eyebrow != blank -%}<p class="eyebrow">{{ s.eyebrow | escape }}</p>{%- endif -%}
+    <h1 class="h1"><span class="text-chrome" {% if settings.scramble_enable %}data-scramble{% endif %}>{{ s.heading | default: page.title | escape }}</span></h1>
+    {%- if s.text != blank -%}<div class="rte text-muted">{{ s.text }}</div>{%- endif -%}
+    {%- if page.content != blank -%}<div class="rte text-muted">{{ page.content }}</div>{%- endif -%}
+    <ul class="contact__channels" role="list">
+      {%- if settings.service_email != blank -%}
+        <li>{% render 'icon', name: 'mail' %}<a class="link-underline" href="mailto:{{ settings.service_email }}">{{ settings.service_email }}</a></li>
+      {%- endif -%}
+      {%- if settings.social_instagram != blank -%}
+        <li>{% render 'icon', name: 'instagram' %}<a class="link-underline" href="{{ settings.social_instagram }}" target="_blank" rel="noopener">Instagram</a></li>
+      {%- endif -%}
+      {%- if settings.social_tiktok != blank -%}
+        <li>{% render 'icon', name: 'tiktok' %}<a class="link-underline" href="{{ settings.social_tiktok }}" target="_blank" rel="noopener">TikTok</a></li>
+      {%- endif -%}
+    </ul>
+  </div>
+
+  <div class="contact__form surface">
+    {%- form 'contact', id: 'ContactForm', class: 'form-stack' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="form-message form-message--success" role="status" tabindex="-1" autofocus>✦ {{ 'contact.form.success' | t }}</p>
+      {%- endif -%}
+      {%- if form.errors -%}
+        <div class="form-message form-message--error" role="alert">{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+      <div class="form-row">
+        <label class="field"><span class="field__label">{{ 'contact.form.name' | t }}</span>
+          <input class="input" type="text" name="contact[name]" autocomplete="name" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}">
+        </label>
+        <label class="field"><span class="field__label">{{ 'contact.form.email' | t }} *</span>
+          <input class="input" type="email" name="contact[email]" autocomplete="email" required spellcheck="false" autocapitalize="off" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+        </label>
+      </div>
+      <div class="form-row">
+        <label class="field"><span class="field__label">{{ 'contact.form.phone' | t }}</span>
+          <input class="input" type="tel" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}">
+        </label>
+        <label class="field"><span class="field__label">{{ 'contact.form.order' | t }}</span>
+          <input class="input" type="text" name="contact[Bestellnummer]" value="">
+        </label>
+      </div>
+      <label class="field"><span class="field__label">{{ 'contact.form.message' | t }} *</span>
+        <textarea class="textarea" name="contact[body]" required>{{ form.body }}</textarea>
+      </label>
+      <p class="tax-note">{{ 'contact.form.privacy' | t }}{%- if shop.privacy_policy or pages['datenschutz'] != empty %} <a href="{% if pages['datenschutz'] != empty %}{{ pages['datenschutz'].url }}{% else %}{{ shop.privacy_policy.url }}{% endif %}" style="text-decoration: underline;">{{ 'newsletter.privacy' | t }}</a>{%- endif -%}</p>
+      <button type="submit" class="btn btn--primary{% if settings.magnetic_enable %} is-magnetic{% endif %}"><span class="btn__label">{{ 'contact.form.send' | t }}</span>{% render 'icon', name: 'arrow-right' %}</button>
+    {%- endform -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .contact { display: grid; gap: clamp(32px, 5vw, 80px); align-items: start; }
+  @media (min-width: 990px) { .contact { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); } }
+  .contact__intro { display: grid; gap: 22px; }
+  .contact__channels { display: grid; gap: 12px; margin-top: 12px; }
+  .contact__channels li { display: flex; gap: 12px; align-items: center; }
+  .contact__channels .icon { width: 20px; height: 20px; color: var(--c-chrome-1); }
+  .contact__form { padding: clamp(20px, 3vw, 40px); }
+  .form-stack { display: grid; gap: 16px; }
+  .form-row { display: grid; gap: 16px; }
+  @media (min-width: 750px) { .form-row { grid-template-columns: 1fr 1fr; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Kontaktformular",
+  "tag": "section",
+  "class": "section-main-contact",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "Support" },
+    { "type": "text", "id": "heading", "label": "Überschrift", "default": "Talk to us" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Fragen zu Größen, Bestellung oder Kooperationen? Schreib uns – wir antworten in der Regel innerhalb von 24–48 Stunden.</p>" },
+    { "type": "paragraph", "content": "Nachrichten gehen an die E-Mail-Adresse unter Einstellungen → Store-Details." }
+  ]
+}
+{% endschema %}

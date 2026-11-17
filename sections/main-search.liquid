@@ -39,7 +39,7 @@
         {%- capture others -%}
           {%- for item in search.results -%}
             {%- unless item.object_type == 'product' -%}
-              <a href="{{ item.url }}"><span>{{ item.title | escape }}</span><span class="text-muted">{% if item.object_type == 'article' %}Blog{% else %}{{ 'search.title' | t }}{% endif %} →</span></a>
+              <a href="{{ item.url }}"><span>{{ item.title | escape }}</span><span class="text-muted">{% if item.object_type == 'article' %}{{ 'search.blog' | t }}{% else %}{{ 'search.page' | t }}{% endif %} →</span></a>
             {%- endunless -%}
           {%- endfor -%}
         {%- endcapture -%}

@@ -1,0 +1,1 @@
+{ "sections": { "main": { "type": "main-blog", "settings": { "eyebrow": "Journal", "per_page": 9, "show_tags": true, "show_date": true, "show_excerpt": true } } }, "order": ["main"] }

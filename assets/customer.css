@@ -1,0 +1,34 @@
+/* WEAX Night – Kundenkonto */
+.customer { padding-top: calc(var(--header-h) + clamp(32px, 6vw, 72px)); padding-bottom: var(--section-gap); }
+.customer__card { width: min(480px, 100%); margin-inline: auto; display: grid; gap: 22px; padding: clamp(24px, 4vw, 44px); }
+.customer__card .h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); }
+.customer__links { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: var(--fs-small); }
+.customer__links a, .customer__links button { text-decoration: underline; text-underline-offset: 3px; color: var(--c-muted); }
+.customer__links a:hover, .customer__links button:hover { color: var(--c-text); }
+.customer__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 40px; }
+.customer__grid { display: grid; gap: 32px; align-items: start; }
+@media (min-width: 990px) { .customer__grid { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); } }
+.customer__box { padding: clamp(20px, 3vw, 32px); display: grid; gap: 12px; align-content: start; }
+.customer__box-title { font-size: var(--fs-xs); letter-spacing: .22em; text-transform: uppercase; color: var(--c-muted); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--c-border); border-radius: var(--radius); }
+.table { width: 100%; border-collapse: collapse; font-size: var(--fs-small); }
+.table th, .table td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--c-border); vertical-align: top; }
+.table thead th { font-size: var(--fs-xs); letter-spacing: .16em; text-transform: uppercase; color: var(--c-muted); font-weight: 600; }
+.table tbody tr:last-child td { border-bottom: 0; }
+.table tfoot td { font-weight: 600; }
+.table .num { text-align: right; }
+.status-pill { display: inline-block; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--c-border-strong); font-size: var(--fs-xs); }
+@media (max-width: 749px) {
+  .table--stack thead { display: none; }
+  .table--stack tr { display: grid; gap: 4px; padding: 14px 16px; border-bottom: 1px solid var(--c-border); }
+  .table--stack td { padding: 0; border: 0; display: flex; justify-content: space-between; gap: 12px; }
+  .table--stack td::before { content: attr(data-label); color: var(--c-muted); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .12em; }
+  .table--stack .num { text-align: right; }
+}
+.address-list { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.address { padding: 22px; display: grid; gap: 12px; align-content: start; }
+.address__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.address-form { display: grid; gap: 16px; padding: clamp(20px, 3vw, 32px); margin-top: 16px; }
+.form-stack { display: grid; gap: 16px; }
+.form-row { display: grid; gap: 16px; }
+@media (min-width: 750px) { .form-row { grid-template-columns: 1fr 1fr; } }

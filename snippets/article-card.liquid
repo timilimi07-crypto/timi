@@ -1,0 +1,16 @@
+{%- comment -%} Blog-Karte. Parameter: article, index, show_date, show_excerpt {%- endcomment -%}
+<a class="article-card" href="{{ article.url }}" data-reveal style="--d: {{ index | default: 0 | modulo: 3 }}">
+  <div class="media article-card__media">
+    {%- if article.image -%}
+      {% render 'image', image: article.image, sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw', alt: article.title %}
+    {%- else -%}
+      {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+  </div>
+  {%- if show_date -%}<p class="article-card__meta">{{ article.published_at | time_tag: format: 'date' }}</p>{%- endif -%}
+  <h2 class="article-card__title">{{ article.title | escape }}</h2>
+  {%- if show_excerpt -%}
+    <p class="text-muted">{{ article.excerpt_or_content | strip_html | truncatewords: 24 }}</p>
+  {%- endif -%}
+  <span class="btn btn--ghost" style="justify-self:start;"><span class="btn__label">{{ 'blogs.article.read_more' | t }}</span></span>
+</a>

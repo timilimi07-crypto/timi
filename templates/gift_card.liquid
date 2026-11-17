@@ -1,0 +1,59 @@
+{% layout none %}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="noindex">
+    {%- assign gc_value = gift_card.initial_value | money_without_trailing_zeros -%}
+    <title>{{ 'gift_cards.issued.title' | t: value: gc_value }} – {{ shop.name }}</title>
+    {% render 'css-variables' %}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    <script src="{{ 'vendor/qrcode.js' | shopify_asset_url }}" defer="defer"></script>
+    {{ content_for_header }}
+    <style>
+      .gc { min-height: 100vh; display: grid; place-items: center; padding: 32px var(--gutter); text-align: center; }
+      .gc__card { width: min(520px, 100%); display: grid; gap: 22px; justify-items: center; padding: clamp(28px, 5vw, 48px); border-radius: calc(var(--radius) + 8px); border: 1px solid var(--c-border-strong); background: radial-gradient(120% 80% at 80% 0%, rgba(200,215,255,.14), transparent 60%), var(--c-surface); box-shadow: 0 30px 80px -30px rgba(0,0,0,.9), 0 0 60px -20px var(--c-glow); }
+      .gc__value { font-family: var(--font-display); font-size: clamp(3rem, 12vw, 5rem); line-height: 1; }
+      .gc__code { font-family: ui-monospace, monospace; font-size: 1.3rem; letter-spacing: .14em; padding: 14px 20px; border: 1px dashed var(--c-border-strong); border-radius: 12px; }
+      .gc__qr img, .gc__qr canvas { background: #fff; padding: 8px; border-radius: 8px; }
+      @media print { .gc .btn { display: none; } }
+    </style>
+  </head>
+  <body>
+    <main class="gc">
+      <div class="gc__card">
+        {% render 'logo-mark', id: 'gc' %}
+        <p class="eyebrow">{{ 'gift_cards.issued.subtext' | t }}</p>
+        {%- assign gc_balance = gift_card.balance | money -%}
+        <p class="gc__value text-chrome">{{ gift_card.initial_value | money }}</p>
+        {%- if gift_card.balance != gift_card.initial_value -%}<p>{{ 'gift_cards.issued.remaining_html' | t: balance: gc_balance }}</p>{%- endif -%}
+        {%- if gift_card.expired -%}
+          {%- assign gc_exp = gift_card.expires_on | date: '%d.%m.%Y' -%}
+          <p class="form-message form-message--error">{{ 'gift_cards.issued.expired' | t: expiry: gc_exp }}</p>
+        {%- elsif gift_card.expires_on -%}
+          {%- assign gc_exp = gift_card.expires_on | date: '%d.%m.%Y' -%}
+          <p class="text-muted">{{ 'gift_cards.issued.expires_on' | t: expiry: gc_exp }}</p>
+        {%- endif -%}
+        {%- if gift_card.enabled == false -%}<p class="form-message form-message--error">{{ 'gift_cards.issued.disabled' | t }}</p>{%- endif -%}
+        <p class="field__label">{{ 'gift_cards.issued.code' | t }}</p>
+        <p class="gc__code" id="GiftCardCode">{{ gift_card.code | format_code }}</p>
+        <div class="gc__qr" id="QrCode" data-identifier="{{ gift_card.qr_identifier }}" aria-label="{{ 'gift_cards.issued.qr_image_alt' | t }}"></div>
+        <div class="btn-row" style="justify-content: center;">
+          <button type="button" class="btn btn--outline btn--small" onclick="navigator.clipboard && navigator.clipboard.writeText(document.getElementById('GiftCardCode').textContent.trim()).then(function(){this.querySelector('.btn__label').textContent={{ 'gift_cards.issued.copied' | t | json | escape }};}.bind(this))"><span class="btn__label">{{ 'gift_cards.issued.copy' | t }}</span></button>
+          <button type="button" class="btn btn--outline btn--small" onclick="window.print()"><span class="btn__label">{{ 'gift_cards.issued.print' | t }}</span></button>
+          <a class="btn btn--primary btn--small" href="{{ shop.url }}"><span class="btn__label">{{ 'gift_cards.issued.shop_link' | t }}</span></a>
+        </div>
+        {%- if gift_card.pass_url -%}
+          <a href="{{ gift_card.pass_url }}"><img src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}" width="120" height="40" alt="{{ 'gift_cards.issued.add_to_apple_wallet' | t }}" loading="lazy"></a>
+        {%- endif -%}
+      </div>
+    </main>
+    <script>
+      window.addEventListener('DOMContentLoaded', function () {
+        var el = document.getElementById('QrCode');
+        if (el && window.QRCode) new QRCode(el, { text: el.dataset.identifier, width: 120, height: 120 });
+      });
+    </script>
+  </body>
+</html>

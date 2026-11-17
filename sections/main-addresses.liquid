@@ -1,0 +1,79 @@
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
+<div class="customer page-width" data-addresses>
+  <div class="customer__head">
+    <div>
+      <a class="eyebrow" href="{{ routes.account_url }}">← {{ 'customer.account.return' | t }}</a>
+      <h1 class="h1"><span class="text-chrome">{{ 'customer.addresses.title' | t }}</span></h1>
+    </div>
+    <button type="button" class="btn btn--primary btn--small" data-address-toggle="AddressNew" aria-expanded="false" aria-controls="AddressNew"><span class="btn__label">{{ 'customer.addresses.add_new' | t }}</span></button>
+  </div>
+
+  <div id="AddressNew" hidden>
+    {%- form 'customer_address', customer.new_address, class: 'address-form surface' -%}
+      {% render 'address-fields', form: form, prefix: 'new' %}
+      <div class="btn-row">
+        <button type="submit" class="btn btn--primary"><span class="btn__label">{{ 'customer.addresses.add' | t }}</span></button>
+        <button type="button" class="btn btn--ghost" data-address-toggle="AddressNew"><span class="btn__label">{{ 'customer.addresses.cancel' | t }}</span></button>
+      </div>
+    {%- endform -%}
+  </div>
+
+  {%- paginate customer.addresses by 12 -%}
+    <div class="address-list" style="margin-top: 24px;">
+      {%- for address in customer.addresses -%}
+        <div class="address surface">
+          {%- if address == customer.default_address -%}<span class="badge badge--new" style="justify-self: start;">{{ 'customer.addresses.default' | t }}</span>{%- endif -%}
+          {{ address | format_address }}
+          <div class="address__actions">
+            <button type="button" class="btn btn--outline btn--small" data-address-toggle="AddressEdit-{{ address.id }}" aria-expanded="false" aria-controls="AddressEdit-{{ address.id }}"><span class="btn__label">{{ 'customer.addresses.edit' | t }}</span></button>
+            <form method="post" action="{{ address.url }}" data-confirm="{{ 'customer.addresses.delete_confirm' | t | escape }}">
+              <input type="hidden" name="_method" value="delete">
+              <button type="submit" class="btn btn--ghost btn--small"><span class="btn__label">{{ 'customer.addresses.delete' | t }}</span></button>
+            </form>
+          </div>
+        </div>
+        <div id="AddressEdit-{{ address.id }}" hidden style="grid-column: 1 / -1;">
+          {%- form 'customer_address', address, class: 'address-form surface' -%}
+            {% render 'address-fields', form: form, prefix: address.id %}
+            <div class="btn-row">
+              <button type="submit" class="btn btn--primary"><span class="btn__label">{{ 'customer.addresses.update' | t }}</span></button>
+              <button type="button" class="btn btn--ghost" data-address-toggle="AddressEdit-{{ address.id }}"><span class="btn__label">{{ 'customer.addresses.cancel' | t }}</span></button>
+            </div>
+          {%- endform -%}
+        </div>
+      {%- endfor -%}
+    </div>
+    {% render 'pagination', paginate: paginate %}
+  {%- endpaginate -%}
+</div>
+<script>
+  (function () {
+    var root = document.querySelector('[data-addresses]');
+    if (!root) return;
+    root.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-address-toggle]');
+      if (!btn) return;
+      var box = document.getElementById(btn.dataset.addressToggle);
+      if (!box) return;
+      box.hidden = !box.hidden;
+      root.querySelectorAll('[aria-controls="' + box.id + '"]').forEach(function (b) { b.setAttribute('aria-expanded', String(!box.hidden)); });
+      if (!box.hidden) { var f = box.querySelector('input:not([type=hidden])'); if (f) f.focus(); }
+    });
+    root.addEventListener('submit', function (e) {
+      var f = e.target.closest('[data-confirm]');
+      if (f && !window.confirm(f.dataset.confirm)) e.preventDefault();
+    });
+    // Bundesland-Auswahl passend zum Land (shopify_common.js lädt per defer)
+    document.addEventListener('DOMContentLoaded', function () {
+      if (!(window.Shopify && Shopify.CountryProvinceSelector)) return;
+      root.querySelectorAll('[data-country-select]').forEach(function (sel) {
+        new Shopify.CountryProvinceSelector(sel.id, sel.dataset.provinceId, { hideElement: sel.dataset.provinceWrap });
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{ "name": "Adressen", "tag": "section", "class": "section-main-addresses", "settings": [] }
+{% endschema %}

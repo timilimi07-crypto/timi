@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "main": { "type": "main-contact", "settings": { "eyebrow": "Support", "heading": "Talk to us", "text": "<p>Fragen zu Größen, Bestellung oder Kooperationen? Schreib uns – wir antworten in der Regel innerhalb von 24–48 Stunden.</p>" } },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "f1": { "type": "question", "settings": { "question": "Wo ist meine Bestellung?", "answer": "<p>Sobald dein Paket unterwegs ist, bekommst du eine Versandbestätigung mit Tracking-Link per E-Mail.</p>" } },
+        "f2": { "type": "question", "settings": { "question": "Wie fallen die Größen aus?", "answer": "<p>Oversized. Für einen normalen Fit eine Größe kleiner wählen – die Größentabelle findest du auf jeder Produktseite.</p>" } },
+        "f3": { "type": "question", "settings": { "question": "Wie kann ich zurückschicken?", "answer": "<p>Über <a href=\"/pages/vertrag-widerrufen\">Vertrag widerrufen</a> oder per E-Mail. Alle Infos unter <a href=\"/pages/rueckgabe\">Rückgabe</a>.</p>" } }
+      },
+      "block_order": ["f1", "f2", "f3"],
+      "settings": { "eyebrow": "Quick Help", "heading": "FAQ", "open_first": false, "schema_markup": true, "padding_top": 60, "padding_bottom": 100 }
+    }
+  },
+  "order": ["main", "faq"]
+}

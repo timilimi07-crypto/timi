@@ -1,0 +1,41 @@
+{%- assign s = section.settings -%}
+<div class="section page-width" style="--pt: .6; --pb: 1; padding-top: calc(var(--header-h) + 40px);">
+  <div class="section-head">
+    <div class="section-head__text">
+      <p class="eyebrow">{{ s.eyebrow | escape }}</p>
+      <h1 class="h1"><span class="text-chrome" {% if settings.scramble_enable %}data-scramble{% endif %}>{{ blog.title | escape }}</span></h1>
+    </div>
+    {%- if blog.all_tags.size > 0 and s.show_tags -%}
+      <ul class="blog-tags" role="list">
+        <li><a class="blog-tag{% unless current_tags %} is-active{% endunless %}" href="{{ blog.url }}">{{ 'collections.general.view_all' | t }}</a></li>
+        {%- for tag in blog.all_tags -%}
+          <li>{{ tag | link_to_tag: tag | replace: '<a ', '<a class="blog-tag" ' }}</li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+  {%- paginate blog.articles by s.per_page -%}
+    <div class="grid" style="--cols: 3; --cols-tablet: 2; --cols-mobile: 1;">
+      {%- for article in blog.articles -%}
+        {% render 'article-card', article: article, index: forloop.index0, show_date: s.show_date, show_excerpt: s.show_excerpt %}
+      {%- endfor -%}
+    </div>
+    {% render 'pagination', paginate: paginate %}
+  {%- endpaginate -%}
+</div>
+
+
+{% schema %}
+{
+  "name": "Blog",
+  "tag": "section",
+  "class": "section-main-blog",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "Journal" },
+    { "type": "range", "id": "per_page", "label": "Beiträge pro Seite", "min": 3, "max": 24, "step": 3, "default": 9 },
+    { "type": "checkbox", "id": "show_tags", "label": "Tag-Filter zeigen", "default": true },
+    { "type": "checkbox", "id": "show_date", "label": "Datum zeigen", "default": true },
+    { "type": "checkbox", "id": "show_excerpt", "label": "Auszug zeigen", "default": true }
+  ]
+}
+{% endschema %}

@@ -17,7 +17,7 @@
 <div class="price{% if on_sale %} price--sale{% endif %}{% if target.available == false %} price--soldout{% endif %}{% if class %} {{ class }}{% endif %}" data-price>
   <span class="visually-hidden">{% if on_sale %}{{ 'products.product.price.sale_price' | t }}{% else %}{{ 'products.product.price.regular_price' | t }}{% endif %}</span>
   <span class="price__current" data-price-current>
-    {%- if varies -%}{{ 'products.product.price.from_price_html' | t: price: product.price_min | money }}{%- else -%}{{ p | money }}{%- endif -%}
+    {%- if varies -%}{%- assign min_price = product.price_min | money -%}{{ 'products.product.price.from_price_html' | t: price: min_price }}{%- else -%}{{ p | money }}{%- endif -%}
   </span>
   {%- if on_sale -%}
     <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>

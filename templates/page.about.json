@@ -1,0 +1,50 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "media_type": "image", "overlay": 50, "height": "large", "eyebrow": "Our Story", "heading": "Built on\ndiscipline", "heading_tag": "h1",
+        "subheading": "<p>WEAX ist mehr als Kleidung. Es ist eine Haltung: früh aufstehen, dranbleiben, das Risiko eingehen.</p>",
+        "align": "left", "button_1_label": "", "button_1_link": "", "button_1_style": "primary", "button_2_label": "", "button_2_link": "", "button_2_style": "outline",
+        "chrome_heading": true, "scramble": true, "shooting_stars": true, "shooting_amount": 60, "extra_stars": true, "show_logo": true, "scroll_hint": true
+      }
+    },
+    "manifest": {
+      "type": "brand-story",
+      "blocks": {
+        "t1": { "type": "text", "settings": { "text": "<p>Wir haben WEAX gegründet, weil wir Streetwear wollten, die so hart arbeitet wie wir: schwer, langlebig, clean. Jeder Hoodie steht für die Tage, an denen keiner zuschaut – und du trotzdem lieferst.</p>" } }
+      },
+      "block_order": ["t1"],
+      "settings": { "eyebrow": "Manifest", "manifest": "Du musst das Risiko eingehen, nach den *Sternen zu greifen, um *Großes zu erreichen. Disziplin. Motivation. *Freiheit.", "align": "left", "padding_top": 120, "padding_bottom": 100 }
+    },
+    "values": {
+      "type": "multicolumn",
+      "blocks": {
+        "c1": { "type": "column", "settings": { "icon": "star", "heading": "Disziplin", "text": "<p>Kein Hype ohne Arbeit. Wir bauen Teile, die jeden Tag mitgehen – im Gym, auf der Straße, im Hustle.</p>" } },
+        "c2": { "type": "column", "settings": { "icon": "sparkle", "heading": "Motivation", "text": "<p>Jedes Teil erinnert dich daran, warum du angefangen hast. Reach for the stars.</p>" } },
+        "c3": { "type": "column", "settings": { "icon": "shield", "heading": "Unabhängigkeit", "text": "<p>Wir glauben an finanzielle Freiheit und daran, dein eigenes Ding aufzubauen. WEAX ist genau das.</p>" } }
+      },
+      "block_order": ["c1", "c2", "c3"],
+      "settings": { "eyebrow": "Values", "heading": "Wofür wir stehen", "align": "left", "columns": 3, "columns_mobile": "1", "padding_top": 60, "padding_bottom": 100 }
+    },
+    "quality": {
+      "type": "image-with-text",
+      "settings": {
+        "image_position": "left", "ratio": "portrait", "parallax": true, "eyebrow": "Quality", "heading": "380 gsm. No compromise.",
+        "text": "<p>84 % Baumwolle, 16 % Polyester, Heavyweight-Fleece mit Oversized Fit. Gemacht, um Jahre zu halten – nicht eine Saison.</p>",
+        "button_label": "Shop now", "button_link": "shopify://collections/all", "button_style": "primary", "scramble": false, "padding_top": 100, "padding_bottom": 100
+      }
+    },
+    "claim": {
+      "type": "marquee-text",
+      "blocks": { "t1": { "type": "text", "settings": { "text": "Reach for the stars" } }, "t2": { "type": "text", "settings": { "text": "Stay disciplined" } } },
+      "block_order": ["t1", "t2"],
+      "settings": { "style": "mixed", "size": 100, "speed": 40, "reverse": false, "second_row": true, "rotate": -2, "bg": "rgba(0,0,0,0)", "padding_top": 60, "padding_bottom": 60 }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": { "eyebrow": "Join", "heading": "Be part of it", "text": "<p>Early Access zu jedem Drop – direkt in dein Postfach.</p>", "button": "Join", "sky": true, "scramble": true, "padding_top": 100, "padding_bottom": 100 }
+    }
+  },
+  "order": ["hero", "manifest", "values", "quality", "claim", "newsletter"]
+}

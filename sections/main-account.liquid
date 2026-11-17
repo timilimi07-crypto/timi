@@ -1,0 +1,60 @@
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+<div class="customer page-width">
+  <div class="customer__head">
+    <div>
+      <p class="eyebrow">{{ 'customer.account.title' | t }}</p>
+      {%- assign cname = customer.first_name | default: customer.name | escape -%}
+      <h1 class="h1"><span class="text-chrome">{{ 'customer.account.hello' | t: name: cname }}</span></h1>
+    </div>
+    <a class="btn btn--outline btn--small" href="{{ routes.account_logout_url }}" data-no-transition><span class="btn__label">{{ 'customer.log_out' | t }}</span></a>
+  </div>
+
+  <div class="customer__grid">
+    <div>
+      <h2 class="h3" style="margin-bottom: 16px;">{{ 'customer.account.orders' | t }}</h2>
+      {%- paginate customer.orders by 20 -%}
+        {%- if customer.orders.size > 0 -%}
+          <div class="table-wrap">
+            <table class="table table--stack">
+              <thead><tr>
+                <th scope="col">{{ 'customer.orders.order_number' | t }}</th>
+                <th scope="col">{{ 'customer.orders.date' | t }}</th>
+                <th scope="col">{{ 'customer.orders.payment_status' | t }}</th>
+                <th scope="col">{{ 'customer.orders.fulfillment_status' | t }}</th>
+                <th scope="col" class="num">{{ 'customer.orders.total' | t }}</th>
+              </tr></thead>
+              <tbody>
+                {%- for order in customer.orders -%}
+                  <tr>
+                    <td data-label="{{ 'customer.orders.order_number' | t }}"><a class="link-underline" href="{{ order.customer_url }}" aria-label="{{ 'customer.orders.order_number_link' | t: number: order.name }}">{{ order.name }}</a></td>
+                    <td data-label="{{ 'customer.orders.date' | t }}">{{ order.created_at | time_tag: format: 'date' }}</td>
+                    <td data-label="{{ 'customer.orders.payment_status' | t }}"><span class="status-pill">{{ order.financial_status_label }}</span></td>
+                    <td data-label="{{ 'customer.orders.fulfillment_status' | t }}"><span class="status-pill">{{ order.fulfillment_status_label }}</span></td>
+                    <td data-label="{{ 'customer.orders.total' | t }}" class="num">{{ order.total_net_amount | money_with_currency }}</td>
+                  </tr>
+                {%- endfor -%}
+              </tbody>
+            </table>
+          </div>
+          {% render 'pagination', paginate: paginate %}
+        {%- else -%}
+          <div class="surface customer__box">
+            <p>{{ 'customer.account.no_orders' | t }}</p>
+            {%- assign shop_label = 'cart.general.continue' | t -%}
+            <div>{% render 'button', label: shop_label, url: routes.all_products_collection_url, icon: 'arrow-right' %}</div>
+          </div>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+    <aside class="surface customer__box">
+      <p class="customer__box-title">{{ 'customer.account.details' | t }}</p>
+      <p><strong>{{ customer.name }}</strong><br>{{ customer.email }}</p>
+      {%- if customer.default_address -%}{{ customer.default_address | format_address }}{%- endif -%}
+      <a class="btn btn--ghost" href="{{ routes.account_addresses_url }}"><span class="btn__label">{{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</span></a>
+    </aside>
+  </div>
+</div>
+
+{% schema %}
+{ "name": "Konto", "tag": "section", "class": "section-main-account", "settings": [] }
+{% endschema %}

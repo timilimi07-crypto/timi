@@ -1,0 +1,7 @@
+{
+  "sections": {
+    "main": { "type": "main-article", "settings": { "show_image": true, "show_author": false } },
+    "shop": { "type": "featured-collection", "settings": { "collection": "all", "eyebrow": "Shop", "heading": "Get the look", "align": "left", "layout": "slider", "products_to_show": 8, "columns": 4, "columns_mobile": "2", "hide_quick_add": false, "show_view_all": true, "view_all_label": "Alle ansehen", "scramble": false, "padding_top": 40, "padding_bottom": 100 } }
+  },
+  "order": ["main", "shop"]
+}

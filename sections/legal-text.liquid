@@ -36,7 +36,7 @@
           </div>
       {%- endcase -%}
     {%- endfor -%}
-    {%- if s.show_updated -%}<p class="wl__meta" style="text-align:left; margin-top: 3em;">Stand: [[STAND]]</p>{%- endif -%}
+    {%- if s.show_updated -%}<p class="wl__meta" style="text-align:left; margin-top: 3em;">{{ 'general.legal.updated' | t: date: '[[STAND]]' }}</p>{%- endif -%}
   {%- endcapture -%}
 
   <article class="wl">

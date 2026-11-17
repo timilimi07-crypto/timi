@@ -1,0 +1,23 @@
+{%- assign s = section.settings -%}
+<div class="section page-width page-width--narrow main-page" style="--pt: .6; --pb: 1; padding-top: calc(var(--header-h) + 40px);">
+  {%- if s.eyebrow != blank -%}<p class="eyebrow">{{ s.eyebrow | escape }}</p>{%- endif -%}
+  <h1 class="h1"><span class="text-chrome" {% if settings.scramble_enable %}data-scramble{% endif %}>{{ page.title | escape }}</span></h1>
+  {%- if page.content != blank -%}<div class="rte main-page__content" data-reveal>{{ page.content }}</div>{%- endif -%}
+</div>
+
+{% stylesheet %}
+  .main-page { display: grid; gap: 28px; }
+  .main-page__content { font-size: calc(1.05rem * var(--b-scale)); color: rgba(var(--c-text-rgb), .82); }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Seiteninhalt",
+  "tag": "section",
+  "class": "section-main-page",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "WEAX" },
+    { "type": "paragraph", "content": "Den Text bearbeitest du unter Onlineshop → Seiten." }
+  ]
+}
+{% endschema %}

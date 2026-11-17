@@ -1,10 +1,27 @@
 {
   "general": {
-    "meta": { "tags": "Getaggt mit „{{ tags }}“", "page": "Seite {{ page }}" },
-    "accessibility": { "close": "Schließen", "previous": "Zurück", "next": "Weiter", "play": "Video abspielen", "pause": "Pausieren" },
-    "share": { "copied": "Link kopiert ✦", "label": "Teilen" },
-    "social": { "instagram": "{{ shop }} auf Instagram", "tiktok": "{{ shop }} auf TikTok" },
-    "payment": { "methods": "Zahlungsarten" },
+    "meta": {
+      "tags": "Getaggt mit „{{ tags }}“",
+      "page": "Seite {{ page }}"
+    },
+    "accessibility": {
+      "close": "Schließen",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "play": "Video abspielen",
+      "pause": "Pausieren"
+    },
+    "share": {
+      "copied": "Link kopiert ✦",
+      "label": "Teilen"
+    },
+    "social": {
+      "instagram": "{{ shop }} auf Instagram",
+      "tiktok": "{{ shop }} auf TikTok"
+    },
+    "payment": {
+      "methods": "Zahlungsarten"
+    },
     "search": {
       "search": "Suche",
       "placeholder": "Was suchst du?",
@@ -14,31 +31,65 @@
       "no_results": "Keine Ergebnisse für „{{ terms }}“.",
       "view_all": "Alle Ergebnisse für „{{ terms }}“"
     },
-    "pagination": { "label": "Seitennavigation", "page": "Seite {{ number }}", "previous": "Vorherige Seite", "next": "Nächste Seite" },
+    "pagination": {
+      "label": "Seitennavigation",
+      "page": "Seite {{ number }}",
+      "previous": "Vorherige Seite",
+      "next": "Nächste Seite"
+    },
     "password_page": {
       "login_title": "Mit Passwort eintreten",
       "login_label": "Passwort",
       "login_button": "Eintreten",
-      "admin_link": "Du bist der Shop-Inhaber? Hier einloggen",
-      "powered_by": "Dieser Shop wird bald eröffnet."
+      "powered_by": "Dieser Shop wird bald eröffnet.",
+      "admin_link_html": "Du bist der Shop-Inhaber? <a href=\"{{ link }}\">Hier einloggen</a>"
     },
-    "404": { "title": "Lost in Space", "subtitle": "Diese Seite ist zwischen den Sternen verschwunden.", "link": "Zurück zum Shop" }
+    "404": {
+      "title": "Lost in Space",
+      "subtitle": "Diese Seite ist zwischen den Sternen verschwunden.",
+      "link": "Zurück zum Shop"
+    },
+    "legal": {
+      "updated": "Stand: {{ date }}"
+    }
   },
-  "accessibility": { "skip_to_content": "Zum Inhalt springen" },
+  "accessibility": {
+    "skip_to_content": "Zum Inhalt springen"
+  },
   "sections": {
     "header": {
       "menu": "Menü",
       "main_nav": "Hauptnavigation",
       "home": "Startseite",
       "view_all": "Alle ansehen",
-      "cart_count": { "one": "Warenkorb, {{ count }} Artikel", "other": "Warenkorb, {{ count }} Artikel" }
+      "cart_count": {
+        "one": "Warenkorb, {{ count }} Artikel",
+        "other": "Warenkorb, {{ count }} Artikel"
+      }
     },
-    "announcement": { "label": "Ankündigungen" },
-    "footer": { "legal": "Rechtliches", "service": "Kundenservice" },
-    "countdown": { "days": "Tage", "hours": "Std", "minutes": "Min", "seconds": "Sek", "label": "Countdown bis zum Drop" },
-    "lookbook": { "hotspot": "Produkt anzeigen: {{ title }}" },
-    "testimonials": { "rating": "{{ rating }} von 5 Sternen" },
-    "faq": { "label": "Häufige Fragen" }
+    "announcement": {
+      "label": "Ankündigungen"
+    },
+    "footer": {
+      "legal": "Rechtliches",
+      "service": "Kundenservice"
+    },
+    "countdown": {
+      "days": "Tage",
+      "hours": "Std",
+      "minutes": "Min",
+      "seconds": "Sek",
+      "label": "Countdown bis zum Drop"
+    },
+    "lookbook": {
+      "hotspot": "Produkt anzeigen: {{ title }}"
+    },
+    "testimonials": {
+      "rating": "{{ rating }} von 5 Sternen"
+    },
+    "faq": {
+      "label": "Häufige Fragen"
+    }
   },
   "products": {
     "product": {
@@ -71,21 +122,33 @@
         "sale_price": "Angebotspreis",
         "from_price_html": "ab {{ price }}"
       },
-      "badge": { "new": "New Drop", "sold_out": "Sold Out", "low_stock": "Low Stock", "sale": "Sale" }
+      "badge": {
+        "new": "New Drop",
+        "sold_out": "Sold Out",
+        "low_stock": "Low Stock",
+        "sale": "Sale"
+      }
     },
     "facets": {
       "filter": "Filter",
       "sort": "Sortieren",
       "clear_all": "Alle zurücksetzen",
       "apply": "Anwenden",
-      "results": { "one": "{{ count }} Produkt", "other": "{{ count }} Produkte" },
+      "results": {
+        "one": "{{ count }} Produkt",
+        "other": "{{ count }} Produkte"
+      },
       "from": "Von",
       "to": "Bis",
       "remove": "Filter entfernen: {{ label }}"
     }
   },
   "collections": {
-    "general": { "empty": "Hier ist noch nichts gelandet.", "no_matches": "Keine Produkte für diese Filter.", "view_all": "Alle ansehen" }
+    "general": {
+      "empty": "Hier ist noch nichts gelandet.",
+      "no_matches": "Keine Produkte für diese Filter.",
+      "view_all": "Alle ansehen"
+    }
   },
   "cart": {
     "general": {
@@ -121,20 +184,57 @@
     "privacy": "Datenschutz"
   },
   "blogs": {
-    "article": { "back": "Zurück zum Blog", "read_more": "Weiterlesen", "by": "von {{ author }}", "comments": { "one": "{{ count }} Kommentar", "other": "{{ count }} Kommentare" }, "comment_form_title": "Kommentar schreiben", "name": "Name", "email": "E-Mail", "message": "Kommentar", "post": "Kommentar senden", "moderated": "Kommentare werden vor der Veröffentlichung geprüft.", "success": "Danke! Dein Kommentar wurde gesendet." }
+    "article": {
+      "back": "Zurück zum Blog",
+      "read_more": "Weiterlesen",
+      "by": "von {{ author }}",
+      "comments": {
+        "one": "{{ count }} Kommentar",
+        "other": "{{ count }} Kommentare"
+      },
+      "comment_form_title": "Kommentar schreiben",
+      "name": "Name",
+      "email": "E-Mail",
+      "message": "Kommentar",
+      "post": "Kommentar senden",
+      "moderated": "Kommentare werden vor der Veröffentlichung geprüft.",
+      "success": "Danke! Dein Kommentar wurde gesendet."
+    }
   },
   "contact": {
-    "form": { "name": "Name", "email": "E-Mail", "phone": "Telefon", "message": "Nachricht", "send": "Senden", "success": "Danke! Wir melden uns so schnell wie möglich.", "order": "Bestellnummer (optional)" }
+    "form": {
+      "name": "Name",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "message": "Nachricht",
+      "send": "Senden",
+      "success": "Danke! Wir melden uns so schnell wie möglich.",
+      "order": "Bestellnummer (optional)",
+      "privacy": "Wir verwenden deine Angaben nur, um deine Anfrage zu beantworten. Mehr dazu in der"
+    }
   },
   "search": {
     "title": "Suche",
-    "results": { "one": "{{ count }} Ergebnis für „{{ terms }}“", "other": "{{ count }} Ergebnisse für „{{ terms }}“" },
-    "no_results": "Nichts gefunden für „{{ terms }}“. Versuch es mit einem anderen Begriff."
+    "results": {
+      "one": "{{ count }} Ergebnis für „{{ terms }}“",
+      "other": "{{ count }} Ergebnisse für „{{ terms }}“"
+    },
+    "no_results": "Nichts gefunden für „{{ terms }}“. Versuch es mit einem anderen Begriff.",
+    "blog": "Blog",
+    "page": "Seite"
   },
   "customer": {
     "log_in": "Einloggen",
     "log_out": "Ausloggen",
-    "account": { "title": "Mein Konto", "details": "Kontodaten", "view_addresses": "Adressen ansehen", "orders": "Bestellungen", "no_orders": "Du hast noch keine Bestellungen.", "return": "Zurück zum Konto" },
+    "account": {
+      "title": "Mein Konto",
+      "details": "Kontodaten",
+      "view_addresses": "Adressen ansehen",
+      "orders": "Bestellungen",
+      "no_orders": "Du hast noch keine Bestellungen.",
+      "return": "Zurück zum Konto",
+      "hello": "Hey, {{ name }}"
+    },
     "login": {
       "title": "Login",
       "email": "E-Mail",
@@ -150,10 +250,37 @@
       "recover_success": "Wir haben dir eine E-Mail geschickt.",
       "cancel": "Abbrechen"
     },
-    "register": { "title": "Konto erstellen", "first_name": "Vorname", "last_name": "Nachname", "submit": "Registrieren", "have_account": "Schon ein Konto? Einloggen" },
-    "activate": { "title": "Konto aktivieren", "text": "Lege ein Passwort fest, um dein Konto zu aktivieren.", "password": "Passwort", "password_confirm": "Passwort bestätigen", "submit": "Konto aktivieren", "decline": "Einladung ablehnen" },
-    "reset": { "title": "Neues Passwort", "text": "Gib ein neues Passwort ein.", "password": "Passwort", "password_confirm": "Passwort bestätigen", "submit": "Passwort speichern" },
-    "orders": { "order_number": "Bestellung", "date": "Datum", "payment_status": "Zahlung", "fulfillment_status": "Versand", "total": "Gesamt", "order_number_link": "Bestellung {{ number }}" },
+    "register": {
+      "title": "Konto erstellen",
+      "first_name": "Vorname",
+      "last_name": "Nachname",
+      "submit": "Registrieren",
+      "have_account": "Schon ein Konto? Einloggen",
+      "marketing": "Ja, ich möchte über neue Drops und Angebote per E-Mail informiert werden (Abmeldung jederzeit möglich)."
+    },
+    "activate": {
+      "title": "Konto aktivieren",
+      "text": "Lege ein Passwort fest, um dein Konto zu aktivieren.",
+      "password": "Passwort",
+      "password_confirm": "Passwort bestätigen",
+      "submit": "Konto aktivieren",
+      "decline": "Einladung ablehnen"
+    },
+    "reset": {
+      "title": "Neues Passwort",
+      "text": "Gib ein neues Passwort ein.",
+      "password": "Passwort",
+      "password_confirm": "Passwort bestätigen",
+      "submit": "Passwort speichern"
+    },
+    "orders": {
+      "order_number": "Bestellung",
+      "date": "Datum",
+      "payment_status": "Zahlung",
+      "fulfillment_status": "Versand",
+      "total": "Gesamt",
+      "order_number_link": "Bestellung {{ number }}"
+    },
     "order": {
       "title": "Bestellung {{ name }}",
       "date_html": "Bestellt am {{ date }}",
@@ -199,6 +326,20 @@
     }
   },
   "gift_cards": {
-    "issued": { "title": "Dein Geschenkgutschein über {{ value }}", "subtext": "Dein Gutschein", "code": "Gutscheincode", "expired": "Abgelaufen am {{ expiry }}", "expires_on": "Gültig bis {{ expiry }}", "disabled": "Deaktiviert", "print": "Drucken", "copy": "Code kopieren", "copied": "Kopiert!", "shop_link": "Jetzt shoppen", "remaining_html": "Restguthaben: {{ balance }}", "add_to_apple_wallet": "Zu Apple Wallet hinzufügen", "qr_image_alt": "QR-Code – scannen, um den Gutschein einzulösen" }
+    "issued": {
+      "title": "Dein Geschenkgutschein über {{ value }}",
+      "subtext": "Dein Gutschein",
+      "code": "Gutscheincode",
+      "expired": "Abgelaufen am {{ expiry }}",
+      "expires_on": "Gültig bis {{ expiry }}",
+      "disabled": "Deaktiviert",
+      "print": "Drucken",
+      "copy": "Code kopieren",
+      "copied": "Kopiert!",
+      "shop_link": "Jetzt shoppen",
+      "remaining_html": "Restguthaben: {{ balance }}",
+      "add_to_apple_wallet": "Zu Apple Wallet hinzufügen",
+      "qr_image_alt": "QR-Code – scannen, um den Gutschein einzulösen"
+    }
   }
 }

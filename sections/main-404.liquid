@@ -1,0 +1,27 @@
+<div class="nf">
+  <canvas class="nf__sky" data-sky="full" data-density="50" data-shooting="80" aria-hidden="true"></canvas>
+  <div class="page-width nf__inner">
+    <p class="nf__code text-chrome is-animated" data-scramble aria-hidden="true">404</p>
+    <h1 class="h2">{{ 'general.404.title' | t }}</h1>
+    <p class="text-muted">{{ 'general.404.subtitle' | t }}</p>
+    <form action="{{ routes.search_url }}" method="get" role="search" class="inline-form nf__search">
+      <label for="NotFoundSearch" class="visually-hidden">{{ 'general.search.search' | t }}</label>
+      <input id="NotFoundSearch" class="input" type="search" name="q" placeholder="{{ 'general.search.placeholder' | t }}">
+      <button class="btn btn--primary btn--small" type="submit"><span class="btn__label">{{ 'general.search.submit' | t }}</span></button>
+    </form>
+    {%- assign back_label = 'general.404.link' | t -%}
+    {% render 'button', label: back_label, url: routes.all_products_collection_url, style: 'outline', icon: 'arrow-right' %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .nf { position: relative; overflow: hidden; isolation: isolate; min-height: 90vh; min-height: 90svh; display: grid; place-items: center; text-align: center; padding-top: var(--header-h); }
+  .nf__sky { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+  .nf__inner { display: grid; justify-items: center; gap: 20px; }
+  .nf__code { font-family: var(--font-display); font-weight: 700; font-size: clamp(7rem, 30vw, 22rem); line-height: .8; letter-spacing: -.04em; filter: drop-shadow(0 0 40px var(--c-glow)); }
+  .nf__search { width: min(460px, 100%); }
+{% endstylesheet %}
+
+{% schema %}
+{ "name": "404-Seite", "tag": "section", "class": "section-main-404", "settings": [] }
+{% endschema %}

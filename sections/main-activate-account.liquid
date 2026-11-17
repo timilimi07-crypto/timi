@@ -1,0 +1,19 @@
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+<div class="customer page-width">
+  <div class="customer__card surface">
+    <p class="eyebrow">{{ shop.name }}</p>
+    <h1 class="h1"><span class="text-chrome">{{ 'customer.activate.title' | t }}</span></h1>
+    <p class="text-muted">{{ 'customer.activate.text' | t }}</p>
+    {%- form 'activate_customer_password', class: 'form-stack' -%}
+      {%- if form.errors -%}<div class="form-message form-message--error" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+      <label class="field"><span class="field__label">{{ 'customer.activate.password' | t }}</span><input class="input" type="password" name="customer[password]" autocomplete="new-password" required></label>
+      <label class="field"><span class="field__label">{{ 'customer.activate.password_confirm' | t }}</span><input class="input" type="password" name="customer[password_confirmation]" autocomplete="new-password" required></label>
+      <button type="submit" class="btn btn--primary btn--block"><span class="btn__label">{{ 'customer.activate.submit' | t }}</span></button>
+      <button type="submit" name="decline" class="btn btn--ghost"><span class="btn__label">{{ 'customer.activate.decline' | t }}</span></button>
+    {%- endform -%}
+  </div>
+</div>
+
+{% schema %}
+{ "name": "Konto aktivieren", "tag": "section", "class": "section-main-activate", "settings": [] }
+{% endschema %}

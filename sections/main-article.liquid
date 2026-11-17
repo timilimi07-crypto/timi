@@ -1,0 +1,79 @@
+{%- assign s = section.settings -%}
+<article class="article" itemscope itemtype="https://schema.org/Article">
+  <header class="article__hero{% if article.image and s.show_image %} has-image{% endif %}">
+    {%- if article.image and s.show_image -%}
+      <div class="article__hero-media" aria-hidden="true">{% render 'image', image: article.image, sizes: '100vw', eager: true, alt: '' %}</div>
+    {%- endif -%}
+    <div class="page-width page-width--narrow article__hero-inner">
+      <a class="eyebrow" href="{{ blog.url }}">← {{ blog.title | escape }}</a>
+      <h1 class="h1"><span class="text-chrome">{{ article.title | escape }}</span></h1>
+      <p class="article-card__meta">
+        {{ article.published_at | time_tag: format: 'date' }}
+        {%- if s.show_author and article.author != blank %} · {{ 'blogs.article.by' | t: author: article.author }}{% endif -%}
+      </p>
+    </div>
+  </header>
+  <div class="page-width page-width--narrow article__body">
+    <div class="rte article__content">{{ article.content }}</div>
+    {%- if article.tags.size > 0 -%}
+      <ul class="blog-tags" role="list">{%- for tag in article.tags -%}<li><a class="blog-tag" href="{{ blog.url }}/tagged/{{ tag | handleize }}">{{ tag }}</a></li>{%- endfor -%}</ul>
+    {%- endif -%}
+    <div class="btn-row">
+      <button type="button" class="btn btn--outline btn--small" data-share="{{ request.origin }}{{ article.url }}"><span class="btn__label">{{ 'general.share.label' | t }}</span></button>
+      <a class="btn btn--ghost" href="{{ blog.url }}"><span class="btn__label">{{ 'blogs.article.back' | t }}</span></a>
+    </div>
+
+    {%- if blog.comments_enabled? -%}
+      <section class="article__comments" aria-labelledby="CommentsTitle">
+        <h2 class="h3" id="CommentsTitle">{{ 'blogs.article.comments' | t: count: article.comments_count }}</h2>
+        {%- paginate article.comments by 10 -%}
+          {%- for comment in article.comments -%}
+            <div class="surface article__comment">
+              <div class="rte">{{ comment.content }}</div>
+              <p class="article-card__meta">{{ comment.author }} · {{ comment.created_at | time_tag: format: 'date' }}</p>
+            </div>
+          {%- endfor -%}
+          {% render 'pagination', paginate: paginate %}
+        {%- endpaginate -%}
+        {%- form 'new_comment', article, class: 'form-stack surface article__comment-form' -%}
+          <h3 class="h4">{{ 'blogs.article.comment_form_title' | t }}</h3>
+          {%- if form.posted_successfully? -%}<p class="form-message form-message--success" role="status">{{ 'blogs.article.success' | t }}</p>{%- endif -%}
+          {%- if form.errors -%}<div class="form-message form-message--error" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+          <div class="form-row">
+            <label class="field"><span class="field__label">{{ 'blogs.article.name' | t }}</span><input class="input" type="text" name="comment[author]" required value="{{ form.author }}" autocomplete="name"></label>
+            <label class="field"><span class="field__label">{{ 'blogs.article.email' | t }}</span><input class="input" type="email" name="comment[email]" required value="{{ form.email }}" autocomplete="email"></label>
+          </div>
+          <label class="field"><span class="field__label">{{ 'blogs.article.message' | t }}</span><textarea class="textarea" name="comment[body]" required>{{ form.body }}</textarea></label>
+          {%- if blog.moderated? -%}<p class="tax-note">{{ 'blogs.article.moderated' | t }}</p>{%- endif -%}
+          <button type="submit" class="btn btn--primary"><span class="btn__label">{{ 'blogs.article.post' | t }}</span></button>
+        {%- endform -%}
+      </section>
+    {%- endif -%}
+  </div>
+</article>
+
+{% stylesheet %}
+  .article__hero { position: relative; overflow: hidden; isolation: isolate; padding-top: calc(var(--header-h) + clamp(40px, 8vw, 120px)); padding-bottom: clamp(32px, 5vw, 64px); }
+  .article__hero.has-image { min-height: 70vh; display: grid; align-items: end; }
+  .article__hero-media { position: absolute; inset: 0; z-index: -1; }
+  .article__hero-media img { width: 100%; height: 100%; object-fit: cover; }
+  .article__hero-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(var(--c-bg-rgb), .2), var(--c-bg)); }
+  .article__hero-inner { display: grid; gap: 18px; }
+  .article__body { display: grid; gap: 32px; padding-bottom: var(--section-gap); }
+  .article__content { font-size: calc(1.08rem * var(--b-scale)); color: rgba(var(--c-text-rgb), .85); }
+  .article__comments { display: grid; gap: 16px; margin-top: 32px; }
+  .article__comment { padding: 20px; display: grid; gap: 8px; }
+  .article__comment-form { padding: clamp(20px, 3vw, 32px); margin-top: 16px; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Blogbeitrag",
+  "tag": "section",
+  "class": "section-main-article",
+  "settings": [
+    { "type": "checkbox", "id": "show_image", "label": "Titelbild als Hero", "default": true },
+    { "type": "checkbox", "id": "show_author", "label": "Autor zeigen", "default": false }
+  ]
+}
+{% endschema %}

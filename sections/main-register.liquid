@@ -1,0 +1,23 @@
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+<div class="customer page-width">
+  <div class="customer__card surface">
+    <p class="eyebrow">{{ shop.name }}</p>
+    <h1 class="h1"><span class="text-chrome">{{ 'customer.register.title' | t }}</span></h1>
+    {%- form 'create_customer', class: 'form-stack', novalidate: 'novalidate' -%}
+      {%- if form.errors -%}<div class="form-message form-message--error" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+      <div class="form-row">
+        <label class="field"><span class="field__label">{{ 'customer.register.first_name' | t }}</span><input class="input" type="text" name="customer[first_name]" autocomplete="given-name" value="{{ form.first_name }}"></label>
+        <label class="field"><span class="field__label">{{ 'customer.register.last_name' | t }}</span><input class="input" type="text" name="customer[last_name]" autocomplete="family-name" value="{{ form.last_name }}"></label>
+      </div>
+      <label class="field"><span class="field__label">{{ 'customer.login.email' | t }}</span><input class="input" type="email" name="customer[email]" autocomplete="email" autocapitalize="off" spellcheck="false" required value="{{ form.email }}"></label>
+      <label class="field"><span class="field__label">{{ 'customer.login.password' | t }}</span><input class="input" type="password" name="customer[password]" autocomplete="new-password" required></label>
+      <label class="checkbox"><input type="checkbox" name="customer[accepts_marketing]" value="true"> <span>{{ 'customer.register.marketing' | t }}</span></label>
+      <button type="submit" class="btn btn--primary btn--block"><span class="btn__label">{{ 'customer.register.submit' | t }}</span></button>
+    {%- endform -%}
+    <div class="customer__links"><a href="{{ routes.account_login_url }}">{{ 'customer.register.have_account' | t }}</a></div>
+  </div>
+</div>
+
+{% schema %}
+{ "name": "Registrierung", "tag": "section", "class": "section-main-register", "settings": [] }
+{% endschema %}
