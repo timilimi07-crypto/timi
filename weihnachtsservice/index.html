@@ -81,6 +81,11 @@ h2 { font-size: clamp(28px, 5vw, 40px); font-weight: 700; margin-bottom: 24px; }
   font-family: var(--display); font-size: 24px; color: var(--candle); font-variant-numeric: tabular-nums;
 }
 .preis small { display: block; font-family: var(--body); font-size: 14px; color: var(--snow-dim); }
+.preise { margin: auto 0 0; padding-top: 14px; border-top: 1px dashed var(--fir-line); display: grid; gap: 8px; }
+.preise div { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.preise dt { color: var(--snow); min-width: 0; }
+.preise dd { margin: 0; font-family: var(--display); font-size: 22px; color: var(--candle); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.hinweis { font-size: 14px; color: var(--snow-dim); }
 
 /* Ablauf */
 .ablauf { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; padding: 0; margin: 0; list-style: none; counter-reset: schritt; }
@@ -122,22 +127,35 @@ h2 { font-size: clamp(28px, 5vw, 40px); font-weight: 700; margin-bottom: 24px; }
         <svg viewBox="0 0 56 56" fill="none" aria-hidden="true"><path d="M38 6 20 34" stroke="#f6f3ea" stroke-width="4" stroke-linecap="round"/><path d="M10 32l16 10-6 10c-8 0-14-6-14-12z" fill="#f4c56a"/><circle cx="42" cy="40" r="3" fill="#f6f3ea"/><circle cx="48" cy="28" r="2" fill="#f6f3ea"/><circle cx="46" cy="50" r="2" fill="#f6f3ea"/></svg>
         <h3>Schnee räumen &amp; streuen</h3>
         <p>Wir machen Einfahrt, Gehweg und Treppen frei, bevor ihr morgens aus dem Haus müsst.</p>
-        <ul><li>Einfahrt, Gehweg und Treppen</li><li>Streuen gegen Glätte</li><li>Einzeln oder als Saison-Abo</li></ul>
-        <div class="preis">15–30 € pro Einsatz<small>Saison-Abo: 100–250 €, je nach Fläche</small></div>
+        <ul><li>Einfahrt, Gehweg und Treppen</li><li>Streuen gegen Glätte</li><li>Kein Abo, ihr zahlt nur pro Einsatz</li></ul>
+        <dl class="preise">
+          <div><dt>Gehweg und Eingang</dt><dd>15 €</dd></div>
+          <div><dt>Mit Einfahrt</dt><dd>25 €</dd></div>
+        </dl>
+        <p class="hinweis">Preis pro Einsatz, Streuen inklusive.</p>
       </article>
       <article class="angebot">
         <svg viewBox="0 0 56 56" fill="none" aria-hidden="true"><path d="M4 12c12 14 36 14 48 0" stroke="#f6f3ea" stroke-width="3" stroke-linecap="round"/><ellipse cx="14" cy="27" rx="5" ry="7" fill="#f4c56a"/><ellipse cx="28" cy="31" rx="5" ry="7" fill="#d8473f"/><ellipse cx="42" cy="27" rx="5" ry="7" fill="#f6f3ea"/></svg>
         <h3>Weihnachtsbeleuchtung</h3>
         <p>Wir bringen eure Lichterketten an Haus, Bäumen und Zaun an und holen sie im Januar wieder herunter.</p>
         <ul><li>Aufhängen im Advent</li><li>Abbauen im Januar</li><li>Ordentlich aufgerollt zurück</li></ul>
-        <div class="preis">50–200 € pro Haus<small>je nach Umfang, Auf- und Abbau inklusive</small></div>
+        <dl class="preise">
+          <div><dt>Klein: Eingang und Fenster</dt><dd>50 €</dd></div>
+          <div><dt>Mittel: dazu Zaun oder Sträucher</dt><dd>90 €</dd></div>
+          <div><dt>Groß: Haus und Garten</dt><dd>140 €</dd></div>
+        </dl>
+        <p class="hinweis">Aufhängen und Abbauen inklusive. Die Lichterketten stellt ihr.</p>
       </article>
       <article class="angebot">
         <svg viewBox="0 0 56 56" fill="none" aria-hidden="true"><path d="M28 4 16 20h6L12 34h8L8 48h40L36 34h8L34 20h6z" fill="#3f8a6f"/><rect x="25" y="48" width="6" height="6" fill="#f4c56a"/><circle cx="28" cy="6" r="3" fill="#f4c56a"/><circle cx="24" cy="28" r="2" fill="#d8473f"/><circle cx="33" cy="40" r="2" fill="#d8473f"/></svg>
         <h3>Weihnachtsbaum-Service</h3>
         <p>Wir liefern euren Baum und stellen ihn auf. Nach den Feiertagen holen wir ihn ab und entsorgen ihn.</p>
         <ul><li>Liefern und Aufstellen</li><li>Abholen im Januar</li><li>Entsorgung inklusive</li></ul>
-        <div class="preis">5–15 € pro Abholung<small>Lieferung und Aufstellen auf Anfrage</small></div>
+        <dl class="preise">
+          <div><dt>Abholen und Entsorgen</dt><dd>10 €</dd></div>
+          <div><dt>Liefern und Aufstellen</dt><dd>15 €</dd></div>
+        </dl>
+        <p class="hinweis">Den Baum kauft ihr selbst, wir holen ihn in Kritzmow und Umgebung ab.</p>
       </article>
     </div>
   </section>
