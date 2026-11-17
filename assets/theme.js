@@ -363,6 +363,18 @@
     slider.scrollBy({ left: btn.hasAttribute('data-slider-next') ? w : -w, behavior: reduceMotion ? 'auto' : 'smooth' });
   });
 
+  /* ---------- Lookbook-Hotspots ---------- */
+  document.addEventListener('click', (e) => {
+    const dot = e.target.closest('.hotspot__dot');
+    $$('.hotspot.is-open').forEach((h) => {
+      if (!dot || h !== dot.parentNode) { h.classList.remove('is-open'); $('.hotspot__dot', h).setAttribute('aria-expanded', 'false'); }
+    });
+    if (!dot) return;
+    const hs = dot.parentNode, open = !hs.classList.contains('is-open');
+    hs.classList.toggle('is-open', open);
+    dot.setAttribute('aria-expanded', String(open));
+  });
+
   /* ---------- Teilen-Button ---------- */
   document.addEventListener('click', async (e) => {
     const share = e.target.closest('[data-share]');
@@ -389,8 +401,38 @@
     vids.forEach((v) => io.observe(v));
   }
 
+  /* ---------- Manifest: Wörter leuchten beim Scrollen auf ---------- */
+  const scrollTexts = new Set();
+  let stTicking = false;
+  function updateScrollTexts() {
+    stTicking = false;
+    const vh = window.innerHeight;
+    scrollTexts.forEach((el) => {
+      if (!document.body.contains(el)) { scrollTexts.delete(el); return; }
+      const r = el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > vh) return;
+      // Fortschritt: beginnt bei 85 % Viewport-Höhe, endet bei 35 %
+      const p = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height + vh * 0.5)));
+      const lit = Math.round(p * el._words.length);
+      el._words.forEach((w, i) => w.classList.toggle('is-lit', i < lit));
+    });
+  }
+  function initScrollText(root = document) {
+    $$('[data-scroll-text]', root).forEach((el) => {
+      el._words = $$('.story__word', el);
+      if (reduceMotion) { el._words.forEach((w) => w.classList.add('is-lit')); return; }
+      scrollTexts.add(el);
+    });
+    if (scrollTexts.size && !W._stBound) {
+      W._stBound = true;
+      window.addEventListener('scroll', () => { if (!stTicking) { stTicking = true; requestAnimationFrame(updateScrollTexts); } }, { passive: true });
+    }
+    updateScrollTexts();
+  }
+
   /* ---------- Init ---------- */
   function initAll(root = document) {
+    initScrollText(root);
     initReveal(root);
     initMarquees(root);
     initCountdowns(root);

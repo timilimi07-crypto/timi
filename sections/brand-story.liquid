@@ -1,0 +1,86 @@
+{%- assign s = section.settings -%}
+<div class="section page-width story story--{{ s.align }}" style="--pt: {{ s.padding_top | divided_by: 100.0 }}; --pb: {{ s.padding_bottom | divided_by: 100.0 }};">
+  {%- if s.eyebrow != blank -%}<p class="eyebrow" data-reveal>{{ s.eyebrow | escape }}</p>{%- endif -%}
+  {%- if s.manifest != blank -%}
+    {%- assign words = s.manifest | escape | split: ' ' -%}
+    <p class="story__text" data-scroll-text>
+      {%- for w in words -%}
+        {%- assign clean = w | remove: '*' -%}
+        {%- assign first_char = w | slice: 0 -%}
+        <span class="story__word{% if first_char == '*' %} story__word--hl{% endif %}">{{ clean }}</span>{% unless forloop.last %} {% endunless %}
+      {%- endfor -%}
+    </p>
+  {%- endif -%}
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="story__blocks">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'stat' -%}
+            <div class="story__stat" data-reveal style="--d: {{ forloop.index0 }}" {{ block.shopify_attributes }}>
+              <span class="story__stat-num text-chrome">{{ block.settings.number | escape }}</span>
+              <span class="story__stat-label">{{ block.settings.label | escape }}</span>
+            </div>
+          {%- when 'text' -%}
+            <div class="story__copy rte text-muted" data-reveal {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+          {%- when 'button' -%}
+            <div data-reveal {{ block.shopify_attributes }}>{% render 'button', label: block.settings.label, url: block.settings.link, style: block.settings.style, icon: 'arrow-right' %}</div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .story { display: grid; gap: clamp(28px, 4vw, 56px); }
+  .story--center { justify-items: center; text-align: center; }
+  .story__text { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.9rem, 5.2vw, 4.6rem); line-height: 1.04; letter-spacing: var(--h-tracking); text-transform: var(--h-case); max-width: 22ch; text-wrap: balance; }
+  .story__word { color: rgba(var(--c-text-rgb), .14); transition: color .35s ease, text-shadow .35s ease; }
+  .story__word.is-lit { color: var(--c-text); }
+  .story__word--hl.is-lit { background: var(--grad-chrome); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 18px var(--c-glow)); }
+  .story__blocks { display: flex; flex-wrap: wrap; gap: clamp(24px, 4vw, 64px); align-items: end; }
+  .story--center .story__blocks { justify-content: center; }
+  .story__stat { display: grid; gap: 6px; }
+  .story__stat-num { font-family: var(--font-display); font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 600; line-height: 1; }
+  .story__stat-label { font-size: var(--fs-xs); letter-spacing: .22em; text-transform: uppercase; color: var(--c-muted); }
+  .story__copy { max-width: 48ch; }
+  @media (prefers-reduced-motion: reduce) { .story__word { color: var(--c-text); } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Brand Story / Manifest",
+  "tag": "section",
+  "class": "section-brand-story",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "Manifest" },
+    { "type": "textarea", "id": "manifest", "label": "Manifest-Text", "default": "Du musst das Risiko eingehen, nach den *Sternen zu greifen, um *Großes zu erreichen. Disziplin schlägt Talent. Jeden Tag.", "info": "Wörter leuchten beim Scrollen auf. Ein * vor einem Wort hebt es in Chrom hervor (z. B. *Sternen)." },
+    { "type": "select", "id": "align", "label": "Ausrichtung", "default": "left", "options": [{ "value": "left", "label": "Links" }, { "value": "center", "label": "Mitte" }] },
+    { "type": "range", "id": "padding_top", "label": "Abstand oben", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 120 },
+    { "type": "range", "id": "padding_bottom", "label": "Abstand unten", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 120 }
+  ],
+  "blocks": [
+    { "type": "stat", "name": "Kennzahl", "settings": [
+      { "type": "text", "id": "number", "label": "Zahl", "default": "380" },
+      { "type": "text", "id": "label", "label": "Beschriftung", "default": "gsm Heavyweight" }
+    ] },
+    { "type": "text", "name": "Text", "settings": [
+      { "type": "richtext", "id": "text", "label": "Text", "default": "<p>WEAX steht für alle, die morgens früher aufstehen, härter trainieren und ihr eigenes Ding bauen.</p>" }
+    ] },
+    { "type": "button", "name": "Button", "settings": [
+      { "type": "text", "id": "label", "label": "Text", "default": "Unsere Story" },
+      { "type": "url", "id": "link", "label": "Link" },
+      { "type": "select", "id": "style", "label": "Stil", "default": "outline", "options": [{ "value": "primary", "label": "Gefüllt" }, { "value": "outline", "label": "Umriss" }, { "value": "ghost", "label": "Nur Text" }] }
+    ] }
+  ],
+  "presets": [{
+    "name": "Brand Story / Manifest",
+    "blocks": [
+      { "type": "stat", "settings": { "number": "380", "label": "gsm Heavyweight" } },
+      { "type": "stat", "settings": { "number": "84%", "label": "Baumwolle" } },
+      { "type": "text" }
+    ]
+  }]
+}
+{% endschema %}

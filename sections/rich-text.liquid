@@ -1,0 +1,44 @@
+{%- assign s = section.settings -%}
+<div class="section page-width page-width--narrow rich-text rich-text--{{ s.align }}" style="--pt: {{ s.padding_top | divided_by: 100.0 }}; --pb: {{ s.padding_bottom | divided_by: 100.0 }};">
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+      {%- when 'eyebrow' -%}<p class="eyebrow" data-reveal {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+      {%- when 'heading' -%}<h2 class="{{ block.settings.size }}" data-reveal {{ block.shopify_attributes }}><span class="{% if block.settings.chrome %}text-chrome{% endif %}">{{ block.settings.heading | escape }}</span></h2>
+      {%- when 'text' -%}<div class="rte text-muted" data-reveal {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+      {%- when 'button' -%}<div data-reveal {{ block.shopify_attributes }}>{% render 'button', label: block.settings.label, url: block.settings.link, style: block.settings.style, icon: 'arrow-right' %}</div>
+    {%- endcase -%}
+  {%- endfor -%}
+</div>
+
+{% stylesheet %}
+  .rich-text { display: grid; gap: 22px; }
+  .rich-text--center { justify-items: center; text-align: center; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Text",
+  "tag": "section",
+  "class": "section-rich-text",
+  "settings": [
+    { "type": "select", "id": "align", "label": "Ausrichtung", "default": "center", "options": [{ "value": "left", "label": "Links" }, { "value": "center", "label": "Mitte" }] },
+    { "type": "range", "id": "padding_top", "label": "Abstand oben", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 100 },
+    { "type": "range", "id": "padding_bottom", "label": "Abstand unten", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 100 }
+  ],
+  "blocks": [
+    { "type": "eyebrow", "name": "Überzeile", "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "WEAX" }] },
+    { "type": "heading", "name": "Überschrift", "settings": [
+      { "type": "text", "id": "heading", "label": "Überschrift", "default": "Reach for the stars" },
+      { "type": "select", "id": "size", "label": "Größe", "default": "h2", "options": [{ "value": "h-display", "label": "Riesig" }, { "value": "h1", "label": "Groß" }, { "value": "h2", "label": "Mittel" }, { "value": "h3", "label": "Klein" }] },
+      { "type": "checkbox", "id": "chrome", "label": "Chrom-Effekt", "default": true }
+    ] },
+    { "type": "text", "name": "Text", "settings": [{ "type": "richtext", "id": "text", "label": "Text", "default": "<p>Erzähl hier etwas über deine Marke.</p>" }] },
+    { "type": "button", "name": "Button", "settings": [
+      { "type": "text", "id": "label", "label": "Text", "default": "Shop now" },
+      { "type": "url", "id": "link", "label": "Link" },
+      { "type": "select", "id": "style", "label": "Stil", "default": "primary", "options": [{ "value": "primary", "label": "Gefüllt" }, { "value": "chrome", "label": "Chrom" }, { "value": "outline", "label": "Umriss" }] }
+    ] }
+  ],
+  "presets": [{ "name": "Text", "blocks": [{ "type": "eyebrow" }, { "type": "heading" }, { "type": "text" }, { "type": "button" }] }]
+}
+{% endschema %}

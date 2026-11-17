@@ -1,0 +1,121 @@
+{%- assign s = section.settings -%}
+<div class="section page-width lookbook" style="--pt: {{ s.padding_top | divided_by: 100.0 }}; --pb: {{ s.padding_bottom | divided_by: 100.0 }};">
+  {%- if s.eyebrow != blank or s.heading != blank -%}
+    <div class="section-head">
+      <div class="section-head__text">
+        {%- if s.eyebrow != blank -%}<p class="eyebrow" data-reveal>{{ s.eyebrow | escape }}</p>{%- endif -%}
+        {%- if s.heading != blank -%}<h2 class="h2" data-reveal style="--d:1"><span {% if s.scramble %}data-scramble{% endif %}>{{ s.heading | escape }}</span></h2>{%- endif -%}
+        {%- if s.text != blank -%}<div class="rte text-muted" data-reveal style="--d:2">{{ s.text }}</div>{%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="lookbook__grid{% if s.image_2 != blank %} lookbook__grid--two{% endif %}">
+    {%- for n in (1..2) -%}
+      {%- liquid
+        if n == 1
+          assign img = s.image_1
+        else
+          assign img = s.image_2
+        endif
+        assign n_str = n | append: ''
+      -%}
+      {%- if img != blank or n == 1 -%}
+        <div class="lookbook__frame media" data-reveal style="--d: {{ n }}">
+          {%- if img != blank -%}
+            {% render 'image', image: img, sizes: '(min-width: 990px) 50vw, 100vw' %}
+          {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+          {%- for block in section.blocks -%}
+            {%- if block.settings.image == n_str -%}
+              {%- assign hp = block.settings.product -%}
+              {%- assign hp_title = hp.title | default: block.settings.label | escape -%}
+              <div class="hotspot" style="--x: {{ block.settings.x }}%; --y: {{ block.settings.y }}%;" {{ block.shopify_attributes }}>
+                <button type="button" class="hotspot__dot" aria-expanded="false" aria-controls="Hotspot-{{ block.id }}" aria-label="{{ 'sections.lookbook.hotspot' | t: title: hp_title }}">
+                  <span></span>
+                </button>
+                <div class="hotspot__card glass{% if block.settings.x > 60 %} hotspot__card--left{% endif %}" id="Hotspot-{{ block.id }}">
+                  {%- if hp != blank -%}
+                    <a href="{{ hp.url }}" class="hotspot__link">
+                      {%- if hp.featured_media -%}{{ hp.featured_media | image_url: width: 200 | image_tag: loading: 'lazy', alt: hp.title }}{%- endif -%}
+                      <span>
+                        <strong>{{ hp.title | escape }}</strong>
+                        {% render 'price', product: hp %}
+                      </span>
+                    </a>
+                  {%- else -%}
+                    <span>{{ block.settings.label | default: 'Produkt wählen' }}</span>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+
+{% stylesheet %}
+  .lookbook__grid { display: grid; gap: 12px; }
+  @media (min-width: 750px) { .lookbook__grid--two { grid-template-columns: 1fr 1fr; } }
+  .lookbook__frame { aspect-ratio: 4 / 5; overflow: visible; }
+  .lookbook__frame > img, .lookbook__frame > svg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius); }
+  .hotspot { position: absolute; left: var(--x); top: var(--y); z-index: 2; }
+  .hotspot.is-open { z-index: 5; }
+  .hotspot__dot { position: relative; display: grid; place-items: center; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; }
+  .hotspot__dot span { width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 6px rgba(255,255,255,.25), 0 0 24px var(--c-glow-solid); transition: transform .3s var(--ease-out); }
+  .hotspot__dot::before { content: ""; position: absolute; inset: 6px; border-radius: 50%; border: 1px solid #fff; animation: hotspot-ping 2.2s var(--ease-out) infinite; }
+  .hotspot.is-open .hotspot__dot span, .hotspot__dot:hover span { transform: scale(1.3); }
+  @keyframes hotspot-ping { from { transform: scale(.6); opacity: 1; } to { transform: scale(1.8); opacity: 0; } }
+  .hotspot__card { position: absolute; top: 28px; left: -20px; width: 240px; padding: 10px; border-radius: var(--radius); opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity .3s, transform .3s var(--ease-out), visibility .3s; }
+  .hotspot__card--left { left: auto; right: -20px; }
+  .hotspot.is-open .hotspot__card { opacity: 1; visibility: visible; transform: none; }
+  @media (hover: hover) { .hotspot:hover .hotspot__card { opacity: 1; visibility: visible; transform: none; } }
+  .hotspot__link { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; font-size: var(--fs-small); }
+  .hotspot__link img { width: 64px; height: 80px; object-fit: cover; border-radius: 8px; }
+  .hotspot__link strong { display: block; margin-bottom: 4px; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Lookbook",
+  "tag": "section",
+  "class": "section-lookbook",
+  "max_blocks": 16,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "Lookbook" },
+    { "type": "text", "id": "heading", "label": "Überschrift", "default": "Shop the Look" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "image_picker", "id": "image_1", "label": "Bild 1" },
+    { "type": "image_picker", "id": "image_2", "label": "Bild 2 (optional)" },
+    { "type": "checkbox", "id": "scramble", "label": "Text-Scramble auf Überschrift", "default": true },
+    { "type": "range", "id": "padding_top", "label": "Abstand oben", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 100 },
+    { "type": "range", "id": "padding_bottom", "label": "Abstand unten", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 100 }
+  ],
+  "blocks": [
+    {
+      "type": "hotspot",
+      "name": "Hotspot",
+      "settings": [
+        { "type": "select", "id": "image", "label": "Auf Bild", "default": "1", "options": [{ "value": "1", "label": "Bild 1" }, { "value": "2", "label": "Bild 2" }] },
+        { "type": "product", "id": "product", "label": "Produkt" },
+        { "type": "text", "id": "label", "label": "Beschriftung (falls kein Produkt)" },
+        { "type": "range", "id": "x", "label": "Position horizontal", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 50 },
+        { "type": "range", "id": "y", "label": "Position vertikal", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 40 }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lookbook",
+      "blocks": [
+        { "type": "hotspot", "settings": { "x": 45, "y": 32, "label": "Hoodie" } },
+        { "type": "hotspot", "settings": { "x": 55, "y": 72, "label": "Open-Leg Pants" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

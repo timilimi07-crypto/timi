@@ -1,0 +1,33 @@
+{%- comment -%}
+  Größentabelle als Popup.
+  Quelle (in dieser Reihenfolge):
+  1. Produkt-Metafeld custom.size_chart (Seitenreferenz ODER Rich Text)
+  2. Fallback-Seite aus den Section-Einstellungen (fallback_page)
+  Gibt „has_chart“ über das data-Attribut zurück. Parameter: product, section_id, fallback_page
+{%- endcomment -%}
+{%- liquid
+  assign chart_html = ''
+  assign mf = product.metafields.custom.size_chart
+  if mf != blank
+    case mf.type
+      when 'page_reference'
+        assign chart_html = mf.value.content
+      when 'rich_text_field'
+        assign chart_html = mf | metafield_tag
+      else
+        assign chart_html = mf.value | newline_to_br
+    endcase
+  elsif fallback_page != blank
+    assign chart_html = fallback_page.content
+  endif
+-%}
+{%- if chart_html != blank -%}
+  <div class="modal" id="SizeChart-{{ section_id }}" role="dialog" aria-modal="true" aria-labelledby="SizeChartTitle-{{ section_id }}" aria-hidden="true">
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel size-chart">
+      <button type="button" class="icon-btn modal__close" data-close aria-label="{{ 'general.accessibility.close' | t }}">{% render 'icon', name: 'close' %}</button>
+      <h2 class="h3" id="SizeChartTitle-{{ section_id }}" style="margin-bottom: 24px;">{{ 'products.product.size_chart' | t }}</h2>
+      <div class="rte size-chart__wrap">{{ chart_html }}</div>
+    </div>
+  </div>
+{%- endif -%}

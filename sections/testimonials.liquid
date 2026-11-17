@@ -1,0 +1,79 @@
+{%- assign s = section.settings -%}
+<div class="section" style="--pt: {{ s.padding_top | divided_by: 100.0 }}; --pb: {{ s.padding_bottom | divided_by: 100.0 }};">
+  <div class="page-width">
+    <div class="section-head{% if s.align == 'center' %} section-head--center{% endif %}">
+      <div class="section-head__text">
+        {%- if s.eyebrow != blank -%}<p class="eyebrow" data-reveal>{{ s.eyebrow | escape }}</p>{%- endif -%}
+        {%- if s.heading != blank -%}<h2 class="h2" data-reveal style="--d:1">{{ s.heading | escape }}</h2>{%- endif -%}
+      </div>
+    </div>
+  </div>
+  {%- capture cards -%}
+    {%- for block in section.blocks -%}
+      <figure class="quote surface" {{ block.shopify_attributes }}>
+        <div class="quote__stars" role="img" aria-label="{{ 'sections.testimonials.rating' | t: rating: block.settings.rating }}">
+          {%- for i in (1..block.settings.rating) -%}{% render 'icon', name: 'star' %}{%- endfor -%}
+        </div>
+        <blockquote class="quote__text">{{ block.settings.quote | escape }}</blockquote>
+        <figcaption class="quote__author">
+          {%- if block.settings.avatar != blank -%}{{ block.settings.avatar | image_url: width: 96 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}
+          <span><strong>{{ block.settings.author | escape }}</strong>{%- if block.settings.meta != blank -%}<span class="text-muted">{{ block.settings.meta | escape }}</span>{%- endif -%}</span>
+        </figcaption>
+      </figure>
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if s.layout == 'marquee' -%}
+    <div class="marquee marquee--fade quotes-marquee" style="--speed: {{ s.speed }}s; --gap: 16px;">
+      <div class="marquee__track is-pausable">{{ cards }}</div>
+      <div class="marquee__track is-pausable" aria-hidden="true">{{ cards }}</div>
+    </div>
+  {%- else -%}
+    <div class="page-width"><div class="grid" style="--cols: 3; --cols-tablet: 2; --cols-mobile: 1;" data-reveal>{{ cards }}</div></div>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .quote { margin: 0; display: grid; gap: 18px; align-content: start; padding: clamp(22px, 2.6vw, 32px); }
+  .quotes-marquee .quote { width: min(380px, 80vw); white-space: normal; }
+  .quote__stars { display: flex; gap: 3px; color: var(--c-chrome-1); }
+  .quote__stars .icon { width: 14px; height: 14px; filter: drop-shadow(0 0 4px var(--c-glow-solid)); }
+  .quote__text { margin: 0; font-size: calc(1.1rem * var(--b-scale)); line-height: 1.5; }
+  .quote__author { display: flex; gap: 12px; align-items: center; font-size: var(--fs-small); }
+  .quote__author img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+  .quote__author > span { display: grid; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Kundenstimmen",
+  "tag": "section",
+  "class": "section-testimonials",
+  "max_blocks": 16,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "Community" },
+    { "type": "text", "id": "heading", "label": "Überschrift", "default": "Worn by the Crew" },
+    { "type": "select", "id": "align", "label": "Ausrichtung", "default": "left", "options": [{ "value": "left", "label": "Links" }, { "value": "center", "label": "Mitte" }] },
+    { "type": "select", "id": "layout", "label": "Darstellung", "default": "marquee", "options": [{ "value": "marquee", "label": "Laufband" }, { "value": "grid", "label": "Raster" }] },
+    { "type": "range", "id": "speed", "label": "Laufband-Dauer", "min": 20, "max": 120, "step": 5, "unit": "s", "default": 60 },
+    { "type": "range", "id": "padding_top", "label": "Abstand oben", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 100 },
+    { "type": "range", "id": "padding_bottom", "label": "Abstand unten", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 100 }
+  ],
+  "blocks": [
+    { "type": "quote", "name": "Stimme", "settings": [
+      { "type": "textarea", "id": "quote", "label": "Zitat", "default": "Der schwerste Hoodie, den ich je hatte. Fit ist perfekt." },
+      { "type": "text", "id": "author", "label": "Name", "default": "Leon, 19" },
+      { "type": "text", "id": "meta", "label": "Zusatz (z. B. Produkt)", "default": "Essential Hoodie · Schwarz" },
+      { "type": "range", "id": "rating", "label": "Sterne", "min": 1, "max": 5, "step": 1, "default": 5 },
+      { "type": "image_picker", "id": "avatar", "label": "Profilbild (optional)" }
+    ] }
+  ],
+  "presets": [{
+    "name": "Kundenstimmen",
+    "blocks": [
+      { "type": "quote" },
+      { "type": "quote", "settings": { "quote": "Die Open-Leg Pants sitzen krass. Qualität fühlt man sofort.", "author": "Mia, 22", "meta": "Open-Leg Pants · Weiß" } },
+      { "type": "quote", "settings": { "quote": "Schneller Versand, super Verpackung. Komme wieder.", "author": "Can, 17", "meta": "Tracksuit · Schwarz" } }
+    ]
+  }]
+}
+{% endschema %}

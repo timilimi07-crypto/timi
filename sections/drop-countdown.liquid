@@ -1,0 +1,117 @@
+{%- liquid
+  assign s = section.settings
+  assign date_str = s.drop_date | strip | replace: ' ', 'T'
+  assign iso = date_str | append: ':00' | append: s.timezone
+  assign target_s = iso | date: '%s' | plus: 0
+  assign now_s = 'now' | date: '%s' | plus: 0
+  assign ended = false
+  if target_s > 0 and now_s >= target_s
+    assign ended = true
+  endif
+-%}
+<div class="drop{% if ended %} is-ended{% endif %}" data-countdown="{{ iso }}" style="--pt: {{ s.padding_top | divided_by: 100.0 }}; --pb: {{ s.padding_bottom | divided_by: 100.0 }};">
+  {%- if s.image != blank -%}
+    <div class="drop__bg" aria-hidden="true">
+      {% render 'image', image: s.image, sizes: '100vw', alt: '' %}
+    </div>
+  {%- endif -%}
+  {%- if s.sky -%}
+    <canvas class="drop__sky" data-sky="full" data-density="45" data-shooting="40" aria-hidden="true"></canvas>
+  {%- endif -%}
+
+  <div class="section page-width drop__inner">
+    <div class="drop__before">
+      {%- if s.eyebrow != blank -%}<p class="eyebrow" data-reveal>{{ s.eyebrow | escape }}</p>{%- endif -%}
+      <h2 class="h1" data-reveal style="--d:1"><span class="text-chrome is-animated" {% if s.scramble %}data-scramble{% endif %}>{{ s.heading_before | escape }}</span></h2>
+      {%- if s.text_before != blank -%}<div class="rte text-muted drop__text" data-reveal style="--d:2">{{ s.text_before }}</div>{%- endif -%}
+
+      <div class="drop__timer" role="timer" aria-label="{{ 'sections.countdown.label' | t }}" data-reveal style="--d:3">
+        <div class="drop__unit"><span class="drop__num" data-cd-days>00</span><span class="drop__label">{{ 'sections.countdown.days' | t }}</span></div>
+        <span class="drop__colon" aria-hidden="true">:</span>
+        <div class="drop__unit"><span class="drop__num" data-cd-hours>00</span><span class="drop__label">{{ 'sections.countdown.hours' | t }}</span></div>
+        <span class="drop__colon" aria-hidden="true">:</span>
+        <div class="drop__unit"><span class="drop__num" data-cd-minutes>00</span><span class="drop__label">{{ 'sections.countdown.minutes' | t }}</span></div>
+        <span class="drop__colon" aria-hidden="true">:</span>
+        <div class="drop__unit"><span class="drop__num" data-cd-seconds>00</span><span class="drop__label">{{ 'sections.countdown.seconds' | t }}</span></div>
+      </div>
+
+      {%- if s.show_signup -%}
+        <div class="drop__signup" data-reveal style="--d:4">
+          {%- if s.signup_heading != blank -%}<p class="h4">{{ s.signup_heading | escape }}</p>{%- endif -%}
+          {%- assign fid = 'DropNotify-' | append: section.id -%}
+          {% render 'newsletter-form', form_id: fid, button: s.signup_button, tags: 'newsletter,drop-notify' %}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="drop__after">
+      <p class="eyebrow">{{ s.eyebrow_after | escape }}</p>
+      <h2 class="h-display text-chrome is-animated text-glow">{{ s.heading_after | escape }}</h2>
+      {%- if s.text_after != blank -%}<div class="rte text-muted drop__text">{{ s.text_after }}</div>{%- endif -%}
+      {%- if s.button_label != blank -%}
+        <div class="btn-row" style="justify-content:center;">{% render 'button', label: s.button_label, url: s.button_link, style: 'chrome', icon: 'arrow-right' %}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .drop { position: relative; overflow: hidden; isolation: isolate; text-align: center; border-block: 1px solid var(--c-border); }
+  .drop__bg { position: absolute; inset: 0; z-index: -2; opacity: .35; }
+  .drop__bg img { width: 100%; height: 100%; object-fit: cover; }
+  .drop__bg::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 0%, var(--c-bg) 80%); }
+  .drop__sky { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+  .drop__inner { display: grid; justify-items: center; }
+  .drop__before, .drop__after { display: grid; justify-items: center; gap: clamp(16px, 2.4vw, 28px); max-width: 960px; }
+  .drop__text { max-width: 54ch; }
+  .drop__timer { display: flex; align-items: flex-start; justify-content: center; gap: clamp(6px, 2vw, 20px); margin-block: 12px; }
+  .drop__unit { display: grid; justify-items: center; gap: 8px; min-width: clamp(64px, 16vw, 150px); padding: clamp(14px, 2.5vw, 26px) 8px; border-radius: var(--radius); border: 1px solid var(--c-border); background: linear-gradient(180deg, rgba(var(--c-text-rgb), .06), rgba(var(--c-text-rgb), .01)); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+  .drop__num { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.2rem, 8vw, 6rem); line-height: 1; font-variant-numeric: tabular-nums; background: var(--grad-chrome); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .drop__label { font-size: var(--fs-xs); letter-spacing: .24em; text-transform: uppercase; color: var(--c-muted); }
+  .drop__colon { font-family: var(--font-display); font-size: clamp(1.6rem, 5vw, 4rem); line-height: 1; padding-top: clamp(14px, 3vw, 30px); color: var(--c-chrome-2); animation: blink 1s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: .2; } }
+  .drop__signup { display: grid; gap: 12px; width: min(520px, 100%); margin-top: 12px; text-align: left; }
+  .drop__signup .h4 { text-align: center; }
+  .drop .drop__after { display: none; }
+  .drop.is-ended .drop__before { display: none; }
+  .drop.is-ended .drop__after { display: grid; animation: drop-in 1.2s var(--ease-out) both; }
+  @keyframes drop-in { from { opacity: 0; transform: scale(.92); filter: blur(20px); } }
+  @media (max-width: 749px) { .drop__colon { display: none; } .drop__timer { gap: 6px; } .drop__unit { min-width: 0; flex: 1; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Drop-Countdown",
+  "tag": "section",
+  "class": "section-drop-countdown",
+  "settings": [
+    { "type": "header", "content": "Datum & Uhrzeit des Drops" },
+    { "type": "text", "id": "drop_date", "label": "Datum & Uhrzeit", "default": "2026-12-12 18:00", "info": "Format: JJJJ-MM-TT HH:MM, z. B. 2026-12-12 18:00" },
+    { "type": "select", "id": "timezone", "label": "Zeitzone", "default": "+01:00", "options": [
+      { "value": "+01:00", "label": "Deutschland Winterzeit (MEZ)" },
+      { "value": "+02:00", "label": "Deutschland Sommerzeit (MESZ)" },
+      { "value": "Z", "label": "UTC" }
+    ] },
+    { "type": "header", "content": "Vor dem Drop" },
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "Next Drop" },
+    { "type": "text", "id": "heading_before", "label": "Headline", "default": "Drop incoming" },
+    { "type": "richtext", "id": "text_before", "label": "Text", "default": "<p>Limitierte Stückzahl. Wenn weg, dann weg.</p>" },
+    { "type": "checkbox", "id": "show_signup", "label": "„Notify me“-Anmeldung zeigen", "default": true, "info": "Anmeldungen landen unter Kunden mit dem Tag „drop-notify“." },
+    { "type": "text", "id": "signup_heading", "label": "Anmeldung – Überschrift", "default": "Get notified" },
+    { "type": "text", "id": "signup_button", "label": "Anmeldung – Button", "default": "Notify me" },
+    { "type": "header", "content": "Nach dem Drop" },
+    { "type": "text", "id": "eyebrow_after", "label": "Überzeile", "default": "Live now" },
+    { "type": "text", "id": "heading_after", "label": "Headline", "default": "It's live" },
+    { "type": "richtext", "id": "text_after", "label": "Text", "default": "<p>Der Drop ist da. Schnell sein lohnt sich.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button-Text", "default": "Shop now" },
+    { "type": "url", "id": "button_link", "label": "Button-Link" },
+    { "type": "header", "content": "Design" },
+    { "type": "image_picker", "id": "image", "label": "Hintergrundbild (optional)" },
+    { "type": "checkbox", "id": "sky", "label": "Eigener Sternenhimmel in der Section", "default": true, "info": "Bei Ablauf regnet es Sternschnuppen." },
+    { "type": "checkbox", "id": "scramble", "label": "Text-Scramble auf Headline", "default": true },
+    { "type": "range", "id": "padding_top", "label": "Abstand oben", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 100 },
+    { "type": "range", "id": "padding_bottom", "label": "Abstand unten", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 100 }
+  ],
+  "presets": [{ "name": "Drop-Countdown" }]
+}
+{% endschema %}

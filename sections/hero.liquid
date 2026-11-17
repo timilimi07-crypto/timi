@@ -1,0 +1,145 @@
+{%- liquid
+  assign s = section.settings
+  assign heading_tag = s.heading_tag | default: 'h2'
+-%}
+<div
+  class="hero hero--{{ s.height }} hero--{{ s.align }}"
+  data-parallax
+  style="--overlay: {{ s.overlay | divided_by: 100.0 }};"
+>
+  <div class="hero__media" data-depth="0.25" aria-hidden="true">
+    {%- if s.media_type == 'video' and s.video != blank -%}
+      {{ s.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, preload: 'metadata', image_size: '1600x', class: 'hero__video' }}
+    {%- elsif s.image != blank -%}
+      {%- if s.image_mobile != blank -%}
+        <picture>
+          <source media="(max-width: 749px)" srcset="{{ s.image_mobile | image_url: width: 750 }} 750w, {{ s.image_mobile | image_url: width: 1100 }} 1100w" sizes="100vw">
+          {{ s.image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 1920, 2400', sizes: '100vw', loading: 'eager', fetchpriority: 'high', alt: s.image.alt | escape }}
+        </picture>
+      {%- else -%}
+        {{ s.image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 1920, 2400', sizes: '100vw', loading: 'eager', fetchpriority: 'high', alt: s.image.alt | escape }}
+      {%- endif -%}
+    {%- else -%}
+      <div class="hero__placeholder"></div>
+    {%- endif -%}
+  </div>
+  <div class="hero__shade" aria-hidden="true"></div>
+  {%- if s.shooting_stars -%}
+    <canvas class="hero__sky" data-sky="{% if s.extra_stars %}full{% else %}shooting{% endif %}" data-shooting="{{ s.shooting_amount }}" data-density="35" aria-hidden="true"></canvas>
+  {%- endif -%}
+
+  {%- if s.show_logo -%}
+    <div class="hero__logo" data-depth="-0.6" aria-hidden="true">
+      {%- if settings.logo != blank -%}
+        {{ settings.logo | image_url: width: 800 | image_tag: alt: '', loading: 'eager' }}
+      {%- else -%}
+        {% render 'logo-mark', id: 'hero' %}
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="hero__content page-width">
+    <div class="hero__inner">
+      {%- if s.eyebrow != blank -%}<p class="eyebrow">{{ s.eyebrow | escape }}</p>{%- endif -%}
+      {%- if s.heading != blank -%}
+        <{{ heading_tag }} class="h-display hero__title" style="--d: 1">
+          <span class="{% if s.chrome_heading %}text-chrome is-animated{% endif %}" {% if s.scramble %}data-scramble{% endif %}>{{ s.heading | newline_to_br }}</span>
+        </{{ heading_tag }}>
+      {%- endif -%}
+      {%- if s.subheading != blank -%}<div class="hero__sub rte" style="--d: 2">{{ s.subheading }}</div>{%- endif -%}
+      {%- if s.button_1_label != blank or s.button_2_label != blank -%}
+        <div class="btn-row" style="--d: 3">
+          {%- if s.button_1_label != blank -%}{% render 'button', label: s.button_1_label, url: s.button_1_link, style: s.button_1_style, icon: 'arrow-right' %}{%- endif -%}
+          {%- if s.button_2_label != blank -%}{% render 'button', label: s.button_2_label, url: s.button_2_link, style: s.button_2_style %}{%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if s.scroll_hint -%}
+    <span class="hero__scroll" aria-hidden="true"><span></span></span>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .hero { position: relative; display: grid; align-items: end; overflow: hidden; isolation: isolate; min-height: 70vh; }
+  .hero--full { min-height: 100vh; min-height: 100svh; }
+  .hero--large { min-height: 86vh; min-height: 86svh; }
+  .hero--medium { min-height: 64vh; }
+  .hero__media { position: absolute; inset: -6% 0 0; z-index: -3; will-change: transform; }
+  .hero__media img, .hero__media video, .hero__media picture { width: 100%; height: 100%; object-fit: cover; }
+  .hero__placeholder { width: 100%; height: 100%; background: radial-gradient(80% 60% at 70% 20%, rgba(200,215,255,.12), transparent 70%), var(--c-bg); }
+  .hero__shade { position: absolute; inset: 0; z-index: -2; background: linear-gradient(180deg, rgba(var(--c-bg-rgb), calc(var(--overlay) * .6)) 0%, rgba(var(--c-bg-rgb), var(--overlay)) 55%, var(--c-bg) 100%); }
+  .hero__sky { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+  .hero__logo { position: absolute; top: 50%; left: 50%; z-index: -1; width: min(52vw, 520px); translate: -50% -60%; opacity: .14; filter: drop-shadow(0 0 40px var(--c-glow-solid)); pointer-events: none; }
+  .hero__logo img, .hero__logo svg { width: 100%; height: auto; }
+  .hero__content { position: relative; padding-top: calc(var(--header-h) + 40px); padding-bottom: clamp(48px, 9vh, 110px); }
+  .hero__inner { display: grid; gap: clamp(16px, 2.4vw, 28px); max-width: 1100px; }
+  .hero--center .hero__inner { margin-inline: auto; justify-items: center; text-align: center; }
+  .hero--center .btn-row { justify-content: center; }
+  /* Einstieg ohne Opacity-Trick, damit der LCP nicht verzögert wird */
+  .hero__inner > * { animation: hero-rise 1.2s var(--ease-out) both; animation-delay: calc(var(--d, 0) * 110ms + 80ms); }
+  @keyframes hero-rise { from { transform: translateY(36px); filter: blur(10px); } }
+  .hero__title { text-shadow: 0 0 80px rgba(var(--c-bg-rgb), .6); }
+  .hero__sub { max-width: 52ch; font-size: calc(1.05rem * var(--b-scale)); color: rgba(var(--c-text-rgb), .82); }
+  .hero__scroll { position: absolute; left: 50%; bottom: 18px; width: 22px; height: 36px; margin-left: -11px; border: 1px solid var(--c-border-strong); border-radius: 12px; }
+  .hero__scroll span { position: absolute; left: 50%; top: 7px; width: 2px; height: 7px; margin-left: -1px; background: var(--c-text); border-radius: 2px; animation: hero-scroll 1.8s var(--ease-in-out) infinite; }
+  @keyframes hero-scroll { 0% { transform: translateY(0); opacity: 1; } 80%, 100% { transform: translateY(12px); opacity: 0; } }
+  @media (max-width: 749px) { .hero__scroll { display: none; } .hero__logo { width: 72vw; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hero",
+  "tag": "section",
+  "class": "section-hero",
+  "settings": [
+    { "type": "header", "content": "Hintergrund" },
+    { "type": "select", "id": "media_type", "label": "Hintergrund-Typ", "default": "image", "options": [
+      { "value": "image", "label": "Bild" },
+      { "value": "video", "label": "Video" }
+    ] },
+    { "type": "image_picker", "id": "image", "label": "Bild (Desktop)", "info": "Empfohlen: 2400 × 1400 px." },
+    { "type": "image_picker", "id": "image_mobile", "label": "Bild (Handy, optional)", "info": "Hochformat, z. B. 1100 × 1600 px." },
+    { "type": "video", "id": "video", "label": "Video", "info": "Kurzes, stummes Loop-Video (unter 10 MB). Wird direkt bei Shopify gehostet – DSGVO-freundlich." },
+    { "type": "range", "id": "overlay", "label": "Abdunkelung", "min": 0, "max": 90, "step": 5, "unit": "%", "default": 45 },
+    { "type": "select", "id": "height", "label": "Höhe", "default": "full", "options": [
+      { "value": "full", "label": "Ganzer Bildschirm" },
+      { "value": "large", "label": "Groß" },
+      { "value": "medium", "label": "Mittel" }
+    ] },
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "New Drop · Season 01" },
+    { "type": "textarea", "id": "heading", "label": "Headline", "default": "Reach for\nthe stars" },
+    { "type": "select", "id": "heading_tag", "label": "SEO-Überschrift", "default": "h1", "options": [
+      { "value": "h1", "label": "H1 (Hauptüberschrift der Seite)" },
+      { "value": "h2", "label": "H2" }
+    ], "info": "Nur ein H1 pro Seite verwenden." },
+    { "type": "richtext", "id": "subheading", "label": "Subline", "default": "<p>Heavyweight Hoodies & Open-Leg Pants für alle, die das Risiko eingehen, Großes zu erreichen.</p>" },
+    { "type": "select", "id": "align", "label": "Ausrichtung", "default": "left", "options": [
+      { "value": "left", "label": "Links" },
+      { "value": "center", "label": "Mitte" }
+    ] },
+    { "type": "header", "content": "Buttons" },
+    { "type": "text", "id": "button_1_label", "label": "Button 1 – Text", "default": "Shop the Drop" },
+    { "type": "url", "id": "button_1_link", "label": "Button 1 – Link" },
+    { "type": "select", "id": "button_1_style", "label": "Button 1 – Stil", "default": "primary", "options": [
+      { "value": "primary", "label": "Gefüllt" }, { "value": "chrome", "label": "Chrom" }, { "value": "outline", "label": "Umriss" }
+    ] },
+    { "type": "text", "id": "button_2_label", "label": "Button 2 – Text", "default": "Unsere Story" },
+    { "type": "url", "id": "button_2_link", "label": "Button 2 – Link" },
+    { "type": "select", "id": "button_2_style", "label": "Button 2 – Stil", "default": "outline", "options": [
+      { "value": "primary", "label": "Gefüllt" }, { "value": "chrome", "label": "Chrom" }, { "value": "outline", "label": "Umriss" }, { "value": "ghost", "label": "Nur Text" }
+    ] },
+    { "type": "header", "content": "Effekte" },
+    { "type": "checkbox", "id": "chrome_heading", "label": "Chrom-Effekt auf Headline", "default": true },
+    { "type": "checkbox", "id": "scramble", "label": "Text-Scramble auf Headline", "default": true },
+    { "type": "checkbox", "id": "shooting_stars", "label": "Sternschnuppen-Overlay", "default": true },
+    { "type": "range", "id": "shooting_amount", "label": "Sternschnuppen-Häufigkeit", "min": 10, "max": 100, "step": 10, "unit": "%", "default": 70 },
+    { "type": "checkbox", "id": "extra_stars", "label": "Zusätzliche Sterne im Hero", "default": false },
+    { "type": "checkbox", "id": "show_logo", "label": "Logo im Hintergrund (reagiert auf Maus)", "default": true },
+    { "type": "checkbox", "id": "scroll_hint", "label": "Scroll-Hinweis", "default": true }
+  ],
+  "presets": [{ "name": "Hero" }]
+}
+{% endschema %}

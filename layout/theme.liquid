@@ -68,6 +68,7 @@
           cartError: {{ 'cart.general.error' | t | json }},
           copied: {{ 'general.share.copied' | t | json }}
         },
+        moneyFormat: {{ shop.money_format | strip_html | json }},
         designMode: {{ request.design_mode | json }}
       };
     </script>

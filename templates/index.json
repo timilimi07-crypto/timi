@@ -1,0 +1,121 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "media_type": "image", "overlay": 45, "height": "full",
+        "eyebrow": "New Drop · Season 01", "heading": "Reach for\nthe stars", "heading_tag": "h1",
+        "subheading": "<p>Heavyweight Hoodies & Open-Leg Pants für alle, die das Risiko eingehen, Großes zu erreichen.</p>",
+        "align": "left",
+        "button_1_label": "Shop the Drop", "button_1_link": "shopify://collections/all", "button_1_style": "primary",
+        "button_2_label": "Unsere Story", "button_2_link": "", "button_2_style": "outline",
+        "chrome_heading": true, "scramble": true, "shooting_stars": true, "shooting_amount": 70,
+        "extra_stars": false, "show_logo": true, "scroll_hint": true
+      }
+    },
+    "marquee": {
+      "type": "marquee-text",
+      "blocks": {
+        "t1": { "type": "text", "settings": { "text": "Reach for the stars" } },
+        "t2": { "type": "text", "settings": { "text": "Discipline" } },
+        "t3": { "type": "text", "settings": { "text": "Take the risk" } }
+      },
+      "block_order": ["t1", "t2", "t3"],
+      "settings": { "style": "mixed", "size": 100, "speed": 40, "reverse": false, "second_row": false, "rotate": -2, "bg": "rgba(0,0,0,0)", "padding_top": 60, "padding_bottom": 60 }
+    },
+    "collection": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "all", "eyebrow": "Shop", "heading": "Latest Drop", "align": "left", "layout": "grid",
+        "products_to_show": 8, "columns": 4, "columns_mobile": "2", "hide_quick_add": false,
+        "show_view_all": true, "view_all_label": "Alle ansehen", "scramble": true, "padding_top": 60, "padding_bottom": 100
+      }
+    },
+    "countdown": {
+      "type": "drop-countdown",
+      "settings": {
+        "drop_date": "2026-12-12 18:00", "timezone": "+01:00", "eyebrow": "Next Drop", "heading_before": "Drop incoming",
+        "text_before": "<p>Limitierte Stückzahl. Wenn weg, dann weg.</p>", "show_signup": true, "signup_heading": "Get notified", "signup_button": "Notify me",
+        "eyebrow_after": "Live now", "heading_after": "It's live", "text_after": "<p>Der Drop ist da. Schnell sein lohnt sich.</p>",
+        "button_label": "Shop now", "button_link": "shopify://collections/all", "sky": true, "scramble": true, "padding_top": 100, "padding_bottom": 100
+      }
+    },
+    "story": {
+      "type": "brand-story",
+      "blocks": {
+        "s1": { "type": "stat", "settings": { "number": "380", "label": "gsm Heavyweight" } },
+        "s2": { "type": "stat", "settings": { "number": "84%", "label": "Baumwolle" } },
+        "s3": { "type": "text", "settings": { "text": "<p>WEAX steht für alle, die morgens früher aufstehen, härter trainieren und ihr eigenes Ding bauen.</p>" } }
+      },
+      "block_order": ["s1", "s2", "s3"],
+      "settings": { "eyebrow": "Manifest", "manifest": "Du musst das Risiko eingehen, nach den *Sternen zu greifen, um *Großes zu erreichen. Disziplin schlägt Talent. Jeden Tag.", "align": "left", "padding_top": 120, "padding_bottom": 120 }
+    },
+    "featured": {
+      "type": "featured-product",
+      "settings": { "eyebrow": "Spotlight", "heading": "The Essential", "show_description": true, "show_quantity": false, "show_dynamic_checkout": false, "padding_top": 60, "padding_bottom": 100 }
+    },
+    "lookbook": {
+      "type": "lookbook",
+      "blocks": {
+        "h1": { "type": "hotspot", "settings": { "image": "1", "x": 45, "y": 32, "label": "Hoodie" } },
+        "h2": { "type": "hotspot", "settings": { "image": "1", "x": 55, "y": 72, "label": "Open-Leg Pants" } }
+      },
+      "block_order": ["h1", "h2"],
+      "settings": { "eyebrow": "Lookbook", "heading": "Shop the Look", "scramble": true, "padding_top": 100, "padding_bottom": 100 }
+    },
+    "quality": {
+      "type": "image-with-text",
+      "settings": {
+        "image_position": "right", "ratio": "portrait", "parallax": true, "eyebrow": "Quality", "heading": "Built heavy. Built to last.",
+        "text": "<p>380 gsm Heavyweight aus 84 % Baumwolle und 16 % Polyester. Oversized Fit, schwere Rippbündchen, doppelt vernäht.</p>",
+        "button_label": "Mehr erfahren", "button_link": "", "button_style": "outline", "scramble": false, "padding_top": 100, "padding_bottom": 100
+      }
+    },
+    "usps": {
+      "type": "multicolumn",
+      "blocks": {
+        "c1": { "type": "column", "settings": { "icon": "truck", "heading": "Versand", "text": "<p>Gratis ab 80 €, Lieferung in 1–3 Werktagen.</p>" } },
+        "c2": { "type": "column", "settings": { "icon": "return", "heading": "Retoure", "text": "<p>14 Tage Widerrufsrecht – unkompliziert zurücksenden.</p>" } },
+        "c3": { "type": "column", "settings": { "icon": "shield", "heading": "Qualität", "text": "<p>380 gsm Heavyweight, 84 % Baumwolle / 16 % Polyester.</p>" } }
+      },
+      "block_order": ["c1", "c2", "c3"],
+      "settings": { "eyebrow": "", "heading": "Why WEAX", "align": "left", "columns": 3, "columns_mobile": "1", "padding_top": 60, "padding_bottom": 100 }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "q1": { "type": "quote", "settings": { "quote": "Der schwerste Hoodie, den ich je hatte. Fit ist perfekt.", "author": "Leon, 19", "meta": "Essential Hoodie · Schwarz", "rating": 5 } },
+        "q2": { "type": "quote", "settings": { "quote": "Die Open-Leg Pants sitzen krass. Qualität fühlt man sofort.", "author": "Mia, 22", "meta": "Open-Leg Pants · Weiß", "rating": 5 } },
+        "q3": { "type": "quote", "settings": { "quote": "Schneller Versand, super Verpackung. Komme wieder.", "author": "Can, 17", "meta": "Tracksuit · Schwarz", "rating": 5 } }
+      },
+      "block_order": ["q1", "q2", "q3"],
+      "disabled": true,
+      "settings": { "eyebrow": "Community", "heading": "Worn by the Crew", "align": "left", "layout": "marquee", "speed": 60, "padding_top": 100, "padding_bottom": 100 }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "f1": { "type": "question", "settings": { "question": "Wie fallen die Größen aus?", "answer": "<p>Unsere Hoodies sind oversized geschnitten. Für einen normalen Fit eine Größe kleiner wählen. Die genauen Maße findest du in der Größentabelle auf jeder Produktseite.</p>" } },
+        "f2": { "type": "question", "settings": { "question": "Wie lange dauert der Versand?", "answer": "<p>Innerhalb Deutschlands in der Regel 1–3 Werktage.</p>" } },
+        "f3": { "type": "question", "settings": { "question": "Kann ich zurückschicken?", "answer": "<p>Ja, du hast 14 Tage Widerrufsrecht. Alle Infos findest du auf der Seite Rückgabe.</p>" } },
+        "f4": { "type": "question", "settings": { "question": "Wie wasche ich meinen Hoodie?", "answer": "<p>Auf links gedreht bei 30 °C waschen, nicht in den Trockner – so bleiben Form und Print lange schön.</p>" } }
+      },
+      "block_order": ["f1", "f2", "f3", "f4"],
+      "settings": { "eyebrow": "Support", "heading": "FAQ", "open_first": false, "schema_markup": true, "padding_top": 100, "padding_bottom": 100 }
+    },
+    "instagram": {
+      "type": "instagram-grid",
+      "blocks": {
+        "i1": { "type": "image", "settings": {} }, "i2": { "type": "image", "settings": {} }, "i3": { "type": "image", "settings": {} },
+        "i4": { "type": "image", "settings": {} }, "i5": { "type": "image", "settings": {} }, "i6": { "type": "image", "settings": {} }
+      },
+      "block_order": ["i1", "i2", "i3", "i4", "i5", "i6"],
+      "settings": { "eyebrow": "@wearweax", "heading": "Join the Movement", "button_label": "Folgen", "columns": 6, "padding_top": 100, "padding_bottom": 100 }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": { "eyebrow": "Newsletter", "heading": "Be first. Always.", "text": "<p>Early Access zu jedem Drop und exklusive Angebote – direkt in dein Postfach.</p>", "button": "Join", "sky": true, "scramble": true, "padding_top": 100, "padding_bottom": 100 }
+    }
+  },
+  "order": ["hero", "marquee", "collection", "countdown", "story", "featured", "lookbook", "quality", "usps", "testimonials", "faq", "instagram", "newsletter"]
+}

@@ -1,0 +1,110 @@
+{%- comment -%}
+  Produktkarte mit 3D-Tilt, Glanz, zweitem Bild beim Hover, Badges, Farb-Swatches und Quick-Add.
+  Parameter:
+  - product (Pflicht)
+  - eager (true = erstes Bild sofort laden)
+  - sizes (Bildbreiten-Hinweis, Standard für 4er-Grid)
+  - index (für gestaffelte Reveal-Animation)
+  - hide_quick_add (true = Quick-Add ausblenden)
+{%- endcomment -%}
+{%- liquid
+  assign img_sizes = sizes | default: '(min-width: 1440px) 340px, (min-width: 990px) 24vw, (min-width: 750px) 32vw, 48vw'
+  assign first_media = product.featured_media
+  assign second_media = product.media[1]
+  assign size_index = nil
+  assign color_index = nil
+  for option in product.options_with_values
+    assign oname = option.name | downcase
+    if oname == 'größe' or oname == 'groesse' or oname == 'size' or oname == 'grösse' or oname == 'gr.'
+      assign size_index = forloop.index0
+    elsif oname == 'farbe' or oname == 'color' or oname == 'colour'
+      assign color_index = forloop.index0
+    endif
+  endfor
+  assign current = product.selected_or_first_available_variant
+  assign show_quick = settings.card_quick_add
+  if hide_quick_add
+    assign show_quick = false
+  endif
+-%}
+<div class="card" {% if settings.tilt_enable %}data-tilt{% endif %} data-reveal style="--d: {{ index | default: 0 | modulo: 4 }}">
+  <div class="card__media-wrap">
+    <a class="card__media media--{{ settings.card_image_ratio }}" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+      {%- if first_media -%}
+        {%- assign alt1 = first_media.alt | default: product.title -%}
+        {%- if eager -%}
+          {{ first_media | image_url: width: 1100 | image_tag: widths: '280, 360, 460, 560, 720, 900, 1100', sizes: img_sizes, alt: alt1, class: 'card__img', loading: 'eager', fetchpriority: 'high' }}
+        {%- else -%}
+          {{ first_media | image_url: width: 1100 | image_tag: widths: '280, 360, 460, 560, 720, 900, 1100', sizes: img_sizes, alt: alt1, class: 'card__img', loading: 'lazy' }}
+        {%- endif -%}
+        {%- if settings.card_hover_image and second_media and second_media.media_type == 'image' -%}
+          {{ second_media | image_url: width: 1100 | image_tag: widths: '280, 360, 460, 560, 720, 900, 1100', sizes: img_sizes, alt: '', class: 'card__img card__img--hover', loading: 'lazy' }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </a>
+    <span class="card__shine" aria-hidden="true"></span>
+    <div class="card__badges">{% render 'product-badges', product: product %}</div>
+
+    {%- if show_quick and product.available -%}
+      {%- if size_index != nil -%}
+        <div class="card__quick glass">
+          <p class="card__quick-label">{{ 'products.product.quick_add' | t }}</p>
+          <div class="card__sizes" role="group" aria-label="{{ 'products.product.quick_add_aria' | t: title: product.title | escape }}">
+            {%- for value in product.options_with_values[size_index].values -%}
+              {%- liquid
+                assign vname = value.name | default: value
+                assign match = nil
+                for v in product.variants
+                  if v.options[size_index] == vname
+                    if color_index == nil or v.options[color_index] == current.options[color_index]
+                      assign match = v
+                      break
+                    endif
+                  endif
+                endfor
+              -%}
+              {%- if match -%}
+                <button
+                  type="button"
+                  class="card__size"
+                  data-quick-add="{{ match.id }}"
+                  {% unless match.available %}disabled{% endunless %}
+                  aria-label="{{ product.title | escape }} – {{ vname | escape }}"
+                >{{ vname | escape }}</button>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- elsif product.has_only_default_variant -%}
+        <div class="card__quick glass">
+          <button type="button" class="btn btn--primary btn--small btn--block" data-quick-add="{{ current.id }}">
+            <span class="btn__label">{{ 'products.product.add_to_cart' | t }}</span>
+          </button>
+        </div>
+      {%- endif -%}
+      {%- comment -%} Touch-Geräte: „+“ öffnet Produkt bzw. legt Einzelvariante direkt in den Warenkorb {%- endcomment -%}
+      {%- if product.has_only_default_variant -%}
+        <button type="button" class="card__quick-mobile glass" data-quick-add="{{ current.id }}" aria-label="{{ 'products.product.quick_add_aria' | t: title: product.title | escape }}">{% render 'icon', name: 'plus' %}</button>
+      {%- else -%}
+        <a class="card__quick-mobile glass" href="{{ product.url }}" aria-label="{{ 'products.product.choose_options' | t }}: {{ product.title | escape }}">{% render 'icon', name: 'plus' %}</a>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+
+  <div class="card__info">
+    <h3 class="card__title"><a href="{{ product.url }}">{{ product.title | escape }}</a></h3>
+    <div class="card__meta">
+      {% render 'price', product: product %}
+      {%- if color_index != nil -%}
+        <div class="card__swatches" aria-label="{{ product.options_with_values[color_index].name }}">
+          {%- for value in product.options_with_values[color_index].values limit: 5 -%}
+            {%- capture sw -%}{% render 'color-swatch', value: value %}{%- endcapture -%}
+            <span class="card__swatch" style="--swatch: {{ sw | strip }};" title="{{ value.name | default: value | escape }}"></span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>

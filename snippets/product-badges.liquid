@@ -1,0 +1,48 @@
+{%- comment -%}
+  Badges: New Drop, Sold Out, Low Stock, Sale.
+  „New Drop“: Produkt-Tag „new“/„new-drop“, ODER Metafeld custom.drop_date in den letzten X Tagen, ODER veröffentlicht in den letzten X Tagen.
+  Parameter: product
+{%- endcomment -%}
+{%- liquid
+  assign now_s = 'now' | date: '%s' | plus: 0
+  assign new_window = settings.badge_new_days | times: 86400
+  assign is_new = false
+  if settings.badge_new_enable
+    if product.tags contains 'new' or product.tags contains 'new-drop' or product.tags contains 'New Drop'
+      assign is_new = true
+    else
+      assign ref_date = product.metafields.custom.drop_date.value | default: product.published_at
+      assign ref_s = ref_date | date: '%s' | plus: 0
+      assign age = now_s | minus: ref_s
+      if age < new_window and age > -1
+        assign is_new = true
+      endif
+    endif
+  endif
+
+  assign total_stock = 0
+  assign tracked = false
+  for v in product.variants
+    if v.inventory_management == 'shopify'
+      assign tracked = true
+      if v.inventory_quantity > 0
+        assign total_stock = total_stock | plus: v.inventory_quantity
+      endif
+    endif
+  endfor
+  assign is_low = false
+  if settings.badge_low_enable and tracked and product.available and total_stock <= settings.badge_low_threshold and total_stock > 0
+    assign is_low = true
+  endif
+  assign on_sale = false
+  if product.compare_at_price > product.price
+    assign on_sale = true
+  endif
+-%}
+{%- if product.available == false -%}
+  <span class="badge badge--soldout">{{ 'products.product.badge.sold_out' | t }}</span>
+{%- else -%}
+  {%- if is_new -%}<span class="badge badge--new">{% render 'icon', name: 'star' %}{{ 'products.product.badge.new' | t }}</span>{%- endif -%}
+  {%- if is_low -%}<span class="badge badge--low">{{ 'products.product.badge.low_stock' | t }}</span>{%- endif -%}
+  {%- if on_sale -%}<span class="badge badge--sale">{{ 'products.product.badge.sale' | t }}</span>{%- endif -%}
+{%- endif -%}

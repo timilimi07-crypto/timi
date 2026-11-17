@@ -1,0 +1,45 @@
+{%- comment -%}
+  Kauf-Formular: Menge + In den Warenkorb (AJAX). Parameter: product, section_id, show_quantity, show_stock, show_dynamic_checkout
+{%- endcomment -%}
+{%- liquid
+  assign current = product.selected_or_first_available_variant
+  assign form_id = 'ProductForm-' | append: section_id
+-%}
+{%- form 'product', product, id: form_id, class: 'product-form', data-product-form: '', novalidate: 'novalidate' -%}
+  <input type="hidden" name="id" value="{{ current.id }}" data-variant-id>
+  {%- if show_stock -%}
+    <p class="stock" data-stock>
+      {%- if current.available == false -%}
+        <span class="stock__dot stock__dot--out"></span>{{ 'products.product.out_of_stock' | t }}
+      {%- elsif current.inventory_management == 'shopify' and current.inventory_quantity <= settings.badge_low_threshold and current.inventory_quantity > 0 -%}
+        <span class="stock__dot stock__dot--low"></span>{{ 'products.product.low_stock' | t: count: current.inventory_quantity }}
+      {%- else -%}
+        <span class="stock__dot"></span>{{ 'products.product.in_stock' | t }}
+      {%- endif -%}
+    </p>
+  {%- endif -%}
+  <div class="product-form__buttons">
+    {%- if show_quantity -%}
+      <div class="qty qty--large">
+        <button type="button" data-qty-step="-1" aria-label="{{ 'cart.general.decrease' | t: product: product.title | escape }}">{% render 'icon', name: 'minus' %}</button>
+        <input type="number" name="quantity" value="1" min="1" inputmode="numeric" aria-label="{{ 'products.product.quantity' | t }}">
+        <button type="button" data-qty-step="1" aria-label="{{ 'cart.general.increase' | t: product: product.title | escape }}">{% render 'icon', name: 'plus' %}</button>
+      </div>
+    {%- endif -%}
+    <button
+      type="submit"
+      name="add"
+      class="btn btn--primary product-form__submit{% if settings.magnetic_enable %} is-magnetic{% endif %}"
+      data-add-to-cart
+      {% unless current.available %}disabled{% endunless %}
+    >
+      <span class="btn__label" data-add-label>
+        {%- if current.available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+      </span>
+    </button>
+  </div>
+  {%- if show_dynamic_checkout -%}{{ form | payment_button }}{%- endif -%}
+{%- endform -%}
+<script type="application/json" data-inventory>
+  { {%- for v in product.variants -%}"{{ v.id }}": {% if v.inventory_management == 'shopify' %}{{ v.inventory_quantity }}{% else %}null{% endif %}{% unless forloop.last %},{% endunless %}{%- endfor -%} }
+</script>

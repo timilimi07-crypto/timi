@@ -1,0 +1,42 @@
+{%- comment -%}
+  Gibt eine CSS-Hintergrundfarbe für einen Farbwert aus.
+  Nutzt zuerst Shopifys Farbmuster (Kategorie-Metafelder / Swatches), sonst bekannte Farbnamen.
+  Parameter: value (product_option_value oder Text)
+{%- endcomment -%}
+{%- liquid
+  assign out = ''
+  if value.swatch.image
+    assign out = value.swatch.image | image_url: width: 60 | prepend: 'url(' | append: ') center / cover'
+  elsif value.swatch.color
+    assign out = value.swatch.color
+  else
+    assign n = value.name | default: value | downcase | strip
+    case n
+      when 'schwarz', 'black', 'onyx', 'jet black'
+        assign out = '#0a0a0a'
+      when 'weiß', 'weiss', 'white', 'offwhite', 'off-white', 'off white', 'cream', 'creme'
+        assign out = '#f4f4f0'
+      when 'grau', 'grey', 'gray', 'heather grey', 'ash'
+        assign out = '#8a8a8f'
+      when 'anthrazit', 'charcoal'
+        assign out = '#36363b'
+      when 'silber', 'silver', 'chrome'
+        assign out = 'linear-gradient(135deg,#fff,#a8a8b3 50%,#fff)'
+      when 'navy', 'dunkelblau'
+        assign out = '#14213d'
+      when 'beige', 'sand'
+        assign out = '#d8c8a8'
+      when 'braun', 'brown', 'mocha'
+        assign out = '#5b4636'
+      when 'rot', 'red'
+        assign out = '#c1121f'
+      when 'grün', 'gruen', 'green', 'olive'
+        assign out = '#4b5d3a'
+      when 'blau', 'blue'
+        assign out = '#2b59c3'
+      else
+        assign out = n | split: ' ' | first
+    endcase
+  endif
+-%}
+{{- out -}}

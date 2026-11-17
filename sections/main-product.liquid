@@ -1,0 +1,190 @@
+{{ 'product.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign s = section.settings
+  assign current = product.selected_or_first_available_variant
+  assign has_chart = false
+  if product.metafields.custom.size_chart != blank or s.size_chart_page != blank
+    assign has_chart = true
+  endif
+  assign product_root_id = 'Product-' | append: section.id
+-%}
+
+<div class="section page-width" style="--pt: .5; --pb: {{ s.padding_bottom | divided_by: 100.0 }}; padding-top: calc(var(--header-h) * .4 + 24px);">
+  <div
+    class="product{% if s.media_size == 'small' %} product--media-small{% endif %}"
+    id="{{ product_root_id }}"
+    data-product
+    data-update-url="true"
+    data-low-threshold="{{ settings.badge_low_threshold }}"
+    data-t-in="{{ 'products.product.in_stock' | t | escape }}"
+    data-t-out="{{ 'products.product.out_of_stock' | t | escape }}"
+    data-t-low="{{ 'products.product.low_stock' | t: count: '__COUNT__' | escape }}"
+  >
+    <div class="product__media">
+      {% render 'product-gallery', product: product, section_id: section.id, layout: s.gallery_layout, eager: true %}
+    </div>
+
+    <div class="product__info">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when '@app' -%}
+            {% render block %}
+          {%- when 'badges' -%}
+            <div class="card__badges" style="position: static; transform: none;" {{ block.shopify_attributes }}>{% render 'product-badges', product: product %}</div>
+          {%- when 'title' -%}
+            <div {{ block.shopify_attributes }}>
+              {%- if block.settings.show_vendor and product.vendor != blank -%}<p class="eyebrow" style="margin-bottom: 10px;">{{ product.vendor | escape }}</p>{%- endif -%}
+              <h1 class="product__title"><span class="text-chrome">{{ product.title | escape }}</span></h1>
+            </div>
+          {%- when 'price' -%}
+            <div class="product__price" {{ block.shopify_attributes }}>
+              {% render 'price', product: product, variant: current, show_note: true %}
+            </div>
+          {%- when 'drop_date' -%}
+            {%- assign drop = product.metafields.custom.drop_date.value -%}
+            {%- if drop != blank -%}
+              {%- assign drop_fmt = drop | date: '%d.%m.%Y' -%}
+              <p class="product__meta-row" {{ block.shopify_attributes }}>{% render 'icon', name: 'star' %} {{ 'products.product.drop_date' | t: date: drop_fmt }}</p>
+            {%- endif -%}
+          {%- when 'variant_picker' -%}
+            <div {{ block.shopify_attributes }}>
+              {% render 'variant-picker', product: product, section_id: section.id, size_chart: has_chart %}
+            </div>
+          {%- when 'buy_buttons' -%}
+            <div {{ block.shopify_attributes }}>
+              {% render 'product-form', product: product, section_id: section.id, show_quantity: block.settings.show_quantity, show_stock: block.settings.show_stock, show_dynamic_checkout: block.settings.show_dynamic_checkout %}
+            </div>
+          {%- when 'description' -%}
+            {%- if product.description != blank -%}
+              <div class="rte product__desc" {{ block.shopify_attributes }}>{{ product.description }}</div>
+            {%- endif -%}
+          {%- when 'text' -%}
+            <div class="rte text-muted" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+          {%- when 'usps' -%}
+            <ul class="product__usps" role="list" {{ block.shopify_attributes }}>
+              {%- if block.settings.usp_1 != blank -%}<li>{% render 'icon', name: 'truck' %}{{ block.settings.usp_1 | escape }}</li>{%- endif -%}
+              {%- if block.settings.usp_2 != blank -%}<li>{% render 'icon', name: 'return' %}{{ block.settings.usp_2 | escape }}</li>{%- endif -%}
+              {%- if block.settings.usp_3 != blank -%}<li>{% render 'icon', name: 'shield' %}{{ block.settings.usp_3 | escape }}</li>{%- endif -%}
+            </ul>
+          {%- when 'collapsible' -%}
+            {%- liquid
+              assign tab_content = ''
+              case block.settings.source
+                when 'material'
+                  assign mf = product.metafields.custom.material
+                when 'care'
+                  assign mf = product.metafields.custom.care
+                when 'shipping'
+                  assign mf = product.metafields.custom.shipping
+                else
+                  assign mf = nil
+              endcase
+              if mf != blank
+                if mf.type == 'rich_text_field'
+                  assign tab_content = mf | metafield_tag
+                else
+                  assign tab_content = mf.value | newline_to_br
+                endif
+              elsif block.settings.page != blank
+                assign tab_content = block.settings.page.content
+              else
+                assign tab_content = block.settings.content
+              endif
+            -%}
+            {%- if tab_content != blank -%}
+              <details class="accordion" {{ block.shopify_attributes }}{% if block.settings.open %} open{% endif %}>
+                <summary>
+                  <span style="display:inline-flex; gap:12px; align-items:center;">{%- if block.settings.icon != 'none' -%}{% render 'icon', name: block.settings.icon %}{%- endif -%}{{ block.settings.heading | escape }}</span>
+                  {% render 'icon', name: 'plus' %}
+                </summary>
+                <div class="accordion__content rte">{{ tab_content }}</div>
+              </details>
+            {%- endif -%}
+          {%- when 'share' -%}
+            <button type="button" class="product__share" data-share="{{ request.origin }}{{ product.url }}" {{ block.shopify_attributes }}>{% render 'icon', name: 'arrow-right' %}{{ 'products.product.share' | t }}</button>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% render 'size-chart', product: product, section_id: section.id, fallback_page: s.size_chart_page %}
+
+{%- if s.sticky_atc and product.available -%}
+  <div class="sticky-atc glass" data-sticky-atc="{{ product_root_id }}">
+    {%- if product.featured_media -%}{{ product.featured_media | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}
+    <div class="sticky-atc__info">
+      <p class="sticky-atc__title">{{ product.title | escape }}</p>
+      <div data-sticky-price class="price"><span data-price-current>{{ current.price | money }}</span><s class="price__compare" data-price-compare hidden></s></div>
+    </div>
+    <button type="button" class="btn btn--primary" data-sticky-add data-sticky-for="{{ product_root_id }}"{% unless current.available %} disabled{% endunless %}>
+      <span class="btn__label" data-sticky-label>{{ 'products.product.sticky_add' | t }}</span>
+    </button>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Produkt",
+  "tag": "section",
+  "class": "section-main-product",
+  "settings": [
+    { "type": "select", "id": "gallery_layout", "label": "Galerie (Desktop)", "default": "grid", "options": [
+      { "value": "grid", "label": "Raster (1 groß + 2er Raster)" },
+      { "value": "stack", "label": "Untereinander" },
+      { "value": "slider", "label": "Slider" }
+    ] },
+    { "type": "select", "id": "media_size", "label": "Bildbereich-Größe", "default": "large", "options": [
+      { "value": "large", "label": "Groß" }, { "value": "small", "label": "Halb/Halb" }
+    ] },
+    { "type": "checkbox", "id": "sticky_atc", "label": "Sticky „In den Warenkorb“ auf dem Handy", "default": true },
+    { "type": "page", "id": "size_chart_page", "label": "Standard-Größentabelle (Seite)", "info": "Wird genutzt, wenn das Produkt kein eigenes Metafeld „Größentabelle“ hat." },
+    { "type": "range", "id": "padding_bottom", "label": "Abstand unten", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 60 }
+  ],
+  "blocks": [
+    { "type": "@app" },
+    { "type": "badges", "name": "Badges", "limit": 1, "settings": [] },
+    { "type": "title", "name": "Titel", "limit": 1, "settings": [
+      { "type": "checkbox", "id": "show_vendor", "label": "Marke über dem Titel", "default": false }
+    ] },
+    { "type": "price", "name": "Preis", "limit": 1, "settings": [] },
+    { "type": "drop_date", "name": "Drop-Datum (Metafeld)", "limit": 1, "settings": [
+      { "type": "paragraph", "content": "Zeigt das Metafeld custom.drop_date, falls gefüllt." }
+    ] },
+    { "type": "variant_picker", "name": "Varianten-Auswahl", "limit": 1, "settings": [] },
+    { "type": "buy_buttons", "name": "Kauf-Buttons", "limit": 1, "settings": [
+      { "type": "checkbox", "id": "show_quantity", "label": "Mengenauswahl", "default": true },
+      { "type": "checkbox", "id": "show_stock", "label": "Bestandsanzeige", "default": true },
+      { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Express-Checkout-Buttons (PayPal, Apple Pay …)", "default": true }
+    ] },
+    { "type": "description", "name": "Beschreibung", "limit": 1, "settings": [] },
+    { "type": "text", "name": "Text", "settings": [
+      { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Oversized Fit. Fällt groß aus.</p>" }
+    ] },
+    { "type": "usps", "name": "Vorteile (USPs)", "limit": 1, "settings": [
+      { "type": "text", "id": "usp_1", "label": "Vorteil 1 (LKW-Icon)", "default": "Gratis Versand ab 80 €" },
+      { "type": "text", "id": "usp_2", "label": "Vorteil 2 (Retoure-Icon)", "default": "14 Tage Rückgaberecht" },
+      { "type": "text", "id": "usp_3", "label": "Vorteil 3 (Schild-Icon)", "default": "Sichere Zahlung" }
+    ] },
+    { "type": "collapsible", "name": "Akkordeon", "settings": [
+      { "type": "text", "id": "heading", "label": "Überschrift", "default": "Material" },
+      { "type": "select", "id": "icon", "label": "Icon", "default": "sparkle", "options": [
+        { "value": "none", "label": "Keins" }, { "value": "sparkle", "label": "Funkeln" }, { "value": "truck", "label": "Versand" },
+        { "value": "return", "label": "Retoure" }, { "value": "shield", "label": "Schild" }, { "value": "ruler", "label": "Lineal" }, { "value": "star", "label": "Stern" }
+      ] },
+      { "type": "select", "id": "source", "label": "Inhalt aus Metafeld (falls gefüllt)", "default": "none", "options": [
+        { "value": "none", "label": "Kein Metafeld" },
+        { "value": "material", "label": "Material (custom.material)" },
+        { "value": "care", "label": "Pflege (custom.care)" },
+        { "value": "shipping", "label": "Versand (custom.shipping)" }
+      ] },
+      { "type": "richtext", "id": "content", "label": "Standard-Inhalt", "info": "Wird gezeigt, wenn das Metafeld leer ist." },
+      { "type": "page", "id": "page", "label": "Oder Inhalt aus Seite" },
+      { "type": "checkbox", "id": "open", "label": "Standardmäßig geöffnet", "default": false }
+    ] },
+    { "type": "share", "name": "Teilen", "limit": 1, "settings": [] }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,64 @@
+{%- liquid
+  assign s = section.settings
+  assign profile = s.profile_link | default: settings.social_instagram
+-%}
+<div class="section page-width" style="--pt: {{ s.padding_top | divided_by: 100.0 }}; --pb: {{ s.padding_bottom | divided_by: 100.0 }};">
+  <div class="section-head">
+    <div class="section-head__text">
+      {%- if s.eyebrow != blank -%}<p class="eyebrow" data-reveal>{{ s.eyebrow | escape }}</p>{%- endif -%}
+      {%- if s.heading != blank -%}<h2 class="h2" data-reveal style="--d:1"><span {% if settings.scramble_enable %}data-scramble{% endif %}>{{ s.heading | escape }}</span></h2>{%- endif -%}
+    </div>
+    {%- if profile != blank and s.button_label != blank -%}
+      {% render 'button', label: s.button_label, url: profile, style: 'outline', icon: 'instagram', attrs: 'target="_blank" rel="noopener"' %}
+    {%- endif -%}
+  </div>
+  <div class="grid insta" style="--cols: {{ s.columns }}; --cols-tablet: 3; --cols-mobile: 2; --grid-gap: 8px;">
+    {%- for block in section.blocks -%}
+      {%- assign link = block.settings.link | default: profile -%}
+      <a class="insta__item media media--square" href="{{ link }}" target="_blank" rel="noopener" data-reveal style="--d: {{ forloop.index0 | modulo: 6 }}" {{ block.shopify_attributes }}>
+        {%- if block.settings.image != blank -%}
+          {% render 'image', image: block.settings.image, sizes: '(min-width: 990px) 16vw, 50vw', alt: block.settings.alt %}
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+        <span class="insta__overlay" aria-hidden="true">{% render 'icon', name: 'instagram' %}</span>
+        <span class="visually-hidden">{{ block.settings.alt | default: 'Instagram' }}</span>
+      </a>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .insta__item img { transition: transform 1s var(--ease-out), filter .5s; }
+  .insta__item:hover img { transform: scale(1.06); filter: brightness(.6); }
+  .insta__overlay { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transition: opacity .4s; }
+  .insta__overlay .icon { width: 32px; height: 32px; filter: drop-shadow(0 0 10px var(--c-glow-solid)); }
+  .insta__item:hover .insta__overlay, .insta__item:focus-visible .insta__overlay { opacity: 1; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Instagram-Grid",
+  "tag": "section",
+  "class": "section-instagram",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "paragraph", "content": "Datenschutzfreundlich: Bilder werden manuell hochgeladen, es wird nichts von Instagram nachgeladen." },
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "@wearweax" },
+    { "type": "text", "id": "heading", "label": "Überschrift", "default": "Join the Movement" },
+    { "type": "text", "id": "button_label", "label": "Button-Text", "default": "Folgen" },
+    { "type": "url", "id": "profile_link", "label": "Profil-Link", "info": "Leer = Instagram-Link aus den Theme-Einstellungen." },
+    { "type": "range", "id": "columns", "label": "Spalten (Desktop)", "min": 3, "max": 6, "step": 1, "default": 6 },
+    { "type": "range", "id": "padding_top", "label": "Abstand oben", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 100 },
+    { "type": "range", "id": "padding_bottom", "label": "Abstand unten", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 100 }
+  ],
+  "blocks": [
+    { "type": "image", "name": "Bild", "settings": [
+      { "type": "image_picker", "id": "image", "label": "Bild" },
+      { "type": "text", "id": "alt", "label": "Bildbeschreibung (Barrierefreiheit)" },
+      { "type": "url", "id": "link", "label": "Link zum Post (optional)" }
+    ] }
+  ],
+  "presets": [{ "name": "Instagram-Grid", "blocks": [{ "type": "image" }, { "type": "image" }, { "type": "image" }, { "type": "image" }, { "type": "image" }, { "type": "image" }] }]
+}
+{% endschema %}

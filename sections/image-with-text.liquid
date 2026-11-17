@@ -1,0 +1,52 @@
+{%- assign s = section.settings -%}
+<div class="section page-width" style="--pt: {{ s.padding_top | divided_by: 100.0 }}; --pb: {{ s.padding_bottom | divided_by: 100.0 }};">
+  <div class="iwt iwt--{{ s.image_position }}" data-parallax>
+    <div class="iwt__media media media--{{ s.ratio }}" data-reveal>
+      <div class="iwt__img" {% if s.parallax %}data-depth="0.12"{% endif %}>
+        {%- if s.image != blank -%}
+          {% render 'image', image: s.image, sizes: '(min-width: 990px) 50vw, 100vw' %}
+        {%- else -%}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+      </div>
+    </div>
+    <div class="iwt__content">
+      {%- if s.eyebrow != blank -%}<p class="eyebrow" data-reveal>{{ s.eyebrow | escape }}</p>{%- endif -%}
+      {%- if s.heading != blank -%}<h2 class="h2" data-reveal style="--d:1"><span {% if s.scramble %}data-scramble{% endif %}>{{ s.heading | escape }}</span></h2>{%- endif -%}
+      {%- if s.text != blank -%}<div class="rte text-muted" data-reveal style="--d:2">{{ s.text }}</div>{%- endif -%}
+      {%- if s.button_label != blank -%}<div data-reveal style="--d:3">{% render 'button', label: s.button_label, url: s.button_link, style: s.button_style, icon: 'arrow-right' %}</div>{%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .iwt { display: grid; gap: clamp(28px, 5vw, 80px); align-items: center; }
+  @media (min-width: 990px) { .iwt { grid-template-columns: 1fr 1fr; } .iwt--right .iwt__media { order: 2; } }
+  .iwt__img { position: absolute; inset: -8% 0; }
+  .iwt__img img, .iwt__img svg { width: 100%; height: 100%; object-fit: cover; }
+  .iwt__content { display: grid; gap: 22px; justify-items: start; max-width: 560px; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Bild mit Text",
+  "tag": "section",
+  "class": "section-image-with-text",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Bild" },
+    { "type": "select", "id": "image_position", "label": "Bild-Position", "default": "left", "options": [{ "value": "left", "label": "Links" }, { "value": "right", "label": "Rechts" }] },
+    { "type": "select", "id": "ratio", "label": "Bildformat", "default": "portrait", "options": [{ "value": "portrait", "label": "Hochformat" }, { "value": "square", "label": "Quadrat" }, { "value": "landscape", "label": "Querformat" }] },
+    { "type": "checkbox", "id": "parallax", "label": "Parallax beim Scrollen", "default": true },
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "Quality" },
+    { "type": "text", "id": "heading", "label": "Überschrift", "default": "Built heavy. Built to last." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>380 gsm Heavyweight aus 84 % Baumwolle und 16 % Polyester. Oversized Fit, schwere Rippbündchen, doppelt vernäht.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button-Text", "default": "Mehr erfahren" },
+    { "type": "url", "id": "button_link", "label": "Button-Link" },
+    { "type": "select", "id": "button_style", "label": "Button-Stil", "default": "outline", "options": [{ "value": "primary", "label": "Gefüllt" }, { "value": "outline", "label": "Umriss" }, { "value": "ghost", "label": "Nur Text" }] },
+    { "type": "checkbox", "id": "scramble", "label": "Text-Scramble auf Überschrift", "default": false },
+    { "type": "range", "id": "padding_top", "label": "Abstand oben", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 100 },
+    { "type": "range", "id": "padding_bottom", "label": "Abstand unten", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 100 }
+  ],
+  "presets": [{ "name": "Bild mit Text" }]
+}
+{% endschema %}

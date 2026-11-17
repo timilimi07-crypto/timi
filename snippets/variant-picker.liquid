@@ -1,0 +1,54 @@
+{%- comment -%}
+  Varianten-Auswahl: Größen als Buttons, Farben als Swatches, Rest als Buttons.
+  Parameter: product, section_id, size_chart (true = Link zur Größentabelle anzeigen)
+{%- endcomment -%}
+{%- unless product.has_only_default_variant -%}
+  <div class="variant-picker" data-variant-picker>
+    {%- for option in product.options_with_values -%}
+      {%- liquid
+        assign oname = option.name | downcase
+        assign is_color = false
+        assign is_size = false
+        if oname == 'farbe' or oname == 'color' or oname == 'colour'
+          assign is_color = true
+        elsif oname == 'größe' or oname == 'groesse' or oname == 'size' or oname == 'grösse'
+          assign is_size = true
+        endif
+        assign opt_pos = forloop.index0
+      -%}
+      <fieldset class="variant-picker__group" data-option-index="{{ opt_pos }}">
+        <legend class="variant-picker__legend">
+          <span>{{ option.name | escape }}: <strong data-option-value>{{ option.selected_value | escape }}</strong></span>
+          {%- if is_size and size_chart -%}
+            <button type="button" class="link-underline variant-picker__chart" data-open="SizeChart-{{ section_id }}" aria-controls="SizeChart-{{ section_id }}">{% render 'icon', name: 'ruler' %}{{ 'products.product.size_chart' | t }}</button>
+          {%- endif -%}
+        </legend>
+        <div class="variant-picker__values">
+          {%- for value in option.values -%}
+            {%- assign vname = value.name | default: value -%}
+            {%- assign input_id = section_id | append: '-' | append: opt_pos | append: '-' | append: forloop.index0 -%}
+            <input
+              type="radio"
+              class="visually-hidden"
+              id="{{ input_id }}"
+              name="{{ section_id }}-option-{{ opt_pos }}"
+              value="{{ vname | escape }}"
+              {% if option.selected_value == vname %}checked{% endif %}
+            >
+            {%- if is_color -%}
+              {%- capture sw -%}{% render 'color-swatch', value: value %}{%- endcapture -%}
+              <label for="{{ input_id }}" class="swatch" style="--swatch: {{ sw | strip }};" title="{{ vname | escape }}">
+                <span class="visually-hidden">{{ vname | escape }}</span>
+              </label>
+            {%- else -%}
+              <label for="{{ input_id }}" class="pill">{{ vname | escape }}</label>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </fieldset>
+    {%- endfor -%}
+    <script type="application/json" data-variants>
+      {{ product.variants | json }}
+    </script>
+  </div>
+{%- endunless -%}

@@ -1,0 +1,55 @@
+{%- comment -%}
+  Produkt-Galerie: Swipe auf dem Handy, Raster auf Desktop, Hover-Zoom & Lightbox.
+  Parameter: product, section_id, layout ('grid' | 'stack' | 'slider'), eager (true)
+{%- endcomment -%}
+{%- liquid
+  assign gallery_id = 'Gallery-' | append: section_id
+  assign featured_id = product.selected_or_first_available_variant.featured_media.id | default: product.featured_media.id
+  assign g_layout = layout | default: 'grid'
+-%}
+<div class="gallery gallery--{{ g_layout }}" data-gallery>
+  <ul class="gallery__track" id="{{ gallery_id }}" role="list" aria-label="{{ 'products.product.gallery_label' | t }}" tabindex="0">
+    {%- for media in product.media -%}
+      <li class="gallery__item{% if media.id == featured_id %} is-active{% endif %}" data-media-id="{{ media.id }}" data-index="{{ forloop.index0 }}">
+        {%- case media.media_type -%}
+          {%- when 'image' -%}
+            <button type="button" class="gallery__zoom media media--{{ settings.card_image_ratio }}" data-zoom="{{ forloop.index0 }}" aria-label="{{ 'products.product.zoom' | t }} – {{ 'products.product.media_count' | t: index: forloop.index, count: product.media.size }}">
+              {%- assign m_alt = media.alt | default: product.title -%}
+              {%- if forloop.first and eager -%}
+                {{ media | image_url: width: 1800 | image_tag: widths: '450, 650, 900, 1200, 1500, 1800', sizes: '(min-width: 990px) 33vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: m_alt }}
+              {%- else -%}
+                {{ media | image_url: width: 1800 | image_tag: widths: '450, 650, 900, 1200, 1500, 1800', sizes: '(min-width: 990px) 33vw, 100vw', loading: 'lazy', alt: m_alt }}
+              {%- endif -%}
+              <span class="gallery__zoom-icon">{% render 'icon', name: 'zoom' %}</span>
+            </button>
+          {%- when 'video' -%}
+            <div class="media media--{{ settings.card_image_ratio }}">{{ media | video_tag: controls: true, playsinline: true, muted: true, loop: true, preload: 'none', image_size: '1200x' }}</div>
+          {%- when 'external_video' -%}
+            <div class="media media--landscape">{{ media | external_video_tag: loading: 'lazy' }}</div>
+          {%- when 'model' -%}
+            <div class="media media--square">{{ media | model_viewer_tag: reveal: 'interaction', toggleable: true }}</div>
+        {%- endcase -%}
+      </li>
+    {%- else -%}
+      <li class="gallery__item is-active"><div class="media media--portrait">{{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}</div></li>
+    {%- endfor -%}
+  </ul>
+  {%- if product.media.size > 1 -%}
+    <div class="gallery__dots" aria-hidden="true">
+      {%- for media in product.media -%}<span{% if forloop.first %} class="is-active"{% endif %}></span>{%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{%- comment -%} Lightbox {%- endcomment -%}
+<div class="lightbox modal" id="Lightbox-{{ section_id }}" role="dialog" aria-modal="true" aria-label="{{ 'products.product.gallery_label' | t }}" aria-hidden="true" data-lightbox>
+  <div class="modal__backdrop" data-close></div>
+  <button type="button" class="icon-btn lightbox__close" data-close aria-label="{{ 'general.accessibility.close' | t }}">{% render 'icon', name: 'close' %}</button>
+  <ul class="lightbox__track" role="list" data-lightbox-track>
+    {%- for media in product.media -%}
+      {%- if media.media_type == 'image' -%}
+        <li><img data-src="{{ media | image_url: width: 2400 }}" alt="{{ media.alt | default: product.title | escape }}" width="{{ media.width }}" height="{{ media.height }}"></li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+</div>
