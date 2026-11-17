@@ -1,0 +1,73 @@
+# MailMind – lokaler Start: docker compose up --build
+# App: http://localhost:3000  (Demo-Login: admin@mueller-partner.de / mailmind)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mailmind
+      POSTGRES_PASSWORD: mailmind
+      POSTGRES_DB: mailmind
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mailmind"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redisdata:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Einmaliger Job: Migrationen ausführen und (bei leerer DB) Demo-Daten anlegen.
+  migrate:
+    build:
+      context: .
+      target: builder
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://mailmind:mailmind@postgres:5432/mailmind?schema=public
+    command: >
+      sh -c "npx prisma migrate deploy &&
+             if [ \"$${DEMO_MODE:-true}\" = \"true\" ]; then npm run db:seed:if-empty; fi"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  app:
+    build:
+      context: .
+      target: runner
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://mailmind:mailmind@postgres:5432/mailmind?schema=public
+      REDIS_URL: redis://redis:6379
+      NEXTAUTH_URL: http://localhost:3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+
+  # Der Hintergrund-Worker (BullMQ: Abruf + KI-Verarbeitung) kommt in Phase 2 hinzu.
+
+volumes:
+  pgdata:
+  redisdata:

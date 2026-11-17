@@ -1,0 +1,532 @@
+// ============================================================================
+// MailMind – Datenbankschema
+// ----------------------------------------------------------------------------
+// Grundprinzip Mandantentrennung: Jede fachliche Tabelle trägt eine
+// `organizationId`. Alle Abfragen im Code laufen über `tenantDb(orgId)` bzw.
+// filtern explizit nach organizationId (siehe src/server/tenant.ts).
+// Das Schema deckt bereits alle Phasen ab, damit spätere Migrationen klein
+// bleiben.
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum Role {
+  ADMIN // darf alles inkl. Postfächer, Regeln, Datenschutz, Nutzerverwaltung
+  MANAGER // darf zuweisen, Regeln pflegen, Team-Statistiken sehen
+  MEMBER // bearbeitet E-Mails und Aufgaben
+}
+
+enum MailboxProvider {
+  IMAP
+  GMAIL
+  OUTLOOK
+  DEMO // liefert Seed-/Beispieldaten ohne echtes Postfach
+}
+
+enum MailboxStatus {
+  ACTIVE
+  SYNCING
+  ERROR
+  DISABLED
+}
+
+enum EmailDirection {
+  INBOUND
+  OUTBOUND
+}
+
+/// Bearbeitungsstatus – entspricht den Kanban-Spalten.
+enum EmailStatus {
+  NEW
+  IN_PROGRESS
+  WAITING
+  DONE
+}
+
+enum Priority {
+  URGENT
+  HIGH
+  NORMAL
+  LOW
+}
+
+enum Sentiment {
+  POSITIVE
+  NEUTRAL
+  NEGATIVE
+}
+
+enum AiStatus {
+  PENDING
+  PROCESSING
+  DONE
+  FAILED
+  SKIPPED
+}
+
+enum TaskStatus {
+  OPEN
+  DONE
+}
+
+enum TaskSource {
+  AI
+  MANUAL
+}
+
+enum EntityType {
+  AMOUNT
+  INVOICE_NUMBER
+  ORDER_NUMBER
+  DATE
+  CONTACT
+  PHONE
+  OTHER
+}
+
+enum ReplyTone {
+  FORMAL
+  CASUAL
+  SHORT
+}
+
+// ---------------------------------------------------------------------------
+// Mandant & Nutzer
+// ---------------------------------------------------------------------------
+
+model Organization {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
+  // --- Einstellungen ---
+  /// Aufbewahrungsdauer in Tagen; null = unbegrenzt.
+  retentionDays       Int?
+  /// IBAN, Telefonnummern etc. vor dem KI-Aufruf maskieren.
+  maskSensitiveData   Boolean @default(true)
+  /// Abrufintervall für alle Postfächer der Firma.
+  syncIntervalMinutes Int     @default(5)
+  /// Optionales KI-Modell pro Firma (überschreibt ANTHROPIC_MODEL).
+  aiModel             String?
+  digestEnabled       Boolean @default(true)
+  /// Stunde (0–23, Europe/Berlin), zu der der Tages-Digest verschickt wird.
+  digestHour          Int     @default(7)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users      User[]
+  mailboxes  Mailbox[]
+  threads    Thread[]
+  emails     Email[]
+  categories Category[]
+  labels     Label[]
+  tasks      Task[]
+  rules      Rule[]
+  auditLogs  AuditLog[]
+  aiUsage    AiUsageLog[]
+}
+
+model User {
+  id             String    @id @default(cuid())
+  organizationId String
+  email          String    @unique
+  name           String
+  passwordHash   String
+  role           Role      @default(MEMBER)
+  image          String?
+  /// Persönlicher Tages-Digest per E-Mail.
+  digestOptIn    Boolean   @default(true)
+  isActive       Boolean   @default(true)
+  lastLoginAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assignedEmails Email[]      @relation("EmailAssignee")
+  assignedTasks  Task[]       @relation("TaskAssignee")
+  createdTasks   Task[]       @relation("TaskCreator")
+  comments       Comment[]
+  replyDrafts    ReplyDraft[]
+  auditLogs      AuditLog[]
+  rules          Rule[]
+  digestLogs     DigestLog[]
+
+  @@index([organizationId])
+}
+
+// ---------------------------------------------------------------------------
+// Postfächer & E-Mails
+// ---------------------------------------------------------------------------
+
+model Mailbox {
+  id             String          @id @default(cuid())
+  organizationId String
+  name           String
+  emailAddress   String
+  provider       MailboxProvider
+  status         MailboxStatus   @default(ACTIVE)
+  /// AES-256-GCM verschlüsseltes JSON mit Zugangsdaten (IMAP-Passwort,
+  /// OAuth-Tokens). Niemals im Klartext speichern – siehe src/lib/crypto.ts.
+  encryptedCredentials String?
+  /// Provider-spezifischer Sync-Zustand: IMAP UIDVALIDITY/UID, Gmail historyId,
+  /// Graph deltaLink.
+  syncState      Json?
+  syncEnabled    Boolean         @default(true)
+  lastSyncAt     DateTime?
+  lastError      String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  threads      Thread[]
+  emails       Email[]
+
+  @@unique([organizationId, emailAddress])
+  @@index([organizationId])
+}
+
+model Thread {
+  id               String    @id @default(cuid())
+  organizationId   String
+  mailboxId        String
+  /// Thread-ID des Providers bzw. aus Message-ID/References abgeleiteter Schlüssel.
+  providerThreadId String
+  subject          String
+  lastMessageAt    DateTime
+  messageCount     Int       @default(1)
+  /// KI-Zusammenfassung des gesamten Verlaufs.
+  summary          String?
+  summaryUpdatedAt DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  mailbox      Mailbox      @relation(fields: [mailboxId], references: [id], onDelete: Cascade)
+  emails       Email[]
+
+  @@unique([mailboxId, providerThreadId])
+  @@index([organizationId, lastMessageAt])
+}
+
+model Email {
+  id                String         @id @default(cuid())
+  organizationId    String
+  mailboxId         String
+  threadId          String?
+  /// ID beim Provider (IMAP-UID, Gmail-ID, Graph-ID) – für Dubletten-Erkennung.
+  providerMessageId String
+  /// RFC-5322 Message-ID-Header.
+  messageIdHeader   String?
+  inReplyTo         String?
+  references        String[]
+  direction         EmailDirection @default(INBOUND)
+
+  subject    String
+  fromName   String?
+  fromEmail  String
+  /// [{ name, email }]
+  to         Json           @default("[]")
+  cc         Json           @default("[]")
+  replyTo    String?
+  receivedAt DateTime
+  snippet    String         @default("")
+  bodyText   String         @default("")
+  bodyHtml   String?
+
+  isRead         Boolean @default(false)
+  hasAttachments Boolean @default(false)
+  isArchived     Boolean @default(false)
+  /// Newsletter/Spam werden automatisch eingeklappt.
+  isCollapsed    Boolean @default(false)
+
+  // --- Workflow ---
+  status     EmailStatus @default(NEW)
+  assigneeId String?
+  categoryId String?
+
+  // --- KI-Ergebnisse ---
+  aiStatus       AiStatus   @default(PENDING)
+  aiError        String?
+  aiProcessedAt  DateTime?
+  summary        String?
+  priority       Priority?
+  priorityReason String?
+  sentiment      Sentiment?
+  /// true, wenn Priorität/Kategorie manuell gesetzt wurden – KI überschreibt dann nicht.
+  manualOverride Boolean    @default(false)
+
+  /// Soft-Delete für die DSGVO-Löschfunktion (endgültige Löschung per Job).
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  organization Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  mailbox      Mailbox           @relation(fields: [mailboxId], references: [id], onDelete: Cascade)
+  thread       Thread?           @relation(fields: [threadId], references: [id], onDelete: SetNull)
+  assignee     User?             @relation("EmailAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  category     Category?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  attachments  Attachment[]
+  labels       EmailLabel[]
+  tasks        Task[]
+  entities     ExtractedEntity[]
+  comments     Comment[]
+  replyDrafts  ReplyDraft[]
+  aiUsage      AiUsageLog[]
+
+  @@unique([mailboxId, providerMessageId])
+  @@index([organizationId, receivedAt(sort: Desc)])
+  @@index([organizationId, status])
+  @@index([organizationId, categoryId])
+  @@index([organizationId, priority])
+  @@index([organizationId, assigneeId])
+  @@index([threadId])
+  @@index([fromEmail])
+}
+
+model Attachment {
+  id                   String  @id @default(cuid())
+  emailId              String
+  filename             String
+  mimeType             String
+  size                 Int
+  contentId            String?
+  /// Referenz, um den Anhang bei Bedarf beim Provider nachzuladen.
+  providerAttachmentId String?
+
+  email Email @relation(fields: [emailId], references: [id], onDelete: Cascade)
+
+  @@index([emailId])
+}
+
+// ---------------------------------------------------------------------------
+// Kategorien & Labels (pro Firma anpassbar)
+// ---------------------------------------------------------------------------
+
+model Category {
+  id             String  @id @default(cuid())
+  organizationId String
+  /// Stabiler Schlüssel, den die KI zurückgibt (z. B. "rechnung").
+  key            String
+  name           String
+  /// Beschreibung für den KI-Prompt: wann gehört eine E-Mail in diese Kategorie?
+  description    String  @default("")
+  /// Tailwind-Farbname (z. B. "blue", "amber") für Badges.
+  color          String  @default("zinc")
+  icon           String  @default("tag")
+  /// E-Mails dieser Kategorie automatisch einklappen (Newsletter, Spam).
+  autoCollapse   Boolean @default(false)
+  isSystem       Boolean @default(false)
+  sortOrder      Int     @default(0)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  emails       Email[]
+
+  @@unique([organizationId, key])
+}
+
+model Label {
+  id             String @id @default(cuid())
+  organizationId String
+  name           String
+  color          String @default("zinc")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  emails       EmailLabel[]
+
+  @@unique([organizationId, name])
+}
+
+model EmailLabel {
+  emailId String
+  labelId String
+
+  email Email @relation(fields: [emailId], references: [id], onDelete: Cascade)
+  label Label @relation(fields: [labelId], references: [id], onDelete: Cascade)
+
+  @@id([emailId, labelId])
+}
+
+// ---------------------------------------------------------------------------
+// KI-Extraktion: Aufgaben, erkannte Daten, Antwortvorschläge
+// ---------------------------------------------------------------------------
+
+model Task {
+  id             String     @id @default(cuid())
+  organizationId String
+  emailId        String?
+  title          String
+  description    String?
+  dueDate        DateTime?
+  /// Originalformulierung der Frist ("bis Ende nächster Woche").
+  dueDateText    String?
+  status         TaskStatus @default(OPEN)
+  source         TaskSource @default(AI)
+  assigneeId     String?
+  createdById    String?
+  completedAt    DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email        Email?       @relation(fields: [emailId], references: [id], onDelete: Cascade)
+  assignee     User?        @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  createdBy    User?        @relation("TaskCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, status, dueDate])
+  @@index([assigneeId])
+}
+
+model ExtractedEntity {
+  id      String     @id @default(cuid())
+  emailId String
+  type    EntityType
+  /// Anzeigename, z. B. "Rechnungsbetrag" oder "Ansprechpartner".
+  label   String
+  value   String
+  /// Normalisierter Wert (ISO-Datum, Betrag in Cent etc.), falls ermittelbar.
+  normalizedValue String?
+
+  email Email @relation(fields: [emailId], references: [id], onDelete: Cascade)
+
+  @@index([emailId])
+}
+
+model ReplyDraft {
+  id          String    @id @default(cuid())
+  emailId     String
+  tone        ReplyTone
+  body        String
+  createdById String?
+  createdAt   DateTime  @default(now())
+
+  email     Email @relation(fields: [emailId], references: [id], onDelete: Cascade)
+  createdBy User? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([emailId])
+}
+
+// ---------------------------------------------------------------------------
+// Team-Zusammenarbeit
+// ---------------------------------------------------------------------------
+
+/// Interne Notizen und Kommentare zu einer E-Mail (nie an den Absender sichtbar).
+model Comment {
+  id        String   @id @default(cuid())
+  emailId   String
+  authorId  String
+  body      String
+  /// true = angeheftete interne Notiz, false = normaler Kommentar im Verlauf.
+  isNote    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email  Email @relation(fields: [emailId], references: [id], onDelete: Cascade)
+  author User  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([emailId, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Automatisierung
+// ---------------------------------------------------------------------------
+
+/// Regel: Bedingungen (UND-verknüpft) → Aktionen. Struktur siehe
+/// src/server/rules/schema.ts (zod-validiert).
+model Rule {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  enabled        Boolean  @default(true)
+  /// [{ field: "from" | "subject" | "body" | "category", op: "contains" | "equals" | ..., value }]
+  conditions     Json
+  /// [{ type: "assign" | "label" | "priority" | "category" | "status" | "collapse", value }]
+  actions        Json
+  sortOrder      Int      @default(0)
+  /// Nachfolgende Regeln nicht mehr ausführen, wenn diese greift.
+  stopProcessing Boolean  @default(false)
+  matchCount     Int      @default(0)
+  createdById    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    User?        @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, enabled, sortOrder])
+}
+
+// ---------------------------------------------------------------------------
+// Protokollierung (DSGVO, Kosten)
+// ---------------------------------------------------------------------------
+
+/// Wer hat wann welche E-Mail geöffnet/bearbeitet? Wird nie automatisch geändert.
+model AuditLog {
+  id             String   @id @default(cuid())
+  organizationId String
+  userId         String?
+  /// z. B. "email.view", "email.status", "email.assign", "mailbox.create"
+  action         String
+  entityType     String
+  entityId       String?
+  metadata       Json?
+  ipAddress      String?
+  userAgent      String?
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, createdAt(sort: Desc)])
+  @@index([entityType, entityId])
+}
+
+/// Token- und Kostenprotokoll jedes KI-Aufrufs.
+model AiUsageLog {
+  id               String   @id @default(cuid())
+  organizationId   String
+  emailId          String?
+  /// "analyze" | "thread_summary" | "reply" | "digest"
+  operation        String
+  model            String
+  inputTokens      Int      @default(0)
+  outputTokens     Int      @default(0)
+  cacheReadTokens  Int      @default(0)
+  cacheWriteTokens Int      @default(0)
+  costUsd          Decimal  @default(0) @db.Decimal(12, 6)
+  durationMs       Int      @default(0)
+  attempt          Int      @default(1)
+  success          Boolean  @default(true)
+  error            String?
+  createdAt        DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email        Email?       @relation(fields: [emailId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, createdAt])
+}
+
+model DigestLog {
+  id      String   @id @default(cuid())
+  userId  String
+  sentAt  DateTime @default(now())
+  /// Kennzahlen des verschickten Digests (Anzahl dringend, Aufgaben …).
+  stats   Json?
+  success Boolean  @default(true)
+  error   String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, sentAt])
+}
