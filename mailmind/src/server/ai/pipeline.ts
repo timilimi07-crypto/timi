@@ -207,6 +207,15 @@ async function runPipeline(
   const triageCategory = categories.find((c) => c.key === triage.data.category)!;
   const keepManual = email.manualOverride;
 
+  // Phishing: Heuristik (beim Abruf) ODER KI. Solche E-Mails werden nicht
+  // eingeklappt, damit die rote Warnung im Posteingang sichtbar bleibt.
+  const phishingSuspected = email.phishingSuspected || triage.data.phishing;
+  const phishingReason =
+    [email.phishingReason, triage.data.phishing ? `KI: ${triage.data.phishingReason ?? "Merkmale eines Phishing-Versuchs"}` : null]
+      .filter(Boolean)
+      .join(" · ") || null;
+  const phishingData = { phishingSuspected, phishingReason };
+
   // --- 2. Newsletter/Spam: ohne Hauptanalyse abschließen ---------------------
   if (triageCategory.autoCollapse && triage.data.categoryConfidence >= REVIEW_THRESHOLD) {
     await db.email.update({
@@ -215,7 +224,8 @@ async function runPipeline(
         aiStatus: "DONE",
         aiProcessedAt: now,
         summary: triage.data.summary,
-        isCollapsed: true,
+        isCollapsed: !phishingSuspected,
+        ...phishingData,
         sentiment: "NEUTRAL",
         ...(keepManual
           ? {}
@@ -251,7 +261,7 @@ async function runPipeline(
   });
   if (!analysis.ok) return fail(emailId, analysis.error, analysis.refused);
 
-  const needsReview = await saveAnalysis(emailId, org.id, analysis.data, categories, keepManual, now);
+  const needsReview = await saveAnalysis(emailId, org.id, analysis.data, categories, keepManual, now, phishingData);
   return { status: "done", path: "full", threadId: email.threadId, needsReview };
 }
 
@@ -270,6 +280,7 @@ async function saveAnalysis(
   categories: { id: string; key: string; autoCollapse: boolean }[],
   keepManual: boolean,
   now: Date,
+  phishing: { phishingSuspected: boolean; phishingReason: string | null },
 ): Promise<boolean> {
   const category = categories.find((c) => c.key === a.category)!;
   const reviewReason = keepManual ? null : reviewDecision(a);
@@ -285,7 +296,8 @@ async function saveAnalysis(
         aiError: null,
         summary: a.summary,
         sentiment: a.sentiment,
-        isCollapsed: category.autoCollapse,
+        isCollapsed: category.autoCollapse && !phishing.phishingSuspected,
+        ...phishing,
         ...(keepManual
           ? {}
           : {

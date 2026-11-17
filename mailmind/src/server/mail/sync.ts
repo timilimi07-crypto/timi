@@ -2,6 +2,7 @@ import { Prisma, type Mailbox, type Organization } from "@prisma/client";
 import { db } from "@/lib/db";
 import { createConnector } from "./connectors";
 import { makeSnippet } from "./parse";
+import { checkPhishing } from "./phishing";
 import { deriveThreadKey, normalizeSubject, relatedMessageIds } from "./threading";
 import { MailboxError, type FetchedMessage, type MailConnector, type SyncState } from "./types";
 
@@ -148,6 +149,14 @@ export async function storeMessage(
 
   const threadId = await resolveThread(mailbox, msg);
   const realAttachments = msg.attachments;
+  const phishing = checkPhishing({
+    fromName: msg.from.name,
+    fromEmail: msg.from.email,
+    replyTo: msg.replyTo,
+    subject: msg.subject,
+    text: msg.text,
+    attachments: realAttachments,
+  });
 
   try {
     const email = await db.email.create({
@@ -172,6 +181,8 @@ export async function storeMessage(
         bodyHtml: msg.html,
         isRead: msg.isRead,
         hasAttachments: realAttachments.length > 0,
+        phishingSuspected: phishing.suspected,
+        phishingReason: phishing.suspected ? phishing.reasons.join(" · ") : null,
         attachments: { create: realAttachments },
       },
       select: { id: true },

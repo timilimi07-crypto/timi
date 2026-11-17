@@ -57,6 +57,8 @@ const triage = (category: string, confidence = 0.92, isBulk = false) => ({
   categoryConfidence: confidence,
   isBulk,
   summary: `Kurz: ${category}`,
+  phishing: false,
+  phishingReason: null,
 });
 const analysis = (over: Record<string, unknown> = {}) => ({
   summary: "Stadtwerke Kassel melden Ausfall von Anlage 3 und fordern heute einen Techniker.",
@@ -230,6 +232,27 @@ describe("processEmail", () => {
     expect((await db.email.findUniqueOrThrow({ where: { id } })).aiStatus).toBe("FAILED");
     responder = (p) => (p.operation === "triage" ? triage("kunde") : analysis({ priority: "LOW", sentiment: "POSITIVE" }));
     expect(await processEmail(id, deps)).toMatchObject({ status: "done" });
+  });
+
+  it("Phishing: Heuristik beim Abruf + KI, Warnung bleibt sichtbar (nicht eingeklappt)", async () => {
+    const id = await store("info-23");
+    const before = await db.email.findUniqueOrThrow({ where: { id } });
+    expect(before.phishingSuspected).toBe(true); // sofort beim Abruf, ohne KI
+    expect(before.phishingReason).toContain("Behauptet gesperrtes Konto");
+
+    responder = () => ({ ...triage("spam", 0.97, true), phishing: true, phishingReason: "Fordert Bestätigung der Identität über fremde Domain" });
+    await processEmail(id, deps);
+    const e = await db.email.findUniqueOrThrow({ where: { id } });
+    expect(e).toMatchObject({ phishingSuspected: true, isCollapsed: false, priority: "LOW" });
+    expect(e.phishingReason).toContain("KI: Fordert Bestätigung");
+  });
+
+  it("KI allein kann Phishing melden, auch wenn die Heuristik nichts findet", async () => {
+    const id = await store("info-24");
+    expect((await db.email.findUniqueOrThrow({ where: { id } })).phishingSuspected).toBe(false);
+    responder = () => ({ ...triage("spam", 0.95, true), phishing: true, phishingReason: "Lockt mit kostenloser Analyse auf fremde Seite" });
+    await processEmail(id, deps);
+    expect(await db.email.findUniqueOrThrow({ where: { id } })).toMatchObject({ phishingSuspected: true, isCollapsed: false });
   });
 
   it("verschiebt die Auswertung, wenn das KI-Tageslimit erreicht ist", async () => {

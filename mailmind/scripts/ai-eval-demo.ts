@@ -68,7 +68,7 @@ const dryRunCaller: AiCaller = async (p) => {
   const [cat, prio] = EXPECTED[demoId] ?? ["kunde", "NORMAL"];
   const data =
     p.operation === "triage"
-      ? { category: cat, categoryConfidence: 0.9, isBulk: cat === "newsletter" || cat === "spam", summary: "(Trockenlauf)" }
+      ? { category: cat, categoryConfidence: 0.9, isBulk: cat === "newsletter" || cat === "spam", summary: "(Trockenlauf)", phishing: false, phishingReason: null }
       : p.operation === "thread_summary"
         ? { summary: "(Trockenlauf – Thread)" }
         : { summary: "(Trockenlauf)", category: cat, categoryConfidence: 0.9, priority: prio, priorityConfidence: 0.8, priorityReason: "(Trockenlauf)", sentiment: "NEUTRAL", tasks: [], entities: [] };
@@ -158,7 +158,7 @@ async function main() {
     if (pOk) prioOk++;
     if (pNear) prioNear++;
     const tasks = e.tasks.map((t) => `${t.title}${t.dueDate ? ` (bis ${t.dueDate.toISOString().slice(0, 10)})` : ""}`).join("; ") || "–";
-    return `| ${i + 1} | ${e.mailbox.name} | ${cell(e.fromName ?? e.fromEmail)} | ${cell(e.subject)} | ${e.category?.name ?? "–"} (${pct(e.categoryConfidence)}) ${cOk ? "✓" : `✗ erw. ${expCat}`} | ${prio ? PRIO_DE[prio] : "–"} (${pct(e.priorityConfidence)}) ${pOk ? "✓" : pNear ? `≈ erw. ${PRIO_DE[expPrio]}` : `✗ erw. ${PRIO_DE[expPrio]}`} | ${e.needsReview ? "⚠ " + cell(e.reviewReason ?? "") : ""} | ${cell(e.summary ?? e.aiError ?? "–")} | ${cell(tasks)} | ${e.aiModels.map((m) => modelLabel(m).replace("Claude ", "")).join(" + ")} | ${usd(Number(e.aiCostUsd))} |`;
+    return `| ${i + 1} | ${e.mailbox.name} | ${cell(e.fromName ?? e.fromEmail)} | ${cell(e.subject)} | ${e.category?.name ?? "–"} (${pct(e.categoryConfidence)}) ${cOk ? "✓" : `✗ erw. ${expCat}`} | ${prio ? PRIO_DE[prio] : "–"} (${pct(e.priorityConfidence)}) ${pOk ? "✓" : pNear ? `≈ erw. ${PRIO_DE[expPrio]}` : `✗ erw. ${PRIO_DE[expPrio]}`} | ${[e.phishingSuspected ? `🛑 Phishing: ${cell(e.phishingReason ?? "")}` : "", e.needsReview ? "⚠ " + cell(e.reviewReason ?? "") : ""].filter(Boolean).join(" ")} | ${cell(e.summary ?? e.aiError ?? "–")} | ${cell(tasks)} | ${e.aiModels.map((m) => modelLabel(m).replace("Claude ", "")).join(" + ")} | ${usd(Number(e.aiCostUsd))} |`;
   });
 
   const threads = results.filter((e) => e.thread?.summary && e.thread.messageCount > 1);
@@ -176,6 +176,7 @@ Erstellt: ${new Date().toLocaleString("de-DE", { timeZone: "Europe/Berlin" })} �
 | Kategorie wie erwartet | **${catOk}/${n}** (${pct(catOk / n)}) |
 | Priorität wie erwartet | **${prioOk}/${n}** (${pct(prioOk / n)}), höchstens eine Stufe daneben: ${prioNear}/${n} (${pct(prioNear / n)}) |
 | Markiert mit „Bitte prüfen“ | ${results.filter((e) => e.needsReview).length} |
+| Als möglicher Phishing-Versuch markiert | ${results.filter((e) => e.phishingSuspected).length} (${results.filter((e) => e.phishingSuspected).map((e) => byDemo.get(e.id)).join(", ") || "–"}) |
 | Nur Vorsortierung (Newsletter/Spam, ohne Sonnet) | ${results.filter((e) => e.aiModels.length === 1).length} |
 | Fehlgeschlagen | ${results.filter((e) => e.aiStatus === "FAILED").length} |
 | Gesamtkosten | **${usd(totalCost)}** (Ø ${usd(totalCost / n)} pro E-Mail) |
@@ -188,7 +189,7 @@ ${models.map((m) => `| davon ${modelLabel(m)} | ${usd(sum((u) => Number(u.costUs
 
 ## Ergebnisse pro E-Mail
 
-| # | Postfach | Absender | Betreff | Kategorie (Sicherheit) | Priorität (Sicherheit) | Prüfen | KI-Zusammenfassung | Aufgaben | Modell | Kosten |
+| # | Postfach | Absender | Betreff | Kategorie (Sicherheit) | Priorität (Sicherheit) | Warnungen | KI-Zusammenfassung | Aufgaben | Modell | Kosten |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${rows.join("\n")}
 

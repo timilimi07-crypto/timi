@@ -280,7 +280,7 @@ model Email {
   categoryId String?
 
   // --- KI-Ergebnisse ---
-  aiStatus           AiStatus   @default(PENDING)
+  aiStatus           AiStatus                 @default(PENDING)
   aiError            String?
   aiProcessedAt      DateTime?
   summary            String?
@@ -288,17 +288,22 @@ model Email {
   priorityReason     String?
   sentiment          Sentiment?
   /// true, wenn Priorität/Kategorie manuell gesetzt wurden – KI überschreibt dann nicht.
-  manualOverride     Boolean    @default(false)
+  manualOverride     Boolean                  @default(false)
   /// Selbsteinschätzung der KI (0–1).
   categoryConfidence Float?
   priorityConfidence Float?
   /// „Bitte prüfen“: KI war sich unsicher (oder hat die Auswertung abgelehnt).
-  needsReview        Boolean    @default(false)
+  needsReview        Boolean                  @default(false)
   reviewReason       String?
+  /// „Möglicher Phishing-Versuch“: Heuristik beim Abruf und/oder KI-Einschätzung.
+  phishingSuspected  Boolean                  @default(false)
+  phishingReason     String?
+  /// Volltextsuche (deutsch): generierte Spalte, gepflegt von Postgres (siehe Migration phase4).
+  searchVector       Unsupported("tsvector")? @default(dbgenerated())
   /// Von welchen Modellen ausgewertet (z. B. Haiku für Triage, Sonnet für Analyse).
-  aiModels           String[]   @default([])
+  aiModels           String[]                 @default([])
   /// Summe der KI-Kosten dieser E-Mail in USD (nur für Admins sichtbar).
-  aiCostUsd          Decimal    @default(0) @db.Decimal(12, 6)
+  aiCostUsd          Decimal                  @default(0) @db.Decimal(12, 6)
 
   /// Soft-Delete für die DSGVO-Löschfunktion (endgültige Löschung per Job).
   deletedAt DateTime?
@@ -326,6 +331,8 @@ model Email {
   @@index([organizationId, priority])
   @@index([organizationId, assigneeId])
   @@index([organizationId, needsReview])
+  @@index([organizationId, threadId, receivedAt(sort: Desc)])
+  @@index([searchVector], type: Gin)
   @@index([organizationId, aiStatus])
   @@index([threadId])
   @@index([fromEmail])

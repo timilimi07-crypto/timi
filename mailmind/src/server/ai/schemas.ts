@@ -23,6 +23,8 @@ export function triageSchema(categoryKeys: string[]) {
     categoryConfidence: confidence,
     isBulk: z.boolean().describe("true bei Newsletter, Werbung, Massen- oder automatisch erzeugten Benachrichtigungen"),
     summary: z.string().describe("Ein kurzer deutscher Satz, worum es geht"),
+    phishing: z.boolean().describe("true, wenn die E-Mail nach Phishing/Betrug aussieht"),
+    phishingReason: z.string().nullable().describe("Kurze Begründung, falls phishing = true, sonst null"),
   });
 }
 export type TriageResult = z.infer<ReturnType<typeof triageSchema>>;
