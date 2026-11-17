@@ -1,0 +1,197 @@
+<title>Timi & Piet Weihnachtsservice</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap">
+<style>
+/* Layout: eine Winternacht. Lichterkette oben, Schnee fällt über die ganze Seite,
+   drei Angebote als Preisschilder, darunter Ablauf und Kontakt. Bewusst nur ein Look. */
+:root {
+  color-scheme: dark;
+  --night: #0f2a23;        /* Tannengrün bei Nacht */
+  --night-deep: #0a1f1a;
+  --fir: #1b4337;          /* Flächen */
+  --fir-line: #2f5f50;
+  --snow: #f6f3ea;         /* Text */
+  --snow-dim: #b9c9c0;
+  --candle: #f4c56a;       /* warmes Licht */
+  --berry: #d8473f;        /* Akzent */
+  --display: "Fraunces", Georgia, "Times New Roman", serif;
+  --body: "Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+body {
+  background: var(--night);
+  color: var(--snow);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.6;
+}
+#schnee { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+.wrap {
+  position: relative; z-index: 2;
+  max-width: 980px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.1; }
+p { margin: 0; }
+
+/* Lichterkette */
+.kette {
+  display: flex; justify-content: space-around; align-items: flex-start;
+  height: 44px; border-top: 2px solid var(--fir-line);
+  position: relative; z-index: 2; overflow: hidden;
+}
+.kette i {
+  width: 12px; height: 18px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+  margin-top: 6px; background: var(--candle);
+  box-shadow: 0 0 14px 3px var(--candle);
+  animation: funkeln 2.4s ease-in-out infinite;
+}
+.kette i:nth-child(3n+2) { background: var(--berry); box-shadow: 0 0 14px 3px var(--berry); animation-delay: .8s; margin-top: 12px; }
+.kette i:nth-child(3n) { background: var(--snow); box-shadow: 0 0 14px 3px var(--snow); animation-delay: 1.6s; margin-top: 9px; }
+@keyframes funkeln { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+
+/* Kopf */
+.kopf { padding-block: 40px 56px; text-align: left; }
+.marke { font-weight: 800; letter-spacing: .14em; text-transform: uppercase; font-size: 13px; color: var(--candle); }
+h1 { font-size: clamp(40px, 9vw, 76px); font-weight: 700; margin-top: 14px; }
+h1 em { font-style: italic; color: var(--candle); font-weight: 500; }
+.kopf p.lead { font-size: clamp(18px, 2.6vw, 22px); color: var(--snow-dim); max-width: 34em; margin-top: 20px; }
+.knopf {
+  display: inline-block; margin-top: 28px; padding: 14px 26px;
+  background: var(--berry); color: var(--snow); text-decoration: none;
+  font-weight: 800; border-radius: 999px; font-size: 17px;
+}
+.knopf:hover { filter: brightness(1.1); }
+.knopf:focus-visible, a:focus-visible { outline: 3px solid var(--candle); outline-offset: 3px; }
+
+/* Angebote */
+section { padding-block: 40px; }
+h2 { font-size: clamp(28px, 5vw, 40px); font-weight: 700; margin-bottom: 24px; }
+.angebote { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+.angebot {
+  background: var(--fir); border: 1px solid var(--fir-line); border-radius: 18px;
+  padding: 24px; display: flex; flex-direction: column; gap: 14px; min-width: 0;
+}
+.angebot svg { width: 56px; height: 56px; }
+.angebot h3 { font-size: 25px; font-weight: 700; }
+.angebot p { color: var(--snow-dim); }
+.angebot ul { margin: 0; padding-left: 20px; color: var(--snow-dim); }
+.preis {
+  margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--fir-line);
+  font-family: var(--display); font-size: 24px; color: var(--candle); font-variant-numeric: tabular-nums;
+}
+.preis small { display: block; font-family: var(--body); font-size: 14px; color: var(--snow-dim); }
+
+/* Ablauf */
+.ablauf { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; padding: 0; margin: 0; list-style: none; counter-reset: schritt; }
+.ablauf li { counter-increment: schritt; min-width: 0; }
+.ablauf li::before {
+  content: counter(schritt); font-family: var(--display); font-size: 44px; color: var(--berry); line-height: 1; display: block; margin-bottom: 8px;
+}
+.ablauf strong { display: block; font-size: 19px; }
+.ablauf span { color: var(--snow-dim); }
+
+/* Wir + Kontakt */
+.wir p { max-width: 38em; color: var(--snow-dim); font-size: 19px; }
+.kontakt {
+  background: var(--night-deep); border: 1px solid var(--fir-line); border-radius: 18px;
+  padding: 28px 24px; display: grid; gap: 18px;
+}
+.kontakt dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin: 0; }
+.kontakt dt { font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--candle); }
+.kontakt dd { margin: 4px 0 0; font-size: 21px; font-weight: 600; user-select: all; overflow-wrap: anywhere; }
+.fuss { padding-block: 28px 40px; color: var(--snow-dim); font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { .kette i { animation: none; } }
+</style>
+
+<canvas id="schnee" aria-hidden="true"></canvas>
+<div class="kette" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+<div class="wrap">
+  <header class="kopf">
+    <div class="marke">Timi &amp; Piet · Weihnachtsservice</div>
+    <h1>Ihr genießt den Advent. <em>Wir machen den Rest.</em></h1>
+    <p class="lead">Zwei Brüder aus eurer Nachbarschaft: Wir räumen den Schnee, hängen eure Lichterketten auf und kümmern uns um den Weihnachtsbaum.</p>
+    <a class="knopf" href="#kontakt">Jetzt anfragen</a>
+  </header>
+
+  <section aria-labelledby="h-angebote">
+    <h2 id="h-angebote">Das bieten wir an</h2>
+    <div class="angebote">
+      <article class="angebot">
+        <svg viewBox="0 0 56 56" fill="none" aria-hidden="true"><path d="M38 6 20 34" stroke="#f6f3ea" stroke-width="4" stroke-linecap="round"/><path d="M10 32l16 10-6 10c-8 0-14-6-14-12z" fill="#f4c56a"/><circle cx="42" cy="40" r="3" fill="#f6f3ea"/><circle cx="48" cy="28" r="2" fill="#f6f3ea"/><circle cx="46" cy="50" r="2" fill="#f6f3ea"/></svg>
+        <h3>Schnee räumen &amp; streuen</h3>
+        <p>Wir machen Einfahrt, Gehweg und Treppen frei, bevor ihr morgens aus dem Haus müsst.</p>
+        <ul><li>Einfahrt, Gehweg und Treppen</li><li>Streuen gegen Glätte</li><li>Einzeln oder als Saison-Abo</li></ul>
+        <div class="preis">15–30 € pro Einsatz<small>Saison-Abo: 100–250 €, je nach Fläche</small></div>
+      </article>
+      <article class="angebot">
+        <svg viewBox="0 0 56 56" fill="none" aria-hidden="true"><path d="M4 12c12 14 36 14 48 0" stroke="#f6f3ea" stroke-width="3" stroke-linecap="round"/><ellipse cx="14" cy="27" rx="5" ry="7" fill="#f4c56a"/><ellipse cx="28" cy="31" rx="5" ry="7" fill="#d8473f"/><ellipse cx="42" cy="27" rx="5" ry="7" fill="#f6f3ea"/></svg>
+        <h3>Weihnachtsbeleuchtung</h3>
+        <p>Wir bringen eure Lichterketten an Haus, Bäumen und Zaun an und holen sie im Januar wieder herunter.</p>
+        <ul><li>Aufhängen im Advent</li><li>Abbauen im Januar</li><li>Ordentlich aufgerollt zurück</li></ul>
+        <div class="preis">50–200 € pro Haus<small>je nach Umfang, Auf- und Abbau inklusive</small></div>
+      </article>
+      <article class="angebot">
+        <svg viewBox="0 0 56 56" fill="none" aria-hidden="true"><path d="M28 4 16 20h6L12 34h8L8 48h40L36 34h8L34 20h6z" fill="#3f8a6f"/><rect x="25" y="48" width="6" height="6" fill="#f4c56a"/><circle cx="28" cy="6" r="3" fill="#f4c56a"/><circle cx="24" cy="28" r="2" fill="#d8473f"/><circle cx="33" cy="40" r="2" fill="#d8473f"/></svg>
+        <h3>Weihnachtsbaum-Service</h3>
+        <p>Wir liefern euren Baum und stellen ihn auf. Nach den Feiertagen holen wir ihn ab und entsorgen ihn.</p>
+        <ul><li>Liefern und Aufstellen</li><li>Abholen im Januar</li><li>Entsorgung inklusive</li></ul>
+        <div class="preis">5–15 € pro Abholung<small>Lieferung und Aufstellen auf Anfrage</small></div>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-ablauf">
+    <h2 id="h-ablauf">So läuft es ab</h2>
+    <ol class="ablauf">
+      <li><strong>Ihr meldet euch</strong><span>Sagt uns kurz, was ihr braucht und wo ihr wohnt.</span></li>
+      <li><strong>Wir nennen den Preis</strong><span>Ihr bekommt einen festen Preis und einen Termin.</span></li>
+      <li><strong>Wir kommen vorbei</strong><span>Wir erledigen die Arbeit. Bezahlt wird erst danach.</span></li>
+    </ol>
+  </section>
+
+  <section class="wir" aria-labelledby="h-wir">
+    <h2 id="h-wir">Wer wir sind</h2>
+    <p>Wir sind Timi und Piet, zwei Brüder. Wir arbeiten zuverlässig, pünktlich und zu fairen Preisen, und wir freuen uns über jeden Auftrag aus der Nachbarschaft.</p>
+  </section>
+
+  <section id="kontakt" aria-labelledby="h-kontakt">
+    <h2 id="h-kontakt">Kontakt</h2>
+    <div class="kontakt">
+      <p>Ruft an oder schreibt uns eine Nachricht. Wir melden uns noch am selben Tag.</p>
+      <dl>
+        <div><dt>Telefon / WhatsApp</dt><dd>Nummer folgt</dd></div>
+        <div><dt>Ansprechpartner</dt><dd>Timi &amp; Piet</dd></div>
+        <div><dt>Einsatzgebiet</dt><dd>Ort folgt</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <footer class="fuss">Timi &amp; Piet Weihnachtsservice · Frohe Weihnachten und einen guten Rutsch!</footer>
+</div>
+
+<script>
+(function () {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var c = document.getElementById("schnee"), x = c.getContext("2d"), w, h, flocken = [];
+  function groesse() {
+    var d = Math.min(window.devicePixelRatio || 1, 2);
+    w = window.innerWidth; h = window.innerHeight;
+    c.width = w * d; c.height = h * d; x.setTransform(d, 0, 0, d, 0, 0);
+  }
+  groesse(); window.addEventListener("resize", groesse);
+  var n = Math.min(90, Math.round(window.innerWidth / 12));
+  for (var i = 0; i < n; i++) flocken.push({ x: Math.random() * w, y: Math.random() * h, r: 1 + Math.random() * 2.5, v: .3 + Math.random() * .9, s: Math.random() * 6.28 });
+  function bild() {
+    x.clearRect(0, 0, w, h); x.fillStyle = "rgba(246,243,234,.75)";
+    for (var i = 0; i < flocken.length; i++) {
+      var f = flocken[i]; f.y += f.v; f.s += .01; f.x += Math.sin(f.s) * .4;
+      if (f.y > h + 4) { f.y = -4; f.x = Math.random() * w; }
+      x.beginPath(); x.arc(f.x, f.y, f.r, 0, 6.28); x.fill();
+    }
+    requestAnimationFrame(bild);
+  }
+  bild();
+})();
+</script>
