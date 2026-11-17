@@ -15,6 +15,7 @@ export type OrgSettings = {
   syncIntervalMinutes: number;
   initialSyncDays: number;
   maxEmailsPerSync: number;
+  aiDailyEmailLimit: number;
   aiModel: string | null;
   aiModelFast: string | null;
 };
@@ -175,6 +176,22 @@ export function OrganizationForm({
             Einfache Aufgaben (Spam/Newsletter erkennen, Kategorie) laufen auf dem schnellen Modell, alles andere auf dem Hauptmodell.
           </p>
         </div>
+        <Field
+          htmlFor="ailimit"
+          label="KI-Tageslimit"
+          hint="Höchstens so viele E-Mails pro Tag auswerten (Kostenbremse). Weitere E-Mails werden am Folgetag verarbeitet."
+        >
+          <Input
+            id="ailimit"
+            type="number"
+            min={10}
+            max={20000}
+            step={50}
+            value={s.aiDailyEmailLimit}
+            disabled={!canEdit}
+            onChange={(e) => set("aiDailyEmailLimit", Number(e.target.value))}
+          />
+        </Field>
         <Field htmlFor="main" label="Hauptmodell" hint="Zusammenfassung, Priorität, Aufgaben, erkannte Daten, Antwortvorschläge.">
           <ModelPicker name="main" value={s.aiModel} options={mainOptions} defaultId={defaults.main} disabled={!canEdit} onChange={(v) => set("aiModel", v)} />
         </Field>

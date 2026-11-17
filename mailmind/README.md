@@ -2,10 +2,11 @@
 
 **KI-gestützte E-Mail-Zentrale für Firmen.** MailMind ruft eingehende E-Mails aus mehreren Postfächern ab und fasst sie mit Claude (Anthropic) zusammen. Jede E-Mail wird kategorisiert und priorisiert, Aufgaben und Fristen werden automatisch erkannt. So wissen Mitarbeiter morgens in zwei Minuten, was wichtig ist, was heute erledigt werden muss und was warten kann.
 
-> **Stand: Phase 2 von 7**
+> **Stand: Phase 3 von 7**
 > - Phase 1: Projekt-Setup, Datenbankschema, Anmeldung mit Rollen, Grundlayout (Light/Dark Mode, responsiv, Befehlspalette).
 > - Phase 2: Postfach-Anbindung (IMAP, Gmail, Outlook, Demo), automatischer Abruf per Worker, Sync-Button, Abruf-Limits, Threads und Anhänge, KI-Modellwahl pro Firma, KI-Kosten im Admin-Dashboard.
-> - Als Nächstes: Phase 3 – KI-Pipeline (Zusammenfassung, Kategorie, Priorität, Aufgaben).
+> - Phase 3: KI-Pipeline – Vorsortierung mit Haiku, Analyse mit Sonnet (Zusammenfassung, Kategorie, Priorität, Stimmung, Aufgaben, erkannte Daten), Sicherheit + „Bitte prüfen“, lernt aus Korrekturen, inkrementelle Thread-Zusammenfassung, Prompt-Caching, Maskierung, KI-Tageslimit, Qualitätstest.
+> - Als Nächstes: Phase 4 – Inbox im 3-Spalten-Layout, Detailansicht, Suche, Filter, Tastaturkürzel.
 
 ## Tech-Stack
 
@@ -69,7 +70,8 @@ npm run worker                    # zweites Terminal: automatischer Abruf
 | --- | --- |
 | `npm run dev` | Entwicklungsserver |
 | `npm run build && npm start` | Produktions-Build |
-| `npm run worker` | Hintergrund-Worker (Abruf-Scheduler, Sync-Jobs) |
+| `npm run worker` | Hintergrund-Worker (Abruf-Scheduler, Sync- und KI-Jobs) |
+| `npm run ai:eval` | KI-Qualitätstest mit allen Demo-E-Mails (echte API-Aufrufe) |
 | `npm test` | Tests (Vitest) – Integrationstests brauchen eine laufende Datenbank (`DATABASE_URL`) |
 | `npm run typecheck` | TypeScript-Prüfung |
 | `npm run db:migrate` | Neue Migration erstellen/anwenden |
@@ -85,7 +87,7 @@ npm run worker                    # zweites Terminal: automatischer Abruf
 | `NEXTAUTH_URL` | ja | Öffentliche URL der App |
 | `NEXTAUTH_SECRET` | ja | Geheimnis für Sitzungs-Tokens (`openssl rand -base64 32`) |
 | `ENCRYPTION_KEY` | ja | 32 Byte base64 – verschlüsselt Postfach-Zugangsdaten (AES-256-GCM) |
-| `ANTHROPIC_API_KEY` | für KI | API-Schlüssel von console.anthropic.com |
+| `ANTHROPIC_API_KEY` | für KI | API-Schlüssel von console.anthropic.com. Ohne Schlüssel läuft alles außer der KI-Auswertung; E-Mails bleiben auf „KI-Auswertung ausstehend“ und werden nachgeholt, sobald der Schlüssel gesetzt und der Worker neu gestartet ist. |
 | `ANTHROPIC_MODEL` | nein | Hauptmodell, Standard `claude-sonnet-5-5`; optional `claude-opus-5-5` |
 | `ANTHROPIC_MODEL_FAST` | nein | Modell für einfache Aufgaben, Standard `claude-haiku-5-5` |
 | `DEMO_MODE` | nein | `true` = Demo-Daten und Demo-Postfächer |
@@ -142,6 +144,40 @@ Danach in MailMind „Microsoft 365 / Outlook“ wählen und anmelden. Läuft di
 
 So landen auch bei großen Postfächern nie tausende alte E-Mails auf einmal in der KI-Verarbeitung.
 
+## KI-Auswertung
+
+Jede neue E-Mail wird **genau einmal** ausgewertet (Worker, Warteschlange `ai-process`):
+
+1. **Vorsortierung** mit Claude Haiku 5.5: Kategorie samt Sicherheit, Massen-E-Mail ja/nein, ein Satz Zusammenfassung.
+2. **Newsletter und Spam** (Kategorien mit „automatisch einklappen“) werden bei sicherer Erkennung direkt abgeschlossen und eingeklappt. Die teure Hauptanalyse entfällt.
+3. **Hauptanalyse** mit Claude Sonnet 5.5: Zusammenfassung (1–3 Sätze), Kategorie und Priorität (je mit Sicherheit 0–100 %), Begründung der Priorität, Stimmung des Absenders, Aufgaben mit Fristen, erkannte Daten (Beträge, Rechnungs-/Bestellnummern, Termine, Ansprechpartner).
+4. **„Bitte prüfen“**: Liegt die Sicherheit bei Kategorie oder Priorität unter 70 %, wird die E-Mail markiert. Im Posteingang gibt es dafür einen eigenen Filter.
+5. **Threads**: Eine neue Antwort wird einzeln ausgewertet, mit dem bisherigen Verlauf als Kontext. Danach wird nur die Thread-Zusammenfassung **inkrementell** ergänzt (bisherige Zusammenfassung + neue Nachricht). Ältere E-Mails werden nicht erneut gesendet.
+
+**Lernen aus Korrekturen:** Ändert jemand Kategorie oder Priorität von Hand, wird das gespeichert. Die KI überschreibt die Änderung nicht mehr. Die letzten 20 Korrekturen der Firma fließen als Beispiele in den Prompt, mit Betreff, Absender-Domain und alter → neuer Einordnung.
+
+**Kosten sparen:**
+- *Prompt-Caching*: Die Anweisungen (gleich für alle Firmen) und der Firmenkontext (Kategorien und Korrekturen) stehen in zwei gecachten System-Blöcken. Nur die E-Mail selbst wird pro Aufruf neu berechnet.
+- *Vorsortierung mit Haiku*: Newsletter und Spam kosten nur einen Bruchteil.
+- *KI-Tageslimit* pro Firma (Standard 500 E-Mails/Tag, Einstellungen → Allgemein). Was darüber hinausgeht, wird am Folgetag ausgewertet.
+- *Abruf-Limits* (siehe oben) begrenzen, wie viel überhaupt in die Warteschlange kommt.
+
+**Robustheit:** Die Ausgabe ist strukturiert (JSON-Schema, mit zod geprüft). Ungültige oder abgeschnittene Antworten werden bis zu 3-mal wiederholt, Überlastung und Rate-Limits übernimmt das SDK. Lehnt Sonnet oder Opus eine Auswertung ab, springt serverseitig ein Ersatzmodell ein (`fallbacks: "default"`). Lehnen alle ab, wird die E-Mail mit „Bitte prüfen“ markiert. Jeder Versuch landet mit Tokens, Cache-Nutzung und Kosten im Protokoll.
+
+**Datenschutz:** Ist die Maskierung aktiv (Standard), werden IBANs, Kreditkarten- und Telefonnummern vor dem KI-Aufruf durch Platzhalter ersetzt.
+
+**Kosten pro E-Mail:** Admins sehen im Posteingang bei jeder E-Mail, welche Modelle sie ausgewertet haben und was das gekostet hat (inkl. Thread-Zusammenfassung).
+
+### Qualitätstest mit den Demo-E-Mails
+
+```bash
+npm run ai:eval              # alle 60 Demo-E-Mails echt auswerten (ca. 1–2 $), Bericht: docs/ki-qualitaetstest.md
+npm run ai:eval -- --keep    # Testfirma behalten, um die Ergebnisse in der App anzusehen
+npm run ai:eval -- --dry-run # nur die Mechanik prüfen, ohne API (simulierte Antworten)
+```
+
+Der Bericht enthält pro E-Mail Kategorie, Priorität (mit Sicherheit), „Bitte prüfen“, Zusammenfassung, Aufgaben, Modell und Kosten. Dazu kommen ein Abgleich mit einer menschlichen Erwartung sowie Kosten- und Cache-Statistik.
+
 ## KI-Modelle und Kosten
 
 | Aufgabe | Modell (Standard) |
@@ -187,6 +223,7 @@ mailmind/
 │   ├── hooks/               # z. B. useHotkeys
 │   ├── lib/                 # Auth, DB, Verschlüsselung, Rollen, Formatierung, KI-Modelle & Preise
 │   ├── server/
+│   │   ├── ai/              # KI-Pipeline: Claude-Client, Prompts, Schemas, Maskierung, Pipeline
 │   │   ├── mail/            # Postfach-Anbindung: Connectoren (IMAP, Gmail, Outlook, Demo), Parser, Threading, Sync
 │   │   ├── jobs/            # BullMQ-Warteschlangen, Sync-Auslöser
 │   │   ├── queries/         # Datenabfragen (Seitenleiste, KI-Kosten)
@@ -194,7 +231,8 @@ mailmind/
 │   │   └── …                # Sitzung, Mandant, Audit, API-Helfer
 │   ├── worker/              # Hintergrund-Worker (npm run worker)
 │   └── middleware.ts        # Zugriffsschutz
-├── tests/                   # Integrationstests (Sync, IMAP-Testserver, KI-Kosten)
+├── scripts/                 # KI-Qualitätstest (npm run ai:eval)
+├── tests/                   # Integrationstests (Sync, IMAP-Testserver, KI-Pipeline, KI-Kosten)
 ├── DECISIONS.md             # Architektur-Entscheidungen
 └── docker-compose.yml
 ```

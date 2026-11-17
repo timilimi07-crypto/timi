@@ -82,3 +82,33 @@ Format: **Entscheidung** – Begründung. Neue Einträge unten anhängen.
 33. **Worker als eigener Prozess** (`npm run worker`, eigener Docker-Dienst). Der Scheduler ist ein BullMQ-Job-Scheduler (jede Minute, auch bei mehreren Workern nur einmal aktiv) und stellt fällige Postfächer ein; 3 Postfächer werden parallel abgerufen.
 
 34. **IMAP-Ende-zu-Ende-Test mit lokalem Testserver** (`hoodiecrow-imap`, nur Dev-Abhängigkeit). Gmail/Outlook werden mit simulierten API-Antworten getestet, da echte Konten im Test nicht verfügbar sind.
+
+## Phase 3 – KI-Pipeline
+
+35. **Zweistufige Pipeline:** Erst Vorsortierung mit Haiku 5.5. Ist das Ergebnis Newsletter/Spam mit Sicherheit ≥ 70 %, ist die Auswertung fertig (Priorität „Niedrig“, eingeklappt), ohne Sonnet. Sonst folgt die Hauptanalyse mit Sonnet 5.5. Sonnet legt die endgültige Kategorie fest und bekommt die Vorsortierung als Hinweis.
+
+36. **„Nur einmal auswerten“:** E-Mails mit `aiStatus` DONE/SKIPPED werden nie erneut verarbeitet. Eine atomare Statusänderung (PENDING/FAILED → PROCESSING) verhindert Doppelverarbeitung durch parallele Worker. Antworten in einem Thread sind eigene E-Mails und werden einzeln ausgewertet, mit der bisherigen Thread-Zusammenfassung als Kontext.
+
+37. **Inkrementelle Thread-Zusammenfassung:** `Thread.summarizedUntil` merkt sich die neueste berücksichtigte Nachricht. Bei neuen Antworten bekommt das Modell nur die bisherige Zusammenfassung und die neuen Nachrichten (deren Einzel-Zusammenfassung, für die neueste zusätzlich 1.500 Zeichen Wortlaut). Der Job ist pro Thread entprellt (15 s), damit mehrere schnelle Antworten nur einen Aufruf auslösen. Die Kosten werden der neuesten E-Mail zugerechnet.
+
+38. **Prompt-Caching:** zwei gecachte System-Blöcke. (1) Statische Anweisungen, byte-identisch für alle Firmen. (2) Der Firmenkontext (Kategorien und letzte 20 Korrekturen) ist deterministisch sortiert und ändert sich nur bei neuen Korrekturen. Variable Daten (Empfangsdatum, E-Mail) stehen ausschließlich in der Nutzer-Nachricht. TTL 5 Minuten (Standard): Bei laufendem Abruf folgen Aufrufe dicht aufeinander. Caches gelten pro Modell, Haiku und Sonnet haben also je einen eigenen Cache.
+
+39. **Sicherheit (Confidence) als Selbsteinschätzung des Modells (0–1)** für Kategorie und Priorität, mit Kalibrierungshinweisen im Prompt. Schwelle für „Bitte prüfen“: **0,7** (`REVIEW_THRESHOLD`). Der Grund wird mitgespeichert (z. B. „Kategorie unsicher (58 %)“). Auch Ablehnungen der KI führen zu „Bitte prüfen“.
+
+40. **Korrekturen** (`ClassificationCorrection`) werden bei jeder manuellen Änderung von Kategorie oder Priorität gespeichert, mit maskiertem, gekürztem Betreff und Absender-Domain (keine vollständige Adresse, kein Text). Die E-Mail erhält `manualOverride` und wird von der KI nicht mehr umsortiert. Die letzten 20 Korrekturen der Firma stehen im gecachten Firmenblock.
+
+41. **Effort:** Vorsortierung und Thread-Zusammenfassung `low`, Hauptanalyse `medium` (Qualität vor Kosten bei der wichtigsten Einschätzung). Thinking bleibt adaptiv (Standard der Modelle).
+
+42. **Ersatzmodell bei Ablehnung:** Für Sonnet und Opus wird `fallbacks: "default"` gesendet (Beta `server-side-fallback-2026-07-01`). Lehnt das Modell eine Anfrage ab (z. B. bei Phishing-Mails), übernimmt serverseitig ein Ersatzmodell. Kosten werden mit dem tatsächlich antwortenden Modell berechnet. Haiku 5.5 hat keinen Fallback; dort wird die Ablehnung als „Bitte prüfen“ gemeldet.
+
+43. **Strukturierte Ausgabe** über `client.beta.messages.parse` + `betaZodOutputFormat`. Kategorien sind pro Firma ein Enum, das Modell kann also keine unbekannten Kategorien liefern. Ungültige Fristen (kein ISO-Datum) werden verworfen, Platzhalter wie `[IBAN]` nicht als erkannte Daten gespeichert.
+
+44. **Fehlerbehandlung:** Ungültige oder abgeschnittene Ausgabe wird bis zu 3-mal wiederholt (bei `max_tokens` mit verdoppeltem Limit). API-Fehler (nach den SDK-Wiederholungen) setzen die E-Mail auf FAILED zurück; BullMQ versucht den Job bis zu 3-mal mit exponentiellem Abstand erneut. Jeder Versuch steht im Kostenprotokoll.
+
+45. **KI-Tageslimit** pro Firma (`aiDailyEmailLimit`, Standard 500, Tag = Europe/Berlin). Darüber hinaus wird der Job auf den Folgetag verschoben (zählt nicht als Fehlversuch).
+
+46. **Nachholen:** Der Scheduler reiht jede Minute E-Mails mit Status PENDING ein, die nicht in der Warteschlange stehen (Seed, Abruf ohne Worker). Ohne `ANTHROPIC_API_KEY` startet der KI-Worker nicht; Admins sehen einen Hinweis im Posteingang.
+
+47. **Keine Ersatz-Ergebnisse ohne API-Schlüssel.** Im Demo-Modus ohne Schlüssel bleiben E-Mails „ausstehend“, statt erfundene Zusammenfassungen zu zeigen. Der Qualitätstest (`npm run ai:eval`) läuft nur mit echten Aufrufen; `--dry-run` prüft ausschließlich die Mechanik und ist deutlich als Trockenlauf gekennzeichnet.
+
+48. **Kosten pro E-Mail denormalisiert** (`Email.aiCostUsd`, `Email.aiModels`), damit die Liste ohne Aggregation über das Protokoll auskommt. Sichtbar nur für Admins (Berechtigung `ai.costs`).

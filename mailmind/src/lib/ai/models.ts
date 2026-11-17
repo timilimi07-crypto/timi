@@ -60,6 +60,28 @@ export const AI_MODELS: Record<string, ModelInfo> = {
   },
 };
 
+/**
+ * Nicht wählbare Modelle, die als serverseitiger Fallback antworten können
+ * (bei Ablehnung durch das gewählte Modell). Nur für die Kostenberechnung.
+ */
+const FALLBACK_ONLY: Record<string, ModelInfo> = {
+  "claude-sonnet-5": {
+    id: "claude-sonnet-5",
+    label: "Claude Sonnet 5 (Fallback)",
+    description: "",
+    tiers: [],
+    pricing: { input: 2, output: 10, cacheRead: 0.2, cacheWrite: 2.5 },
+  },
+  "claude-opus-5": {
+    id: "claude-opus-5",
+    label: "Claude Opus 5 (Fallback)",
+    description: "",
+    tiers: [],
+    pricing: { input: 5, output: 25, cacheRead: 0.5, cacheWrite: 6.25 },
+  },
+};
+Object.assign(AI_MODELS, FALLBACK_ONLY);
+
 export const DEFAULT_MAIN_MODEL = "claude-sonnet-5-5";
 export const DEFAULT_FAST_MODEL = "claude-haiku-5-5";
 

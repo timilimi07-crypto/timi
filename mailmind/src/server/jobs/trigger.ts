@@ -23,6 +23,6 @@ export async function triggerSync(mailboxIds: string[]): Promise<TriggerResult> 
     return { mode: "queued", count: mailboxIds.length };
   }
   const results: SyncResult[] = [];
-  for (const id of mailboxIds) results.push(await runMailboxSync(id, { enqueueAi: false }));
+  for (const id of mailboxIds) results.push(await runMailboxSync(id));
   return { mode: "inline", results };
 }

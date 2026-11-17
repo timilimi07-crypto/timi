@@ -4,7 +4,8 @@ import IORedis from "ioredis";
 /**
  * BullMQ-Warteschlangen.
  *  - mail-sync:    ein Job pro Postfach-Abruf + wiederkehrender "tick" (Scheduler)
- *  - ai-process:   KI-Verarbeitung einzelner E-Mails (Worker folgt in Phase 3)
+ *  - ai-process:   KI-Verarbeitung einzelner E-Mails ("process") und
+ *                  Thread-Zusammenfassungen ("thread")
  *
  * Dieses Modul wird von der Web-App (Jobs einstellen) und vom Worker genutzt.
  */
@@ -12,7 +13,7 @@ export const QUEUE_MAIL_SYNC = "mail-sync";
 export const QUEUE_AI = "ai-process";
 
 export type SyncJobData = { mailboxId: string; trigger: "schedule" | "manual" | "backlog" };
-export type AiJobData = { emailId: string };
+export type AiJobData = { emailId?: string; threadId?: string };
 
 const globalForRedis = globalThis as unknown as { mmRedis?: IORedis; mmQueues?: Map<string, Queue> };
 
@@ -67,7 +68,7 @@ export async function enqueueMailboxSync(mailboxId: string, trigger: SyncJobData
   );
 }
 
-/** Neue E-Mails zur KI-Verarbeitung einstellen (Verarbeitung ab Phase 3). */
+/** Neue E-Mails zur KI-Verarbeitung einstellen. */
 export async function enqueueAiProcessing(emailIds: string[]) {
   if (emailIds.length === 0) return;
   await aiQueue().addBulk(
@@ -82,6 +83,35 @@ export async function enqueueAiProcessing(emailIds: string[]) {
         removeOnFail: 5000,
       },
     })),
+  );
+}
+
+/**
+ * Nachholen: E-Mails mit Status PENDING, die (noch) nicht in der Warteschlange
+ * stehen – z. B. aus dem Seed oder einem Abruf ohne laufenden Worker. Die feste
+ * jobId verhindert doppelte Jobs. Älteste zuerst, max. `limit` pro Durchlauf.
+ */
+export async function enqueuePendingAi(limit = 200): Promise<number> {
+  const { db } = await import("@/lib/db");
+  const pending = await db.email.findMany({
+    where: { aiStatus: "PENDING", deletedAt: null, createdAt: { lt: new Date(Date.now() - 60_000) } },
+    orderBy: { receivedAt: "desc" },
+    take: limit,
+    select: { id: true },
+  });
+  await enqueueAiProcessing(pending.map((p) => p.id));
+  return pending.length;
+}
+
+/**
+ * Thread-Zusammenfassung einplanen. Entprellt: Kommen mehrere Antworten kurz
+ * hintereinander, wird der Thread nur einmal (nach 15 s) aktualisiert.
+ */
+export async function enqueueThreadSummary(threadId: string) {
+  await aiQueue().add(
+    "thread",
+    { threadId },
+    { jobId: `thread-${threadId}`, delay: 15_000, attempts: 2, backoff: { type: "exponential", delay: 30_000 }, removeOnComplete: true, removeOnFail: 1000 },
   );
 }
 

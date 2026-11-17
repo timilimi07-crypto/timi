@@ -32,6 +32,7 @@ export default async function GeneralSettingsPage() {
             syncIntervalMinutes: org.syncIntervalMinutes,
             initialSyncDays: org.initialSyncDays,
             maxEmailsPerSync: org.maxEmailsPerSync,
+            aiDailyEmailLimit: org.aiDailyEmailLimit,
             aiModel: org.aiModel,
             aiModelFast: org.aiModelFast,
           }}

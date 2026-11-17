@@ -4,13 +4,15 @@
  *  - Scheduler: prüft jede Minute, welche Postfächer fällig sind
  *    (Abrufintervall der Firma bzw. offener Rückstand) und stellt Jobs ein.
  *  - mail-sync: führt Abrufe aus (max. 3 Postfächer parallel).
- *  - ai-process: folgt in Phase 3.
+ *  - ai-process: KI-Auswertung (siehe worker/ai.ts).
  */
 import { Worker } from "bullmq";
 import { db } from "@/lib/db";
 import { findDueMailboxes } from "@/server/mail/sync";
-import { enqueueMailboxSync, mailSyncQueue, QUEUE_MAIL_SYNC, workerConnection, type SyncJobData } from "@/server/jobs/queues";
+import { isAiConfigured } from "@/server/ai/client";
+import { enqueueMailboxSync, enqueuePendingAi, mailSyncQueue, QUEUE_MAIL_SYNC, workerConnection, type SyncJobData } from "@/server/jobs/queues";
 import { runMailboxSync } from "@/server/jobs/sync-runner";
+import { startAiWorker } from "./ai";
 
 const TICK = "tick";
 
@@ -27,6 +29,7 @@ async function main() {
         const due = await findDueMailboxes();
         for (const id of due) await enqueueMailboxSync(id, "schedule");
         if (due.length) console.log(`[scheduler] ${due.length} Postfach/Postfächer fällig – Abruf eingestellt`);
+        if (isAiConfigured()) await enqueuePendingAi();
         return { enqueued: due.length };
       }
       const r = await runMailboxSync(job.data.mailboxId);
@@ -40,11 +43,12 @@ async function main() {
   );
 
   worker.on("failed", (job, err) => console.error(`[worker] Job ${job?.id} fehlgeschlagen:`, err.message));
+  const aiWorker = startAiWorker();
   console.log("[worker] bereit – Abruf-Scheduler läuft (jede Minute).");
 
   const shutdown = async () => {
     console.log("[worker] fährt herunter …");
-    await worker.close();
+    await Promise.all([worker.close(), aiWorker?.close()]);
     await db.$disconnect();
     process.exit(0);
   };
