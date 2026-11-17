@@ -434,7 +434,12 @@ async function showDetail(id) {
   box.querySelector("#send")?.addEventListener("click", async (ev) => {
     const text = draftText();
     if (!text.trim()) return toast("Antworttext fehlt");
-    if (!confirm(`Antwort an ${e.from_addr} senden?`)) return;
+    // Bestätigung im Knopf selbst (Browser-Dialoge sind nicht überall erlaubt).
+    if (ev.target.dataset.armed !== "1") {
+      ev.target.dataset.armed = "1"; ev.target.textContent = `Wirklich an ${e.from_addr} senden?`;
+      setTimeout(() => { if (ev.target.isConnected) { ev.target.dataset.armed = ""; ev.target.textContent = "Senden"; } }, 5000);
+      return;
+    }
     ev.target.disabled = true;
     try { const r = await api(`/api/emails/${id}/reply`, { method: "POST", body: { body: text } }); toast(`Antwort ${r.delivery}`); render(); }
     catch (err) { toast(err.message); ev.target.disabled = false; }
