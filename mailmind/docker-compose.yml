@@ -66,7 +66,24 @@ services:
       redis:
         condition: service_healthy
 
-  # Der Hintergrund-Worker (BullMQ: Abruf + KI-Verarbeitung) kommt in Phase 2 hinzu.
+  # Hintergrund-Worker (BullMQ): automatischer Abruf aller Postfächer,
+  # ab Phase 3 auch die KI-Verarbeitung. Nutzt das Builder-Image (tsx).
+  worker:
+    build:
+      context: .
+      target: builder
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://mailmind:mailmind@postgres:5432/mailmind?schema=public
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: production
+    command: ["npm", "run", "worker"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
 
 volumes:
   pgdata:

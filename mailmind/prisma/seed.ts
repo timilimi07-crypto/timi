@@ -5,12 +5,23 @@
  *  - Müller & Partner GmbH (Hauptdemo, 3 Nutzer, Demo-Postfächer)
  *  - Nordlicht Logistik AG (zweiter Mandant)
  *
- * Alle Demo-Passwörter: "mailmind". Beispiel-E-Mails folgen in Phase 2.
+ * Alle Demo-Passwörter: "mailmind".
+ *
+ * Die Demo-Postfächer werden über den echten Abruf-Pfad (syncMailbox) mit den
+ * Beispiel-E-Mails aus src/server/mail/demo/emails.ts befüllt – inklusive
+ * Zeitfenster (30 Tage) und Thread-Zuordnung. Einige E-Mails „treffen erst
+ * später ein“ und werden vom automatischen Abruf geholt.
+ *
+ * Zusätzlich wird für Müller & Partner ein KI-Kostenverlauf der letzten
+ * 45 Tage erzeugt (nur Demo, damit das Admin-Dashboard etwas zeigt).
  * Ausführen: npm run db:seed (idempotent – löscht vorher die Demo-Firmen).
  */
 import { PrismaClient, type Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { DEFAULT_CATEGORIES } from "../src/server/defaults";
+import { syncMailbox } from "../src/server/mail/sync";
+import type { DemoSet } from "../src/server/mail/demo/emails";
+import { computeCostUsd } from "../src/lib/ai/models";
 
 const db = new PrismaClient();
 
@@ -18,7 +29,8 @@ type OrgSeed = {
   name: string;
   slug: string;
   users: { name: string; email: string; role: Role }[];
-  mailboxes: { name: string; emailAddress: string }[];
+  mailboxes: { name: string; emailAddress: string; demoSet: DemoSet }[];
+  demoAiCosts?: boolean;
   labels: { name: string; color: string }[];
 };
 
@@ -33,9 +45,10 @@ const ORGS: OrgSeed[] = [
       { name: "Tobias Wagner", email: "t.wagner@mueller-partner.de", role: "MEMBER" },
     ],
     mailboxes: [
-      { name: "Info", emailAddress: "info@mueller-partner.de" },
-      { name: "Buchhaltung", emailAddress: "buchhaltung@mueller-partner.de" },
+      { name: "Info", emailAddress: "info@mueller-partner.de", demoSet: "info" },
+      { name: "Buchhaltung", emailAddress: "buchhaltung@mueller-partner.de", demoSet: "buchhaltung" },
     ],
+    demoAiCosts: true,
     labels: [
       { name: "VIP", color: "rose" },
       { name: "Rückruf", color: "amber" },
@@ -46,7 +59,7 @@ const ORGS: OrgSeed[] = [
     name: "Nordlicht Logistik AG",
     slug: "nordlicht-logistik",
     users: [{ name: "Henrik Jansen", email: "admin@nordlicht-logistik.de", role: "ADMIN" }],
-    mailboxes: [{ name: "Disposition", emailAddress: "dispo@nordlicht-logistik.de" }],
+    mailboxes: [{ name: "Disposition", emailAddress: "dispo@nordlicht-logistik.de", demoSet: "dispo" }],
     labels: [{ name: "Express", color: "red" }],
   },
 ];
@@ -84,15 +97,92 @@ async function main() {
         },
         labels: { create: o.labels },
         mailboxes: {
-          create: o.mailboxes.map((m) => ({ ...m, provider: "DEMO" as const, status: "ACTIVE" as const })),
+          create: o.mailboxes.map(({ demoSet, ...m }) => ({
+            ...m,
+            provider: "DEMO" as const,
+            status: "ACTIVE" as const,
+            config: { demoSet },
+          })),
         },
       },
+      include: { mailboxes: true },
     });
     console.log(`✔ Firma angelegt: ${org.name} (${o.users.length} Nutzer)`);
+
+    // Erster Abruf der Demo-Postfächer über den echten Sync-Pfad.
+    for (const mb of org.mailboxes) {
+      let created = 0;
+      let skippedOld = 0;
+      for (let i = 0; i < 20; i++) {
+        const r = await syncMailbox(mb.id);
+        if (r.status !== "ok") throw new Error(`Demo-Abruf fehlgeschlagen: ${r.error ?? r.status}`);
+        created += r.created;
+        skippedOld += r.skippedOld;
+        if (r.remaining === 0) break;
+      }
+      console.log(`  ↳ Postfach ${mb.name}: ${created} E-Mails abgerufen${skippedOld ? `, ${skippedOld} älter als 30 Tage übersprungen` : ""}`);
+    }
+
+    if (o.demoAiCosts) {
+      const n = await seedDemoAiCosts(org.id);
+      console.log(`  ↳ ${n} Demo-Einträge im KI-Kostenprotokoll (45 Tage)`);
+    }
   }
 
   console.log("\nDemo-Zugänge (Passwort: mailmind):");
   for (const o of ORGS) for (const u of o.users) console.log(`  ${u.role.padEnd(8)} ${u.email}`);
+}
+
+/**
+ * Erzeugt einen plausiblen KI-Kostenverlauf (nur Demo): pro E-Mail eine
+ * Triage mit Haiku 5.5, bei ~75 % eine Analyse mit Sonnet 5.5, dazu einige
+ * Antwortvorschläge und Thread-Zusammenfassungen. Deterministisch (fester Seed).
+ */
+async function seedDemoAiCosts(organizationId: string): Promise<number> {
+  let state = 42;
+  const rand = () => ((state = (state * 1664525 + 1013904223) % 2 ** 32) / 2 ** 32);
+  const between = (a: number, b: number) => Math.round(a + rand() * (b - a));
+
+  type Row = { organizationId: string; operation: string; model: string; inputTokens: number; outputTokens: number; cacheReadTokens: number; costUsd: number; durationMs: number; createdAt: Date };
+  const rows: Row[] = [];
+  const add = (operation: string, model: string, input: number, output: number, cacheRead: number, at: Date) =>
+    rows.push({
+      organizationId,
+      operation,
+      model,
+      inputTokens: input,
+      outputTokens: output,
+      cacheReadTokens: cacheRead,
+      costUsd: computeCostUsd(model, { inputTokens: input, outputTokens: output, cacheReadTokens: cacheRead }),
+      durationMs: between(400, model.includes("haiku") ? 1200 : 6000),
+      createdAt: at,
+    });
+
+  const now = Date.now();
+  for (let d = 44; d >= 0; d--) {
+    const day = new Date(now - d * 86_400_000);
+    const weekend = [0, 6].includes(day.getDay());
+    // Heute nur anteilig (bis zur aktuellen Uhrzeit).
+    const share = d === 0 ? Math.min(1, new Date().getHours() / 18) : 1;
+    const emails = Math.round((weekend ? between(4, 12) : between(35, 70)) * share);
+    for (let i = 0; i < emails; i++) {
+      const at = new Date(day.getTime() - between(0, d === 0 ? 3 * 3600_000 : 10 * 3600_000));
+      add("triage", "claude-haiku-5-5", between(500, 1500), between(60, 140), between(1500, 2500), at);
+      if (rand() < 0.75) add("analyze", "claude-sonnet-5-5", between(900, 3500), between(350, 800), between(2000, 3000), at);
+    }
+    for (let i = 0; i < Math.round((weekend ? 0 : between(2, 8)) * share); i++) {
+      add("reply", "claude-sonnet-5-5", between(1500, 4000), between(250, 600), 2000, new Date(day.getTime() - between(0, 8 * 3600_000)));
+    }
+    for (let i = 0; i < Math.round((weekend ? 0 : between(1, 4)) * share); i++) {
+      add("thread_summary", "claude-sonnet-5-5", between(3000, 9000), between(200, 400), 2000, new Date(day.getTime() - between(0, 8 * 3600_000)));
+    }
+  }
+  // Vor 12 Tagen hat ein Admin eine Woche lang Opus 5.5 getestet.
+  for (let i = 0; i < 40; i++) {
+    add("analyze", "claude-opus-5-5", between(900, 3500), between(400, 900), 2000, new Date(now - between(12, 18) * 86_400_000));
+  }
+  await db.aiUsageLog.createMany({ data: rows });
+  return rows.length;
 }
 
 main()

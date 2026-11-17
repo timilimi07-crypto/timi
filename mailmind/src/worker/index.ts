@@ -26,6 +26,7 @@ async function main() {
       if (job.name === TICK) {
         const due = await findDueMailboxes();
         for (const id of due) await enqueueMailboxSync(id, "schedule");
+        if (due.length) console.log(`[scheduler] ${due.length} Postfach/Postfächer fällig – Abruf eingestellt`);
         return { enqueued: due.length };
       }
       const r = await runMailboxSync(job.data.mailboxId);

@@ -24,3 +24,19 @@ export function greeting(d = new Date()): string {
   if (h < 18) return "Guten Tag";
   return "Guten Abend";
 }
+
+const usd = new Intl.NumberFormat("de-DE", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const usdPrecise = new Intl.NumberFormat("de-DE", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 4 });
+const integer = new Intl.NumberFormat("de-DE");
+
+/** KI-Kosten werden in USD abgerechnet und daher in USD angezeigt. Kleinbeträge mit 4 Nachkommastellen. */
+export function formatUsd(v: number): string {
+  return v > 0 && v < 0.1 ? usdPrecise.format(v) : usd.format(v);
+}
+export const formatInt = (v: number) => integer.format(v);
+
+/** "2026-11-17" → "17.11." */
+export function formatShortDay(isoDay: string): string {
+  const [, m, d] = isoDay.split("-");
+  return `${d}.${m}.`;
+}

@@ -1,56 +1,61 @@
 import type { Metadata } from "next";
-import { Mail } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { EmptyState } from "@/components/shared/empty-state";
 import { db } from "@/lib/db";
+import { can } from "@/lib/rbac";
+import { isOAuthConfigured } from "@/server/mail/oauth";
+import type { SyncState } from "@/server/mail/types";
 import { requireSession } from "@/server/session";
 import { scoped } from "@/server/tenant";
-import { formatDateTime } from "@/lib/format";
+import { ConnectMailboxDialog } from "./connect-dialog";
+import { MailboxList, type MailboxRow } from "./mailbox-list";
 
 export const metadata: Metadata = { title: "Postfächer" };
 
-const PROVIDER_LABEL = { IMAP: "IMAP", GMAIL: "Gmail", OUTLOOK: "Outlook / Exchange", DEMO: "Demo" } as const;
-const STATUS_LABEL = { ACTIVE: "Aktiv", SYNCING: "Synchronisiert …", ERROR: "Fehler", DISABLED: "Deaktiviert" } as const;
-
-/** Postfach-Übersicht. Verbinden/Sync folgen in Phase 2. */
 export default async function MailboxesPage() {
   const session = await requireSession();
-  const mailboxes = await db.mailbox.findMany({
-    where: scoped(session),
-    orderBy: { name: "asc" },
-    include: { _count: { select: { emails: true } } },
-  });
+  const [mailboxes, org] = await Promise.all([
+    db.mailbox.findMany({
+      where: scoped(session),
+      orderBy: { name: "asc" },
+      include: { _count: { select: { emails: true } } },
+    }),
+    db.organization.findUniqueOrThrow({ where: { id: session.organizationId }, select: { initialSyncDays: true, syncIntervalMinutes: true } }),
+  ]);
 
-  if (mailboxes.length === 0) {
-    return (
-      <EmptyState
-        icon={Mail}
-        title="Noch kein Postfach verbunden"
-        description="Unterstützt werden IMAP, Gmail und Microsoft 365 / Outlook."
-      />
-    );
-  }
+  const rows: MailboxRow[] = mailboxes.map((m) => {
+    const state = m.syncState as SyncState | null;
+    const cfg = (m.config ?? {}) as { host?: string };
+    return {
+      id: m.id,
+      name: m.name,
+      emailAddress: m.emailAddress,
+      provider: m.provider,
+      status: m.status,
+      syncEnabled: m.syncEnabled,
+      lastSyncAt: m.lastSyncAt?.toISOString() ?? null,
+      lastError: m.lastError,
+      emailCount: m._count.emails,
+      pending: state?.pending.length ?? 0,
+      windowStart: state?.windowStart ?? null,
+      initialSyncDays: m.initialSyncDays ?? org.initialSyncDays,
+      host: cfg.host ?? null,
+    };
+  });
+  const canManage = can(session.role, "mailbox.manage");
 
   return (
-    <Card className="divide-y">
-      {mailboxes.map((m) => (
-        <div key={m.id} className="flex items-center gap-3 px-4 py-3">
-          <span className="grid size-8 place-items-center rounded-md bg-muted">
-            <Mail className="size-4 text-muted-foreground" />
-          </span>
-          <div className="min-w-0 flex-1">
-            <div className="truncate text-sm font-medium">{m.name}</div>
-            <div className="truncate text-xs text-muted-foreground">
-              {m.emailAddress} · {PROVIDER_LABEL[m.provider]} · {m._count.emails} E-Mails
-            </div>
-          </div>
-          <span className="hidden text-xs text-muted-foreground sm:block">
-            {m.lastSyncAt ? `Letzter Abruf: ${formatDateTime(m.lastSyncAt)}` : "Noch nicht abgerufen"}
-          </span>
-          <Badge variant={m.status === "ERROR" ? "destructive" : "secondary"}>{STATUS_LABEL[m.status]}</Badge>
-        </div>
-      ))}
-    </Card>
+    <div className="space-y-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-muted-foreground">
+          Automatischer Abruf alle {org.syncIntervalMinutes} Min. · Erster Abruf: letzte {org.initialSyncDays} Tage
+        </p>
+        {canManage && (
+          <ConnectMailboxDialog
+            defaultDays={org.initialSyncDays}
+            oauth={{ google: isOAuthConfigured("google"), microsoft: isOAuthConfigured("microsoft") }}
+          />
+        )}
+      </div>
+      <MailboxList rows={rows} canManage={canManage} />
+    </div>
   );
 }

@@ -9,6 +9,10 @@ import { db } from "@/lib/db";
 import { requireSession } from "@/server/session";
 import { scoped } from "@/server/tenant";
 import { formatLongDay, greeting } from "@/lib/format";
+import { can } from "@/lib/rbac";
+import { resolveModels } from "@/lib/ai/models";
+import { getAiCostStats } from "@/server/queries/ai-costs";
+import { AiCostCard } from "@/components/dashboard/ai-cost-card";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
@@ -28,6 +32,15 @@ export default async function DashboardPage() {
     db.task.count({ where: scoped(session, { status: "OPEN" as const }) }),
     db.task.count({ where: scoped(session, { status: "OPEN" as const, dueDate: { lte: endOfDay } }) }),
   ]);
+
+  // KI-Kosten nur für Admins.
+  const showCosts = can(session.role, "ai.costs");
+  const [costStats, org] = showCosts
+    ? await Promise.all([
+        getAiCostStats(session.organizationId),
+        db.organization.findUniqueOrThrow({ where: { id: session.organizationId }, select: { aiModel: true, aiModelFast: true } }),
+      ])
+    : [null, null];
 
   const tiles = [
     { label: "Neue E-Mails", value: newCount, icon: Inbox, tone: "text-primary" },
@@ -54,6 +67,8 @@ export default async function DashboardPage() {
           </Card>
         ))}
       </div>
+
+      {costStats && org && <AiCostCard stats={costStats} models={resolveModels(org)} />}
 
       <EmptyState
         icon={Sparkles}

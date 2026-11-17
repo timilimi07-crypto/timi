@@ -37,6 +37,10 @@
   --chart-3: oklch(0.72 0.16 70);
   --chart-4: oklch(0.63 0.2 20);
   --chart-5: oklch(0.6 0.13 150);
+  /* KI-Modelle im Kostendiagramm – feste Farbe je Modell (validiert, CVD-sicher) */
+  --series-sonnet: #2a78d6;
+  --series-haiku: #eb6834;
+  --series-opus: #1baf7a;
 }
 
 .dark {
@@ -67,6 +71,9 @@
   --chart-3: oklch(0.77 0.15 70);
   --chart-4: oklch(0.68 0.19 20);
   --chart-5: oklch(0.68 0.13 150);
+  --series-sonnet: #3987e5;
+  --series-haiku: #d95926;
+  --series-opus: #199e70;
 }
 
 @theme inline {
