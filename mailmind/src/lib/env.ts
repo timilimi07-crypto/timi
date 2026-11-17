@@ -12,7 +12,10 @@ const schema = z.object({
   /** 32 Byte, base64-kodiert – Schlüssel für Postfach-Zugangsdaten. */
   ENCRYPTION_KEY: z.string().min(1),
   ANTHROPIC_API_KEY: z.string().optional(),
-  ANTHROPIC_MODEL: z.string().default("claude-opus-5-5"),
+  /** Hauptmodell (Standard Sonnet 5.5) – siehe src/lib/ai/models.ts */
+  ANTHROPIC_MODEL: z.string().default("claude-sonnet-5-5"),
+  /** Modell für einfache Aufgaben (Standard Haiku 5.5) */
+  ANTHROPIC_MODEL_FAST: z.string().default("claude-haiku-5-5"),
   DEMO_MODE: z
     .enum(["true", "false"])
     .default("false")

@@ -117,8 +117,17 @@ model Organization {
   maskSensitiveData   Boolean @default(true)
   /// Abrufintervall für alle Postfächer der Firma.
   syncIntervalMinutes Int     @default(5)
-  /// Optionales KI-Modell pro Firma (überschreibt ANTHROPIC_MODEL).
+  /// Erster Abruf eines neuen Postfachs: nur E-Mails der letzten X Tage.
+  initialSyncDays     Int     @default(30)
+  /// Höchstens so viele E-Mails pro Abruf-Durchlauf und Postfach. Der Rest
+  /// wird in den folgenden Durchläufen nachgeholt (neueste zuerst).
+  maxEmailsPerSync    Int     @default(100)
+  /// Hauptmodell (Zusammenfassung, Priorität, Aufgaben, Antworten).
+  /// null = ANTHROPIC_MODEL (Standard claude-sonnet-5-5). Opus optional.
   aiModel             String?
+  /// Schnelles Modell für einfache Aufgaben (Spam/Newsletter, Kategorie).
+  /// null = ANTHROPIC_MODEL_FAST (Standard claude-haiku-5-5).
+  aiModelFast         String?
   digestEnabled       Boolean @default(true)
   /// Stunde (0–23, Europe/Berlin), zu der der Tages-Digest verschickt wird.
   digestHour          Int     @default(7)
@@ -180,9 +189,15 @@ model Mailbox {
   /// AES-256-GCM verschlüsseltes JSON mit Zugangsdaten (IMAP-Passwort,
   /// OAuth-Tokens). Niemals im Klartext speichern – siehe src/lib/crypto.ts.
   encryptedCredentials String?
-  /// Provider-spezifischer Sync-Zustand: IMAP UIDVALIDITY/UID, Gmail historyId,
-  /// Graph deltaLink.
+  /// Nicht geheime Verbindungsdaten zur Anzeige (Host, Port, Ordner …).
+  config         Json?
+  /// Sync-Zustand: Zeitfenster, Warteschlange noch abzurufender IDs und
+  /// Provider-Cursor (IMAP UIDVALIDITY/UID, Gmail historyId, Graph deltaLink).
   syncState      Json?
+  /// Überschreibt Organization.initialSyncDays für dieses Postfach.
+  initialSyncDays Int?
+  /// Gesetzt, solange ein Abruf läuft (Sperre gegen parallele Läufe).
+  syncStartedAt  DateTime?
   syncEnabled    Boolean         @default(true)
   lastSyncAt     DateTime?
   lastError      String?
@@ -497,7 +512,7 @@ model AiUsageLog {
   id               String   @id @default(cuid())
   organizationId   String
   emailId          String?
-  /// "analyze" | "thread_summary" | "reply" | "digest"
+  /// "triage" | "analyze" | "thread_summary" | "reply" | "digest"
   operation        String
   model            String
   inputTokens      Int      @default(0)
