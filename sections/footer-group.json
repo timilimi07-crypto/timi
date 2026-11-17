@@ -1,0 +1,19 @@
+{
+  "type": "footer",
+  "name": "Footer-Gruppe",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "brand": { "type": "brand", "settings": { "show_logo": true, "claim": "Du musst das Risiko eingehen, nach den Sternen zu greifen.", "text": "", "show_social": true } },
+        "menu-1": { "type": "menu", "settings": { "title": "Shop", "menu": "main-menu" } },
+        "menu-2": { "type": "menu", "settings": { "title": "Hilfe", "menu": "footer" } },
+        "contact": { "type": "contact", "settings": { "title": "Kundenservice", "email": "", "text": "<p>Wir antworten in 24–48 h.</p>" } },
+        "newsletter": { "type": "newsletter", "settings": { "title": "Join the Crew", "text": "Early Access zu Drops. Kein Spam.", "button": "Join" } }
+      },
+      "block_order": ["brand", "menu-1", "menu-2", "contact", "newsletter"],
+      "settings": { "show_giant": true, "giant_text": "WEAX", "copyright": "Reach for the stars", "show_payment": true }
+    }
+  },
+  "order": ["footer"]
+}

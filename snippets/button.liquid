@@ -1,0 +1,16 @@
+{%- comment -%}
+  Button / Link mit Shine-Sweep & optional magnetisch.
+  Parameter: label, url, style ('primary' | 'outline' | 'ghost'), class, attrs, icon (Name aus icon.liquid), type (bei <button>)
+{%- endcomment -%}
+{%- assign btn_style = style | default: 'primary' -%}
+{%- if url != blank -%}
+  <a href="{{ url }}" class="btn btn--{{ btn_style }}{% if settings.magnetic_enable %} is-magnetic{% endif %}{% if class %} {{ class }}{% endif %}" {{ attrs }}>
+    <span class="btn__label">{{ label }}</span>
+    {%- if icon -%}{% render 'icon', name: icon %}{%- endif -%}
+  </a>
+{%- else -%}
+  <button type="{{ type | default: 'button' }}" class="btn btn--{{ btn_style }}{% if settings.magnetic_enable %} is-magnetic{% endif %}{% if class %} {{ class }}{% endif %}" {{ attrs }}>
+    <span class="btn__label">{{ label }}</span>
+    {%- if icon -%}{% render 'icon', name: icon %}{%- endif -%}
+  </button>
+{%- endif -%}

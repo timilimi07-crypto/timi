@@ -1,0 +1,159 @@
+<footer class="footer" style="--pt: 0;">
+  <div class="page-width">
+    <div class="footer__top">
+      {%- assign brand_rendered = false -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'brand' -%}
+          {%- assign brand_rendered = true -%}
+          <div class="footer__brand" {{ block.shopify_attributes }} data-reveal>
+            {%- if block.settings.show_logo -%}
+              <a href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+                {%- if settings.logo != blank -%}
+                  {{ settings.logo | image_url: width: 240 | image_tag: loading: 'lazy', alt: shop.name }}
+                {%- else -%}
+                  {% render 'logo-mark', id: 'ft' %}
+                {%- endif -%}
+              </a>
+            {%- endif -%}
+            {%- if block.settings.claim != blank -%}<p class="footer__claim text-chrome">{{ block.settings.claim | escape }}</p>{%- endif -%}
+            {%- if block.settings.text != blank -%}<div class="rte text-muted">{{ block.settings.text }}</div>{%- endif -%}
+            {%- if block.settings.show_social -%}{% render 'social-icons' %}{%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      <div class="footer__cols"{% unless brand_rendered %} style="grid-column: 1 / -1;"{% endunless %}>
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'menu' -%}
+              <div {{ block.shopify_attributes }} data-reveal style="--d: {{ forloop.index0 }}">
+                <p class="footer__col-title">{{ block.settings.title | default: block.settings.menu.title | escape }}</p>
+                {%- if block.settings.menu != blank -%}
+                  <ul class="footer__links" role="list">
+                    {%- for link in block.settings.menu.links -%}
+                      <li><a class="link-underline" href="{{ link.url }}">{{ link.title | escape }}</a></li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </div>
+            {%- when 'contact' -%}
+              <div {{ block.shopify_attributes }} data-reveal style="--d: {{ forloop.index0 }}">
+                <p class="footer__col-title">{{ block.settings.title | escape }}</p>
+                <ul class="footer__links" role="list">
+                  {%- assign mail = block.settings.email | default: settings.service_email -%}
+                  {%- if mail != blank -%}<li><a class="link-underline" href="mailto:{{ mail }}">{{ mail }}</a></li>{%- endif -%}
+                  {%- if block.settings.text != blank -%}<li class="text-muted rte" style="font-size: var(--fs-small);">{{ block.settings.text }}</li>{%- endif -%}
+                </ul>
+              </div>
+            {%- when 'newsletter' -%}
+              <div class="footer__newsletter" {{ block.shopify_attributes }} data-reveal>
+                <p class="footer__col-title" style="margin:0;">{{ block.settings.title | escape }}</p>
+                {%- if block.settings.text != blank -%}<p class="text-muted" style="font-size: var(--fs-small);">{{ block.settings.text | escape }}</p>{%- endif -%}
+                {% render 'newsletter-form', form_id: 'FooterNewsletter', button: block.settings.button %}
+              </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+    {%- if section.settings.show_giant -%}
+      <p class="footer__giant" aria-hidden="true">{{ section.settings.giant_text | default: shop.name }}</p>
+    {%- endif -%}
+
+    <div class="footer__bottom">
+      <div class="footer__notes">
+        <nav aria-label="{{ 'sections.footer.legal' | t }}">
+          <ul class="footer__legal" role="list">
+            {%- if section.settings.legal_menu != blank -%}
+              {%- for link in section.settings.legal_menu.links -%}
+                <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+              {%- endfor -%}
+            {%- else -%}
+              {%- for policy in shop.policies -%}
+                <li><a href="{{ policy.url }}">{{ policy.title }}</a></li>
+              {%- endfor -%}
+            {%- endif -%}
+            {%- assign withdraw_page = pages['vertrag-widerrufen'] -%}
+            {%- if withdraw_page != empty and withdraw_page.url -%}
+              <li><a href="{{ withdraw_page.url }}"><strong>{{ withdraw_page.title }}</strong></a></li>
+            {%- endif -%}
+          </ul>
+        </nav>
+        <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}{% if section.settings.copyright != blank %} · {{ section.settings.copyright | escape }}{% endif %}</p>
+        {%- if settings.small_business -%}<p>{{ settings.small_business_text }}</p>{%- endif -%}
+        {%- if settings.service_email != blank -%}<p>{{ 'sections.footer.service' | t }}: <a href="mailto:{{ settings.service_email }}">{{ settings.service_email }}</a></p>{%- endif -%}
+      </div>
+      {%- if section.settings.show_payment -%}{% render 'payment-icons' %}{%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "tag": "section",
+  "class": "section-footer",
+  "enabled_on": { "groups": ["footer"] },
+  "max_blocks": 8,
+  "settings": [
+    { "type": "checkbox", "id": "show_giant", "label": "Riesiger Schriftzug unten", "default": true },
+    { "type": "text", "id": "giant_text", "label": "Schriftzug-Text", "default": "WEAX" },
+    { "type": "link_list", "id": "legal_menu", "label": "Menü für Rechtliches", "info": "Leer lassen = automatisch alle Richtlinien (Impressum, AGB, Widerruf, Datenschutz) aus Einstellungen → Richtlinien." },
+    { "type": "text", "id": "copyright", "label": "Zusatz neben ©", "default": "Reach for the stars" },
+    { "type": "checkbox", "id": "show_payment", "label": "Zahlungs-Icons zeigen", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Marke & Claim",
+      "limit": 1,
+      "settings": [
+        { "type": "checkbox", "id": "show_logo", "label": "Logo zeigen", "default": true },
+        { "type": "text", "id": "claim", "label": "Claim", "default": "Du musst das Risiko eingehen, nach den Sternen zu greifen." },
+        { "type": "richtext", "id": "text", "label": "Text" },
+        { "type": "checkbox", "id": "show_social", "label": "Social-Icons zeigen", "default": true, "info": "Links unter Theme-Einstellungen → Social Media." }
+      ]
+    },
+    {
+      "type": "menu",
+      "name": "Menü-Spalte",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Überschrift" },
+        { "type": "link_list", "id": "menu", "label": "Menü", "default": "footer" }
+      ]
+    },
+    {
+      "type": "contact",
+      "name": "Kontakt",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Überschrift", "default": "Kundenservice" },
+        { "type": "text", "id": "email", "label": "E-Mail", "info": "Leer = E-Mail aus den Theme-Einstellungen." },
+        { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Wir antworten in 24–48 h.</p>" }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Überschrift", "default": "Join the Crew" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Early Access zu Drops. Kein Spam." },
+        { "type": "text", "id": "button", "label": "Button-Text", "default": "Join" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        { "type": "brand" },
+        { "type": "menu", "settings": { "title": "Shop", "menu": "main-menu" } },
+        { "type": "menu", "settings": { "title": "Hilfe", "menu": "footer" } },
+        { "type": "contact" },
+        { "type": "newsletter" }
+      ]
+    }
+  ]
+}
+{% endschema %}

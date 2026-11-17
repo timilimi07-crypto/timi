@@ -1,0 +1,39 @@
+{%- comment -%}
+  Preis-Anzeige. Parameter: product (Pflicht), variant (optional), class, show_note (true = Versand/Steuer-Hinweis)
+{%- endcomment -%}
+{%- liquid
+  assign target = variant | default: product.selected_or_first_available_variant
+  assign p = target.price
+  assign cap = target.compare_at_price
+  assign on_sale = false
+  if cap > p
+    assign on_sale = true
+  endif
+  assign varies = false
+  if variant == blank and product.price_varies
+    assign varies = true
+  endif
+-%}
+<div class="price{% if on_sale %} price--sale{% endif %}{% if target.available == false %} price--soldout{% endif %}{% if class %} {{ class }}{% endif %}" data-price>
+  <span class="visually-hidden">{% if on_sale %}{{ 'products.product.price.sale_price' | t }}{% else %}{{ 'products.product.price.regular_price' | t }}{% endif %}</span>
+  <span class="price__current" data-price-current>
+    {%- if varies -%}{{ 'products.product.price.from_price_html' | t: price: product.price_min | money }}{%- else -%}{{ p | money }}{%- endif -%}
+  </span>
+  {%- if on_sale -%}
+    <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>
+    <s class="price__compare" data-price-compare>{{ cap | money }}</s>
+  {%- else -%}
+    <s class="price__compare" data-price-compare hidden></s>
+  {%- endif -%}
+  {%- if target.unit_price_measurement -%}
+    <small class="price__unit">{{ target.unit_price | money }}/{{ target.unit_price_measurement.reference_value }}{{ target.unit_price_measurement.reference_unit }}</small>
+  {%- endif -%}
+</div>
+{%- if show_note -%}
+  <p class="price-note">
+    {%- if settings.small_business -%}{{ settings.small_business_text }}{%- else -%}{{ 'products.product.tax_included' | t }}{%- endif -%}
+    {%- if settings.show_shipping_note -%}
+      {{ ' ' }}{%- if settings.shipping_page != blank -%}<a href="{{ settings.shipping_page.url }}">{{ 'products.product.shipping_excluded' | t }}</a>{%- else -%}{{ 'products.product.shipping_excluded' | t }}{%- endif -%}
+    {%- endif -%}
+  </p>
+{%- endif -%}

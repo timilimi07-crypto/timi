@@ -1,0 +1,27 @@
+{%- comment -%} Strukturierte Daten (JSON-LD) für Google: Organisation + Produkt {%- endcomment -%}
+{%- if request.page_type == 'index' -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": {{ shop.name | json }},
+      "url": {{ request.origin | append: routes.root_url | json }},
+      {%- if settings.logo -%}"logo": {{ settings.logo | image_url: width: 600 | prepend: 'https:' | json }},{%- endif -%}
+      "email": {{ settings.service_email | json }},
+      "sameAs": [
+        {%- assign sep = '' -%}
+        {%- if settings.social_instagram != blank -%}{{ sep }}{{ settings.social_instagram | json }}{%- assign sep = ',' -%}{%- endif -%}
+        {%- if settings.social_tiktok != blank -%}{{ sep }}{{ settings.social_tiktok | json }}{%- assign sep = ',' -%}{%- endif -%}
+        {%- if settings.social_youtube != blank -%}{{ sep }}{{ settings.social_youtube | json }}{%- endif -%}
+      ]
+    }
+  </script>
+{%- elsif request.page_type == 'product' -%}
+  <script type="application/ld+json">
+    {{ product | structured_data }}
+  </script>
+{%- elsif request.page_type == 'article' -%}
+  <script type="application/ld+json">
+    {{ article | structured_data }}
+  </script>
+{%- endif -%}

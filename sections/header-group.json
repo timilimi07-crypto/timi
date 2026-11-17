@@ -1,0 +1,31 @@
+{
+  "type": "header",
+  "name": "Header-Gruppe",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "msg-1": { "type": "message", "settings": { "text": "Gratis Versand ab 80 €", "link": "" } },
+        "msg-2": { "type": "message", "settings": { "text": "Reach for the stars", "link": "" } },
+        "msg-3": { "type": "message", "settings": { "text": "380 gsm Heavyweight Cotton", "link": "" } },
+        "msg-4": { "type": "message", "settings": { "text": "Discipline. Motivation. Freedom.", "link": "" } }
+      },
+      "block_order": ["msg-1", "msg-2", "msg-3", "msg-4"],
+      "settings": { "speed": 36, "reverse": false, "bg": "#050507", "text": "#ffffff" }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "menu": "main-menu",
+        "logo_position": "left",
+        "show_wordmark": true,
+        "sticky": "always",
+        "transparent_home": true,
+        "show_search": true,
+        "show_account": true,
+        "menu_claim": "Reach for the stars"
+      }
+    }
+  },
+  "order": ["announcement", "header"]
+}

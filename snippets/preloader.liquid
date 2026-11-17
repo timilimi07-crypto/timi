@@ -1,0 +1,12 @@
+{%- comment -%} Preloader: animiertes Logo + Stern. Nur beim ersten Seitenaufruf pro Sitzung (per JS). {%- endcomment -%}
+<div class="preloader" data-preloader aria-hidden="true">
+  <script>try{if(sessionStorage.getItem('weax-pl')||matchMedia('(prefers-reduced-motion: reduce)').matches){document.currentScript.parentNode.remove();}else{sessionStorage.setItem('weax-pl','1');document.documentElement.classList.add('is-preloading');}}catch(e){}</script>
+  <div class="preloader__inner">
+    {%- if settings.logo != blank -%}
+      {{ settings.logo | image_url: width: 400 | image_tag: class: 'preloader__logo', alt: '', loading: 'eager', width: 160 }}
+    {%- else -%}
+      {% render 'logo-mark', animated: true, id: 'pl', class: 'preloader__logo' %}
+    {%- endif -%}
+    <span class="preloader__bar"><span></span></span>
+  </div>
+</div>

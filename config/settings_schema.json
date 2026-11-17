@@ -1,0 +1,151 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "WEAX Night",
+    "theme_version": "1.0.0",
+    "theme_author": "WEAX",
+    "theme_documentation_url": "https://wearweax.com",
+    "theme_support_email": "offical.weax@outlook.de"
+  },
+  {
+    "name": "Logo & Favicon",
+    "settings": [
+      { "type": "image_picker", "id": "logo", "label": "Logo", "info": "Am besten als SVG oder PNG mit transparentem Hintergrund. Ohne Logo wird das Platzhalter-W mit Stern gezeigt." },
+      { "type": "range", "id": "logo_width", "label": "Logo-Breite (Desktop)", "min": 40, "max": 260, "step": 4, "unit": "px", "default": 110 },
+      { "type": "range", "id": "logo_width_mobile", "label": "Logo-Breite (Handy)", "min": 32, "max": 200, "step": 4, "unit": "px", "default": 84 },
+      { "type": "image_picker", "id": "favicon", "label": "Favicon", "info": "Quadratisch, mind. 32 × 32 px." }
+    ]
+  },
+  {
+    "name": "Farben",
+    "settings": [
+      { "type": "header", "content": "Grundfarben" },
+      { "type": "color", "id": "color_bg", "label": "Hintergrund (Nachthimmel)", "default": "#050507" },
+      { "type": "color", "id": "color_surface", "label": "Flächen (Karten, Drawer)", "default": "#0d0d12" },
+      { "type": "color", "id": "color_text", "label": "Text", "default": "#ffffff" },
+      { "type": "color", "id": "color_muted", "label": "Text gedämpft", "default": "#9a9aa5" },
+      { "type": "range", "id": "border_opacity", "label": "Linien-Deckkraft", "min": 2, "max": 40, "step": 1, "unit": "%", "default": 9 },
+      { "type": "header", "content": "Chrom & Glow" },
+      { "type": "color", "id": "color_chrome_1", "label": "Chrom hell", "default": "#e8e8ee" },
+      { "type": "color", "id": "color_chrome_2", "label": "Chrom dunkel", "default": "#8a8a96" },
+      { "type": "color", "id": "color_glow", "label": "Glow-Farbe", "default": "#c8d7ff" },
+      { "type": "range", "id": "glow_strength", "label": "Glow-Stärke", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 35 },
+      { "type": "header", "content": "Buttons & Hinweise" },
+      { "type": "color", "id": "color_button_bg", "label": "Button-Hintergrund", "default": "#ffffff" },
+      { "type": "color", "id": "color_button_text", "label": "Button-Text", "default": "#050507" },
+      { "type": "color", "id": "color_sale", "label": "Sale / Warnung", "default": "#ff3b3b" },
+      { "type": "color", "id": "color_success", "label": "Erfolg / Gratis-Versand", "default": "#7dffb0" }
+    ]
+  },
+  {
+    "name": "Typografie",
+    "settings": [
+      { "type": "paragraph", "content": "Die Schriften werden lokal aus deinem Theme geladen (DSGVO-freundlich, keine Google Fonts). Lade die .woff2-Dateien unter „Code bearbeiten → Assets“ hoch und trage hier die Dateinamen ein. Anleitung: README.md." },
+      { "type": "checkbox", "id": "use_local_fonts", "label": "Lokale Schriften verwenden", "default": true },
+      { "type": "text", "id": "font_display_file", "label": "Display-Schrift (Datei)", "default": "ClashDisplay-Variable.woff2" },
+      { "type": "text", "id": "font_display_name", "label": "Display-Schrift (Name)", "default": "Clash Display" },
+      { "type": "text", "id": "font_body_file", "label": "Text-Schrift (Datei)", "default": "Satoshi-Variable.woff2" },
+      { "type": "text", "id": "font_body_name", "label": "Text-Schrift (Name)", "default": "Satoshi" },
+      { "type": "header", "content": "Größen" },
+      { "type": "range", "id": "heading_scale", "label": "Überschriften-Größe", "min": 70, "max": 140, "step": 5, "unit": "%", "default": 100 },
+      { "type": "range", "id": "body_scale", "label": "Text-Größe", "min": 85, "max": 125, "step": 5, "unit": "%", "default": 100 },
+      { "type": "select", "id": "heading_case", "label": "Überschriften-Schreibweise", "default": "uppercase", "options": [
+        { "value": "uppercase", "label": "GROSSBUCHSTABEN" },
+        { "value": "none", "label": "Normal" }
+      ] },
+      { "type": "range", "id": "heading_tracking", "label": "Überschriften-Zeichenabstand", "min": -6, "max": 10, "step": 1, "unit": "%", "default": -2 }
+    ]
+  },
+  {
+    "name": "Layout & Abstände",
+    "settings": [
+      { "type": "range", "id": "page_width", "label": "Maximale Seitenbreite", "min": 1000, "max": 1800, "step": 20, "unit": "px", "default": 1440 },
+      { "type": "range", "id": "page_gutter", "label": "Seitenrand (Handy)", "min": 12, "max": 32, "step": 2, "unit": "px", "default": 16 },
+      { "type": "range", "id": "section_spacing", "label": "Abstand zwischen Sections", "min": 0, "max": 200, "step": 8, "unit": "px", "default": 112 },
+      { "type": "range", "id": "radius", "label": "Ecken-Rundung (Karten)", "min": 0, "max": 32, "step": 2, "unit": "px", "default": 14 },
+      { "type": "range", "id": "button_radius", "label": "Ecken-Rundung (Buttons)", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 40 }
+    ]
+  },
+  {
+    "name": "Effekte",
+    "settings": [
+      { "type": "paragraph", "content": "Alle Effekte respektieren die Systemeinstellung „Bewegung reduzieren“ und werden auf dem Handy automatisch abgeschwächt." },
+      { "type": "header", "content": "Sternenhimmel" },
+      { "type": "checkbox", "id": "starfield_enable", "label": "Animierter Sternenhimmel", "default": true },
+      { "type": "range", "id": "starfield_density", "label": "Sterne-Dichte", "min": 10, "max": 100, "step": 5, "unit": "%", "default": 55 },
+      { "type": "range", "id": "starfield_speed", "label": "Geschwindigkeit", "min": 10, "max": 100, "step": 5, "unit": "%", "default": 40 },
+      { "type": "range", "id": "shooting_frequency", "label": "Sternschnuppen-Häufigkeit", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 45 },
+      { "type": "header", "content": "Interaktion" },
+      { "type": "checkbox", "id": "cursor_enable", "label": "Custom Cursor mit Glow (nur Desktop)", "default": true },
+      { "type": "checkbox", "id": "tilt_enable", "label": "3D-Tilt auf Produktkarten", "default": true },
+      { "type": "checkbox", "id": "magnetic_enable", "label": "Magnetische Buttons", "default": true },
+      { "type": "checkbox", "id": "scramble_enable", "label": "Text-Scramble auf Headlines", "default": true },
+      { "type": "header", "content": "Animationen" },
+      { "type": "checkbox", "id": "reveal_enable", "label": "Scroll-Animationen (Einblenden)", "default": true },
+      { "type": "select", "id": "reveal_style", "label": "Einblend-Stil", "default": "blur", "options": [
+        { "value": "fade", "label": "Fade" },
+        { "value": "slide", "label": "Slide" },
+        { "value": "blur", "label": "Blur" }
+      ] },
+      { "type": "checkbox", "id": "preloader_enable", "label": "Preloader (Logo-Animation)", "default": true, "info": "Erscheint nur beim ersten Besuch pro Sitzung." },
+      { "type": "checkbox", "id": "transitions_enable", "label": "Weiche Seitenübergänge", "default": true },
+      { "type": "header", "content": "Film-Grain" },
+      { "type": "checkbox", "id": "grain_enable", "label": "Film-Grain-Overlay", "default": true },
+      { "type": "range", "id": "grain_opacity", "label": "Grain-Stärke", "min": 1, "max": 15, "step": 1, "unit": "%", "default": 5 }
+    ]
+  },
+  {
+    "name": "Produktkarten & Badges",
+    "settings": [
+      { "type": "checkbox", "id": "card_hover_image", "label": "Zweites Bild beim Hovern", "default": true },
+      { "type": "checkbox", "id": "card_quick_add", "label": "Quick-Add (Größe direkt wählen)", "default": true },
+      { "type": "select", "id": "card_image_ratio", "label": "Bildformat", "default": "portrait", "options": [
+        { "value": "portrait", "label": "Hochformat (4:5)" },
+        { "value": "tall", "label": "Hoch (2:3)" },
+        { "value": "square", "label": "Quadratisch" }
+      ] },
+      { "type": "header", "content": "Badges" },
+      { "type": "checkbox", "id": "badge_new_enable", "label": "„New Drop“-Badge", "default": true },
+      { "type": "range", "id": "badge_new_days", "label": "„New Drop“ gilt für … Tage", "min": 1, "max": 60, "step": 1, "unit": "T", "default": 21, "info": "Oder Produkt-Tag „new“ setzen bzw. Metafeld „Drop-Datum“ füllen." },
+      { "type": "checkbox", "id": "badge_low_enable", "label": "„Low Stock“-Badge", "default": true },
+      { "type": "range", "id": "badge_low_threshold", "label": "„Low Stock“ ab Bestand ≤", "min": 1, "max": 20, "step": 1, "default": 5 }
+    ]
+  },
+  {
+    "name": "Warenkorb",
+    "settings": [
+      { "type": "select", "id": "cart_type", "label": "Warenkorb-Typ", "default": "drawer", "options": [
+        { "value": "drawer", "label": "Slide-out Drawer" },
+        { "value": "page", "label": "Eigene Seite" }
+      ] },
+      { "type": "checkbox", "id": "free_shipping_enable", "label": "Gratis-Versand-Fortschrittsbalken", "default": true },
+      { "type": "number", "id": "free_shipping_threshold", "label": "Gratis-Versand ab (€)", "default": 80 },
+      { "type": "checkbox", "id": "cart_note_enable", "label": "Bestellnotiz erlauben", "default": false }
+    ]
+  },
+  {
+    "name": "Social Media",
+    "settings": [
+      { "type": "text", "id": "social_instagram", "label": "Instagram-Link", "placeholder": "https://instagram.com/wearweax" },
+      { "type": "text", "id": "social_tiktok", "label": "TikTok-Link", "placeholder": "https://tiktok.com/@wearweax" },
+      { "type": "text", "id": "social_youtube", "label": "YouTube-Link" },
+      { "type": "text", "id": "social_pinterest", "label": "Pinterest-Link" }
+    ]
+  },
+  {
+    "name": "Shop-Infos & Recht",
+    "settings": [
+      { "type": "text", "id": "service_email", "label": "Kundenservice-E-Mail", "default": "offical.weax@outlook.de" },
+      { "type": "checkbox", "id": "small_business", "label": "Kleinunternehmer-Hinweis zeigen", "default": true },
+      { "type": "text", "id": "small_business_text", "label": "Kleinunternehmer-Text", "default": "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet." },
+      { "type": "checkbox", "id": "show_shipping_note", "label": "„zzgl. Versand“-Hinweis unter Preisen", "default": true },
+      { "type": "page", "id": "shipping_page", "label": "Seite „Versand & Lieferung“" }
+    ]
+  },
+  {
+    "name": "Suche",
+    "settings": [
+      { "type": "checkbox", "id": "predictive_search", "label": "Live-Suchvorschläge", "default": true }
+    ]
+  }
+]

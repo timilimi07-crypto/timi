@@ -1,0 +1,8 @@
+{%- comment -%} Zahlungs-Icons: kommen automatisch aus Einstellungen → Zahlungen {%- endcomment -%}
+{%- if shop.enabled_payment_types.size > 0 -%}
+  <ul class="payment-icons" role="list" aria-label="{{ 'general.payment.methods' | t }}">
+    {%- for type in shop.enabled_payment_types -%}
+      <li>{{ type | payment_type_svg_tag: class: 'payment-icon' }}</li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

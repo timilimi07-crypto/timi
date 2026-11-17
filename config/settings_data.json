@@ -1,0 +1,9 @@
+{
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "free_shipping_threshold": 80,
+      "service_email": "offical.weax@outlook.de"
+    }
+  }
+}

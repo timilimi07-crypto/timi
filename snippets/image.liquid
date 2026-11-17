@@ -1,0 +1,30 @@
+{%- comment -%}
+  Responsives Bild mit srcset + Lazy Loading.
+  Parameter:
+  - image (Pflicht)        - sizes (Standard: 100vw)
+  - class                  - alt
+  - eager (true = sofort laden, für Hero/erstes Bild)
+  - widths (z. B. '360, 540, 720, 1080')
+{%- endcomment -%}
+{%- liquid
+  assign img_sizes = sizes | default: '100vw'
+  assign img_widths = widths | default: '360, 540, 720, 900, 1080, 1440, 1800, 2200'
+  assign img_alt = alt | default: image.alt | escape
+  if eager
+    assign img_loading = 'eager'
+    assign img_priority = 'high'
+  else
+    assign img_loading = 'lazy'
+    assign img_priority = 'auto'
+  endif
+-%}
+{%- if image != blank -%}
+  {{ image | image_url: width: 2200 | image_tag:
+    widths: img_widths,
+    sizes: img_sizes,
+    loading: img_loading,
+    fetchpriority: img_priority,
+    alt: img_alt,
+    class: class
+  }}
+{%- endif -%}

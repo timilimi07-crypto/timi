@@ -1,0 +1,73 @@
+{%- comment -%} Slide-out Warenkorb (AJAX). Wird im Layout eingebunden und per Section Rendering API aktualisiert. {%- endcomment -%}
+<div class="drawer" id="CartDrawer" role="dialog" aria-modal="true" aria-labelledby="CartDrawerTitle" aria-hidden="true">
+  <div class="drawer__backdrop" data-close></div>
+  <div class="drawer__panel">
+    <div data-drawer-content style="display:contents;">
+      <span hidden data-item-count="{{ cart.item_count }}"></span>
+      <div class="drawer__head">
+        <h2 class="drawer__title" id="CartDrawerTitle">{{ section.settings.title }}<sup>({{ cart.item_count }})</sup></h2>
+        <button type="button" class="icon-btn" data-close aria-label="{{ 'general.accessibility.close' | t }}">{% render 'icon', name: 'close' %}</button>
+      </div>
+      <div class="drawer__body">
+        {%- if cart.item_count > 0 -%}
+          {% render 'free-shipping-bar' %}
+          {%- for item in cart.items -%}
+            {% render 'cart-line-item', item: item %}
+          {%- endfor -%}
+          {%- if settings.cart_note_enable -%}
+            <details class="accordion" style="border-bottom:0;">
+              <summary>{{ 'cart.general.note' | t }} {% render 'icon', name: 'plus' %}</summary>
+              <div class="accordion__content">
+                <label for="CartDrawerNote" class="visually-hidden">{{ 'cart.general.note' | t }}</label>
+                <textarea id="CartDrawerNote" class="textarea" data-cart-note>{{ cart.note }}</textarea>
+              </div>
+            </details>
+          {%- endif -%}
+        {%- else -%}
+          <div class="drawer__empty">
+            {% render 'icon', name: 'cart' %}
+            <p class="h3">{{ section.settings.empty_title }}</p>
+            <p class="text-muted">{{ section.settings.empty_text }}</p>
+            {%- assign empty_url = section.settings.empty_link | default: routes.all_products_collection_url -%}
+            {% render 'button', label: section.settings.empty_button, url: empty_url, icon: 'arrow-right' %}
+          </div>
+        {%- endif -%}
+      </div>
+      {%- if cart.item_count > 0 -%}
+        <div class="drawer__foot">
+          {%- for discount in cart.cart_level_discount_applications -%}
+            <div class="totals" style="font-weight:400;"><span>✦ {{ discount.title }}</span><span>−{{ discount.total_allocated_amount | money }}</span></div>
+          {%- endfor -%}
+          <div class="totals">
+            <span>{{ 'cart.general.subtotal' | t }}</span>
+            <span class="totals__value">{{ cart.total_price | money_with_currency }}</span>
+          </div>
+          <p class="tax-note">
+            {%- if settings.small_business -%}{{ settings.small_business_text }}{%- else -%}{{ 'cart.general.taxes_included' | t }}{%- endif %}
+            {{ 'cart.general.shipping_at_checkout' | t }}
+          </p>
+          <form action="{{ routes.cart_url }}" method="post">
+            <button type="submit" name="checkout" class="btn btn--primary btn--block{% if settings.magnetic_enable %} is-magnetic{% endif %}">
+              <span class="btn__label">{{ 'cart.general.checkout' | t }}</span>{% render 'icon', name: 'arrow-right' %}
+            </button>
+          </form>
+          <a href="{{ routes.cart_url }}" class="btn btn--ghost" style="justify-self:center;" data-no-transition><span class="btn__label">{{ 'cart.general.view_cart' | t }}</span></a>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Warenkorb-Drawer",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Titel", "default": "Dein Cart" },
+    { "type": "header", "content": "Leerer Warenkorb" },
+    { "type": "text", "id": "empty_title", "label": "Überschrift", "default": "Noch leer hier" },
+    { "type": "text", "id": "empty_text", "label": "Text", "default": "Greif nach den Sternen – der nächste Drop wartet." },
+    { "type": "text", "id": "empty_button", "label": "Button-Text", "default": "Jetzt shoppen" },
+    { "type": "url", "id": "empty_link", "label": "Button-Link" }
+  ]
+}
+{% endschema %}

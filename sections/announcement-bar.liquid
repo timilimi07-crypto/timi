@@ -1,0 +1,58 @@
+{%- comment -%} Announcement-Bar als Endlos-Laufband. Jede Nachricht ist ein Block. {%- endcomment -%}
+{%- if section.blocks.size > 0 -%}
+  <div
+    class="announcement-bar"
+    style="background: {{ section.settings.bg }}; color: {{ section.settings.text }};"
+    role="region"
+    aria-label="{{ 'sections.announcement.label' | t }}"
+  >
+    {%- capture items -%}
+      {%- for block in section.blocks -%}
+        <span class="marquee__item" {{ block.shopify_attributes }}>
+          {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}">{{ block.settings.text | escape }}</a>{%- else -%}{{ block.settings.text | escape }}{%- endif -%}
+          {%- render 'icon', name: 'star', class: 'marquee__sep' -%}
+        </span>
+      {%- endfor -%}
+    {%- endcapture -%}
+    <div class="marquee{% if section.settings.reverse %} marquee--reverse{% endif %}" style="--speed: {{ section.settings.speed }}s; --gap: 2.5rem;">
+      <div class="marquee__track is-pausable">{{ items }}{{ items }}</div>
+      <div class="marquee__track is-pausable" aria-hidden="true">{{ items }}{{ items }}</div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement-Bar",
+  "tag": "aside",
+  "class": "section-announcement",
+  "enabled_on": { "groups": ["header"] },
+  "max_blocks": 12,
+  "settings": [
+    { "type": "range", "id": "speed", "label": "Dauer eines Durchlaufs", "min": 10, "max": 80, "step": 2, "unit": "s", "default": 36, "info": "Höher = langsamer." },
+    { "type": "checkbox", "id": "reverse", "label": "Andere Richtung", "default": false },
+    { "type": "color", "id": "bg", "label": "Hintergrund", "default": "#050507" },
+    { "type": "color", "id": "text", "label": "Text", "default": "#ffffff" }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Nachricht",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Gratis Versand ab 80 €" },
+        { "type": "url", "id": "link", "label": "Link (optional)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement-Bar",
+      "blocks": [
+        { "type": "message", "settings": { "text": "Gratis Versand ab 80 €" } },
+        { "type": "message", "settings": { "text": "Reach for the stars" } },
+        { "type": "message", "settings": { "text": "380 gsm Heavyweight" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

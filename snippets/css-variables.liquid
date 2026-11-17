@@ -1,0 +1,94 @@
+{%- comment -%}
+  Design-Tokens: Alle Farben, Schriften und Abstände als CSS-Variablen.
+  Werte kommen aus „Theme-Einstellungen“ im Editor (config/settings_schema.json).
+{%- endcomment -%}
+{%- liquid
+  assign fs_display = settings.font_display_name | default: 'Clash Display' | escape
+  assign fs_body = settings.font_body_name | default: 'Satoshi' | escape
+  assign border_alpha = settings.border_opacity | divided_by: 100.0
+  assign glow_alpha = settings.glow_strength | divided_by: 100.0
+  assign grain_alpha = settings.grain_opacity | divided_by: 100.0
+  assign h_scale = settings.heading_scale | divided_by: 100.0
+  assign b_scale = settings.body_scale | divided_by: 100.0
+  assign tracking = settings.heading_tracking | divided_by: 100.0
+-%}
+<style>
+  {%- if settings.use_local_fonts -%}
+    {%- if settings.font_display_file != blank -%}
+    @font-face {
+      font-family: '{{ fs_display }}';
+      src: url('{{ settings.font_display_file | asset_url }}') format('woff2');
+      font-weight: 200 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    {%- endif -%}
+    {%- if settings.font_body_file != blank -%}
+    @font-face {
+      font-family: '{{ fs_body }}';
+      src: url('{{ settings.font_body_file | asset_url }}') format('woff2');
+      font-weight: 300 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    {%- endif -%}
+  {%- endif -%}
+  /* Fallback mit angepassten Metriken, damit beim Laden nichts springt */
+  @font-face { font-family: 'WEAX Display Fallback'; src: local('Arial Black'), local('Arial Bold'), local('Helvetica Neue Bold'); size-adjust: 92%; ascent-override: 95%; }
+  @font-face { font-family: 'WEAX Body Fallback'; src: local('Arial'), local('Helvetica Neue'); size-adjust: 100%; }
+
+  :root {
+    /* Farben */
+    --c-bg: {{ settings.color_bg }};
+    --c-bg-rgb: {{ settings.color_bg.red }}, {{ settings.color_bg.green }}, {{ settings.color_bg.blue }};
+    --c-surface: {{ settings.color_surface }};
+    --c-text: {{ settings.color_text }};
+    --c-text-rgb: {{ settings.color_text.red }}, {{ settings.color_text.green }}, {{ settings.color_text.blue }};
+    --c-muted: {{ settings.color_muted }};
+    --c-border: rgba(var(--c-text-rgb), {{ border_alpha }});
+    --c-border-strong: rgba(var(--c-text-rgb), {{ border_alpha | times: 2.2 }});
+    --c-chrome-1: {{ settings.color_chrome_1 }};
+    --c-chrome-2: {{ settings.color_chrome_2 }};
+    --c-glow: {{ settings.color_glow | color_modify: 'alpha', glow_alpha }};
+    --c-glow-solid: {{ settings.color_glow }};
+    --c-btn-bg: {{ settings.color_button_bg }};
+    --c-btn-text: {{ settings.color_button_text }};
+    --c-sale: {{ settings.color_sale }};
+    --c-success: {{ settings.color_success }};
+    --grad-chrome: linear-gradient(135deg, #ffffff 0%, var(--c-chrome-1) 22%, var(--c-chrome-2) 44%, #ffffff 58%, var(--c-chrome-2) 80%, var(--c-chrome-1) 100%);
+
+    /* Typografie */
+    --font-display: '{{ fs_display }}', 'WEAX Display Fallback', 'Arial Black', system-ui, sans-serif;
+    --font-body: '{{ fs_body }}', 'WEAX Body Fallback', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --h-scale: {{ h_scale }};
+    --b-scale: {{ b_scale }};
+    --h-case: {{ settings.heading_case }};
+    --h-tracking: {{ tracking }}em;
+    --fs-hero: calc(clamp(3.2rem, 13vw, 11rem) * var(--h-scale));
+    --fs-h1: calc(clamp(2.4rem, 7vw, 5.6rem) * var(--h-scale));
+    --fs-h2: calc(clamp(2rem, 5vw, 4rem) * var(--h-scale));
+    --fs-h3: calc(clamp(1.4rem, 2.6vw, 2rem) * var(--h-scale));
+    --fs-h4: calc(1.15rem * var(--h-scale));
+    --fs-body: calc(1rem * var(--b-scale));
+    --fs-small: calc(.875rem * var(--b-scale));
+    --fs-xs: calc(.72rem * var(--b-scale));
+
+    /* Abstände & Layout */
+    --page-width: {{ settings.page_width }}px;
+    --gutter: clamp({{ settings.page_gutter }}px, 4vw, 48px);
+    --section-gap: clamp({{ settings.section_spacing | times: 0.55 | round }}px, 9vw, {{ settings.section_spacing }}px);
+    --space-xs: 4px; --space-s: 8px; --space-m: 16px; --space-l: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 120px;
+    --radius: {{ settings.radius }}px;
+    --radius-btn: {{ settings.button_radius }}px;
+    --header-h: 72px;
+
+    /* Bewegung */
+    --ease-out: cubic-bezier(.16, 1, .3, 1);
+    --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+    --dur-fast: .2s; --dur-base: .45s; --dur-slow: .9s;
+    --grain-opacity: {{ grain_alpha }};
+
+    --logo-w: {{ settings.logo_width_mobile }}px;
+  }
+  @media (min-width: 990px) { :root { --logo-w: {{ settings.logo_width }}px; --header-h: 84px; } }
+</style>

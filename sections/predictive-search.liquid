@@ -1,0 +1,35 @@
+{%- comment -%} Wird per JS geladen (Live-Suche). Nicht im Editor hinzufügen. {%- endcomment -%}
+<div data-predictive-inner>
+  {%- if predictive_search.performed -%}
+    {%- assign res = predictive_search.resources -%}
+    {%- if res.products.size > 0 -%}
+      <p class="predictive__heading">{{ 'general.search.products' | t }}</p>
+      <ul class="predictive__list" role="list">
+        {%- for product in res.products -%}
+          <li>
+            <a class="predictive__item" href="{{ product.url }}">
+              {%- if product.featured_media -%}
+                {{ product.featured_media | image_url: width: 120 | image_tag: loading: 'lazy', alt: product.title }}
+              {%- else -%}<span></span>{%- endif -%}
+              <span>{{ product.title }}</span>
+              <span>{{ product.price | money }}</span>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+    {%- if res.collections.size > 0 or res.pages.size > 0 or res.articles.size > 0 -%}
+      <p class="predictive__heading">{{ 'general.search.suggestions' | t }}</p>
+      <ul class="predictive__list" role="list">
+        {%- for c in res.collections -%}<li><a class="link-underline" href="{{ c.url }}">{{ c.title }}</a></li>{%- endfor -%}
+        {%- for p in res.pages -%}<li><a class="link-underline" href="{{ p.url }}">{{ p.title }}</a></li>{%- endfor -%}
+        {%- for a in res.articles -%}<li><a class="link-underline" href="{{ a.url }}">{{ a.title }}</a></li>{%- endfor -%}
+      </ul>
+    {%- endif -%}
+    {%- if res.products.size == 0 and res.collections.size == 0 and res.pages.size == 0 and res.articles.size == 0 -%}
+      <p class="text-muted">{{ 'general.search.no_results' | t: terms: predictive_search.terms }}</p>
+    {%- else -%}
+      <p style="margin-top: 20px;"><a class="btn btn--outline btn--small" href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}&options[prefix]=last">{{ 'general.search.view_all' | t: terms: predictive_search.terms }}</a></p>
+    {%- endif -%}
+  {%- endif -%}
+</div>

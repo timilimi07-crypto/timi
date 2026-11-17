@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "weax-widerruf",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

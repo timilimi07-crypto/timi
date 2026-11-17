@@ -1,0 +1,25 @@
+{%- comment -%} Gratis-Versand-Fortschrittsbalken. Schwelle: Theme-Einstellungen → Warenkorb. {%- endcomment -%}
+{%- if settings.free_shipping_enable and settings.free_shipping_threshold > 0 -%}
+  {%- liquid
+    assign threshold = settings.free_shipping_threshold | times: 100
+    assign total = cart.total_price
+    assign remaining = threshold | minus: total
+    assign progress = total | times: 100 | divided_by: threshold
+    if progress > 100
+      assign progress = 100
+    endif
+  -%}
+  <div class="shipping-bar{% if remaining <= 0 %} is-free{% endif %}" style="--progress: {{ progress }}%;">
+    <p>
+      {%- if remaining > 0 -%}
+        {%- assign remaining_money = remaining | money -%}
+        {{ 'cart.shipping.remaining_html' | t: amount: remaining_money }}
+      {%- else -%}
+        {{ 'cart.shipping.unlocked' | t }}
+      {%- endif -%}
+    </p>
+    <div class="shipping-bar__track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ progress }}" aria-label="{{ 'cart.shipping.label' | t }}">
+      <span class="shipping-bar__fill"></span>
+    </div>
+  </div>
+{%- endif -%}

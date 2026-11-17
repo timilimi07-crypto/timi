@@ -1,0 +1,47 @@
+{%- comment -%}
+  Newsletter-Anmeldung (Shopify-Kundenformular → Kunden mit Marketing-Zustimmung).
+  Parameter: form_id (Pflicht, eindeutig), button, tags (optional, z. B. 'newsletter,drop-notify'), placeholder
+{%- endcomment -%}
+{%- liquid
+  assign nl_tags = tags | default: 'newsletter'
+  assign nl_placeholder = 'newsletter.placeholder' | t
+  if placeholder != blank
+    assign nl_placeholder = placeholder
+  endif
+  assign nl_button = 'newsletter.button' | t
+  if button != blank
+    assign nl_button = button
+  endif
+-%}
+{%- form 'customer', id: form_id, class: 'newsletter-form' -%}
+  <input type="hidden" name="contact[tags]" value="{{ nl_tags }}">
+  {%- if form.posted_successfully? -%}
+    <p class="form-message form-message--success" role="status" tabindex="-1" autofocus>✦ {{ 'newsletter.success' | t }}</p>
+  {%- else -%}
+    <div class="inline-form">
+      <label for="{{ form_id }}-email" class="visually-hidden">{{ 'newsletter.label' | t }}</label>
+      <input
+        id="{{ form_id }}-email"
+        class="input"
+        type="email"
+        name="contact[email]"
+        autocomplete="email"
+        autocapitalize="off"
+        spellcheck="false"
+        required
+        placeholder="{{ nl_placeholder | escape }}"
+        {% if form.errors %}aria-invalid="true" aria-describedby="{{ form_id }}-error"{% endif %}
+      >
+      <button type="submit" class="btn btn--primary btn--small{% if settings.magnetic_enable %} is-magnetic{% endif %}">
+        <span class="btn__label">{{ nl_button | escape }}</span>
+      </button>
+    </div>
+    {%- if form.errors -%}
+      <p class="form-message form-message--error" id="{{ form_id }}-error" role="alert">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>
+    {%- endif -%}
+    <p class="tax-note">
+      {{ 'newsletter.consent' | t }}
+      {%- if shop.privacy_policy %} <a href="{{ shop.privacy_policy.url }}" style="text-decoration: underline;">{{ 'newsletter.privacy' | t }}</a>{% endif %}
+    </p>
+  {%- endif -%}
+{%- endform -%}

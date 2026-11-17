@@ -1,0 +1,173 @@
+{%- liquid
+  assign overlay = false
+  if section.settings.transparent_home and template.name == 'index'
+    assign overlay = true
+  endif
+  assign menu = section.settings.menu
+-%}
+<div
+  class="header-wrapper{% if overlay %} header-wrapper--overlay{% endif %}"
+  data-header
+  data-sticky="{{ section.settings.sticky }}"
+  {% if section.settings.sticky == 'none' %}style="position: relative;"{% endif %}
+>
+  <header class="header page-width header--logo-{{ section.settings.logo_position }}">
+    <div class="header__left">
+      <button
+        type="button"
+        class="icon-btn header__menu-btn"
+        data-open="MenuDrawer"
+        aria-controls="MenuDrawer"
+        aria-expanded="false"
+        aria-label="{{ 'sections.header.menu' | t }}"
+      >
+        {%- render 'icon', name: 'menu' -%}
+      </button>
+      {%- if section.settings.show_search -%}
+        <button type="button" class="icon-btn header__search-mobile" data-open="SearchModal" aria-controls="SearchModal" aria-expanded="false" aria-label="{{ 'general.search.search' | t }}">
+          {%- render 'icon', name: 'search' -%}
+        </button>
+      {%- endif -%}
+
+      {%- if menu != blank -%}
+        <nav class="header__nav" aria-label="{{ 'sections.header.main_nav' | t }}">
+          <ul role="list">
+            {%- for link in menu.links -%}
+              <li{% if link.links != blank %} class="has-dropdown"{% endif %}>
+                <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+                {%- if link.links != blank -%}
+                  <div class="header__dropdown glass">
+                    <ul role="list">
+                      {%- for child in link.links -%}
+                        <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a></li>
+                      {%- endfor -%}
+                    </ul>
+                  </div>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+    </div>
+
+    <div class="header__logo">
+      <a href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }} – {{ 'sections.header.home' | t }}">
+        {%- if settings.logo != blank -%}
+          {%- assign logo_alt = settings.logo.alt | default: shop.name -%}
+          {{ settings.logo | image_url: width: 520 | image_tag: widths: '130, 260, 390, 520', sizes: '(min-width: 990px) 260px, 180px', alt: logo_alt, loading: 'eager', fetchpriority: 'high' }}
+        {%- else -%}
+          {%- render 'logo-mark', id: 'hd' -%}
+          {%- if section.settings.show_wordmark -%}<span class="header__wordmark text-chrome" aria-hidden="true">{{ shop.name | upcase }}</span>{%- endif -%}
+        {%- endif -%}
+      </a>
+    </div>
+
+    <div class="header__right">
+      {%- if section.settings.show_search -%}
+        <button type="button" class="icon-btn header__search-btn" data-open="SearchModal" aria-controls="SearchModal" aria-expanded="false" aria-label="{{ 'general.search.search' | t }}">
+          {%- render 'icon', name: 'search' -%}
+        </button>
+      {%- endif -%}
+      {%- if shop.customer_accounts_enabled and section.settings.show_account -%}
+        <a class="icon-btn header__account" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" aria-label="{% if customer %}{{ 'customer.account.title' | t }}{% else %}{{ 'customer.log_in' | t }}{% endif %}">
+          {%- render 'icon', name: 'account' -%}
+        </a>
+      {%- endif -%}
+      <a
+        class="icon-btn header__cart"
+        href="{{ routes.cart_url }}"
+        {% if settings.cart_type == 'drawer' and template.name != 'cart' %}data-open="CartDrawer" aria-controls="CartDrawer" aria-expanded="false"{% endif %}
+        aria-label="{{ 'sections.header.cart_count' | t: count: cart.item_count }}"
+      >
+        {%- render 'icon', name: 'cart' -%}
+        <span class="cart-count" data-cart-count data-count="{{ cart.item_count }}" aria-hidden="true">{% if cart.item_count > 0 %}{{ cart.item_count }}{% endif %}</span>
+      </a>
+    </div>
+  </header>
+</div>
+
+{%- comment -%} Fullscreen Mobile-Menü mit Stagger-Animation {%- endcomment -%}
+<div class="menu-drawer" id="MenuDrawer" role="dialog" aria-modal="true" aria-label="{{ 'sections.header.menu' | t }}" aria-hidden="true">
+  <button type="button" class="icon-btn menu-drawer__close" data-close aria-label="{{ 'general.accessibility.close' | t }}">
+    {%- render 'icon', name: 'close' -%}
+  </button>
+  {%- if menu != blank -%}
+    <nav aria-label="{{ 'sections.header.main_nav' | t }}">
+      <ul class="menu-drawer__list" role="list">
+        {%- for link in menu.links -%}
+          <li>
+            {%- if link.links != blank -%}
+              <details>
+                <summary class="menu-drawer__link" style="--i: {{ forloop.index0 }}">{{ link.title | escape }} {% render 'icon', name: 'plus' %}</summary>
+                <ul class="menu-drawer__sub" role="list">
+                  <li><a href="{{ link.url }}">{{ 'sections.header.view_all' | t }}</a></li>
+                  {%- for child in link.links -%}
+                    <li><a href="{{ child.url }}">{{ child.title | escape }}</a></li>
+                  {%- endfor -%}
+                </ul>
+              </details>
+            {%- else -%}
+              <a class="menu-drawer__link" href="{{ link.url }}" style="--i: {{ forloop.index0 }}"{% if link.current %} aria-current="page"{% endif %}>
+                <span class="text-chrome">{{ link.title | escape }}</span>
+                {% render 'icon', name: 'arrow-right' %}
+              </a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+  {%- endif -%}
+  <div class="menu-drawer__foot">
+    {%- if shop.customer_accounts_enabled -%}
+      <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">
+        {%- if customer -%}{{ 'customer.account.title' | t }}{%- else -%}{{ 'customer.log_in' | t }}{%- endif -%}
+      </a>
+    {%- endif -%}
+    {%- if section.settings.menu_claim != blank -%}<p class="eyebrow">{{ section.settings.menu_claim }}</p>{%- endif -%}
+    {%- render 'social-icons' -%}
+  </div>
+</div>
+
+{%- comment -%} Such-Overlay mit Live-Vorschlägen {%- endcomment -%}
+{%- if section.settings.show_search -%}
+  <div class="search-modal" id="SearchModal" data-search-modal role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}" aria-hidden="true">
+    <div class="search-modal__backdrop" data-close></div>
+    <div class="search-modal__panel">
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-modal__form" data-predictive-search>
+        <label for="SearchModalInput" class="visually-hidden">{{ 'general.search.search' | t }}</label>
+        <input id="SearchModalInput" class="search-modal__input" type="search" name="q" placeholder="{{ 'general.search.placeholder' | t }}" autocomplete="off" autocorrect="off" spellcheck="false">
+        <input type="hidden" name="options[prefix]" value="last">
+        <button type="submit" class="icon-btn" aria-label="{{ 'general.search.submit' | t }}">{% render 'icon', name: 'arrow-right' %}</button>
+        <button type="button" class="icon-btn" data-close aria-label="{{ 'general.accessibility.close' | t }}">{% render 'icon', name: 'close' %}</button>
+      </form>
+      <div class="predictive" data-predictive-results aria-live="polite"></div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Header",
+  "tag": "section",
+  "class": "section-header",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menü", "default": "main-menu", "info": "Menüs bearbeitest du unter Onlineshop → Navigation." },
+    { "type": "select", "id": "logo_position", "label": "Logo-Position (Desktop)", "default": "left", "options": [
+      { "value": "left", "label": "Links" },
+      { "value": "center", "label": "Mitte" }
+    ] },
+    { "type": "checkbox", "id": "show_wordmark", "label": "Schriftzug neben Platzhalter-Logo", "default": true, "info": "Nur sichtbar, solange kein Logo hochgeladen ist." },
+    { "type": "select", "id": "sticky", "label": "Fixierter Header", "default": "always", "options": [
+      { "value": "none", "label": "Nicht fixiert" },
+      { "value": "always", "label": "Immer sichtbar" },
+      { "value": "smart", "label": "Beim Runterscrollen ausblenden" }
+    ] },
+    { "type": "checkbox", "id": "transparent_home", "label": "Transparent über dem Hero (Startseite)", "default": true, "info": "Wird beim Scrollen zu Glass-Blur." },
+    { "type": "checkbox", "id": "show_search", "label": "Suche zeigen", "default": true },
+    { "type": "checkbox", "id": "show_account", "label": "Konto-Icon zeigen", "default": true },
+    { "type": "text", "id": "menu_claim", "label": "Claim im Mobile-Menü", "default": "Reach for the stars" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,127 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="{{ settings.color_bg }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 64, height: 64 }}">
+      <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
+    {%- endif -%}
+
+    {%- if settings.use_local_fonts and settings.font_display_file != blank -%}
+      {{ settings.font_display_file | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags.first }}{% endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {% render 'meta-tags' %}
+    {% render 'css-variables' %}
+
+    {{ 'base.css' | asset_url | stylesheet_tag: preload: true }}
+
+    <script>
+      document.documentElement.classList.replace('no-js', 'js');
+      window.WEAX = {
+        routes: {
+          root: {{ routes.root_url | json }},
+          cart: {{ routes.cart_url | json }},
+          cartAdd: {{ routes.cart_add_url | json }},
+          cartChange: {{ routes.cart_change_url | json }},
+          cartUpdate: {{ routes.cart_update_url | json }},
+          search: {{ routes.search_url | json }},
+          predictiveSearch: {{ routes.predictive_search_url | json }},
+          recommendations: {{ routes.product_recommendations_url | json }}
+        },
+        settings: {
+          cartType: {{ settings.cart_type | json }},
+          starfield: {{ settings.starfield_enable | json }},
+          starDensity: {{ settings.starfield_density | json }},
+          starSpeed: {{ settings.starfield_speed | json }},
+          shootingFreq: {{ settings.shooting_frequency | json }},
+          cursor: {{ settings.cursor_enable | json }},
+          tilt: {{ settings.tilt_enable | json }},
+          magnetic: {{ settings.magnetic_enable | json }},
+          scramble: {{ settings.scramble_enable | json }},
+          reveal: {{ settings.reveal_enable | json }},
+          preloader: {{ settings.preloader_enable | json }},
+          transitions: {{ settings.transitions_enable | json }},
+          predictiveSearch: {{ settings.predictive_search | json }}
+        },
+        strings: {
+          addToCart: {{ 'products.product.add_to_cart' | t | json }},
+          soldOut: {{ 'products.product.sold_out' | t | json }},
+          unavailable: {{ 'products.product.unavailable' | t | json }},
+          adding: {{ 'products.product.adding' | t | json }},
+          added: {{ 'products.product.added' | t | json }},
+          cartError: {{ 'cart.general.error' | t | json }},
+          copied: {{ 'general.share.copied' | t | json }}
+        },
+        designMode: {{ request.design_mode | json }}
+      };
+    </script>
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+    {%- if settings.starfield_enable or settings.cursor_enable or settings.tilt_enable or settings.magnetic_enable or settings.scramble_enable or settings.preloader_enable or settings.transitions_enable -%}
+      <script src="{{ 'effects.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {%- if request.page_type == 'policy' -%}
+      {% render 'weax-legal-style' %}
+    {%- endif -%}
+
+    {{ content_for_header }}
+  </head>
+
+  <body
+    class="template-{{ template.name | handle }}{% if template.suffix %} template-{{ template.suffix | handle }}{% endif %} reveal-{{ settings.reveal_style }}{% if settings.reveal_enable %} has-reveal{% endif %}"
+    data-page-type="{{ request.page_type }}"
+  >
+    <a class="skip-link visually-hidden-focusable" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
+
+    {%- if settings.starfield_enable -%}
+      <canvas class="starfield" id="Starfield" aria-hidden="true"></canvas>
+    {%- endif -%}
+    <div class="sky-glow" aria-hidden="true"></div>
+
+    {%- if settings.preloader_enable and request.design_mode == false -%}
+      {% render 'preloader' %}
+    {%- endif -%}
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" class="main" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {%- if settings.cart_type == 'drawer' and template.name != 'cart' -%}
+      {%- section 'cart-drawer' -%}
+    {%- endif -%}
+
+    {%- if settings.grain_enable -%}
+      <div class="grain" aria-hidden="true"></div>
+    {%- endif -%}
+    {%- if settings.cursor_enable -%}
+      <div class="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__ring"></span></div>
+    {%- endif -%}
+    {%- if settings.transitions_enable -%}
+      <div class="page-veil" aria-hidden="true"></div>
+    {%- endif -%}
+
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+
+    {% render 'structured-data' %}
+  </body>
+</html>

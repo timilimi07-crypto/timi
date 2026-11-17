@@ -1,0 +1,17 @@
+{%- comment -%}
+  WEAX Platzhalter-Logo: „W“ mit Stern (SVG). Wird genutzt, solange kein Logo im Editor hochgeladen ist.
+  Parameter: class (optional), animated (true = Preloader-Variante mit Strich-Animation)
+{%- endcomment -%}
+<svg class="logo-mark{% if class %} {{ class }}{% endif %}{% if animated %} logo-mark--animated{% endif %}" viewBox="0 0 120 100" role="img" aria-label="{{ shop.name | escape }}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="lmChrome{{ id | default: 'a' }}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".35" stop-color="#cfd0d8"/>
+      <stop offset=".55" stop-color="#8a8a96"/>
+      <stop offset=".72" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#9a9aa5"/>
+    </linearGradient>
+  </defs>
+  <path class="logo-mark__w" d="M6 18 L26 86 L44 40 L60 86 L78 18" fill="none" stroke="url(#lmChrome{{ id | default: 'a' }})" stroke-width="10" stroke-linejoin="miter" stroke-linecap="square" pathLength="1"/>
+  <path class="logo-mark__star" d="M100 6 L104.2 20.8 L119 25 L104.2 29.2 L100 44 L95.8 29.2 L81 25 L95.8 20.8 Z" fill="url(#lmChrome{{ id | default: 'a' }})"/>
+</svg>
