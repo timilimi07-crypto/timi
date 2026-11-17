@@ -50,6 +50,24 @@ export const emailUpdateSchema = z
     priority: z.enum(["URGENT", "HIGH", "NORMAL", "LOW"]),
     status: z.enum(["NEW", "IN_PROGRESS", "WAITING", "DONE"]),
     isRead: z.boolean(),
+    confirmReview: z.literal(true),
   })
   .partial()
   .refine((v) => Object.keys(v).length > 0, "Keine Änderung angegeben");
+
+export const statusChangeSchema = z.object({
+  status: z.enum(["NEW", "IN_PROGRESS", "WAITING", "DONE"]),
+  /** thread = alle E-Mails des Verlaufs (Standard beim Erledigen), email = nur diese */
+  scope: z.enum(["thread", "email"]).default("thread"),
+});
+
+export const restoreStatusSchema = z.object({
+  items: z
+    .array(z.object({ id: z.string().min(1), status: z.enum(["NEW", "IN_PROGRESS", "WAITING", "DONE"]) }))
+    .min(1)
+    .max(200),
+});
+
+export const replyRequestSchema = z.object({ tone: z.enum(["FORMAL", "CASUAL", "SHORT"]).default("FORMAL") });
+
+export const taskUpdateSchema = z.object({ status: z.enum(["OPEN", "DONE"]) });

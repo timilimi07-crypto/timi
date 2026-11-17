@@ -2,11 +2,12 @@
 
 **KI-gestützte E-Mail-Zentrale für Firmen.** MailMind ruft eingehende E-Mails aus mehreren Postfächern ab und fasst sie mit Claude (Anthropic) zusammen. Jede E-Mail wird kategorisiert und priorisiert, Aufgaben und Fristen werden automatisch erkannt. So wissen Mitarbeiter morgens in zwei Minuten, was wichtig ist, was heute erledigt werden muss und was warten kann.
 
-> **Stand: Phase 3 von 7**
+> **Stand: Phase 4 von 7**
 > - Phase 1: Projekt-Setup, Datenbankschema, Anmeldung mit Rollen, Grundlayout (Light/Dark Mode, responsiv, Befehlspalette).
 > - Phase 2: Postfach-Anbindung (IMAP, Gmail, Outlook, Demo), automatischer Abruf per Worker, Sync-Button, Abruf-Limits, Threads und Anhänge, KI-Modellwahl pro Firma, KI-Kosten im Admin-Dashboard.
 > - Phase 3: KI-Pipeline – Vorsortierung mit Haiku, Analyse mit Sonnet (Zusammenfassung, Kategorie, Priorität, Stimmung, Aufgaben, erkannte Daten), Sicherheit + „Bitte prüfen“, lernt aus Korrekturen, inkrementelle Thread-Zusammenfassung, Prompt-Caching, Maskierung, KI-Tageslimit, Qualitätstest.
-> - Als Nächstes: Phase 4 – Inbox im 3-Spalten-Layout, Detailansicht, Suche, Filter, Tastaturkürzel.
+> - Phase 4: Posteingang im 3-Spalten-Layout (Superhuman-Stil): Vorladen, optimistische Aktionen mit Rückgängig, Detailansicht, Volltextsuche, Filter, Tastaturkürzel, Phishing-Warnung.
+> - Als Nächstes: Phase 5 – Dashboard („Heute wichtig“, Fristen, Diagramme), Kanban, Aufgaben-Ansicht.
 
 ## Tech-Stack
 
@@ -190,18 +191,38 @@ Admins wählen die Modelle pro Firma unter **Einstellungen → Allgemein**. Ohne
 
 Jeder KI-Aufruf wird mit Tokens und Kosten protokolliert. Admins sehen im **Dashboard** die KI-Kosten von heute und vom laufenden Monat, eine Hochrechnung samt Vergleich zum Vormonat, den Verlauf der letzten 30 Tage nach Modell und eine Aufteilung nach Modell. Beträge in US-Dollar (Abrechnungswährung von Anthropic). Preise sind in `src/lib/ai/models.ts` hinterlegt.
 
+## Posteingang
+
+Drei Spalten: App-Seitenleiste | Liste (eine Zeile pro Verlauf) | Detail. Auf Tablet und Handy erst die Liste, dann die Detailansicht mit Zurück-Pfeil.
+
+- **Schnell:** Die erste Seite kommt fertig vom Server. Beim Durchklicken werden die nächsten zwei E-Mails und die vorherige im Hintergrund vorgeladen, ebenso beim Überfahren mit der Maus. Ein Wechsel mit `J`/`K` braucht so keine Anfrage an den Server (gemessen: ca. 40 ms bis zur Anzeige).
+- **Optimistisch:** „Erledigt“ (`E`), gelesen/ungelesen, Kategorie, Priorität und Aufgaben ändern sich sofort. Der Server wird im Hintergrund aktualisiert, bei einem Fehler wird die Änderung automatisch zurückgenommen und gemeldet. `Z` macht „Erledigt“ rückgängig.
+- **Verlauf:** „Erledigt“ gilt für den ganzen Verlauf. Kommt eine neue Antwort, taucht er wieder auf.
+- **Suche:** Volltextsuche über Betreff, Absender, KI-Zusammenfassung und Text, mit deutschen Wortformen („Wartungsverträge“ findet „Wartungsvertrag“) und Präfixsuche beim Tippen. Auch Nummern wie `PO-2026-8841` werden gefunden. Aus der Befehlspalette (`⌘K`) kann direkt in allen E-Mails gesucht werden.
+- **Filter:** Offen / Erledigt / Alle, Kategorie, Priorität, Status, Postfach, Absender, Zeitraum, Ungelesen, „Bitte prüfen“, Phishing-Verdacht, Newsletter & Spam. Sortierung nach Datum oder Wichtigkeit. Filter und ausgewählte E-Mail stehen in der URL (teilbar, Browser-Zurück funktioniert).
+- **Phishing-Warnung:** Verdächtige E-Mails tragen in Liste und Detail einen roten Badge „Möglicher Phishing-Versuch“ und zeigen einen Warnkasten mit Gründen. Sie werden nicht eingeklappt, damit die Warnung sichtbar bleibt. Die Erkennung kombiniert eine Heuristik beim Abruf (sofort, ohne KI) mit der Einschätzung der KI.
+- **Sicher anzeigen:** HTML-E-Mails werden bereinigt und in einem abgeschotteten Rahmen ohne JavaScript dargestellt. Externe Bilder (Tracking-Pixel) sind blockiert, bis man sie per Klick erlaubt.
+- **Datenschutz:** Vorladen ändert nichts. Erst wenn eine E-Mail wirklich angezeigt wird (ab 0,7 s), wird sie als gelesen markiert und das Öffnen im Audit-Log festgehalten (höchstens einmal pro 30 Minuten und Person).
+- **Antwortvorschlag:** `R` oder Button, Ton „Förmlich“, „Locker“ oder „Kurz“. Der Text ist bearbeitbar und lässt sich kopieren oder im E-Mail-Programm öffnen. MailMind verschickt nichts.
+
 ## Tastaturkürzel
 
 | Kürzel | Aktion |
 | --- | --- |
-| `⌘K` / `Strg+K` | Befehlspalette |
+| `J` / `↓`, `K` / `↑` | Nächste / vorherige E-Mail |
+| `E` | Erledigt (bzw. wieder öffnen) |
+| `Z` | Letzte Aktion rückgängig |
+| `R` | Antwortvorschlag erstellen |
+| `U` | Gelesen / ungelesen |
+| `1` `2` `3` `4` | Priorität Dringend / Hoch / Normal / Niedrig |
+| `/` | Suche |
+| `?` | Alle Kürzel anzeigen |
+| `⌘K` / `Strg+K` | Befehlspalette (auch E-Mail-Suche) |
 | `g` `d` | Dashboard |
 | `g` `i` | Posteingang |
 | `g` `k` | Kanban |
 | `g` `a` | Aufgaben |
 | `g` `e` | Einstellungen |
-
-*(j/k, e, r und / folgen mit dem Posteingang in Phase 4.)*
 
 ## Ordnerstruktur
 
@@ -218,6 +239,7 @@ mailmind/
 │   │   └── api/             # Route Handler (Auth, Health, Postfächer, Sync, OAuth, Firmeneinstellungen)
 │   ├── components/
 │   │   ├── ui/              # shadcn/ui-Basiskomponenten
+│   │   ├── inbox/           # Posteingang: Liste, Detail, Filter, Datenschicht (TanStack Query)
 │   │   ├── layout/          # Seitenleiste, Befehlspalette, Nutzermenü
 │   │   └── shared/          # Seitenkopf, leere Zustände, Logo
 │   ├── hooks/               # z. B. useHotkeys

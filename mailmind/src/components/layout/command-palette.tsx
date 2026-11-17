@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useMemo, useState } from "react
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
-import { LogOut, Moon, Sun, Monitor, Tag } from "lucide-react";
+import { LogOut, Moon, Sun, Monitor, Search, Tag } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
   Command,
@@ -37,6 +37,7 @@ export function CommandPaletteProvider({
   children: React.ReactNode;
 }) {
   const [isOpen, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const router = useRouter();
   const { setTheme } = useTheme();
 
@@ -55,20 +56,37 @@ export function CommandPaletteProvider({
     "g k": () => router.push("/kanban"),
     "g a": () => router.push("/tasks"),
     "g e": () => router.push("/settings"),
-  });
+  }, true, { capture: true });
 
   const ctx = useMemo(() => ({ open: () => setOpen(true) }), []);
 
   return (
     <CommandPaletteContext.Provider value={ctx}>
       {children}
-      <Dialog open={isOpen} onOpenChange={setOpen}>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(o) => {
+          setOpen(o);
+          if (!o) setSearch("");
+        }}
+      >
         <DialogContent className="p-0">
           <DialogTitle className="sr-only">Befehlspalette</DialogTitle>
           <Command loop>
-            <CommandInput placeholder="Befehl oder Seite suchen …" />
+            <CommandInput placeholder="Befehl, Seite oder E-Mail suchen …" value={search} onValueChange={setSearch} />
             <CommandList>
               <CommandEmpty>Keine Treffer.</CommandEmpty>
+              {search.trim().length >= 2 && (
+                <CommandGroup heading="E-Mails">
+                  {/* value enthält den Suchtext, damit der Eintrag nie herausgefiltert wird */}
+                  <CommandItem value={`__suche ${search}`} onSelect={() => go(`/inbox?view=all&q=${encodeURIComponent(search.trim())}`)}>
+                    <Search />
+                    <span className="flex-1">
+                      In allen E-Mails nach „<span className="font-medium">{search.trim()}</span>“ suchen
+                    </span>
+                  </CommandItem>
+                </CommandGroup>
+              )}
               <CommandGroup heading="Navigation">
                 {[...MAIN_NAV, SETTINGS_NAV].map((item) => (
                   <CommandItem key={item.href} value={item.label} onSelect={() => go(item.href)}>

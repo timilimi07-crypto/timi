@@ -1,4 +1,6 @@
 import { db } from "@/lib/db";
+import { can } from "@/lib/rbac";
+import { getEmailDetail } from "@/server/queries/email-detail";
 import { apiRoute, readJson } from "@/server/api";
 import { recordCorrection } from "@/server/ai/pipeline";
 import { audit } from "@/server/audit";
@@ -7,6 +9,18 @@ import { scoped } from "@/server/tenant";
 import { emailUpdateSchema } from "@/server/validation/settings";
 
 type Ctx = { params: Promise<{ id: string }> };
+
+/** GET /api/emails/:id?images=1 – Detail (ohne Seiteneffekte, für Vorladen geeignet). */
+export const GET = apiRoute<Ctx>(async (req, { params }) => {
+  const session = await assertSession("email.read");
+  const { id } = await params;
+  const detail = await getEmailDetail(session.organizationId, id, {
+    allowRemoteImages: new URL(req.url).searchParams.get("images") === "1",
+    showCosts: can(session.role, "ai.costs"),
+  });
+  if (!detail) throw new HttpError(404, "E-Mail nicht gefunden");
+  return detail;
+});
 
 /**
  * PATCH /api/emails/:id – Kategorie, Priorität, Status oder Gelesen-Markierung ändern.
@@ -46,6 +60,8 @@ export const PATCH = apiRoute<Ctx>(async (req, { params }) => {
     corrections.push(recordCorrection({ ...correctionBase, field: "priority", fromValue: email.priority, toValue: input.priority }));
   }
   if (corrections.length) Object.assign(data, { manualOverride: true, needsReview: false, reviewReason: null });
+  // „Einordnung passt“: Markierung entfernen, ohne etwas zu ändern.
+  if (input.confirmReview) Object.assign(data, { needsReview: false, reviewReason: null, manualOverride: true });
   if (input.status) data.status = input.status;
   if (input.isRead !== undefined) data.isRead = input.isRead;
 

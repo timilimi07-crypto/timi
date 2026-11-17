@@ -16,8 +16,11 @@ export function isTypingTarget(target: EventTarget | null): boolean {
  * Leichtgewichtige Tastaturkürzel.
  * Schlüssel-Syntax: "k", "shift+e", "mod+k" (mod = ⌘ auf Mac, Strg sonst)
  * und Sequenzen mit Leerzeichen, z. B. "g i" (innerhalb von 1 s).
+ * `capture: true` für globale Kürzel: Sie laufen vor seitenspezifischen und
+ * markieren behandelte Tasten (preventDefault), damit z. B. „g e“ nicht
+ * zusätzlich „e“ (Erledigt) im Posteingang auslöst.
  */
-export function useHotkeys(map: HotkeyMap, enabled = true) {
+export function useHotkeys(map: HotkeyMap, enabled = true, opts: { capture?: boolean } = {}) {
   const mapRef = useRef(map);
   mapRef.current = map;
 
@@ -27,6 +30,8 @@ export function useHotkeys(map: HotkeyMap, enabled = true) {
     let timer: ReturnType<typeof setTimeout> | undefined;
 
     function onKeyDown(e: KeyboardEvent) {
+      // Schon von einem anderen (z. B. globalen) Kürzel behandelt → nicht doppelt ausführen.
+      if (e.defaultPrevented) return;
       const key = e.key.toLowerCase();
       const mod = e.metaKey || e.ctrlKey;
       const combo = [mod && "mod", e.shiftKey && key.length > 1 && "shift", e.altKey && "alt", key]
@@ -59,10 +64,11 @@ export function useHotkeys(map: HotkeyMap, enabled = true) {
       }
     }
 
-    window.addEventListener("keydown", onKeyDown);
+    const capture = !!opts.capture;
+    window.addEventListener("keydown", onKeyDown, capture);
     return () => {
-      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keydown", onKeyDown, capture);
       clearTimeout(timer);
     };
-  }, [enabled]);
+  }, [enabled, opts.capture]);
 }

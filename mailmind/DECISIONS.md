@@ -112,3 +112,27 @@ Format: **Entscheidung** – Begründung. Neue Einträge unten anhängen.
 47. **Keine Ersatz-Ergebnisse ohne API-Schlüssel.** Im Demo-Modus ohne Schlüssel bleiben E-Mails „ausstehend“, statt erfundene Zusammenfassungen zu zeigen. Der Qualitätstest (`npm run ai:eval`) läuft nur mit echten Aufrufen; `--dry-run` prüft ausschließlich die Mechanik und ist deutlich als Trockenlauf gekennzeichnet.
 
 48. **Kosten pro E-Mail denormalisiert** (`Email.aiCostUsd`, `Email.aiModels`), damit die Liste ohne Aggregation über das Protokoll auskommt. Sichtbar nur für Admins (Berechtigung `ai.costs`).
+
+## Phase 4 – Posteingang, Suche, Filter
+
+49. **Phishing-Warnung zweistufig:** (1) Heuristik beim Abruf (`src/server/mail/phishing.ts`): ungewöhnliche Domains, Markenname im Absender ohne passende Domain, abweichende Antwortadresse, Zugangsdaten-/Drohformulierungen, Links auf IP-Adressen, riskante Anhänge (ZIP, EXE, Makro-Office …). Warnung ab 3 Punkten, bewusst konservativ: Keine der 56 harmlosen Demo-Mails schlägt an. (2) Die KI-Vorsortierung meldet zusätzlich `phishing` + Begründung. Markiert wird, wenn eins von beiden anschlägt. Phishing-Mails werden **nicht eingeklappt**, damit der rote Badge sichtbar bleibt. Das Ersatzmodell bei Ablehnungen bleibt aktiv (Wunsch des Nutzers).
+
+50. **TanStack Query als Client-Cache.** Liste (unendliche Abfrage pro Filter) und Details (ein Eintrag pro E-Mail) liegen getrennt im Cache. Das ermöglicht Vorladen, sofortiges Umschalten und optimistische Updates mit automatischem Zurückrollen. Die erste Listenseite kommt serverseitig gerendert als `initialData`, es gibt also kein Lade-Flackern.
+
+51. **Eine Zeile pro Verlauf** (neueste passende E-Mail), ermittelt per `DISTINCT ON` in einer SQL-Abfrage. „Erledigt“ gilt für den ganzen Verlauf (wie bei Superhuman). Eine neue Antwort hat Status „Neu“ und holt den Verlauf zurück in „Offen“.
+
+52. **Cursor-Paginierung** über (Rang, Empfangszeit, ID) statt OFFSET: stabil, auch wenn währenddessen neue E-Mails eintreffen, und für beide Sortierungen (Datum, Wichtigkeit) gleich.
+
+53. **Volltextsuche in Postgres** über eine generierte `tsvector`-Spalte (deutsch für Betreff, Zusammenfassung und Text; „simple“ für Namen und Adressen), gewichtet A/B/C, mit GIN-Index. Präfixsuche beim Tippen (`wort:*`), ergänzt um ILIKE für Nummern und Adressen. Kein externer Suchdienst nötig.
+
+54. **Detail-Abfrage ohne Seiteneffekte**, damit Vorladen nichts verfälscht. „Gelesen“ und der Audit-Eintrag `email.view` kommen erst über `POST /open`, wenn die E-Mail 0,7 s angezeigt wurde. Schnelles Durchblättern mit J/K markiert also nicht alles als gelesen. Audit-Einträge pro Person und E-Mail höchstens alle 30 Minuten.
+
+55. **Rückgängig serverseitig abgesichert:** Der Status-Endpunkt liefert die vorherigen Status aller betroffenen E-Mails; `restore-status` setzt sie zurück, beschränkt auf die eigene Firma.
+
+56. **HTML-Mails:** serverseitig mit `sanitize-html` bereinigt und im Client in einem iframe mit `sandbox` ohne `allow-scripts` und strenger CSP angezeigt. Externe Bilder sind standardmäßig blockiert (Tracking-Schutz) und lassen sich pro E-Mail freigeben.
+
+57. **Filter und Auswahl in der URL** per `history.replaceState`, also ohne Seitenwechsel. Links aus der Seitenleiste (Kategorie, Postfach) bauen die Ansicht neu auf.
+
+58. **Globale Tastenkürzel laufen in der Capture-Phase** und markieren behandelte Tasten, damit Sequenzen wie `G E` nicht zusätzlich das `E` (Erledigt) des Posteingangs auslösen.
+
+59. **Antwortvorschläge** mit dem Hauptmodell (Effort `low` für schnelle Antwort), Platzhalter in eckigen Klammern statt erfundener Fakten, gespeichert als `ReplyDraft`. Kosten erscheinen im KI-Kostenprotokoll (Dashboard), nicht in den Auswertungskosten der einzelnen E-Mail.
