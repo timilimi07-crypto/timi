@@ -143,6 +143,39 @@ export async function buildDigest(db, companyId, period = "week", mailboxId = nu
   return digest;
 }
 
+// Zahlen für die Diagramme der Übersicht.
+export function analytics(db, companyId, period = "week", mailboxId = null) {
+  const days = { today: 7, week: 7, month: 30, all: 60 }[period] || 7;
+  const start = new Date(Date.now() - (days - 1) * 864e5).toISOString().slice(0, 10);
+  const mb = mailboxId ? " AND e.mailbox_id=" + Number(mailboxId) : "";
+  const rows = all(db, `SELECT substr(e.received_at,1,10) d, coalesce(e.category,'unbearbeitet') c, count(*) n FROM emails e
+      WHERE e.company_id=? AND e.direction='in' AND e.received_at>=?${mb} GROUP BY d, c`, companyId, start);
+  const series = [];
+  for (let i = 0; i < days; i++) {
+    const d = new Date(Date.parse(start + "T12:00:00Z") + i * 864e5).toISOString().slice(0, 10);
+    series.push({ date: d, by_category: Object.fromEntries(rows.filter((r) => r.d === d).map((r) => [r.c, r.n])) });
+  }
+  const departments = all(db, `SELECT coalesce(d.name,'Nicht zugewiesen') department,
+      sum(CASE WHEN e.priority='hoch' THEN 1 ELSE 0 END) urgent, count(*) open
+      FROM emails e LEFT JOIN departments d ON d.id=e.department_id
+      WHERE e.company_id=? AND e.direction='in' AND e.status='open' AND e.category NOT IN ('spam','info')${mb}
+      GROUP BY department ORDER BY open DESC`, companyId);
+  // Antwortzeit: Zeit von Eingang bis zur ersten eigenen Antwort im selben Verlauf.
+  const answered = all(db, `SELECT e.received_at r, (SELECT min(o.received_at) FROM emails o WHERE o.company_id=e.company_id
+      AND o.thread_key=e.thread_key AND o.direction='out' AND o.received_at>e.received_at) a
+      FROM emails e WHERE e.company_id=? AND e.direction='in' AND e.category NOT IN ('spam','info')${mb}`, companyId)
+    .filter((x) => x.a).map((x) => (Date.parse(x.a + "Z") - Date.parse(x.r + "Z")) / 3600e3).sort((a, b) => a - b);
+  const response = answered.length ? {
+    count: answered.length,
+    avg_hours: Math.round((answered.reduce((s, h) => s + h, 0) / answered.length) * 10) / 10,
+    median_hours: Math.round(answered[Math.floor(answered.length / 2)] * 10) / 10,
+    within_24h: Math.round((answered.filter((h) => h <= 24).length / answered.length) * 100),
+  } : null;
+  const senders = all(db, `SELECT coalesce(e.from_name, e.from_addr) sender, count(*) n FROM emails e
+      WHERE e.company_id=? AND e.direction='in' AND e.status<>'spam' AND e.received_at>=?${mb} GROUP BY e.from_addr ORDER BY n DESC, max(e.received_at) DESC LIMIT 5`, companyId, start);
+  return { days: series, departments, response, senders };
+}
+
 export async function threadView(db, companyId, threadKey) {
   const emails = all(db, "SELECT * FROM emails WHERE company_id=? AND thread_key=? ORDER BY received_at", companyId, threadKey);
   if (!emails.length) return null;

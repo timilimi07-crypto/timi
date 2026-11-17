@@ -54,7 +54,8 @@ CREATE TABLE IF NOT EXISTS mailboxes (
   smtp_host TEXT, smtp_port INTEGER, smtp_user TEXT, smtp_pass TEXT, smtp_tls INTEGER DEFAULT 1,
   inbound_token TEXT UNIQUE,
   last_uid INTEGER NOT NULL DEFAULT 0,
-  last_sync_at TEXT
+  last_sync_at TEXT,
+  last_error TEXT
 );
 
 CREATE TABLE IF NOT EXISTS rules (
@@ -123,6 +124,9 @@ export function openDb(file = process.env.DB_FILE || "data/postfach.db") {
   if (file !== ":memory:") fs.mkdirSync(path.dirname(file), { recursive: true });
   const db = new DatabaseSync(file);
   db.exec(SCHEMA);
+  // Spalten, die in späteren Versionen dazukamen, bei bestehenden Datenbanken ergänzen.
+  const cols = db.prepare("PRAGMA table_info(mailboxes)").all().map((c) => c.name);
+  if (!cols.includes("last_error")) db.exec("ALTER TABLE mailboxes ADD COLUMN last_error TEXT");
   return db;
 }
 

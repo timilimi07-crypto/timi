@@ -7,6 +7,7 @@ import { one, all, run, audit } from "./db.js";
 import { hashPassword, verifyPassword, createSession, userFromToken, destroySession, parseCookies, encrypt } from "./auth.js";
 import * as mail from "./mail.js";
 import { providerName } from "./ai/index.js";
+import { PROVIDERS, testImap, inboundAddress } from "./integrations.js";
 import { CATEGORIES, CATEGORY_LABELS } from "./ai/local.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -122,7 +123,7 @@ export function createApp(db) {
     if (mine === "1") { where.push("(e.assignee_id=? OR (e.assignee_id IS NULL AND e.department_id=?))"); params.push(req.user.id, req.user.department_id ?? -1); }
     if (q) { where.push("(e.subject LIKE ? OR e.body LIKE ? OR e.from_addr LIKE ? OR e.from_name LIKE ?)"); const like = `%${q}%`; params.push(like, like, like, like); }
     const rows = all(db, `SELECT e.id, e.thread_key, e.from_name, e.from_addr, e.subject, e.received_at, e.status, e.category, e.priority,
-        e.sentiment, e.summary, e.assignee_id, e.department_id, d.name AS department, u.name AS assignee, m.name AS mailbox,
+        e.sentiment, e.summary, e.assignee_id, e.department_id, e.mailbox_id, d.name AS department, u.name AS assignee, m.name AS mailbox,
         (SELECT count(*) FROM emails t WHERE t.company_id=e.company_id AND t.thread_key=e.thread_key) AS thread_count
         FROM emails e LEFT JOIN departments d ON d.id=e.department_id LEFT JOIN users u ON u.id=e.assignee_id
         JOIN mailboxes m ON m.id=e.mailbox_id
@@ -151,6 +152,7 @@ export function createApp(db) {
     const { status, assignee_id, department_id, draft, category, priority } = req.body || {};
     if (status && !["open", "answered", "done", "spam"].includes(status)) throw httpError(400, "Ungültiger Status");
     if (category && !CATEGORIES.includes(category)) throw httpError(400, "Ungültige Kategorie");
+    if (priority && !["hoch", "mittel", "niedrig"].includes(priority)) throw httpError(400, "Ungültige Dringlichkeit");
     if (assignee_id && !one(db, "SELECT 1 FROM users WHERE id=? AND company_id=?", assignee_id, cid(req))) throw httpError(400, "Mitarbeiter gehört nicht zur Firma");
     if (department_id && !one(db, "SELECT 1 FROM departments WHERE id=? AND company_id=?", department_id, cid(req))) throw httpError(400, "Abteilung gehört nicht zur Firma");
     const set = [], p = [];
@@ -185,6 +187,11 @@ export function createApp(db) {
     if (mb && !one(db, "SELECT 1 FROM mailboxes WHERE id=? AND company_id=?", mb, cid(req))) throw httpError(404, "Postfach nicht gefunden");
     res.json(await mail.buildDigest(db, cid(req), req.query.period || "week", mb));
   }));
+  app.get("/api/analytics", (req, res) => {
+    const mb = req.query.mailbox ? Number(req.query.mailbox) : null;
+    if (mb && !one(db, "SELECT 1 FROM mailboxes WHERE id=? AND company_id=?", mb, cid(req))) throw httpError(404, "Postfach nicht gefunden");
+    res.json(mail.analytics(db, cid(req), req.query.period || "week", mb));
+  });
   app.get("/api/followups", (req, res) => res.json(mail.followups(db, cid(req)).map((e) => ({
     id: e.id, subject: e.subject, from: e.from_name || e.from_addr, received_at: e.received_at, summary: e.summary, priority: e.priority,
   }))));
@@ -261,7 +268,14 @@ export function createApp(db) {
     smtp_host: m.smtp_host, smtp_port: m.smtp_port, smtp_user: m.smtp_user, last_sync_at: m.last_sync_at,
     has_imap_password: Boolean(m.imap_pass), has_smtp_password: Boolean(m.smtp_pass),
     inbound_url: m.inbound_token ? `/api/inbound/${m.inbound_token}` : null,
+    inbound_email: inboundAddress(m), last_error: m.last_error,
   });
+  app.get("/api/providers", (req, res) => res.json({ providers: PROVIDERS, inbound_domain: process.env.INBOUND_DOMAIN || null }));
+  app.post("/api/mailboxes/test", adminOnly, wrap(async (req, res) => {
+    const b = req.body || {};
+    if (!b.imap_host || !b.imap_user || !b.imap_pass) throw httpError(400, "IMAP-Server, Benutzer und Passwort angeben");
+    res.json(await testImap(b));
+  }));
   app.get("/api/mailboxes", (req, res) => {
     const rows = all(db, "SELECT * FROM mailboxes WHERE company_id=? ORDER BY id", cid(req)).map(publicMailbox);
     if (req.user.role !== "admin") rows.forEach((m) => { delete m.inbound_url; });

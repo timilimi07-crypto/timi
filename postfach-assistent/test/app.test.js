@@ -277,3 +277,65 @@ test("Echtes Postfach: IMAP-Abruf und SMTP-Versand über lokale Mailserver", asy
   assert.match(parsed.text, /Donnerstag 10 Uhr passt/);
   assert.equal((await c.get(`/api/emails/${bremse.id}`)).data.status, "answered");
 });
+
+test("Diagramm-Daten: Tage, Abteilungen, Antwortzeit, Absender", async () => {
+  const svenja = await login("svenja@nordlicht-versand.example");
+  const a = (await svenja.get("/api/analytics?period=week")).data;
+  assert.equal(a.days.length, 7);
+  const total = a.days.reduce((n, d) => n + Object.values(d.by_category).reduce((x, y) => x + y, 0), 0);
+  const stats = (await svenja.get("/api/stats?period=week")).data;
+  assert.ok(total >= stats.total - 1 && total <= stats.total + 1, `Summe der Tage (${total}) passt zu den Kennzahlen (${stats.total})`);
+  const ks = a.departments.find((d) => d.department === "Kundenservice");
+  assert.ok(ks.open >= 4 && ks.urgent >= 2, "Kundenservice hat offene und dringende Mails");
+  assert.equal(a.response, null, "bei Nordlicht wurde nur ein Lob (Info) beantwortet – zählt nicht als Antwortzeit");
+  assert.equal(a.senders[0].sender, "Peter Schmitz", "häufigster Absender");
+  assert.equal((await svenja.get("/api/analytics?period=month")).data.days.length, 30);
+  const petra = await login("petra@sonnenhof-hv.example");
+  const r = (await petra.get("/api/analytics?period=week")).data.response;
+  assert.ok(r && r.count >= 1 && r.avg_hours > 0 && r.within_24h >= 0, "Antwortzeit bei Sonnenhof berechnet");
+  const foreign = one(db, "SELECT m.id FROM mailboxes m JOIN companies c ON c.id=m.company_id WHERE c.slug='nordlicht'").id;
+  assert.equal((await petra.get(`/api/analytics?mailbox=${foreign}`)).status, 404);
+});
+
+test("Einbinden: Anbieter-Vorlagen und Verbindungstest", async () => {
+  const c = await login("uwe@werkstatt.example", "sicher123");
+  const p = (await c.get("/api/providers")).data.providers;
+  assert.ok(p.some((x) => x.id === "ionos" && x.imap_host === "imap.ionos.de"));
+  assert.ok(p.find((x) => x.id === "m365").forwarding_only, "Microsoft 365 nur per Weiterleitung");
+  const ok = (await c.post("/api/mailboxes/test", { imap_host: "127.0.0.1", imap_port: imapPort, imap_user: "werkstatt", imap_pass: "imap-geheim" })).data;
+  assert.equal(ok.ok, true);
+  const bad = (await c.post("/api/mailboxes/test", { imap_host: "127.0.0.1", imap_port: imapPort, imap_user: "werkstatt", imap_pass: "falsch" })).data;
+  assert.equal(bad.ok, false);
+  assert.match(bad.error, /Anmeldung fehlgeschlagen/);
+  const jonas = await login("jonas@sonnenhof-hv.example");
+  assert.equal((await jonas.post("/api/mailboxes/test", { imap_host: "x", imap_user: "y", imap_pass: "z" })).status, 403);
+});
+
+test("Automatischer Abruf: neue Mail im IMAP-Postfach erscheint ohne Klick", async () => {
+  const { startScheduler } = await import("../src/integrations.js");
+  const companyId = one(db, "SELECT company_id FROM users WHERE email='uwe@werkstatt.example'").company_id;
+  const before = one(db, "SELECT count(*) n FROM emails WHERE company_id=?", companyId).n;
+  imap.appendMessage("INBOX", [], false, `From: Neukunde <neu@kunde.example>\r\nTo: info@werkstatt.example\r\nSubject: Reifenwechsel Angebot\r\nMessage-ID: <m3@imap.test>\r\n\r\nWas kostet ein Reifenwechsel? Bitte um ein Angebot.`);
+  const s = startScheduler(db, 60);
+  await s.tick(); s.stop();
+  const after = one(db, "SELECT count(*) n FROM emails WHERE company_id=?", companyId).n;
+  assert.equal(after, before + 1);
+  assert.equal(one(db, "SELECT category FROM emails WHERE message_id='<m3@imap.test>'").category, "anfrage");
+  assert.equal(one(db, "SELECT last_error FROM mailboxes WHERE company_id=? AND kind='imap'", companyId).last_error, null);
+});
+
+test("Weiterleitung per E-Mail: eigener Mail-Eingang nimmt weitergeleitete Mails an", async () => {
+  const { startInboundSmtp } = await import("../src/integrations.js");
+  const nodemailer = (await import("nodemailer")).default;
+  const srv = await startInboundSmtp(db, { port: 0, host: "127.0.0.1" });
+  const port = srv.server.address().port;
+  const token = one(db, "SELECT inbound_token FROM mailboxes WHERE address='info@sonnenhof-hv.example'").inbound_token;
+  const tx = nodemailer.createTransport({ host: "127.0.0.1", port, secure: false, ignoreTLS: true });
+  await tx.sendMail({ from: "Mieterin Rosa <rosa@mail.example>", to: `${token}@eingang.example`, subject: "Fenster undicht", text: "Hallo, bei uns ist das Fenster undicht. Bitte schicken Sie bis Freitag jemanden vorbei.", messageId: "<fwd-1@test>" });
+  const e = one(db, "SELECT e.*, c.slug FROM emails e JOIN companies c ON c.id=e.company_id WHERE message_id='<fwd-1@test>'");
+  assert.equal(e.slug, "sonnenhof", "landet bei der richtigen Firma");
+  assert.equal(e.category, "reklamation");
+  assert.equal(one(db, "SELECT name FROM departments WHERE id=?", e.department_id).name, "Technik");
+  await assert.rejects(tx.sendMail({ from: "x@y.example", to: "unbekannt@eingang.example", subject: "x", text: "x" }), /550|Unbekannter Empfänger/);
+  srv.close();
+});
