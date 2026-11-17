@@ -1,0 +1,28 @@
+{
+  "name": "postfach-assistent",
+  "version": "1.0.0",
+  "description": "KI-Postfach-Assistent für Firmen: sortiert, fasst zusammen, verteilt und beantwortet E-Mails",
+  "scripts": {
+    "start": "node --no-warnings src/index.js",
+    "demo": "node --no-warnings src/index.js --seed",
+    "test": "node --no-warnings --test test/*.test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.9.0",
+    "express": "^5.3.0",
+    "imapflow": "^2.12.1",
+    "mailparser": "^3.14.5",
+    "nodemailer": "^10.6.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "hoodiecrow-imap": "^3.3.1",
+    "smtp-server": "^3.21.6"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  }
+}
