@@ -4,9 +4,15 @@ import { detectFromTree } from "./detect.js";
 import { normalizeUbl } from "./ubl.js";
 import { parseXml } from "./xml.js";
 
-export { detectFormat, UnsupportedFormatError, profileFromSpecificationId } from "./detect.js";
+export {
+  detectFormat,
+  UnsupportedFormatError,
+  profileFromSpecificationId,
+  xrechnungVersionFromSpecificationId,
+  type UnsupportedReason,
+} from "./detect.js";
 export { ciiDateToIso } from "./cii.js";
-export { UnsafeXmlError } from "./xml.js";
+export { MalformedXmlError, UnsafeXmlError } from "./xml.js";
 
 /**
  * Liest eine XRechnung (UBL/CII) bzw. das XML einer ZUGFeRD/Factur-X-Rechnung deterministisch aus.

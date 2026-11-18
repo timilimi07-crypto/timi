@@ -22,8 +22,13 @@ meist mit externem Steuerbüro (DATEV-Umfeld).
 ```
 e-rechnungs-lotse/
 ├── apps/web/            Next.js (App Router, TS strict, Tailwind), deutschsprachige UI, Playwright-E2E in e2e/
-├── packages/core/       Reine TS-Bibliothek: Parsing (UBL/CII), Normalisierung, Prüfregeln, Hash, Dezimal, IBAN
-│   └── src/llm/         EINZIGER Zugang zu LLMs (Feature-Flag, EU-Endpunkt-Allowlist, Datenminimierung)
+├── packages/core/       Reine TS-Bibliothek, Einstieg `analyseInvoice()` (src/analyse.ts)
+│   ├── src/parse/       deterministisches Parsing UBL/CII → NormalizedInvoice (BT-annotiert, `BT_IDS`)
+│   ├── src/pdf/         ZUGFeRD/Factur-X: XML-Anhang + Text aus PDF (pdf.js)
+│   ├── src/rules/       eigene Regeln: Rechenprüfung, § 14 UStG, Profil, PDF↔XML-Abgleich
+│   ├── src/validator/   HTTP-Client KoSIT-Validator + Übersetzung des Berichts in ValidationFinding
+│   ├── src/llm/         EINZIGER Zugang zu LLMs (Feature-Flag, EU-Endpunkt-Allowlist, Datenminimierung)
+│   └── fixtures/        official/ (KoSIT, FeRD, …; nur Daten), broken/, synthetic/, validator-reports/
 ├── packages/db/         Drizzle-Schema + versionierte SQL-Migrationen (drizzle/), GoBD-Trigger
 ├── services/validator/  Docker-Image KoSIT-Validator im HTTP-Daemon-Modus + XRechnung-Konfiguration
 ├── infra/               docker-compose.yml (web, migrate, postgres, minio, validator)
@@ -63,7 +68,8 @@ f) **UI-Texte in einfachem Deutsch**, kurze Sätze, durchgehend „Sie“. Fachb
 
 Weitere Grundsätze:
 
-- Die formale Prüfung macht der KoSIT-Validator. Eigene Regeln in `core/rules.ts` sind nur Zusatzhinweise.
+- Die formale Prüfung macht der KoSIT-Validator. Eigene Regeln in `core/src/rules/` sind nur Zusatzhinweise.
+- Heruntergeladene Testdaten (`fixtures/official/`) sind nur Daten: nie ausführen, nie verändern; Herkunft im README.
 - XML mit DOCTYPE wird abgelehnt (XXE-Schutz). Keine weiteren XML-Parser ohne denselben Schutz einführen.
 - Keine Secrets committen. Konfiguration über `.env` (Vorlage: `.env.example`).
 
@@ -74,7 +80,10 @@ Weitere Grundsätze:
 | Abhängigkeiten        | `pnpm install`                                                                      |
 | Alles in Docker       | `docker compose up --build` → http://localhost:3000                                 |
 | Dev-Server (Web)      | `pnpm dev` (Postgres/Validator via `docker compose up -d postgres validator minio`) |
-| Unit-Tests            | `pnpm test`                                                                         |
+| Unit-Tests            | `pnpm test` (Core mit Abdeckung ≥ 80 %, auch `pnpm --filter core test`)             |
+| Integrationstests     | `docker compose up -d --wait validator && pnpm test:integration`                    |
+| Rechnung analysieren  | `pnpm analyse ./datei.xml` oder `./datei.pdf` (`--ohne-validator` optional)         |
+| Kaputte Fixtures neu  | `pnpm --filter @erl/core fixtures:broken`                                           |
 | E2E-Tests             | `pnpm --filter @erl/web build && pnpm test:e2e`                                     |
 | Lint                  | `pnpm lint`                                                                         |
 | Typecheck             | `pnpm typecheck`                                                                    |

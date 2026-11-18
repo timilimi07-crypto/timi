@@ -8,7 +8,7 @@ import {
 import { fixture } from "./helpers.js";
 
 describe("parseInvoice – XRechnung UBL", () => {
-  const inv = parseInvoice(fixture("xrechnung-ubl-minimal.xml"));
+  const inv = parseInvoice(fixture("synthetic/xrechnung-ubl-minimal.xml"));
 
   it("erkennt Syntax und Profil", () => {
     expect(inv.format).toMatchObject({
@@ -24,19 +24,19 @@ describe("parseInvoice – XRechnung UBL", () => {
     expect(inv.dueDate).toBe("2026-11-14");
     expect(inv.currency).toBe("EUR");
     expect(inv.buyerReference).toBe("04011000-12345-03");
-    expect(inv.seller).toEqual({ name: "Muster Elektro GmbH", vatId: "DE123456789" });
+    expect(inv.seller).toMatchObject({ name: "Muster Elektro GmbH", vatId: "DE123456789" });
     expect(inv.ibans).toEqual(["DE02120300000000202051"]);
   });
 
   it("behält Beträge als exakte Strings", () => {
-    expect(inv.totals).toEqual({
+    expect(inv.totals).toMatchObject({
       netAmount: "1271.43",
       taxAmount: "209.00",
       grossAmount: "1480.43",
       payableAmount: "1480.43",
     });
     expect(inv.taxBreakdown).toHaveLength(2);
-    expect(inv.taxBreakdown[1]).toEqual({
+    expect(inv.taxBreakdown[1]).toMatchObject({
       category: "S",
       rate: "7",
       taxableAmount: "271.43",
@@ -46,10 +46,10 @@ describe("parseInvoice – XRechnung UBL", () => {
 });
 
 describe("parseInvoice – ZUGFeRD/Factur-X CII", () => {
-  const inv = parseInvoice(fixture("zugferd-cii-minimal.xml"));
+  const inv = parseInvoice(fixture("synthetic/zugferd-cii-minimal.xml"));
 
-  it("erkennt CII und Factur-X-Profil", () => {
-    expect(inv.format).toMatchObject({ syntax: "CII", profile: "ZUGFERD_FACTURX" });
+  it("erkennt CII und Factur-X-EXTENDED-Profil", () => {
+    expect(inv.format).toMatchObject({ syntax: "CII", profile: "EXTENDED" });
   });
 
   it("verliert führende Nullen der Rechnungsnummer nicht", () => {
@@ -63,9 +63,13 @@ describe("parseInvoice – ZUGFeRD/Factur-X CII", () => {
 
   it("liest Beträge, Steuer und Umsatzsteuer-ID", () => {
     expect(inv.totals.payableAmount).toBe("595.00");
-    expect(inv.taxBreakdown).toEqual([
-      { category: "S", rate: "19.00", taxableAmount: "500.00", taxAmount: "95.00" },
-    ]);
+    expect(inv.taxBreakdown).toHaveLength(1);
+    expect(inv.taxBreakdown[0]).toMatchObject({
+      category: "S",
+      rate: "19.00",
+      taxableAmount: "500.00",
+      taxAmount: "95.00",
+    });
     expect(inv.seller.vatId).toBe("DE987654321");
     expect(inv.seller.name).toBe("Holzbau Beispiel GmbH & Co. KG");
   });

@@ -3,12 +3,13 @@
 Offizieller [KoSIT-Validator](https://github.com/itplr-kosit/validator) mit der
 [XRechnung-Konfiguration](https://github.com/itplr-kosit/validator-configuration-xrechnung) im HTTP-Daemon-Modus.
 
-| Build-Argument             | Standard     | Bedeutung                                      |
-| -------------------------- | ------------ | ---------------------------------------------- |
-| `VALIDATOR_VERSION`        | `1.6.3`      | Version des Validators (Maven Central)         |
-| `XRECHNUNG_VERSION`        | `3.0.2`      | XRechnung-Standard der Konfiguration           |
-| `XRECHNUNG_CONFIG_RELEASE` | `2026-08-31` | Release-Datum der Konfiguration                |
-| `*_SHA256`                 | leer         | Optionale Prüfsummen der Downloads (empfohlen) |
+| Build-Argument             | Standard        | Bedeutung                                           |
+| -------------------------- | --------------- | --------------------------------------------------- |
+| `VALIDATOR_VERSION`        | `1.6.3`         | Version des Validators (Maven Central)              |
+| `XRECHNUNG_VERSION`        | `3.0.2`         | XRechnung-Standard der Konfiguration                |
+| `XRECHNUNG_CONFIG_RELEASE` | `2026-08-31`    | Release-Datum der Konfiguration                     |
+| `VALIDATOR_SHA256`         | `799e64be…a7c9` | SHA-256 des Validator-JAR (geprüft beim Build)      |
+| `XRECHNUNG_CONFIG_SHA256`  | `2530cd10…21a8` | SHA-256 der Konfigurations-ZIP (geprüft beim Build) |
 
 Die Werte werden in `infra/docker-compose.yml` aus `.env` gelesen.
 
@@ -25,6 +26,9 @@ curl -s -X POST --data-binary @rechnung.xml -H "Content-Type: application/xml" l
 
 ## Update auf neue Version
 
-1. Neue Versionen in `.env` / `.env.example` eintragen (`VALIDATOR_VERSION`, `XRECHNUNG_*`).
+1. Neue Versionen in `.env` / `.env.example` eintragen (`VALIDATOR_VERSION`, `XRECHNUNG_*`) und die
+   SHA-256-Summen neu bestimmen (Dateien herunterladen, `sha256sum`; beim JAR mit der `.sha1` von Maven Central
+   gegenprüfen) – in `.env.example`, `infra/docker-compose.yml` und den ARG-Standardwerten im Dockerfile.
 2. `docker compose build validator && docker compose up -d validator`
-3. Health-Check und Prüfung einer Testrechnung kontrollieren, `docs/architektur.md` aktualisieren.
+3. `pnpm test:integration` ausführen, aufgezeichnete Berichte in `packages/core/fixtures/validator-reports/`
+   erneuern, `docs/architektur.md` aktualisieren.

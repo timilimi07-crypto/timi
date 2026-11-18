@@ -70,18 +70,30 @@ jobs:
           path: e-rechnungs-lotse/apps/web/playwright-report
           retention-days: 7
 
-  validator-image:
-    name: Validator-Image bauen + Health-Check
+  validator-integration:
+    name: Validator-Integration (docker compose)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - run: docker build -t erl-validator services/validator
-      - run: |
-          docker run -d --name erlv -p 8081:8080 erl-validator
-          for _ in $(seq 1 60); do
-            if curl -fsS http://localhost:8081/server/health; then exit 0; fi
-            sleep 2
-          done
-          docker logs erlv
-          exit 1
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: e-rechnungs-lotse/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: e-rechnungs-lotse/.nvmrc
+          cache: pnpm
+          cache-dependency-path: e-rechnungs-lotse/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      # Build prüft die SHA-256-Summen von Validator-JAR und XRechnung-Konfiguration.
+      - run: docker compose up -d --build --wait validator
+      - run: curl -fsS http://localhost:8081/server/health
+      - run: pnpm test:integration
+        env:
+          VALIDATOR_URL: http://localhost:8081
+      - name: CLI-Rauchtest
+        run: |
+          pnpm --silent analyse packages/core/fixtures/official/ferd-zugferd-2.2/EN16931_Einfach.pdf > analyse.json
+          grep -q '"status": "ok"' analyse.json
+      - if: failure()
+        run: docker compose logs validator

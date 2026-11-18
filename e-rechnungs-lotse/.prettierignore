@@ -1,2 +1,4 @@
 pnpm-lock.yaml
 packages/db/drizzle/
+packages/core/fixtures/
+packages/core/test/__snapshots__/

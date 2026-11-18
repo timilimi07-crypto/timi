@@ -41,3 +41,20 @@ export function sumDecimals(values: readonly string[], scale = 4): string {
 export function decimalEquals(a: string, b: string, scale = 4): boolean {
   return toScaled(a, scale) === toScaled(b, scale);
 }
+
+/** Wie `toScaled`, liefert aber `null` statt eines Fehlers (für fehlende oder ungültige Werte). */
+export function tryScaled(value: string | null | undefined, scale = 4): bigint | null {
+  if (value === null || value === undefined) return null;
+  try {
+    return toScaled(value, scale);
+  } catch {
+    return null;
+  }
+}
+
+export function absBig(v: bigint): bigint {
+  return v < 0n ? -v : v;
+}
+
+/** Ein Cent in der Skala `scale` (0,01 → 100 bei Skala 4). */
+export const centAtScale = (scale = 4): bigint => 10n ** BigInt(scale - 2);

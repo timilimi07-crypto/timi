@@ -10,9 +10,9 @@ FROM ${JAVA_IMAGE} AS download
 ARG VALIDATOR_VERSION=1.6.3
 ARG XRECHNUNG_VERSION=3.0.2
 ARG XRECHNUNG_CONFIG_RELEASE=2026-08-31
-# Optional: SHA-256 der Downloads. Wenn gesetzt, wird geprüft.
-ARG VALIDATOR_SHA256=""
-ARG XRECHNUNG_CONFIG_SHA256=""
+# SHA-256 der Downloads (bei Versionswechsel mit anpassen!). Leer = keine Prüfung (nicht empfohlen).
+ARG VALIDATOR_SHA256=799e64befca97d4080e03608c80b85dd5a5ecc5f4ae4f35d1116ec2855b9a7c9
+ARG XRECHNUNG_CONFIG_SHA256=2530cd107c414511c5d0462ec10f886910395abfca820db82e83d70bf01221a8
 RUN apt-get update \
  && apt-get install -y --no-install-recommends curl unzip ca-certificates \
  && rm -rf /var/lib/apt/lists/*

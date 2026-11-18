@@ -15,11 +15,31 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const invoiceSyntax = pgEnum("invoice_syntax", ["UBL", "CII"]);
+/** Muss mit `InvoiceProfile` in @erl/core übereinstimmen. */
 export const invoiceProfile = pgEnum("invoice_profile", [
-  "XRECHNUNG",
-  "ZUGFERD_FACTURX",
+  "MINIMUM",
+  "BASIC_WL",
+  "BASIC",
   "EN16931",
+  "EXTENDED",
+  "XRECHNUNG",
   "UNBEKANNT",
+]);
+/** Muss mit `InvoiceFileFormat` in @erl/core übereinstimmen. */
+export const invoiceFileFormat = pgEnum("invoice_file_format", [
+  "ubl",
+  "cii",
+  "zugferd_pdf",
+  "pdf_ohne_xml",
+  "unbekannt",
+]);
+/** Muss mit `AnalysisStatus` in @erl/core übereinstimmen. */
+export const analysisStatus = pgEnum("analysis_status", [
+  "ok",
+  "warnungen",
+  "fehlerhaft",
+  "keine_e_rechnung",
+  "pruefung_ausstehend",
 ]);
 export const invoiceSource = pgEnum("invoice_source", ["upload", "email", "api"]);
 export const validationOutcome = pgEnum("validation_outcome", [
@@ -54,7 +74,10 @@ export const invoices = pgTable(
     originalMimeType: text("original_mime_type").notNull(),
     originalFilename: text("original_filename"),
     syntax: invoiceSyntax("syntax"),
+    fileFormat: invoiceFileFormat("file_format"),
     profile: invoiceProfile("profile"),
+    analysisStatus: analysisStatus("analysis_status"),
+    embeddedXmlFilename: text("embedded_xml_filename"),
     invoiceNumber: text("invoice_number"),
     issueDate: date("issue_date"),
     dueDate: date("due_date"),
