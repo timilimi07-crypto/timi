@@ -51,10 +51,6 @@ export const MAX_ATTEMPTS = 3;
 /** Modelle mit serverseitigem Fallback bei Ablehnungen (Haiku 5.5 hat keinen). */
 const SUPPORTS_FALLBACK = new Set(["claude-sonnet-5-5", "claude-opus-5-5"]);
 
-export function isAiConfigured(): boolean {
-  return !!process.env.ANTHROPIC_API_KEY;
-}
-
 export function createAnthropicCaller(client = new Anthropic({ maxRetries: 3, timeout: 120_000 })): AiCaller {
   return async function call<S extends z.ZodType>(p: AiCallParams<S>): Promise<AiCallResult<z.infer<S>>> {
     let lastError = "Unbekannter Fehler";

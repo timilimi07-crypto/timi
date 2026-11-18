@@ -229,7 +229,7 @@ describe("processEmail", () => {
       throw new Error("529 overloaded");
     };
     await expect(processEmail(id, deps)).rejects.toThrow("529");
-    expect((await db.email.findUniqueOrThrow({ where: { id } })).aiStatus).toBe("FAILED");
+    expect((await db.email.findUniqueOrThrow({ where: { id } })).aiStatus).toBe("PENDING");
     responder = (p) => (p.operation === "triage" ? triage("kunde") : analysis({ priority: "LOW", sentiment: "POSITIVE" }));
     expect(await processEmail(id, deps)).toMatchObject({ status: "done" });
   });

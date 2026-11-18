@@ -58,6 +58,8 @@ services:
       DATABASE_URL: postgresql://mailmind:mailmind@postgres:5432/mailmind?schema=public
       REDIS_URL: redis://redis:6379
       NEXTAUTH_URL: http://localhost:3000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "3000:3000"
     depends_on:
@@ -79,12 +81,30 @@ services:
       REDIS_URL: redis://redis:6379
       NODE_ENV: production
     command: ["npm", "run", "worker"]
+    # Für AI_PROVIDER=ollama mit Ollama auf dem Host-Rechner:
+    # OLLAMA_BASE_URL=http://host.docker.internal:11434
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       migrate:
         condition: service_completed_successfully
       redis:
         condition: service_healthy
 
+  # Optional: lokales KI-Modell (kostenlos, für Tests ohne Anthropic-Schlüssel).
+  # Start: docker compose --profile ollama up -d
+  # Modell laden: docker compose exec ollama ollama pull qwen2.5:7b
+  # In .env: AI_PROVIDER=ollama und OLLAMA_BASE_URL=http://ollama:11434
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ollama"]
+    restart: unless-stopped
+    volumes:
+      - ollamadata:/root/.ollama
+    ports:
+      - "11434:11434"
+
 volumes:
   pgdata:
   redisdata:
+  ollamadata:

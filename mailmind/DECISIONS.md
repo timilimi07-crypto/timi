@@ -152,3 +152,17 @@ Format: **Entscheidung** – Begründung. Neue Einträge unten anhängen.
 65. **Aufgaben-Ansicht** zeigt alle offenen Aufgaben und die in den letzten 30 Tagen erledigten. Aufgaben gelöschter E-Mails werden ausgeblendet. Löschen ist auch für KI-Aufgaben erlaubt (z. B. wenn die KI etwas Unnötiges erkannt hat). Zuweisen an Personen folgt in Phase 6.
 
 66. **Regressionstest für die Client/Server-Grenze** (`src/lib/client-boundary.test.ts`): Server-Module dürfen aus `"use client"`-Modulen nur Komponenten und Typen importieren. Dieser Fehler trat zweimal auf (Funktion `shortDate`, Konstante `STATUSES`) und zeigt sich sonst erst zur Laufzeit. Gemeinsame Hilfsfunktionen liegen deshalb in neutralen Modulen (`lib/format.ts`, `components/kanban/statuses.ts`).
+
+## Zusatz: lokaler KI-Anbieter Ollama
+
+67. **Zweiter KI-Anbieter „ollama“** (Wunsch des Nutzers, weil kein Anthropic-Schlüssel verfügbar war), umschaltbar über `AI_PROVIDER=ollama`. **Claude bleibt Standard.** Beide Anbieter erfüllen dieselbe Schnittstelle (`AiCaller`), die Pipeline bleibt also unverändert; die Auswahl liegt zentral in `src/server/ai/provider.ts`.
+
+68. **Ollama-Anbindung über die native REST-API** (`/api/chat`, ohne zusätzliches SDK): strukturierte Ausgabe per `format` = JSON-Schema (aus zod erzeugt), Temperatur 0, `num_ctx` 16.384 (Ollama nutzt sonst nur 2.048 Token und schneidet die langen Prompts still ab). Gleiche Validierung und bis zu 3 Versuche wie bei Claude.
+
+69. **Standardmodell `qwen2.5:7b`:** bei lokalen Modellen dieser Größe gutes Deutsch und zuverlässiges JSON. Vorsortierung optional mit eigenem, kleinerem Modell (`OLLAMA_MODEL_FAST`). Die Modellwahl in den Firmeneinstellungen gilt nur für Claude; die Einstellungsseite zeigt den aktiven Anbieter.
+
+70. **Kosten 0 $, Modellkennung `ollama:<modell>`** im Kostenprotokoll und an der E-Mail. Kein Prompt-Caching (nicht zutreffend). Verarbeitung nacheinander (Concurrency 1), weil parallele Anfragen an einen lokalen Rechner nur langsamer werden.
+
+71. **KI-Dienst nicht erreichbar → Pause statt Fehlversuch** (gilt für beide Anbieter): Bei Netzwerkfehlern, Überlastung (429/529/5xx) oder nicht laufendem Ollama hält der Worker die Warteschlange 60 s an. Die E-Mail bleibt „ausstehend“ (vorher „fehlgeschlagen“) und wird nachgeholt. Fehlt dagegen das Modell, ist das ein Konfigurationsfehler mit klarer Meldung („ollama pull …“); der Worker prüft das schon beim Start.
+
+72. **Getestet** gegen einen lokalen HTTP-Server, der die Ollama-API nachbildet (Anfrageformat, Modellwahl, Wiederholungen, Fehlermeldungen, kompletter Pipeline-Durchlauf). Ein echtes lokales Modell konnte in der Cloud-Umgebung nicht laufen (Download von ollama.com/Registry durch den Netzwerk-Proxy blockiert). Den Qualitätstest mit echtem Modell führt `AI_PROVIDER=ollama npm run ai:eval` auf dem eigenen Rechner aus.

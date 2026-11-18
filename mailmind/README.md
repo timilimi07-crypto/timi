@@ -90,6 +90,8 @@ npm run worker                    # zweites Terminal: automatischer Abruf
 | `NEXTAUTH_SECRET` | ja | Geheimnis für Sitzungs-Tokens (`openssl rand -base64 32`) |
 | `ENCRYPTION_KEY` | ja | 32 Byte base64 – verschlüsselt Postfach-Zugangsdaten (AES-256-GCM) |
 | `ANTHROPIC_API_KEY` | für KI | API-Schlüssel von console.anthropic.com. Ohne Schlüssel läuft alles außer der KI-Auswertung; E-Mails bleiben auf „KI-Auswertung ausstehend“ und werden nachgeholt, sobald der Schlüssel gesetzt und der Worker neu gestartet ist. |
+| `AI_PROVIDER` | nein | `anthropic` (Standard) oder `ollama` (lokal, kostenlos, für Tests) |
+| `OLLAMA_BASE_URL`, `OLLAMA_MODEL`, `OLLAMA_MODEL_FAST` | bei Ollama | Adresse des Ollama-Servers und Modelle (Standard `http://localhost:11434`, `qwen2.5:7b`) |
 | `ANTHROPIC_MODEL` | nein | Hauptmodell, Standard `claude-sonnet-5-5`; optional `claude-opus-5-5` |
 | `ANTHROPIC_MODEL_FAST` | nein | Modell für einfache Aufgaben, Standard `claude-haiku-5-5` |
 | `DEMO_MODE` | nein | `true` = Demo-Daten und Demo-Postfächer |
@@ -170,10 +172,45 @@ Jede neue E-Mail wird **genau einmal** ausgewertet (Worker, Warteschlange `ai-pr
 
 **Kosten pro E-Mail:** Admins sehen im Posteingang bei jeder E-Mail, welche Modelle sie ausgewertet haben und was das gekostet hat (inkl. Thread-Zusammenfassung).
 
+### Lokal und kostenlos testen mit Ollama
+
+Ohne Anthropic-Schlüssel lässt sich die komplette KI-Pipeline mit einem lokalen Modell über [Ollama](https://ollama.com) testen. **Claude bleibt der Standard für den echten Betrieb.** Lokale Modelle sind langsamer und sortieren spürbar ungenauer, für Demos und Tests reichen sie.
+
+```bash
+# 1. Ollama installieren (https://ollama.com/download) und ein Modell laden
+ollama pull qwen2.5:7b          # empfohlen: gutes Deutsch + zuverlässiges JSON, ca. 5 GB RAM
+# Alternativen: llama3.1:8b · qwen2.5:14b (besser, ca. 10 GB RAM) · qwen2.5:3b als OLLAMA_MODEL_FAST
+
+# 2. In der .env umschalten
+AI_PROVIDER="ollama"
+OLLAMA_BASE_URL="http://localhost:11434"
+OLLAMA_MODEL="qwen2.5:7b"
+
+# 3. Starten wie gewohnt
+npm run dev                      # Terminal 1
+npm run worker                   # Terminal 2 – meldet beim Start, ob Ollama und das Modell bereit sind
+AI_PROVIDER=ollama npm run ai:eval   # Qualitätstest mit allen Demo-E-Mails, lokal und kostenlos
+```
+
+**Mit Docker:** Läuft Ollama auf deinem Rechner, setze `OLLAMA_BASE_URL="http://host.docker.internal:11434"`. Alternativ startet `docker compose --profile ollama up -d` einen Ollama-Container (dann `OLLAMA_BASE_URL="http://ollama:11434"` und einmalig `docker compose exec ollama ollama pull qwen2.5:7b`).
+
+Was mit Ollama gleich bleibt:
+- dieselbe Pipeline: Vorsortierung, Analyse, „Bitte prüfen“, Phishing-Erkennung, Thread-Zusammenfassung, Antwortvorschläge
+- strukturierte Ausgabe mit Prüfung und bis zu 3 Versuchen
+- Maskierung sensibler Daten
+
+Was anders ist:
+- Kosten 0 $ (das Modell steht als „qwen2.5:7b (Ollama, lokal)“ an jeder E-Mail)
+- kein Prompt-Caching
+- Verarbeitung nacheinander statt parallel
+
+Ist Ollama nicht erreichbar, pausiert der Worker jeweils eine Minute. Die E-Mails bleiben „ausstehend“ und werden automatisch nachgeholt, sobald Ollama läuft.
+
 ### Qualitätstest mit den Demo-E-Mails
 
 ```bash
 npm run ai:eval              # alle 60 Demo-E-Mails echt auswerten (ca. 1–2 $), Bericht: docs/ki-qualitaetstest.md
+AI_PROVIDER=ollama npm run ai:eval   # dasselbe lokal mit Ollama, kostenlos
 npm run ai:eval -- --keep    # Testfirma behalten, um die Ergebnisse in der App anzusehen
 npm run ai:eval -- --dry-run # nur die Mechanik prüfen, ohne API (simulierte Antworten)
 ```

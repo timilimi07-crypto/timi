@@ -4,6 +4,7 @@ import { DEFAULT_FAST_MODEL, DEFAULT_MAIN_MODEL, modelsForTier, type ModelInfo }
 import { db } from "@/lib/db";
 import { can } from "@/lib/rbac";
 import { requireSession } from "@/server/session";
+import { describeAiProvider } from "@/server/ai/provider";
 import { OrganizationForm } from "./organization-form";
 
 export const metadata: Metadata = { title: "Einstellungen" };
@@ -26,6 +27,27 @@ export default async function GeneralSettingsPage() {
         <CardDescription>Gilt für alle Nutzer und Postfächer dieser Firma.</CardDescription>
       </CardHeader>
       <CardContent>
+        {(() => {
+          const ai = describeAiProvider();
+          return (
+            <div className="mb-6 rounded-lg border bg-muted/40 px-3 py-2.5 text-sm">
+              <span className="font-medium">Aktiver KI-Anbieter: {ai.label}</span>
+              <span className="text-muted-foreground"> · {ai.detail}</span>
+              {ai.provider === "ollama" && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Lokaler Testbetrieb über <code className="font-mono">AI_PROVIDER=ollama</code>. Die Modellwahl unten gilt für Claude (Standard im
+                  echten Betrieb); lokale Modelle werden über <code className="font-mono">OLLAMA_MODEL</code> in der .env gewählt.
+                </p>
+              )}
+              {ai.provider === "anthropic" && !ai.configured && (
+                <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">
+                  Kein <code className="font-mono">ANTHROPIC_API_KEY</code> hinterlegt – die KI-Auswertung ist pausiert. Zum lokalen Testen ohne
+                  Schlüssel: <code className="font-mono">AI_PROVIDER=ollama</code>.
+                </p>
+              )}
+            </div>
+          );
+        })()}
         <OrganizationForm
           canEdit={can(session.role, "settings.manage")}
           initial={{

@@ -144,11 +144,12 @@ export async function processEmail(emailId: string, deps: PipelineDeps): Promise
   try {
     return await runPipeline(email, org, categories, orgContext, deps, now);
   } catch (err) {
-    // API-Fehler (z. B. Überlastung nach allen SDK-Retries): Status zurücksetzen,
-    // damit der nächste Job-Versuch die E-Mail wieder übernehmen kann.
+    // Vorübergehender Fehler des KI-Dienstes (Überlastung, Netzwerk, lokaler
+    // Server aus): zurück auf PENDING – der Worker bzw. der Nachhol-Lauf
+    // versucht es später erneut, die E-Mail bleibt nicht dauerhaft „fehlgeschlagen“.
     await db.email.update({
       where: { id: emailId },
-      data: { aiStatus: "FAILED", aiError: `KI-Dienst nicht erreichbar: ${err instanceof Error ? err.message.slice(0, 200) : String(err)}` },
+      data: { aiStatus: "PENDING", aiError: `KI-Dienst nicht erreichbar: ${err instanceof Error ? err.message.slice(0, 200) : String(err)}` },
     });
     throw err;
   }

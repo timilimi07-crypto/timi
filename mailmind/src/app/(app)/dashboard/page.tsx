@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { getAiCostStats } from "@/server/queries/ai-costs";
 import { getDeadlines, getEmailsPerCategory, getEmailsPerDay, getImportantToday, getKpis } from "@/server/queries/dashboard";
 import { requireSession } from "@/server/session";
+import { describeAiProvider } from "@/server/ai/provider";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
@@ -171,7 +172,13 @@ export default async function DashboardPage() {
         </SectionCard>
       </div>
 
-      {costStats && org && <AiCostCard stats={costStats} models={resolveModels(org)} />}
+      {costStats && org && (
+        <AiCostCard
+          stats={costStats}
+          models={resolveModels(org)}
+          providerNote={describeAiProvider().provider === "ollama" ? `Aktiver Anbieter: Ollama (lokal, ${describeAiProvider().detail}) – keine API-Kosten` : undefined}
+        />
+      )}
     </div>
   );
 }

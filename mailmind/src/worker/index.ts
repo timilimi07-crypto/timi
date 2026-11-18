@@ -9,7 +9,7 @@
 import { Worker } from "bullmq";
 import { db } from "@/lib/db";
 import { findDueMailboxes } from "@/server/mail/sync";
-import { isAiConfigured } from "@/server/ai/client";
+import { isAiConfigured } from "@/server/ai/provider";
 import { enqueueMailboxSync, enqueuePendingAi, mailSyncQueue, QUEUE_MAIL_SYNC, workerConnection, type SyncJobData } from "@/server/jobs/queues";
 import { runMailboxSync } from "@/server/jobs/sync-runner";
 import { startAiWorker } from "./ai";

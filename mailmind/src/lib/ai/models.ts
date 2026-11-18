@@ -146,6 +146,7 @@ export type TokenUsage = {
 
 /** Kosten eines Aufrufs in USD. Unbekannte Modelle werden wie Sonnet berechnet. */
 export function computeCostUsd(modelId: string, u: TokenUsage): number {
+  if (modelId.startsWith("ollama:")) return 0; // lokales Modell: keine API-Kosten
   const p = (AI_MODELS[modelId] ?? AI_MODELS[DEFAULT_MAIN_MODEL]!).pricing;
   const promptTokens = u.inputTokens + (u.cacheReadTokens ?? 0) + (u.cacheWriteTokens ?? 0);
   const long = p.longPrompt && promptTokens > p.longPrompt.thresholdTokens ? p.longPrompt : null;
@@ -161,5 +162,6 @@ export function computeCostUsd(modelId: string, u: TokenUsage): number {
 }
 
 export function modelLabel(id: string): string {
+  if (id.startsWith("ollama:")) return `${id.slice("ollama:".length)} (Ollama, lokal)`;
   return AI_MODELS[id]?.label ?? id;
 }

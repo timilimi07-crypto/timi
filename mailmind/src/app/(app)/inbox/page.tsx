@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { InboxView } from "@/components/inbox/inbox-view";
 import { db } from "@/lib/db";
 import { can } from "@/lib/rbac";
-import { isAiConfigured } from "@/server/ai/client";
+import { isAiConfigured } from "@/server/ai/provider";
 import { inboxCounts, listEmails, parseInboxFilters } from "@/server/queries/emails";
 import { requireSession } from "@/server/session";
 import { scoped } from "@/server/tenant";

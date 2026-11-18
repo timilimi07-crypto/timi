@@ -11,7 +11,16 @@ const STACK_ORDER = ["claude-haiku-5-5", "claude-sonnet-5-5", "claude-opus-5-5"]
 const rank = (id: string) => (STACK_ORDER.includes(id) ? STACK_ORDER.indexOf(id) : STACK_ORDER.length);
 
 /** KI-Kosten für Admins: heute, Monat, Hochrechnung, Verlauf und Aufteilung nach Modell. */
-export function AiCostCard({ stats, models }: { stats: AiCostStats; models: { main: string; fast: string } }) {
+export function AiCostCard({
+  stats,
+  models,
+  providerNote,
+}: {
+  stats: AiCostStats;
+  models: { main: string; fast: string };
+  /** z. B. „Ollama (lokal) aktiv – keine API-Kosten“ */
+  providerNote?: string;
+}) {
   const used = new Set([...stats.byModelMonth.map((m) => m.model), ...stats.daily.flatMap((d) => Object.keys(d.byModel))]);
   const chartModels = [...used]
     .sort((a, b) => rank(a) - rank(b))
@@ -41,7 +50,7 @@ export function AiCostCard({ stats, models }: { stats: AiCostStats; models: { ma
             <Sparkles className="size-4 text-primary" /> KI-Kosten
           </h2>
           <p className="mt-1 text-xs text-muted-foreground">
-            Hauptmodell {modelLabel(models.main)} · Einfache Aufgaben {modelLabel(models.fast)} · nur für Admins sichtbar
+            {providerNote ?? `Hauptmodell ${modelLabel(models.main)} · Einfache Aufgaben ${modelLabel(models.fast)}`} · nur für Admins sichtbar
           </p>
         </div>
       </div>

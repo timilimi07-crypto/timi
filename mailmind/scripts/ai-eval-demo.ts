@@ -6,7 +6,8 @@
  *   npm run ai:eval -- --dry-run  # Trockenlauf OHNE API: prüft nur die Mechanik des Skripts,
  *                                 # simulierte Antworten, Bericht nach docs/ki-trockenlauf.md
  *
- * Voraussetzung: ANTHROPIC_API_KEY. Kosten: ca. 1–2 USD pro Lauf.
+ * Voraussetzung: ANTHROPIC_API_KEY (Kosten ca. 1–2 USD pro Lauf) – oder lokal und
+ * kostenlos mit AI_PROVIDER=ollama (Qualität dann abhängig vom lokalen Modell).
  * Ergebnis: docs/ki-qualitaetstest.md (Tabelle Kategorie / Priorität / Zusammenfassung
  * pro E-Mail, Abgleich mit einer Erwartung, Kosten und Cache-Statistik).
  */
@@ -14,7 +15,9 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { db } from "../src/lib/db";
 import { modelLabel } from "../src/lib/ai/models";
-import { createAnthropicCaller, isAiConfigured, type AiCaller } from "../src/server/ai/client";
+import type { AiCaller } from "../src/server/ai/client";
+import { createAiCaller, describeAiProvider, getAiProvider, isAiConfigured } from "../src/server/ai/provider";
+import { checkOllama } from "../src/server/ai/ollama";
 import { processEmail, summarizeThread } from "../src/server/ai/pipeline";
 import { DEFAULT_CATEGORIES } from "../src/server/defaults";
 import { DemoConnector } from "../src/server/mail/connectors/demo";
@@ -79,11 +82,17 @@ const dryRunCaller: AiCaller = async (p) => {
 async function main() {
   const dryRun = process.argv.includes("--dry-run");
   if (!dryRun && !isAiConfigured()) {
-    console.error("ANTHROPIC_API_KEY fehlt – der Qualitätstest braucht echte API-Aufrufe.");
+    console.error("ANTHROPIC_API_KEY fehlt – der Qualitätstest braucht echte API-Aufrufe. Lokal ohne Schlüssel: AI_PROVIDER=ollama npm run ai:eval");
     process.exit(1);
   }
+  const provider = describeAiProvider();
+  if (!dryRun && getAiProvider() === "ollama") {
+    const check = await checkOllama();
+    console.log(check.message);
+    if (!check.ok) process.exit(1);
+  }
   const keep = process.argv.includes("--keep");
-  const caller: AiCaller = dryRun ? dryRunCaller : createAnthropicCaller();
+  const caller: AiCaller = dryRun ? dryRunCaller : createAiCaller();
   const started = Date.now();
 
   // --- Testfirma mit Standard-Kategorien und drei Demo-Postfächern ---
@@ -121,7 +130,8 @@ async function main() {
   const groups = new Map<string, typeof emails>();
   for (const e of emails) groups.set(e.threadId ?? e.id, [...(groups.get(e.threadId ?? e.id) ?? []), e]);
   let done = 0;
-  await runPool([...groups.values()], 4, async (group) => {
+  // Lokale Modelle (Ollama) nacheinander – parallel wäre auf einem Rechner nur langsamer.
+  await runPool([...groups.values()], getAiProvider() === "ollama" && !dryRun ? 1 : 4, async (group) => {
     for (const e of group.sort((a, b) => a.receivedAt.getTime() - b.receivedAt.getTime())) {
       const r = await processEmail(e.id, { caller });
       done++;
@@ -167,7 +177,7 @@ async function main() {
   const n = results.length;
   const md = `${dryRun ? "> **TROCKENLAUF – simulierte Antworten, keine Aussage über die KI-Qualität.**\n\n" : ""}# KI-Qualitätstest mit ${n} Demo-E-Mails
 
-Erstellt: ${new Date().toLocaleString("de-DE", { timeZone: "Europe/Berlin" })} · Dauer: ${Math.round((Date.now() - started) / 1000)} s · Modelle: ${models.map(modelLabel).join(", ")}
+Erstellt: ${new Date().toLocaleString("de-DE", { timeZone: "Europe/Berlin" })} · Dauer: ${Math.round((Date.now() - started) / 1000)} s · Anbieter: ${dryRun ? "Trockenlauf" : provider.label} · Modelle: ${models.map(modelLabel).join(", ")}
 
 ## Überblick
 
@@ -181,7 +191,7 @@ Erstellt: ${new Date().toLocaleString("de-DE", { timeZone: "Europe/Berlin" })} �
 | Fehlgeschlagen | ${results.filter((e) => e.aiStatus === "FAILED").length} |
 | Gesamtkosten | **${usd(totalCost)}** (Ø ${usd(totalCost / n)} pro E-Mail) |
 ${models.map((m) => `| davon ${modelLabel(m)} | ${usd(sum((u) => Number(u.costUsd), (u) => u.model === m))} (${sum(() => 1, (u) => u.model === m)} Aufrufe) |`).join("\n")}
-| Prompt-Cache gelesen / geschrieben | ${sum((u) => u.cacheReadTokens).toLocaleString("de-DE")} / ${sum((u) => u.cacheWriteTokens).toLocaleString("de-DE")} Token |
+| Prompt-Cache gelesen / geschrieben | ${getAiProvider() === "ollama" && !dryRun ? "nicht zutreffend (Ollama, lokal)" : `${sum((u) => u.cacheReadTokens).toLocaleString("de-DE")} / ${sum((u) => u.cacheWriteTokens).toLocaleString("de-DE")} Token`} |
 | Nicht gecachte Eingabe / Ausgabe | ${sum((u) => u.inputTokens).toLocaleString("de-DE")} / ${sum((u) => u.outputTokens).toLocaleString("de-DE")} Token |
 | Wiederholte Versuche (ungültige Ausgabe) | ${usage.filter((u) => u.attempt > 1).length} |
 

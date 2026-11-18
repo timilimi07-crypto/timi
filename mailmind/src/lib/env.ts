@@ -11,6 +11,11 @@ const schema = z.object({
   NEXTAUTH_URL: z.string().optional(),
   /** 32 Byte, base64-kodiert – Schlüssel für Postfach-Zugangsdaten. */
   ENCRYPTION_KEY: z.string().min(1),
+  /** "anthropic" (Standard) oder "ollama" (lokal, kostenlos, für Tests) */
+  AI_PROVIDER: z.enum(["anthropic", "ollama"]).default("anthropic"),
+  OLLAMA_BASE_URL: z.string().default("http://localhost:11434"),
+  OLLAMA_MODEL: z.string().default("qwen2.5:7b"),
+  OLLAMA_MODEL_FAST: z.string().optional(),
   ANTHROPIC_API_KEY: z.string().optional(),
   /** Hauptmodell (Standard Sonnet 5.5) – siehe src/lib/ai/models.ts */
   ANTHROPIC_MODEL: z.string().default("claude-sonnet-5-5"),
