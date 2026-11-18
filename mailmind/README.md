@@ -2,13 +2,14 @@
 
 **KI-gestützte E-Mail-Zentrale für Firmen.** MailMind ruft eingehende E-Mails aus mehreren Postfächern ab und fasst sie mit Claude (Anthropic) zusammen. Jede E-Mail wird kategorisiert und priorisiert, Aufgaben und Fristen werden automatisch erkannt. So wissen Mitarbeiter morgens in zwei Minuten, was wichtig ist, was heute erledigt werden muss und was warten kann.
 
-> **Stand: Phase 5 von 7**
+> **Stand: Phase 6 von 7**
 > - Phase 1: Projekt-Setup, Datenbankschema, Anmeldung mit Rollen, Grundlayout (Light/Dark Mode, responsiv, Befehlspalette).
 > - Phase 2: Postfach-Anbindung (IMAP, Gmail, Outlook, Demo), automatischer Abruf per Worker, Sync-Button, Abruf-Limits, Threads und Anhänge, KI-Modellwahl pro Firma, KI-Kosten im Admin-Dashboard.
 > - Phase 3: KI-Pipeline – Vorsortierung mit Haiku, Analyse mit Sonnet (Zusammenfassung, Kategorie, Priorität, Stimmung, Aufgaben, erkannte Daten), Sicherheit + „Bitte prüfen“, lernt aus Korrekturen, inkrementelle Thread-Zusammenfassung, Prompt-Caching, Maskierung, KI-Tageslimit, Qualitätstest.
 > - Phase 4: Posteingang im 3-Spalten-Layout (Superhuman-Stil): Vorladen, optimistische Aktionen mit Rückgängig, Detailansicht, Volltextsuche, Filter, Tastaturkürzel, Phishing-Warnung.
 > - Phase 5: Dashboard („Heute wichtig“, Fristen, Kennzahlen, Diagramme), Kanban mit Drag & Drop, Aufgaben-Ansicht.
-> - Als Nächstes: Phase 6 – Team-Funktionen (Zuweisen, Notizen, Kommentare), Regel-Editor, Tages-Digest.
+> - Phase 6: Zuweisen und Übernehmen, interne Notizen und Kommentare, Bearbeitungsverlauf, Regel-Editor, Kategorien und Labels bearbeiten, Team-Verwaltung, Tages-Digest. Zusätzlich: lokaler KI-Anbieter Ollama.
+> - Als Nächstes: Phase 7 – Datenschutz (Aufbewahrung, Löschfunktion, Audit-Export), Tests, Feinschliff.
 
 ## Tech-Stack
 
@@ -245,6 +246,32 @@ Jeder KI-Aufruf wird mit Tokens und Kosten protokolliert. Admins sehen im **Dash
 - Titel direkt bearbeiten, Frist per Datumsfeld ändern, abhaken, löschen. Alles wirkt sofort und wird bei Fehlern zurückgenommen.
 - Link zur zugehörigen E-Mail, Suche, Reiter „Erledigt“ (letzte 30 Tage).
 
+## Team, Regeln, Digest
+
+**Zuweisen:** Admins und Manager weisen Verläufe beliebigen Personen zu. Mitarbeitende können einen Verlauf selbst **übernehmen** (Button oder Taste `A`) und wieder abgeben.
+- Die Zuweisung gilt für den ganzen Verlauf. Ein Verlauf mit Status „Neu“ wechselt dabei auf „In Bearbeitung“, und offene Aufgaben wandern mit.
+- „Mir zugewiesen“ steht in der Seitenleiste, als Filter im Posteingang, auf dem Dashboard und im Kanban. Die Aufgaben-Ansicht hat den Filter „Nur meine“.
+
+**Intern (nie für Absender sichtbar):** Kommentare und angeheftete Notizen pro Verlauf (senden mit `⌘/Strg+Enter`). Dazu ein **Bearbeitungsverlauf**: wer hat übernommen, zugewiesen, den Status oder die Priorität geändert, kommentiert, geöffnet, und welche Regel hat gegriffen.
+
+**Regeln** (Einstellungen → Regeln, Admin und Manager): „Wenn Absender/Betreff/Text/Kategorie/Priorität/Postfach/Anhang …, dann zuweisen/Label/Priorität/Kategorie/Status/einklappen/als gelesen“.
+- Bedingungen per „alle“ oder „mindestens eine“ verknüpfen.
+- Die Live-Vorschau zeigt, wie viele der letzten 300 E-Mails getroffen würden.
+- Regeln laufen von oben nach unten und lassen sich sortieren und an- oder ausschalten. Optional: „danach keine weiteren Regeln“.
+- Jede Regel lässt sich mit ▶ nachträglich auf offene E-Mails der letzten 30 Tage anwenden.
+- Regeln laufen **nach** der KI-Auswertung und übersteuern sie. Ohne KI greifen sie direkt nach dem Abruf.
+
+**Kategorien & Labels** (Einstellungen): Kategorien anlegen, umbenennen, einfärben und beschreiben (die Beschreibung fließt in den KI-Prompt ein). „Automatisch einklappen“ gilt sofort auch für vorhandene E-Mails. Labels sind freie Markierungen (mehrere pro E-Mail, von Hand oder per Regel) und erscheinen in der Seitenleiste.
+
+**Team** (Einstellungen → Team, Admin): Personen anlegen (das Startpasswort wird einmalig angezeigt), Rollen ändern, deaktivieren. Deaktivierte Personen verlieren offene Zuweisungen. Man kann sich nicht selbst herabstufen, und es bleibt immer mindestens ein Admin.
+
+**Tages-Digest:** Morgens (Uhrzeit pro Firma, Standard 07:00, auf Wunsch nur werktags) bekommt jede Person eine E-Mail mit:
+- was ihr zugewiesen ist und was sonst im Team wichtig ist
+- was heute fällig oder überfällig ist
+- einer Warnung vor Phishing-Verdacht
+
+Der Digest fasst die vorhandenen KI-Ergebnisse zusammen und braucht deshalb keinen eigenen KI-Aufruf. Leere Digests werden nicht verschickt. Unter **Einstellungen → Mein Konto** gibt es An/Aus, eine Live-Vorschau und einen Testversand. Für den Versand muss `SMTP_URL` gesetzt sein; lokal fängt der Docker-Dienst **Mailpit** alle Mails ab (`SMTP_URL="smtp://mailpit:1025"`, ansehen unter http://localhost:8025).
+
 ## Posteingang
 
 Drei Spalten: App-Seitenleiste | Liste (eine Zeile pro Verlauf) | Detail. Auf Tablet und Handy erst die Liste, dann die Detailansicht mit Zurück-Pfeil.
@@ -268,6 +295,7 @@ Drei Spalten: App-Seitenleiste | Liste (eine Zeile pro Verlauf) | Detail. Auf Ta
 | `Z` | Letzte Aktion rückgängig |
 | `R` | Antwortvorschlag erstellen |
 | `U` | Gelesen / ungelesen |
+| `A` | Übernehmen (mir zuweisen) |
 | `1` `2` `3` `4` | Priorität Dringend / Hoch / Normal / Niedrig |
 | `/` | Suche |
 | `?` | Alle Kürzel anzeigen |

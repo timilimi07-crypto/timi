@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useHotkeys } from "@/hooks/use-hotkeys";
 import { PRIORITY_ORDER } from "@/lib/labels";
 import { cn } from "@/lib/utils";
-import { fetchListPage, filtersToParams, listKey, markOpened, prefetchDetail, useEmailPatch, useStatusAction, type EmailPage, type InboxFilters } from "./data";
+import { fetchListPage, filtersToParams, listKey, markOpened, prefetchDetail, useAssign, useEmailPatch, useStatusAction, type EmailPage, type InboxFilters } from "./data";
 import { EmailDetailPane } from "./email-detail";
 import { EmailRow } from "./email-row";
 import { FilterBar, type FilterOptions } from "./filter-bar";
@@ -27,6 +27,7 @@ const SHORTCUTS: [string[], string][] = [
   [["Z"], "Letzte Aktion rückgängig"],
   [["R"], "Antwortvorschlag erstellen"],
   [["U"], "Gelesen / ungelesen"],
+  [["A"], "Übernehmen (mir zuweisen)"],
   [["1", "2", "3", "4"], "Priorität: Dringend, Hoch, Normal, Niedrig"],
   [["/"], "Suchen"],
   [["⌘", "K"], "Befehlspalette"],
@@ -54,6 +55,8 @@ export function InboxView({
   showCosts,
   aiEnabled,
   title,
+  currentUserId,
+  canAssignOthers,
 }: {
   initialFilters: InboxFilters;
   initialPage: EmailPage;
@@ -62,6 +65,8 @@ export function InboxView({
   showCosts: boolean;
   aiEnabled: boolean;
   title: string;
+  currentUserId: string;
+  canAssignOthers: boolean;
 }) {
   const qc = useQueryClient();
   const desktop = useIsDesktop();
@@ -90,6 +95,7 @@ export function InboxView({
 
   const { setStatus, undo } = useStatusAction();
   const patch = useEmailPatch();
+  const assign = useAssign();
 
   // --- URL synchron halten (ohne Neuladen der Seite) ---
   useEffect(() => {
@@ -191,6 +197,12 @@ export function InboxView({
     [selectedRow, patch],
   );
 
+  const takeOver = useCallback(() => {
+    if (!selectedRow || selectedRow.assignee?.id === currentUserId) return;
+    const me = options.users.find((u) => u.id === currentUserId);
+    if (me) assign.mutate({ id: selectedRow.id, threadId: selectedRow.threadId, assignee: me, label: "Übernommen" });
+  }, [selectedRow, currentUserId, options.users, assign]);
+
   const onFilterChange = useCallback((p: Partial<InboxFilters>) => {
     setFilters((f) => ({ ...f, ...p }));
     setSelectedId(null);
@@ -207,6 +219,7 @@ export function InboxView({
       e: toggleDone,
       z: undo,
       u: toggleRead,
+      a: takeOver,
       r: () => {
         setMobileOpen(true);
         replyRef.current?.generate();
@@ -278,7 +291,7 @@ export function InboxView({
           ) : (
             <>
               {items.map((item) => (
-                <EmailRow key={item.id} item={item} selected={item.id === selectedId} showCosts={showCosts} onSelect={select} onHover={onHover} />
+                <EmailRow key={item.id} item={item} selected={item.id === selectedId} showCosts={showCosts} currentUserId={currentUserId} onSelect={select} onHover={onHover} />
               ))}
               <div ref={sentinel} className="h-10">
                 {query.isFetchingNextPage && <LoaderCircle className="mx-auto mt-3 size-4 animate-spin text-muted-foreground" />}
@@ -297,6 +310,11 @@ export function InboxView({
             id={selectedId}
             row={selectedRow}
             categories={options.categories}
+            users={options.users}
+            labels={options.labels}
+            currentUserId={currentUserId}
+            canAssignOthers={canAssignOthers}
+            isAdmin={canAssignOthers && showCosts}
             showCosts={showCosts}
             aiEnabled={aiEnabled}
             position={{ index, total: items.length }}

@@ -23,6 +23,8 @@ export async function getEmailDetail(
       tasks: { orderBy: [{ status: "asc" }, { dueDate: "asc" }], select: { id: true, title: true, dueDate: true, dueDateText: true, status: true } },
       entities: { select: { id: true, type: true, label: true, value: true, normalizedValue: true } },
       replyDrafts: { orderBy: { createdAt: "desc" }, take: 3, select: { id: true, tone: true, body: true, createdAt: true } },
+      assignee: { select: { id: true, name: true } },
+      labels: { select: { label: { select: { id: true, name: true, color: true } } } },
       thread: {
         select: {
           summary: true,
@@ -38,6 +40,28 @@ export async function getEmailDetail(
     },
   });
   if (!e) return null;
+
+  // Kommentare und Bearbeitungsverlauf gelten für den ganzen Verlauf.
+  const threadEmailIds = e.thread?.emails.map((m) => m.id) ?? [e.id];
+  if (!threadEmailIds.includes(e.id)) threadEmailIds.push(e.id);
+  const [comments, activity] = await Promise.all([
+    db.comment.findMany({
+      where: { emailId: { in: threadEmailIds } },
+      orderBy: { createdAt: "asc" },
+      include: { author: { select: { id: true, name: true } } },
+    }),
+    db.auditLog.findMany({
+      where: {
+        organizationId,
+        entityType: "email",
+        entityId: { in: threadEmailIds },
+        action: { in: ["email.assign", "email.status", "email.update", "email.label", "rule.apply", "email.reply_suggested", "email.view", "note.create", "comment.create"] },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 60,
+      include: { user: { select: { name: true } } },
+    }),
+  ]);
 
   const body = e.bodyHtml
     ? (() => {
@@ -79,6 +103,18 @@ export async function getEmailDetail(
     tasks: e.tasks.map((t) => ({ ...t, dueDate: t.dueDate?.toISOString() ?? null })),
     entities: e.entities,
     replyDrafts: e.replyDrafts.map((d) => ({ ...d, createdAt: d.createdAt.toISOString() })),
+    assignee: e.assignee,
+    labels: e.labels.map((l) => l.label),
+    comments: comments.map((c) => ({
+      id: c.id,
+      body: c.body,
+      isNote: c.isNote,
+      emailId: c.emailId,
+      author: c.author,
+      createdAt: c.createdAt.toISOString(),
+      edited: c.updatedAt.getTime() - c.createdAt.getTime() > 1000,
+    })),
+    activity: summarizeActivity(activity),
     thread:
       e.thread && e.thread.messageCount > 1
         ? {
@@ -92,3 +128,62 @@ export async function getEmailDetail(
 }
 
 export type EmailDetail = NonNullable<Awaited<ReturnType<typeof getEmailDetail>>>;
+
+type AuditRow = { id: string; action: string; createdAt: Date; metadata: Prisma.JsonValue; user: { name: string } | null };
+
+const STATUS_DE: Record<string, string> = { NEW: "Neu", IN_PROGRESS: "In Bearbeitung", WAITING: "Wartet", DONE: "Erledigt" };
+const PRIO_DE: Record<string, string> = { URGENT: "Dringend", HIGH: "Hoch", NORMAL: "Normal", LOW: "Niedrig" };
+
+/**
+ * Bearbeitungsverlauf („wer bearbeitet was“) als lesbare Sätze. Öffnen wird
+ * pro Person zusammengefasst (nur das letzte Mal), damit der Verlauf kurz bleibt.
+ */
+export function summarizeActivity(rows: AuditRow[]): { id: string; at: string; who: string; text: string }[] {
+  const seenViews = new Set<string>();
+  const out: { id: string; at: string; who: string; text: string }[] = [];
+  for (const r of rows) {
+    const who = r.user?.name ?? "Automatisch";
+    const m = (r.metadata ?? {}) as Record<string, unknown>;
+    let text: string | null = null;
+    switch (r.action) {
+      case "email.view":
+        if (seenViews.has(who)) continue;
+        seenViews.add(who);
+        text = "hat die E-Mail geöffnet";
+        break;
+      case "email.assign":
+        text = m.assigneeName ? `hat ${m.assigneeName === who ? "übernommen" : `an ${m.assigneeName} zugewiesen`}` : "hat die Zuweisung entfernt";
+        break;
+      case "email.status":
+        text = m.status ? `hat den Status auf „${STATUS_DE[m.status as string] ?? m.status}“ gesetzt` : m.restored ? "hat eine Statusänderung rückgängig gemacht" : "hat den Status geändert";
+        break;
+      case "email.update": {
+        const parts: string[] = [];
+        if (m.priority) parts.push(`Priorität „${PRIO_DE[m.priority as string] ?? m.priority}“`);
+        if (m.categoryKey) parts.push(`Kategorie „${m.categoryKey}“`);
+        if (m.confirmReview) parts.push("Einordnung bestätigt");
+        if (m.isRead === false) parts.push("als ungelesen markiert");
+        if (!parts.length) continue;
+        text = `hat ${parts.join(", ")} gesetzt`.replace("hat Einordnung bestätigt gesetzt", "hat die Einordnung bestätigt");
+        break;
+      }
+      case "email.label":
+        text = `hat Label „${m.label}“ ${m.on ? "gesetzt" : "entfernt"}`;
+        break;
+      case "rule.apply":
+        text = `Regel ${(m.rules as string[] | undefined)?.map((n) => `„${n}“`).join(", ") ?? ""} angewendet`;
+        break;
+      case "email.reply_suggested":
+        text = "hat einen Antwortvorschlag erstellt";
+        break;
+      case "note.create":
+        text = "hat eine interne Notiz angelegt";
+        break;
+      case "comment.create":
+        text = "hat kommentiert";
+        break;
+    }
+    if (text) out.push({ id: r.id, at: r.createdAt.toISOString(), who, text });
+  }
+  return out;
+}

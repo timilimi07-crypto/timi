@@ -2,7 +2,7 @@
 
 import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
-import { ChevronsUpDown, LogOut, Monitor, Moon, Settings, Sun } from "lucide-react";
+import { ChevronsUpDown, LogOut, Monitor, Moon, Settings, Sun, UserRound } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -60,6 +60,11 @@ export function UserMenu({ user }: { user: SidebarUser }) {
           ))}
         </div>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/settings/account">
+            <UserRound /> Mein Konto &amp; Digest
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/settings">
             <Settings /> Einstellungen

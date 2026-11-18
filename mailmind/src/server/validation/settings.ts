@@ -8,6 +8,9 @@ export const organizationSettingsSchema = z
     initialSyncDays: z.number().int().min(1, "Zeitraum: mindestens 1 Tag").max(365, "Zeitraum: höchstens 365 Tage"),
     maxEmailsPerSync: z.number().int().min(10, "Limit: mindestens 10 E-Mails").max(1000, "Limit: höchstens 1000 E-Mails"),
     aiDailyEmailLimit: z.number().int().min(10, "KI-Tageslimit: mindestens 10 E-Mails").max(20000, "KI-Tageslimit: höchstens 20.000 E-Mails"),
+    digestEnabled: z.boolean(),
+    digestHour: z.number().int().min(0).max(23),
+    digestWeekdaysOnly: z.boolean(),
     aiModel: z
       .string()
       .nullable()
@@ -51,6 +54,8 @@ export const emailUpdateSchema = z
     status: z.enum(["NEW", "IN_PROGRESS", "WAITING", "DONE"]),
     isRead: z.boolean(),
     confirmReview: z.literal(true),
+    /** Person zuweisen (null = Zuweisung entfernen). Gilt für den ganzen Verlauf. */
+    assigneeId: z.string().min(1).nullable(),
   })
   .partial()
   .refine((v) => Object.keys(v).length > 0, "Keine Änderung angegeben");

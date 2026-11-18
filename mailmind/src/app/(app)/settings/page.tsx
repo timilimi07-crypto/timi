@@ -55,6 +55,9 @@ export default async function GeneralSettingsPage() {
             initialSyncDays: org.initialSyncDays,
             maxEmailsPerSync: org.maxEmailsPerSync,
             aiDailyEmailLimit: org.aiDailyEmailLimit,
+            digestEnabled: org.digestEnabled,
+            digestHour: org.digestHour,
+            digestWeekdaysOnly: org.digestWeekdaysOnly,
             aiModel: org.aiModel,
             aiModelFast: org.aiModelFast,
           }}

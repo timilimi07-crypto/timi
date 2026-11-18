@@ -12,5 +12,6 @@ export const GET = apiRoute(async (req) => {
     cursor: params.get("cursor"),
     limit: Number(params.get("limit")) || 50,
     showCosts: can(session.role, "ai.costs"),
+    userId: session.userId,
   });
 });

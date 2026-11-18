@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Search } from "lucide-react";
+import { Search, UserRoundCheck } from "lucide-react";
 import { Kbd } from "@/components/ui/kbd";
 import { Logo } from "@/components/shared/logo";
 import { MAIN_NAV, SETTINGS_NAV } from "@/lib/navigation";
@@ -10,13 +10,14 @@ import { colorClasses } from "@/lib/colors";
 import { cn } from "@/lib/utils";
 import { useCommandPalette } from "./command-palette";
 import { UserMenu } from "./user-menu";
-import type { SidebarCategory, SidebarCounts, SidebarMailbox, SidebarUser } from "./types";
+import type { SidebarCategory, SidebarCounts, SidebarLabel, SidebarMailbox, SidebarUser } from "./types";
 
 export type SidebarProps = {
   user: SidebarUser;
   categories: SidebarCategory[];
   mailboxes: SidebarMailbox[];
   counts: SidebarCounts;
+  labels: SidebarLabel[];
   /** Wird in der mobilen Navigation genutzt, um das Panel nach Klick zu schließen. */
   onNavigate?: () => void;
 };
@@ -64,12 +65,15 @@ function NavLink({
 }
 
 /** Linke Seitenleiste: Navigation, Kategorien, Postfächer, Nutzermenü. */
-export function Sidebar({ user, categories, mailboxes, counts, onNavigate }: SidebarProps) {
+export function Sidebar({ user, categories, mailboxes, counts, labels, onNavigate }: SidebarProps) {
   const pathname = usePathname();
   const params = useSearchParams();
   const palette = useCommandPalette();
   const activeCategory = pathname === "/inbox" ? params.get("category") : null;
   const activeMailbox = pathname === "/inbox" ? params.get("mailbox") : null;
+  const activeLabel = pathname === "/inbox" ? params.get("label") : null;
+  const mineActive = pathname === "/inbox" && params.get("assignee") === "me";
+  const filtered = !!(activeCategory || activeMailbox || activeLabel || mineActive);
 
   const navCounts: Record<string, number | undefined> = {
     "/inbox": counts.inboxUnread,
@@ -102,13 +106,20 @@ export function Sidebar({ user, categories, mailboxes, counts, onNavigate }: Sid
               key={item.href}
               href={item.href}
               onNavigate={onNavigate}
-              active={pathname.startsWith(item.href) && !activeCategory && !activeMailbox}
+              active={pathname.startsWith(item.href) && !filtered}
               count={navCounts[item.href]}
             >
               <item.icon className="size-4 shrink-0 opacity-80" />
               {item.label}
             </NavLink>
           ))}
+        </div>
+
+        <div className="mt-0.5">
+          <NavLink href="/inbox?assignee=me" onNavigate={onNavigate} active={mineActive} count={counts.mine}>
+            <UserRoundCheck className="size-4 shrink-0 opacity-80" />
+            Mir zugewiesen
+          </NavLink>
         </div>
 
         <SectionTitle>Kategorien</SectionTitle>
@@ -126,6 +137,20 @@ export function Sidebar({ user, categories, mailboxes, counts, onNavigate }: Sid
             </NavLink>
           ))}
         </div>
+
+        {labels.length > 0 && (
+          <>
+            <SectionTitle>Labels</SectionTitle>
+            <div className="space-y-0.5">
+              {labels.map((l) => (
+                <NavLink key={l.id} href={`/inbox?view=all&label=${l.id}`} onNavigate={onNavigate} active={activeLabel === l.id}>
+                  <span className={cn("ml-1 mr-0.5 size-2 shrink-0 rounded-sm", colorClasses(l.color).dot)} />
+                  <span className="truncate">{l.name}</span>
+                </NavLink>
+              ))}
+            </div>
+          </>
+        )}
 
         <SectionTitle>Postfächer</SectionTitle>
         <div className="space-y-0.5">

@@ -27,4 +27,7 @@ export type SidebarUser = {
 export type SidebarCounts = {
   inboxUnread: number;
   openTasks: number;
+  mine: number;
 };
+
+export type SidebarLabel = { id: string; name: string; color: string };

@@ -3,6 +3,7 @@ import { DelayedError, Worker, type Job } from "bullmq";
 import { checkOllama, OllamaError } from "@/server/ai/ollama";
 import { createAiCaller, describeAiProvider, getAiProvider, isAiConfigured } from "@/server/ai/provider";
 import { processEmail, summarizeThread } from "@/server/ai/pipeline";
+import { applyRules } from "@/server/rules/engine";
 import { enqueueThreadSummary, QUEUE_AI, workerConnection, type AiJobData } from "@/server/jobs/queues";
 
 /**
@@ -55,6 +56,11 @@ export function startAiWorker(): Worker | null {
           throw Worker.RateLimitError();
         }
         throw err;
+      }
+      // Regeln nach der KI-Auswertung anwenden (auch wenn sie fehlschlug oder aufs Tageslimit wartet –
+      // dann zumindest die Regeln auf Absender/Betreff/Text).
+      if (r.status === "done" || r.status === "failed" || r.status === "deferred") {
+        await applyRules(job.data.emailId!).catch((err) => console.error("[rules]", err));
       }
       if (r.status === "deferred") {
         // Tageslimit erreicht: Job auf den nächsten Tag verschieben (zählt nicht als Fehlversuch).

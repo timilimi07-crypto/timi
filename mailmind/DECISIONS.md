@@ -166,3 +166,25 @@ Format: **Entscheidung** – Begründung. Neue Einträge unten anhängen.
 71. **KI-Dienst nicht erreichbar → Pause statt Fehlversuch** (gilt für beide Anbieter): Bei Netzwerkfehlern, Überlastung (429/529/5xx) oder nicht laufendem Ollama hält der Worker die Warteschlange 60 s an. Die E-Mail bleibt „ausstehend“ (vorher „fehlgeschlagen“) und wird nachgeholt. Fehlt dagegen das Modell, ist das ein Konfigurationsfehler mit klarer Meldung („ollama pull …“); der Worker prüft das schon beim Start.
 
 72. **Getestet** gegen einen lokalen HTTP-Server, der die Ollama-API nachbildet (Anfrageformat, Modellwahl, Wiederholungen, Fehlermeldungen, kompletter Pipeline-Durchlauf). Ein echtes lokales Modell konnte in der Cloud-Umgebung nicht laufen (Download von ollama.com/Registry durch den Netzwerk-Proxy blockiert). Den Qualitätstest mit echtem Modell führt `AI_PROVIDER=ollama npm run ai:eval` auf dem eigenen Rechner aus.
+
+## Phase 6 – Team, Regeln, Digest
+
+73. **Zuweisung pro Verlauf** (wie der Status): Alle E-Mails eines Verlaufs bekommen dieselbe Person, ebenso dessen offene Aufgaben. Übernehmen setzt „Neu“ auf „In Bearbeitung“, so ist sichtbar, wer was bearbeitet. **Rechte:** Admin und Manager weisen beliebig zu; Mitarbeitende dürfen nur selbst übernehmen oder sich austragen (sonst 403 mit Erklärung).
+
+74. **Kommentare und Notizen gelten für den ganzen Verlauf** (an der jeweiligen E-Mail gespeichert, im Verlauf gemeinsam angezeigt). Bearbeiten nur durch die Person, die schreibt; löschen durch sie selbst oder Admins; anheften und lösen darf jeder. Keine @-Erwähnungen in dieser Phase.
+
+75. **Bearbeitungsverlauf aus dem Audit-Log** statt einer eigenen Tabelle: dieselben Einträge, die DSGVO-seitig ohnehin geschrieben werden, als lesbare Sätze. „Geöffnet“ erscheint pro Person nur einmal (das jüngste Öffnen).
+
+76. **Regeln laufen einmal pro E-Mail, nach der KI-Auswertung** (`Email.rulesAppliedAt`), damit Bedingungen auf KI-Kategorie und -Priorität möglich sind und Regeln die KI übersteuern. Ist keine KI aktiv, laufen sie direkt nach dem Abruf; Bedingungen auf Kategorie oder Priorität greifen dann mangels Auswertung nicht. Von Regeln gesetzte Kategorien und Prioritäten gelten als bestätigt (`manualOverride`, kein „Bitte prüfen“). Spätere manuelle Änderungen überschreiben Regeln nicht erneut. Phishing-Mails werden auch per Regel nie eingeklappt.
+
+77. **Regel-Semantik:** Bedingungen „alle“ oder „mindestens eine“; Vergleiche ohne Groß-/Kleinschreibung. „Absender ist / endet auf“ prüft die Adresse (z. B. „@kanzlei.de“), „enthält“ auch den Namen. Mehrere Regeln: Reihenfolge = Ausführung, spätere überschreiben frühere beim selben Feld, Labels sammeln sich, „danach keine weiteren Regeln“ stoppt. Verweise (Personen, Labels, Kategorien, Postfächer) werden beim Speichern auf die eigene Firma geprüft. Labels und Kategorien, die in Regeln vorkommen, lassen sich nicht löschen (Meldung nennt die Regeln).
+
+78. **Kategorien:** Der Schlüssel wird aus dem Namen erzeugt (Umlaute → ae/oe/ue) und bleibt beim Umbenennen stabil, damit Regeln und KI-Ergebnisse gültig bleiben. Die 8 Standard-Kategorien lassen sich anpassen, aber nicht löschen.
+
+79. **Team-Verwaltung:** Neue Personen bekommen ein zufälliges Startpasswort (14 Zeichen, ohne verwechselbare Zeichen), das nur einmal angezeigt wird. Einladungs-E-Mails und „Passwort ändern“ folgen in Phase 7. Schutz: nicht selbst herabstufen oder deaktivieren, mindestens ein aktiver Admin. Deaktivieren entfernt offene Zuweisungen.
+
+80. **Tages-Digest ohne KI-Aufruf:** fasst vorhandene Ergebnisse zusammen (Zugewiesenes, Wichtiges im Team, heute Fälliges oder Überfälliges, Phishing-Warnung). Kostenlos und sofort fertig. Leere Digests werden nicht verschickt. Versand per SMTP (`SMTP_URL`, nodemailer), HTML und Text. Zeitplan im Worker: ab der eingestellten Stunde (Berlin), standardmäßig nur werktags, pro Person und Tag höchstens einmal (DigestLog und feste Job-ID). Abbestellen pro Person unter „Mein Konto“.
+
+81. **nodemailer 7** statt der aktuellen 10: NextAuth v4 deklariert nodemailer 6/7 als optionale Abhängigkeit; Version 7 löst den Konflikt ohne erzwungene Installation. **Mailpit** im Docker-Setup fängt lokal alle Mails ab.
+
+82. **Getestet:** Regel-Auswertung (reine Funktion), Regeln/Zuweisen/Kommentare/Labels/Kategorien/Team über die echten API-Routen gegen die Datenbank, Digest-Inhalt und Zeitplan, Versand an einen lokalen SMTP-Testserver (`smtp-server`).

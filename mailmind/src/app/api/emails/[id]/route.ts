@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { can } from "@/lib/rbac";
+import type { Prisma } from "@prisma/client";
 import { getEmailDetail } from "@/server/queries/email-detail";
 import { apiRoute, readJson } from "@/server/api";
 import { recordCorrection } from "@/server/ai/pipeline";
@@ -65,12 +66,43 @@ export const PATCH = apiRoute<Ctx>(async (req, { params }) => {
   if (input.status) data.status = input.status;
   if (input.isRead !== undefined) data.isRead = input.isRead;
 
+  // --- Zuweisen (ganzer Verlauf) ---
+  let assignment: { assigneeId: string | null; assigneeName: string | null } | null = null;
+  if (input.assigneeId !== undefined && input.assigneeId !== email.assigneeId) {
+    const selfService = input.assigneeId === session.userId || (input.assigneeId === null && email.assigneeId === session.userId);
+    if (!selfService && !can(session.role, "email.assign")) {
+      throw new HttpError(403, "Nur Admins und Manager können anderen Personen E-Mails zuweisen. Du kannst sie aber selbst übernehmen.");
+    }
+    const assignee = input.assigneeId
+      ? await db.user.findFirst({ where: scoped(session, { id: input.assigneeId, isActive: true }), select: { id: true, name: true } })
+      : null;
+    if (input.assigneeId && !assignee) throw new HttpError(400, "Unbekannte oder deaktivierte Person");
+    const threadWhere: Prisma.EmailWhereInput = email.threadId ? { threadId: email.threadId, organizationId: session.organizationId, deletedAt: null } : { id: email.id };
+    await db.email.updateMany({ where: threadWhere, data: { assigneeId: assignee?.id ?? null } });
+    // Übernommen → „In Bearbeitung“ (wer bearbeitet was), nur wenn noch „Neu“.
+    if (assignee) await db.email.updateMany({ where: { ...threadWhere, status: "NEW" }, data: { status: "IN_PROGRESS" } });
+    // Offene Aufgaben des Verlaufs mitnehmen.
+    await db.task.updateMany({ where: { email: threadWhere, status: "OPEN" }, data: { assigneeId: assignee?.id ?? null } });
+    assignment = { assigneeId: assignee?.id ?? null, assigneeName: assignee?.name ?? null };
+  }
+
   const updated = await db.email.update({
     where: { id: email.id },
     data,
-    select: { id: true, priority: true, status: true, isRead: true, needsReview: true, category: { select: { key: true, name: true } } },
+    select: {
+      id: true,
+      priority: true,
+      status: true,
+      isRead: true,
+      needsReview: true,
+      category: { select: { key: true, name: true } },
+      assignee: { select: { id: true, name: true } },
+    },
   });
   await Promise.all(corrections);
-  await audit(session, input.status ? "email.status" : "email.update", { type: "email", id: email.id }, input);
+  if (assignment) await audit(session, "email.assign", { type: "email", id: email.id }, assignment);
+  const { assigneeId: _a, ...rest } = input;
+  void _a;
+  if (Object.keys(rest).length) await audit(session, input.status ? "email.status" : "email.update", { type: "email", id: email.id }, rest);
   return { ...updated, correctionsSaved: corrections.length };
 });

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AlertTriangle, Mail, Newspaper, Search, ShieldAlert, SlidersHorizontal, X } from "lucide-react";
+import { AlertTriangle, Mail, Newspaper, Search, ShieldAlert, SlidersHorizontal, UserRound, X } from "lucide-react";
 import { Kbd } from "@/components/ui/kbd";
 import { PRIORITY_META, PRIORITY_ORDER, STATUS_LABEL } from "@/lib/labels";
 import { cn } from "@/lib/utils";
@@ -10,7 +10,9 @@ import type { InboxFilters } from "./data";
 export type FilterOptions = {
   categories: { key: string; name: string }[];
   mailboxes: { id: string; name: string }[];
-  counts: { review: number; phishing: number; bulk: number; unread: number };
+  users: { id: string; name: string }[];
+  labels: { id: string; name: string; color: string }[];
+  counts: { review: number; phishing: number; bulk: number; unread: number; mine: number };
 };
 
 const selectCls =
@@ -54,7 +56,7 @@ export function FilterBar({
   searchRef: React.RefObject<HTMLInputElement | null>;
 }) {
   const [q, setQ] = useState(filters.q ?? "");
-  const [advanced, setAdvanced] = useState(!!(filters.from || filters.after || filters.before || filters.status || filters.mailbox));
+  const [advanced, setAdvanced] = useState(!!(filters.from || filters.after || filters.before || filters.status || filters.mailbox || filters.label || (filters.assignee && filters.assignee !== "me")));
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => setQ(filters.q ?? ""), [filters.q]);
@@ -65,9 +67,9 @@ export function FilterBar({
     timer.current = setTimeout(() => onChange({ q: v.trim() || undefined }), 200);
   }
 
-  const advancedCount = [filters.from, filters.after, filters.before, filters.status, filters.mailbox].filter(Boolean).length;
+  const advancedCount = [filters.from, filters.after, filters.before, filters.status, filters.mailbox, filters.label, filters.assignee && filters.assignee !== "me"].filter(Boolean).length;
   const anyFilter =
-    filters.q || filters.category || filters.priority || filters.mailbox || filters.status || filters.review || filters.phishing || filters.unread || filters.bulk || advancedCount;
+    filters.q || filters.category || filters.priority || filters.mailbox || filters.status || filters.review || filters.phishing || filters.unread || filters.bulk || filters.assignee || filters.label || advancedCount;
 
   return (
     <div className="space-y-2 border-b px-3 py-2.5">
@@ -148,6 +150,9 @@ export function FilterBar({
       </div>
 
       <div className="flex flex-wrap items-center gap-1.5">
+        <Chip active={filters.assignee === "me"} onClick={() => onChange({ assignee: filters.assignee === "me" ? undefined : "me" })}>
+          <UserRound /> Mir zugewiesen{options.counts.mine ? ` ${options.counts.mine}` : ""}
+        </Chip>
         <Chip active={filters.unread} onClick={() => onChange({ unread: !filters.unread })}>
           <Mail /> Ungelesen{options.counts.unread ? ` ${options.counts.unread}` : ""}
         </Chip>
@@ -172,7 +177,7 @@ export function FilterBar({
             className="ml-auto text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
             onClick={() => {
               setQ("");
-              onChange({ q: undefined, category: undefined, priority: undefined, mailbox: undefined, status: undefined, review: false, phishing: false, unread: false, bulk: undefined, from: undefined, after: undefined, before: undefined });
+              onChange({ q: undefined, category: undefined, priority: undefined, mailbox: undefined, status: undefined, review: false, phishing: false, unread: false, bulk: undefined, from: undefined, after: undefined, before: undefined, assignee: undefined, label: undefined });
             }}
           >
             Filter zurücksetzen
@@ -196,6 +201,26 @@ export function FilterBar({
               {options.mailboxes.map((m) => (
                 <option key={m.id} value={m.id}>
                   {m.name}
+                </option>
+              ))}
+            </select>
+          )}
+          <select aria-label="Bearbeiter" className={selectCls} value={filters.assignee ?? ""} onChange={(e) => onChange({ assignee: e.target.value || undefined })}>
+            <option value="">Alle Bearbeiter</option>
+            <option value="me">Mir zugewiesen</option>
+            <option value="none">Nicht zugewiesen</option>
+            {options.users.map((u) => (
+              <option key={u.id} value={u.id}>
+                {u.name}
+              </option>
+            ))}
+          </select>
+          {options.labels.length > 0 && (
+            <select aria-label="Label" className={selectCls} value={filters.label ?? ""} onChange={(e) => onChange({ label: e.target.value || undefined })}>
+              <option value="">Alle Labels</option>
+              {options.labels.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.name}
                 </option>
               ))}
             </select>

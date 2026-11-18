@@ -19,6 +19,7 @@ import {
 import { GripVertical, ListTodo, Paperclip } from "lucide-react";
 import { toast } from "sonner";
 import { PhishingBadge } from "@/components/inbox/email-row";
+import { UserInitials } from "@/components/shared/user-initials";
 import { shortDate } from "@/lib/format";
 import { api } from "@/lib/api-client";
 import { colorClasses } from "@/lib/colors";
@@ -49,7 +50,10 @@ function Card({ item, dragging, overlay }: { item: EmailListItem; dragging?: boo
       <div className="flex items-center gap-1.5">
         {prio && <span className={cn("rounded px-1 py-px text-[10px] font-semibold uppercase tracking-wide", prio.badge)}>{prio.label}</span>}
         <span className={cn("truncate text-xs", item.isRead ? "text-muted-foreground" : "font-semibold")}>{item.fromName ?? item.fromEmail}</span>
-        <span className="ml-auto shrink-0 text-[11px] tabular-nums text-muted-foreground">{shortDate(item.receivedAt)}</span>
+        <span className="ml-auto flex shrink-0 items-center gap-1.5">
+          {item.assignee && <UserInitials name={item.assignee.name} />}
+          <span className="text-[11px] tabular-nums text-muted-foreground">{shortDate(item.receivedAt)}</span>
+        </span>
       </div>
       <div className="mt-1 line-clamp-2 text-sm font-medium leading-snug">{item.subject}</div>
       {item.summary && <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{item.summary}</p>}

@@ -16,6 +16,9 @@ export type OrgSettings = {
   initialSyncDays: number;
   maxEmailsPerSync: number;
   aiDailyEmailLimit: number;
+  digestEnabled: boolean;
+  digestHour: number;
+  digestWeekdaysOnly: boolean;
   aiModel: string | null;
   aiModelFast: string | null;
 };
@@ -166,6 +169,34 @@ export function OrganizationForm({
             disabled={!canEdit}
             onChange={(e) => set("maxEmailsPerSync", Number(e.target.value))}
           />
+        </Field>
+      </section>
+
+      <section className="space-y-5 border-t pt-6">
+        <div>
+          <h3 className="text-sm font-semibold">Tages-Digest</h3>
+          <p className="text-xs text-muted-foreground">Morgens eine E-Mail pro Person: was ihr zugewiesen ist, was wichtig ist, was heute fällig ist. Jede Person kann ihn unter „Mein Konto“ abbestellen.</p>
+        </div>
+        <Field htmlFor="digest" label="Digest verschicken" hint="Benötigt einen Mailserver (SMTP_URL in der .env).">
+          <label className="flex h-9 items-center gap-2 text-sm">
+            <input id="digest" type="checkbox" className="accent-[var(--primary)]" checked={s.digestEnabled} disabled={!canEdit} onChange={(e) => set("digestEnabled", e.target.checked)} />
+            aktiv
+          </label>
+        </Field>
+        <Field htmlFor="digestHour" label="Uhrzeit" hint="Ortszeit Berlin. Wer erst später online ist, bekommt den Digest beim nächsten Durchlauf.">
+          <NativeSelect id="digestHour" value={s.digestHour} disabled={!canEdit || !s.digestEnabled} onChange={(e) => set("digestHour", Number(e.target.value))}>
+            {Array.from({ length: 24 }, (_, h) => (
+              <option key={h} value={h}>
+                {String(h).padStart(2, "0")}:00 Uhr
+              </option>
+            ))}
+          </NativeSelect>
+        </Field>
+        <Field htmlFor="weekdays" label="Nur werktags" hint="Montag bis Freitag.">
+          <label className="flex h-9 items-center gap-2 text-sm">
+            <input id="weekdays" type="checkbox" className="accent-[var(--primary)]" checked={s.digestWeekdaysOnly} disabled={!canEdit || !s.digestEnabled} onChange={(e) => set("digestWeekdaysOnly", e.target.checked)} />
+            Mo–Fr
+          </label>
         </Field>
       </section>
 

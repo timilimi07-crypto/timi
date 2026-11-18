@@ -40,6 +40,9 @@ export const inboxFilterSchema = z.object({
   /** Newsletter & Spam: hide (Standard ohne Kategorie-Filter), only, show */
   bulk: z.enum(["hide", "only", "show"]).optional().catch(undefined),
   sort: z.enum(["newest", "priority"]).catch("newest").default("newest"),
+  /** Person-ID, „me“ (aufgelöst in der API) oder „none“ (nicht zugewiesen) */
+  assignee: z.string().max(40).optional().catch(undefined),
+  label: z.string().max(40).optional().catch(undefined),
 });
 
 export type InboxFilters = z.infer<typeof inboxFilterSchema>;
@@ -111,22 +114,26 @@ export const listSelect = {
   mailbox: { select: { id: true, name: true } },
   category: { select: { key: true, name: true, color: true } },
   thread: { select: { messageCount: true } },
+  assignee: { select: { id: true, name: true } },
+  labels: { select: { label: { select: { id: true, name: true, color: true } } } },
   _count: { select: { tasks: { where: { status: "OPEN" } } } },
 } satisfies Prisma.EmailSelect;
 
 export type EmailListRow = Prisma.EmailGetPayload<{ select: typeof listSelect }>;
 
 /** Serialisierte Zeile für den Client (Datum als ISO, Decimal als Zahl). */
-export type EmailListItem = Omit<EmailListRow, "receivedAt" | "aiCostUsd" | "_count"> & {
+export type EmailListItem = Omit<EmailListRow, "receivedAt" | "aiCostUsd" | "_count" | "labels"> & {
   receivedAt: string;
   aiCostUsd: number;
   openTasks: number;
+  labels: { id: string; name: string; color: string }[];
 };
 
 export function serializeRow(r: EmailListRow, opts: { showCosts: boolean }): EmailListItem {
-  const { _count, ...rest } = r;
+  const { _count, labels, ...rest } = r;
   return {
     ...rest,
+    labels: labels.map((l) => l.label),
     receivedAt: r.receivedAt.toISOString(),
     aiCostUsd: opts.showCosts ? Number(r.aiCostUsd) : 0,
     aiModels: opts.showCosts ? r.aiModels : [],
@@ -139,7 +146,7 @@ export type EmailPage = { items: EmailListItem[]; nextCursor: string | null };
 export async function listEmails(
   organizationId: string,
   f: InboxFilters,
-  opts: { cursor?: string | null; limit?: number; showCosts: boolean },
+  opts: { cursor?: string | null; limit?: number; showCosts: boolean; /** für assignee=me */ userId?: string },
 ): Promise<EmailPage> {
   const limit = Math.min(Math.max(opts.limit ?? 50, 1), 100);
   const conds: Prisma.Sql[] = [
@@ -172,6 +179,9 @@ export async function listEmails(
   if (f.review) conds.push(Prisma.sql`e."needsReview" = true`);
   if (f.phishing) conds.push(Prisma.sql`e."phishingSuspected" = true`);
   if (f.unread) conds.push(Prisma.sql`e."isRead" = false`);
+  if (f.assignee === "none") conds.push(Prisma.sql`e."assigneeId" IS NULL`);
+  else if (f.assignee) conds.push(Prisma.sql`e."assigneeId" = ${f.assignee === "me" ? (opts.userId ?? "") : f.assignee}`);
+  if (f.label) conds.push(Prisma.sql`EXISTS (SELECT 1 FROM "EmailLabel" el WHERE el."emailId" = e.id AND el."labelId" = ${f.label})`);
 
   const bulk = effectiveBulk(f);
   if (bulk === "hide") conds.push(Prisma.sql`e."isCollapsed" = false`);
@@ -222,13 +232,14 @@ export async function listEmails(
 }
 
 /** Kennzahlen für die Filterleiste. */
-export async function inboxCounts(organizationId: string) {
+export async function inboxCounts(organizationId: string, userId?: string) {
   const base = { organizationId, deletedAt: null, isArchived: false, status: { not: "DONE" as const } };
-  const [review, phishing, bulk, unread] = await Promise.all([
+  const [review, phishing, bulk, unread, mine] = await Promise.all([
     db.email.count({ where: { ...base, needsReview: true } }),
     db.email.count({ where: { ...base, phishingSuspected: true } }),
     db.email.count({ where: { ...base, isCollapsed: true } }),
     db.email.count({ where: { ...base, isRead: false, isCollapsed: false } }),
+    userId ? db.email.count({ where: { ...base, assigneeId: userId } }) : 0,
   ]);
-  return { review, phishing, bulk, unread };
+  return { review, phishing, bulk, unread, mine };
 }

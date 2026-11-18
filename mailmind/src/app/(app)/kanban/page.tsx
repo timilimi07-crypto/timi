@@ -20,7 +20,7 @@ export default async function KanbanPage({ searchParams }: { searchParams: Promi
   const [categories, ...pages] = await Promise.all([
     db.category.findMany({ where: scoped(session), orderBy: { sortOrder: "asc" }, select: { key: true, name: true } }),
     ...STATUSES.map((status) =>
-      listEmails(session.organizationId, { ...base, view: "all", status, sort: status === "DONE" ? "newest" : base.sort }, { limit: status === "DONE" ? 30 : 100, showCosts }),
+      listEmails(session.organizationId, { ...base, view: "all", status, sort: status === "DONE" ? "newest" : base.sort }, { limit: status === "DONE" ? 30 : 100, showCosts, userId: session.userId }),
     ),
   ]);
   const columns = Object.fromEntries(STATUSES.map((s, i) => [s, pages[i]!.items])) as Columns;

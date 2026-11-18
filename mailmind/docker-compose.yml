@@ -91,6 +91,15 @@ services:
       redis:
         condition: service_healthy
 
+  # Test-Mailserver: fängt alle ausgehenden Mails ab (z. B. den Tages-Digest).
+  # Web-Oberfläche: http://localhost:8025 · In .env: SMTP_URL="smtp://mailpit:1025"
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
   # Optional: lokales KI-Modell (kostenlos, für Tests ohne Anthropic-Schlüssel).
   # Start: docker compose --profile ollama up -d
   # Modell laden: docker compose exec ollama ollama pull qwen2.5:7b

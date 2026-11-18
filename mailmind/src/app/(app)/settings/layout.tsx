@@ -7,9 +7,10 @@ export default async function SettingsLayout({ children }: { children: React.Rea
   const session = await requireSession();
   const links: SettingsLink[] = [
     { href: "/settings", label: "Allgemein" },
+    { href: "/settings/account", label: "Mein Konto" },
     { href: "/settings/team", label: "Team" },
     { href: "/settings/mailboxes", label: "Postfächer" },
-    { href: "/settings/categories", label: "Kategorien" },
+    { href: "/settings/categories", label: "Kategorien & Labels" },
     { href: "/settings/rules", label: "Regeln" },
     ...(can(session.role, "settings.manage") ? [{ href: "/settings/privacy", label: "Datenschutz" }] : []),
     ...(can(session.role, "audit.read") ? [{ href: "/settings/audit", label: "Audit-Log" }] : []),

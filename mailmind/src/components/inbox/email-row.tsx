@@ -6,6 +6,7 @@ import { colorClasses } from "@/lib/colors";
 import { formatUsd, shortDate } from "@/lib/format";
 import { PRIORITY_META, type PriorityKey } from "@/lib/labels";
 import { cn } from "@/lib/utils";
+import { UserInitials } from "@/components/shared/user-initials";
 import type { EmailListItem } from "./data";
 
 
@@ -28,12 +29,14 @@ export const EmailRow = memo(function EmailRow({
   item,
   selected,
   showCosts,
+  currentUserId,
   onSelect,
   onHover,
 }: {
   item: EmailListItem;
   selected: boolean;
   showCosts: boolean;
+  currentUserId?: string;
   onSelect: (id: string) => void;
   onHover: (id: string) => void;
 }) {
@@ -63,6 +66,7 @@ export const EmailRow = memo(function EmailRow({
           <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">{item.thread.messageCount}</span>
         )}
         <span className="ml-auto flex shrink-0 items-center gap-1.5">
+          {item.assignee && <UserInitials name={item.assignee.name} me={item.assignee.id === currentUserId} />}
           {prio && (item.priority === "URGENT" || item.priority === "HIGH") && (
             <span className={cn("rounded px-1 py-px text-[10px] font-semibold uppercase tracking-wide", prio.badge)}>{prio.label}</span>
           )}
@@ -86,12 +90,18 @@ export const EmailRow = memo(function EmailRow({
         )}
       </p>
 
-      {(item.phishingSuspected || item.category || item.needsReview || item.openTasks > 0 || pending || (showCosts && item.aiModels.length > 0)) && (
+      {(item.phishingSuspected || item.category || item.labels.length > 0 || item.needsReview || item.openTasks > 0 || pending || (showCosts && item.aiModels.length > 0)) && (
         <div className="mt-1.5 flex flex-wrap items-center gap-1 pl-3.5">
           {item.phishingSuspected && <PhishingBadge />}
           {item.category && (
             <span className={cn("rounded px-1.5 py-px text-[10px] font-medium", colorClasses(item.category.color).badge)}>{item.category.name}</span>
           )}
+          {item.labels.map((l) => (
+            <span key={l.id} className="inline-flex items-center gap-1 rounded border px-1.5 py-px text-[10px] text-muted-foreground">
+              <span className={cn("size-1.5 rounded-full", colorClasses(l.color).dot)} />
+              {l.name}
+            </span>
+          ))}
           {item.needsReview && (
             <span className="inline-flex items-center gap-0.5 rounded bg-amber-500/15 px-1.5 py-px text-[10px] font-medium text-amber-700 dark:text-amber-300" title={item.reviewReason ?? undefined}>
               <AlertTriangle className="size-2.5" /> Bitte prüfen

@@ -22,6 +22,7 @@ import { DEFAULT_CATEGORIES } from "../src/server/defaults";
 import { syncMailbox } from "../src/server/mail/sync";
 import type { DemoSet } from "../src/server/mail/demo/emails";
 import { computeCostUsd } from "../src/lib/ai/models";
+import { applyRules } from "../src/server/rules/engine";
 
 const db = new PrismaClient();
 
@@ -31,6 +32,7 @@ type OrgSeed = {
   users: { name: string; email: string; role: Role }[];
   mailboxes: { name: string; emailAddress: string; demoSet: DemoSet }[];
   demoAiCosts?: boolean;
+  demoTeam?: boolean;
   labels: { name: string; color: string }[];
 };
 
@@ -49,6 +51,7 @@ const ORGS: OrgSeed[] = [
       { name: "Buchhaltung", emailAddress: "buchhaltung@mueller-partner.de", demoSet: "buchhaltung" },
     ],
     demoAiCosts: true,
+    demoTeam: true,
     labels: [
       { name: "VIP", color: "rose" },
       { name: "Rückruf", color: "amber" },
@@ -123,6 +126,11 @@ async function main() {
       console.log(`  ↳ Postfach ${mb.name}: ${created} E-Mails abgerufen${skippedOld ? `, ${skippedOld} älter als 30 Tage übersprungen` : ""}`);
     }
 
+    if (o.demoTeam) {
+      const n = await seedDemoTeam(org.id);
+      console.log(`  ↳ ${n.rules} Demo-Regeln angewendet (${n.matched} Treffer), 1 interne Notiz`);
+    }
+
     if (o.demoAiCosts) {
       const n = await seedDemoAiCosts(org.id);
       console.log(`  ↳ ${n} Demo-Einträge im KI-Kostenprotokoll (45 Tage)`);
@@ -183,6 +191,50 @@ async function seedDemoAiCosts(organizationId: string): Promise<number> {
   }
   await db.aiUsageLog.createMany({ data: rows });
   return rows.length;
+}
+
+/**
+ * Demo für Phase 6: drei Regeln (wie sie eine Firma anlegen würde), die direkt
+ * auf die abgerufenen E-Mails angewendet werden, plus eine interne Notiz.
+ */
+async function seedDemoTeam(organizationId: string) {
+  const users = await db.user.findMany({ where: { organizationId } });
+  const by = (email: string) => users.find((u) => u.email.startsWith(email))!;
+  const reklamation = await db.label.create({ data: { organizationId, name: "Reklamation", color: "orange" } });
+  const info = await db.mailbox.findFirstOrThrow({ where: { organizationId, name: "Info" } });
+
+  const rules = [
+    {
+      name: "Reklamationen an Tobias",
+      conditions: { match: "any", items: [{ field: "any", op: "contains", value: "Reklamation" }, { field: "any", op: "contains", value: "beschädigt" }] },
+      actions: [{ type: "assign", userId: by("t.wagner").id }, { type: "label", labelId: reklamation.id }, { type: "priority", priority: "HIGH" }],
+    },
+    {
+      name: "Steuerberater → Rechnung, an Anna",
+      conditions: { match: "all", items: [{ field: "from", op: "endsWith", value: "@kanzlei-seidel.de" }] },
+      actions: [{ type: "category", categoryKey: "rechnung" }, { type: "assign", userId: by("admin").id }],
+    },
+    {
+      name: "Bewerbungen an Jonas",
+      conditions: { match: "all", items: [{ field: "subject", op: "contains", value: "Bewerbung" }, { field: "mailbox", op: "equals", value: info.id }] },
+      actions: [{ type: "category", categoryKey: "bewerbung" }, { type: "assign", userId: by("manager").id }],
+    },
+  ];
+  for (const [i, r] of rules.entries()) {
+    await db.rule.create({ data: { organizationId, name: r.name, conditions: r.conditions, actions: r.actions, sortOrder: i, createdById: by("admin").id } });
+  }
+  let matched = 0;
+  for (const e of await db.email.findMany({ where: { organizationId }, select: { id: true } })) {
+    if ((await applyRules(e.id)).matched.length) matched++;
+  }
+  // Interne Notiz im Weber-Verlauf
+  const weber = await db.email.findFirst({ where: { organizationId, subject: { startsWith: "AW: AW: Angebot A-2026-117" } } });
+  if (weber) {
+    await db.comment.create({
+      data: { emailId: weber.id, authorId: by("manager").id, isNote: true, body: "Frau Weber hat gestern angerufen. Demontage ist im Angebot enthalten (Pos. 7) – bitte heute noch schriftlich bestätigen. Umsetzung in den Betriebsferien ist mit Technik abgestimmt." },
+    });
+  }
+  return { rules: rules.length, matched };
 }
 
 main()

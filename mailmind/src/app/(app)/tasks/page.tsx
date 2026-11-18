@@ -18,7 +18,7 @@ export default async function TasksPage() {
     }),
     orderBy: [{ dueDate: { sort: "asc", nulls: "last" } }, { createdAt: "desc" }],
     take: 500,
-    include: { email: { select: { id: true, subject: true, fromName: true, fromEmail: true } } },
+    include: { email: { select: { id: true, subject: true, fromName: true, fromEmail: true } }, assignee: { select: { id: true, name: true } } },
   });
   const items: TaskItem[] = tasks.map((t) => ({
     id: t.id,
@@ -29,12 +29,13 @@ export default async function TasksPage() {
     dueDateText: t.dueDateText,
     completedAt: t.completedAt?.toISOString() ?? null,
     email: t.email,
+    assignee: t.assignee,
   }));
 
   return (
     <div className="mx-auto max-w-4xl space-y-5 p-4 sm:p-6 lg:p-8">
       <PageHeader title="Aufgaben" description="Von der KI aus E-Mails erkannte und eigene To-dos – nach Fälligkeit sortiert." />
-      <TasksView initial={items} />
+      <TasksView initial={items} currentUserId={session.userId} />
     </div>
   );
 }

@@ -15,6 +15,8 @@ import {
   RotateCcw,
   ShieldAlert,
   Sparkles,
+  UserRoundCheck,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
@@ -26,7 +28,9 @@ import { formatDateTime, formatUsd } from "@/lib/format";
 import { PRIORITY_META, PRIORITY_ORDER, SENTIMENT_LABEL, STATUS_LABEL, type PriorityKey } from "@/lib/labels";
 import { cn } from "@/lib/utils";
 import { BodyFrame } from "./body-frame";
-import { detailKey, fetchDetail, useEmailPatch, useTaskToggle, type EmailDetail, type EmailListItem } from "./data";
+import { detailKey, fetchDetail, useAssign, useEmailPatch, useLabelToggle, useTaskToggle, type EmailDetail, type EmailListItem } from "./data";
+import { TeamPanel } from "./team-panel";
+import { UserInitials } from "@/components/shared/user-initials";
 import { PhishingBadge } from "./email-row";
 import { shortDate } from "@/lib/format";
 import { ReplyPanel, type ReplyPanelHandle } from "./reply-panel";
@@ -57,6 +61,11 @@ export type DetailProps = {
   id: string;
   row?: EmailListItem;
   categories: { key: string; name: string }[];
+  users: { id: string; name: string }[];
+  labels: { id: string; name: string; color: string }[];
+  currentUserId: string;
+  canAssignOthers: boolean;
+  isAdmin: boolean;
   showCosts: boolean;
   aiEnabled: boolean;
   position: { index: number; total: number };
@@ -79,6 +88,21 @@ export const EmailDetailPane = forwardRef<ReplyPanelHandle, DetailProps>(functio
   });
   const patch = useEmailPatch();
   const tasks = useTaskToggle(id);
+  const assign = useAssign();
+  const toggleLabel = useLabelToggle();
+  const assignee = data?.assignee ?? row?.assignee ?? null;
+  const currentLabels = data?.labels ?? row?.labels ?? [];
+  const me = props.users.find((u) => u.id === props.currentUserId);
+
+  function setAssignee(userId: string | null) {
+    const user = userId ? (props.users.find((u) => u.id === userId) ?? null) : null;
+    assign.mutate({
+      id,
+      threadId: data?.threadId ?? row?.threadId ?? null,
+      assignee: user,
+      label: !user ? "Zuweisung entfernt" : user.id === props.currentUserId ? "Übernommen" : `Zugewiesen an ${user.name}`,
+    });
+  }
 
   // Kopfbereich sofort aus der Listenzeile zeigen, Rest sobald geladen (meist schon vorgeladen).
   const subject = data?.subject ?? row?.subject ?? "";
@@ -132,6 +156,33 @@ export const EmailDetailPane = forwardRef<ReplyPanelHandle, DetailProps>(functio
         <IconAction label={isRead ? "Als ungelesen markieren" : "Als gelesen markieren"} kbd="U" onClick={props.onToggleRead}>
           {isRead ? <Mail /> : <MailOpen />}
         </IconAction>
+        {props.canAssignOthers ? (
+          <label className="flex items-center gap-1">
+            {assignee ? <UserInitials name={assignee.name} me={assignee.id === props.currentUserId} /> : <UserRoundCheck className="size-4 text-muted-foreground" />}
+            <select aria-label="Zuweisen an" className={cn(selectCls, "max-w-36")} value={assignee?.id ?? ""} onChange={(e) => setAssignee(e.target.value || null)}>
+              <option value="">Niemand</option>
+              {props.users.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.id === props.currentUserId ? `${u.name} (ich)` : u.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : assignee && assignee.id !== props.currentUserId ? (
+          <span className="flex items-center gap-1 text-xs text-muted-foreground">
+            <UserInitials name={assignee.name} /> {assignee.name}
+          </span>
+        ) : null}
+        {me && assignee?.id !== props.currentUserId && (
+          <Button variant="outline" size="sm" onClick={() => setAssignee(props.currentUserId)}>
+            <UserRoundCheck /> Übernehmen <Kbd className="ml-0.5">A</Kbd>
+          </Button>
+        )}
+        {!props.canAssignOthers && assignee?.id === props.currentUserId && (
+          <Button variant="ghost" size="sm" onClick={() => setAssignee(null)}>
+            Abgeben
+          </Button>
+        )}
         <div className="ml-auto flex items-center gap-0.5">
           <span className="mr-1 hidden text-xs tabular-nums text-muted-foreground sm:inline">
             {props.position.index >= 0 ? `${props.position.index + 1} von ${props.position.total}` : ""}
@@ -159,6 +210,35 @@ export const EmailDetailPane = forwardRef<ReplyPanelHandle, DetailProps>(functio
                 </span>
               )}
               <span className="text-xs text-muted-foreground">{data?.mailbox.name ?? row?.mailbox.name}</span>
+              {currentLabels.map((l) => (
+                <span key={l.id} className="inline-flex items-center gap-1 rounded-md border py-0.5 pl-1.5 pr-0.5 text-[11px]">
+                  <span className={cn("size-1.5 rounded-full", colorClasses(l.color).dot)} />
+                  {l.name}
+                  <button type="button" aria-label={`Label ${l.name} entfernen`} className="rounded p-0.5 text-muted-foreground hover:bg-accent hover:text-foreground" onClick={() => toggleLabel.mutate({ id, label: l, on: false })}>
+                    <X className="size-3" />
+                  </button>
+                </span>
+              ))}
+              {props.labels.some((l) => !currentLabels.some((c) => c.id === l.id)) && (
+                <select
+                  aria-label="Label hinzufügen"
+                  className="h-6 rounded-md border border-dashed bg-transparent px-1 text-[11px] text-muted-foreground"
+                  value=""
+                  onChange={(e) => {
+                    const l = props.labels.find((x) => x.id === e.target.value);
+                    if (l) toggleLabel.mutate({ id, label: l, on: true });
+                  }}
+                >
+                  <option value="">+ Label</option>
+                  {props.labels
+                    .filter((l) => !currentLabels.some((c) => c.id === l.id))
+                    .map((l) => (
+                      <option key={l.id} value={l.id}>
+                        {l.name}
+                      </option>
+                    ))}
+                </select>
+              )}
             </div>
             <div className="text-sm">
               <span className="font-medium">{data?.fromName ?? row?.fromName ?? data?.fromEmail ?? row?.fromEmail}</span>{" "}
@@ -325,6 +405,8 @@ export const EmailDetailPane = forwardRef<ReplyPanelHandle, DetailProps>(functio
               <p className="mt-3 text-sm text-muted-foreground">KI-Auswertung ausstehend – erscheint automatisch, sobald sie fertig ist.</p>
             )}
           </section>
+
+          {data && <TeamPanel email={data as EmailDetail} currentUserId={props.currentUserId} isAdmin={props.isAdmin} />}
 
           {/* Verlauf */}
           {data?.thread && (

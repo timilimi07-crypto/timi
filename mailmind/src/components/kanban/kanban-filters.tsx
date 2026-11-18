@@ -41,6 +41,11 @@ export function KanbanFilters({ categories }: { categories: { key: string; name:
         <option value="newest">Neueste zuerst</option>
         <option value="priority">Wichtigste zuerst</option>
       </select>
+      <select aria-label="Bearbeiter" className={selectCls} value={params.get("assignee") ?? ""} onChange={(e) => set("assignee", e.target.value || null)}>
+        <option value="">Alle Bearbeiter</option>
+        <option value="me">Mir zugewiesen</option>
+        <option value="none">Nicht zugewiesen</option>
+      </select>
       <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
         <input type="checkbox" className="accent-[var(--primary)]" checked={params.get("bulk") === "show"} onChange={(e) => set("bulk", e.target.checked ? "show" : null)} />
         Newsletter &amp; Spam zeigen

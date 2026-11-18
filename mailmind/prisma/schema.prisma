@@ -134,6 +134,8 @@ model Organization {
   digestEnabled       Boolean @default(true)
   /// Stunde (0–23, Europe/Berlin), zu der der Tages-Digest verschickt wird.
   digestHour          Int     @default(7)
+  /// Digest nur Montag bis Freitag verschicken.
+  digestWeekdaysOnly  Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -298,6 +300,8 @@ model Email {
   /// „Möglicher Phishing-Versuch“: Heuristik beim Abruf und/oder KI-Einschätzung.
   phishingSuspected  Boolean                  @default(false)
   phishingReason     String?
+  /// Zeitpunkt, zu dem die Regeln der Firma angewendet wurden (einmal pro E-Mail).
+  rulesAppliedAt     DateTime?
   /// Volltextsuche (deutsch): generierte Spalte, gepflegt von Postgres (siehe Migration phase4).
   searchVector       Unsupported("tsvector")? @default(dbgenerated())
   /// Von welchen Modellen ausgewertet (z. B. Haiku für Triage, Sonnet für Analyse).

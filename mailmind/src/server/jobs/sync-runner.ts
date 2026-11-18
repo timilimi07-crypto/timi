@@ -1,4 +1,6 @@
 import { syncMailbox, type SyncResult } from "@/server/mail/sync";
+import { isAiConfigured } from "@/server/ai/provider";
+import { applyRules } from "@/server/rules/engine";
 import { enqueueAiProcessing } from "./queues";
 
 /**
@@ -7,6 +9,10 @@ import { enqueueAiProcessing } from "./queues";
  */
 export async function runMailboxSync(mailboxId: string, opts: { enqueueAi?: boolean } = {}): Promise<SyncResult> {
   const result = await syncMailbox(mailboxId);
+  // Ohne KI: Regeln sofort anwenden (mit KI erst nach der Auswertung, siehe worker/ai.ts).
+  if (!isAiConfigured()) {
+    for (const id of result.newEmailIds) await applyRules(id).catch((err) => console.error("[rules]", err));
+  }
   if (result.newEmailIds.length && opts.enqueueAi !== false) {
     await enqueueAiProcessing(result.newEmailIds).catch((err) =>
       console.warn("[sync] KI-Warteschlange nicht erreichbar – E-Mails bleiben auf 'PENDING'.", err?.message),

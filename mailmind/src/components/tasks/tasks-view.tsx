@@ -17,6 +17,7 @@ export type TaskItem = {
   dueDateText: string | null;
   completedAt: string | null;
   email: { id: string; subject: string; fromName: string | null; fromEmail: string } | null;
+  assignee: { id: string; name: string } | null;
 };
 
 type Group = "overdue" | "today" | "tomorrow" | "week" | "later" | "none";
@@ -45,8 +46,9 @@ function groupOf(due: string | null, now = new Date()): Group {
 }
 
 /** Aufgaben-Ansicht: alle KI-erkannten und manuellen To-dos der Firma. Alle Änderungen optimistisch. */
-export function TasksView({ initial }: { initial: TaskItem[] }) {
+export function TasksView({ initial, currentUserId }: { initial: TaskItem[]; currentUserId: string }) {
   const [tasks, setTasks] = useState(initial);
+  const [onlyMine, setOnlyMine] = useState(false);
   const [tab, setTab] = useState<"OPEN" | "DONE">("OPEN");
   const [q, setQ] = useState("");
   const [title, setTitle] = useState("");
@@ -74,7 +76,7 @@ export function TasksView({ initial }: { initial: TaskItem[] }) {
     const t = title.trim();
     if (!t) return;
     const tempId = `tmp-${Date.now()}`;
-    const item: TaskItem = { id: tempId, title: t, status: "OPEN", source: "MANUAL", dueDate: due || null, dueDateText: null, completedAt: null, email: null };
+    const item: TaskItem = { id: tempId, title: t, status: "OPEN", source: "MANUAL", dueDate: due || null, dueDateText: null, completedAt: null, email: null, assignee: null };
     setTitle("");
     setDue("");
     setTab("OPEN");
@@ -93,9 +95,9 @@ export function TasksView({ initial }: { initial: TaskItem[] }) {
   const visible = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return tasks.filter(
-      (t) => t.status === tab && (!needle || t.title.toLowerCase().includes(needle) || t.email?.subject.toLowerCase().includes(needle) || (t.email?.fromName ?? "").toLowerCase().includes(needle)),
+      (t) => t.status === tab && (!onlyMine || t.assignee?.id === currentUserId) && (!needle || t.title.toLowerCase().includes(needle) || t.email?.subject.toLowerCase().includes(needle) || (t.email?.fromName ?? "").toLowerCase().includes(needle)),
     );
-  }, [tasks, tab, q]);
+  }, [tasks, tab, q, onlyMine, currentUserId]);
 
   const openCount = tasks.filter((t) => t.status === "OPEN").length;
   const doneCount = tasks.length - openCount;
@@ -143,6 +145,7 @@ export function TasksView({ initial }: { initial: TaskItem[] }) {
               </Link>
             )}
             {t.dueDateText && <span className="italic">„{t.dueDateText}“</span>}
+            {t.assignee && <span>· {t.assignee.id === currentUserId ? "ich" : t.assignee.name}</span>}
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-1">
@@ -201,6 +204,10 @@ export function TasksView({ initial }: { initial: TaskItem[] }) {
             </button>
           ))}
         </div>
+        <label className="flex items-center gap-1.5 text-sm text-muted-foreground">
+          <input type="checkbox" className="accent-[var(--primary)]" checked={onlyMine} onChange={(e) => setOnlyMine(e.target.checked)} />
+          Nur meine
+        </label>
         <div className="relative ml-auto w-full sm:w-64">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Aufgaben durchsuchen" aria-label="Aufgaben durchsuchen" className="h-8 w-full rounded-md border bg-background pl-8 pr-2 text-sm dark:bg-input/30" />

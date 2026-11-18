@@ -9,7 +9,7 @@ import type { SidebarCategory, SidebarCounts, SidebarMailbox } from "@/component
 export const getSidebarData = cache(async (session: AppSession) => {
   const notDeleted = { deletedAt: null, isArchived: false };
 
-  const [categories, openByCategory, mailboxes, inboxUnread, openTasks] = await Promise.all([
+  const [categories, openByCategory, mailboxes, inboxUnread, openTasks, mine, labels] = await Promise.all([
     db.category.findMany({
       where: scoped(session),
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
@@ -27,6 +27,8 @@ export const getSidebarData = cache(async (session: AppSession) => {
     }),
     db.email.count({ where: scoped(session, { ...notDeleted, isRead: false, direction: "INBOUND" as const }) }),
     db.task.count({ where: scoped(session, { status: "OPEN" as const }) }),
+    db.email.count({ where: scoped(session, { ...notDeleted, assigneeId: session.userId, status: { not: "DONE" as const } }) }),
+    db.label.findMany({ where: scoped(session), orderBy: { name: "asc" }, select: { id: true, name: true, color: true } }),
   ]);
 
   const countMap = new Map(openByCategory.map((g) => [g.categoryId, g._count._all]));
@@ -34,6 +36,7 @@ export const getSidebarData = cache(async (session: AppSession) => {
   return {
     categories: categories.map<SidebarCategory>((c) => ({ ...c, openCount: countMap.get(c.id) ?? 0 })),
     mailboxes: mailboxes satisfies SidebarMailbox[],
-    counts: { inboxUnread, openTasks } satisfies SidebarCounts,
+    counts: { inboxUnread, openTasks, mine } satisfies SidebarCounts,
+    labels,
   };
 });

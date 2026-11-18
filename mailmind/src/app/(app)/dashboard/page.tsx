@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlertCircle, AlertTriangle, ArrowRight, CalendarClock, Inbox, ListTodo, ShieldAlert, Sparkles } from "lucide-react";
+import { AlertCircle, AlertTriangle, ArrowRight, CalendarClock, Inbox, ListTodo, ShieldAlert, Sparkles, UserRoundCheck } from "lucide-react";
 import { AiCostCard } from "@/components/dashboard/ai-cost-card";
 import { EmailsPerCategoryChart, EmailsPerDayChart } from "@/components/dashboard/charts";
 import { DeadlinesCard } from "@/components/dashboard/deadlines-card";
@@ -46,7 +46,7 @@ export default async function DashboardPage() {
   const orgId = session.organizationId;
 
   const [kpis, important, deadlines, perCategory, perDay, costStats, org] = await Promise.all([
-    getKpis(orgId),
+    getKpis(orgId, new Date(), session.userId),
     getImportantToday(orgId, { showCosts }),
     getDeadlines(orgId),
     getEmailsPerCategory(orgId),
@@ -101,8 +101,13 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      {(kpis.phishing > 0 || kpis.review > 0) && (
+      {(kpis.phishing > 0 || kpis.review > 0 || kpis.mine > 0) && (
         <div className="flex flex-wrap gap-2">
+          {kpis.mine > 0 && (
+            <Link href="/inbox?assignee=me" className="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm text-primary hover:bg-primary/15">
+              <UserRoundCheck className="size-4" /> {kpis.mine} E-Mail{kpis.mine === 1 ? "" : "s"} dir zugewiesen
+            </Link>
+          )}
           {kpis.phishing > 0 && (
             <Link href="/inbox?phishing=1" className="inline-flex items-center gap-2 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-700 hover:bg-red-500/15 dark:text-red-300">
               <ShieldAlert className="size-4" /> {kpis.phishing} mögliche{kpis.phishing === 1 ? "r" : ""} Phishing-Versuch{kpis.phishing === 1 ? "" : "e"} – nicht öffnen, prüfen

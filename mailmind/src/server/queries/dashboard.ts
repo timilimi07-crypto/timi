@@ -56,12 +56,13 @@ export type KpiCounts = {
   overdue: number;
   review: number;
   phishing: number;
+  mine: number;
 };
 
-export async function getKpis(organizationId: string, now = new Date()): Promise<KpiCounts> {
+export async function getKpis(organizationId: string, now = new Date(), userId?: string): Promise<KpiCounts> {
   const open = { organizationId, deletedAt: null, isArchived: false, status: { not: "DONE" as const } };
   const endOfToday = new Date(startOfBerlinDay(now).getTime() + DAY);
-  const [newEmails, urgent, openTasks, dueToday, overdue, review, phishing] = await Promise.all([
+  const [newEmails, urgent, openTasks, dueToday, overdue, review, phishing, mine] = await Promise.all([
     db.email.count({ where: { ...open, status: "NEW", isCollapsed: false } }),
     db.email.count({ where: { ...open, priority: "URGENT" } }),
     db.task.count({ where: { organizationId, status: "OPEN" } }),
@@ -69,8 +70,9 @@ export async function getKpis(organizationId: string, now = new Date()): Promise
     db.task.count({ where: { organizationId, status: "OPEN", dueDate: { lt: startOfBerlinDay(now) } } }),
     db.email.count({ where: { ...open, needsReview: true } }),
     db.email.count({ where: { ...open, phishingSuspected: true } }),
+    userId ? db.email.count({ where: { ...open, assigneeId: userId } }) : 0,
   ]);
-  return { newEmails, urgent, openTasks, dueToday, overdue, review, phishing };
+  return { newEmails, urgent, openTasks, dueToday, overdue, review, phishing, mine };
 }
 
 export type CategoryCount = { key: string | null; name: string; count: number };

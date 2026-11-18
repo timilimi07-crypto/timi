@@ -168,3 +168,78 @@ export function useTaskToggle(emailId: string) {
     },
   });
 }
+
+/** Zuweisen / Übernehmen (ganzer Verlauf) – optimistisch. */
+export function useAssign() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (v: { id: string; threadId: string | null; assignee: { id: string; name: string } | null; label: string }) =>
+      api(`/api/emails/${v.id}`, { method: "PATCH", body: { assigneeId: v.assignee?.id ?? null } }),
+    onMutate: async (v) => {
+      await qc.cancelQueries({ queryKey: ["emails"] });
+      const snap = snapshot(qc);
+      updateLists(qc, (items) =>
+        items.map((i) =>
+          i.id === v.id || (v.threadId && i.threadId === v.threadId)
+            ? { ...i, assignee: v.assignee, status: v.assignee && i.status === "NEW" ? "IN_PROGRESS" : i.status }
+            : i,
+        ),
+      );
+      patchDetail(qc, v.id, { assignee: v.assignee });
+      return { snap };
+    },
+    onError: (err, _v, ctx) => {
+      if (ctx) restore(qc, ctx.snap);
+      toast.error((err as Error).message);
+    },
+    onSuccess: (_r, v) => {
+      toast.success(v.label);
+      void qc.invalidateQueries({ queryKey: ["email", v.id] });
+    },
+  });
+}
+
+/** Label an einer E-Mail setzen/entfernen – optimistisch. */
+export function useLabelToggle() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (v: { id: string; label: { id: string; name: string; color: string }; on: boolean }) =>
+      api(`/api/emails/${v.id}/labels`, { body: { labelId: v.label.id, on: v.on } }),
+    onMutate: async (v) => {
+      const snap = snapshot(qc);
+      const apply = <T extends { labels: { id: string; name: string; color: string }[] }>(x: T): T => ({
+        ...x,
+        labels: v.on ? [...x.labels.filter((l) => l.id !== v.label.id), v.label] : x.labels.filter((l) => l.id !== v.label.id),
+      });
+      updateLists(qc, (items) => items.map((i) => (i.id === v.id ? apply(i) : i)));
+      for (const images of [false, true]) qc.setQueryData<EmailDetail>(detailKey(v.id, images), (old) => (old ? apply(old) : old));
+      return { snap };
+    },
+    onError: (err, _v, ctx) => {
+      if (ctx) restore(qc, ctx.snap);
+      toast.error((err as Error).message);
+    },
+  });
+}
+
+/** Kommentare/Notizen: nach jeder Änderung Detail neu laden (sie gelten für den ganzen Verlauf). */
+export function useComments(emailId: string) {
+  const qc = useQueryClient();
+  const refresh = () => qc.invalidateQueries({ queryKey: ["email"] });
+  const add = useMutation({
+    mutationFn: (v: { body: string; isNote: boolean }) => api(`/api/emails/${emailId}/comments`, { body: v }),
+    onSuccess: refresh,
+    onError: (err) => toast.error((err as Error).message),
+  });
+  const remove = useMutation({
+    mutationFn: (commentId: string) => api(`/api/comments/${commentId}`, { method: "DELETE" }),
+    onSuccess: refresh,
+    onError: (err) => toast.error((err as Error).message),
+  });
+  const pin = useMutation({
+    mutationFn: (v: { commentId: string; isNote: boolean }) => api(`/api/comments/${v.commentId}`, { method: "PATCH", body: { isNote: v.isNote } }),
+    onSuccess: refresh,
+    onError: (err) => toast.error((err as Error).message),
+  });
+  return { add, remove, pin };
+}
