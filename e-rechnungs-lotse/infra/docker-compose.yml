@@ -1,0 +1,98 @@
+# Lokale Entwicklungsumgebung. Start im Projekt-Root:  docker compose up --build
+# (compose.yaml im Projekt-Root bindet diese Datei ein; Variablen aus .env – siehe .env.example)
+name: e-rechnungs-lotse
+
+x-db-url: &db-url postgres://${POSTGRES_USER:-erl}:${POSTGRES_PASSWORD:-erl}@postgres:5432/${POSTGRES_DB:-erl}
+
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+      target: runtime
+      secrets: [extra_ca]
+    ports: ["${WEB_PORT:-3000}:3000"]
+    environment:
+      DATABASE_URL: *db-url
+      VALIDATOR_URL: http://validator:8080
+      S3_ENDPOINT: http://minio:9000
+      S3_REGION: ${S3_REGION:-eu-central-1}
+      S3_BUCKET: ${S3_BUCKET:-erl-originale}
+      S3_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-erl-local}
+      S3_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-erl-local-secret}
+      LLM_ENABLED: ${LLM_ENABLED:-false}
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      minio-init: { condition: service_completed_successfully }
+      validator: { condition: service_healthy }
+
+  migrate:
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+      target: migrate
+      secrets: [extra_ca]
+    environment:
+      DATABASE_URL: *db-url
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-erl}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-erl}
+      POSTGRES_DB: ${POSTGRES_DB:-erl}
+    ports: ["${POSTGRES_PORT:-5432}:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # MinIO veröffentlicht seit 2025 keine offiziellen Community-Images mehr.
+  # Lokal nutzen wir den gepflegten Community-Fork pgsty/minio (S3-kompatibel, AGPLv3). Nur für Entwicklung.
+  minio:
+    image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-erl-local}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-erl-local-secret}
+      MINIO_REGION: ${S3_REGION:-eu-central-1}
+    ports: ["${MINIO_PORT:-9000}:9000", "${MINIO_CONSOLE_PORT:-9001}:9001"]
+    volumes: [miniodata:/data]
+
+  # Legt den Bucket mit Object Lock (WORM) an – Grundlage für unveränderbare Originale (GoBD).
+  minio-init:
+    image: pgsty/mc:RELEASE.2026-11-12T00-00-00Z
+    depends_on:
+      minio: { condition: service_started }
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-erl-local}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-erl-local-secret}
+      S3_BUCKET: ${S3_BUCKET:-erl-originale}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - until mc alias set local http://minio:9000 "$$MINIO_ROOT_USER" "$$MINIO_ROOT_PASSWORD" >/dev/null; do sleep 1; done && mc mb --ignore-existing --with-lock "local/$$S3_BUCKET"
+
+  validator:
+    build:
+      context: ../services/validator
+      secrets: [extra_ca]
+      args:
+        VALIDATOR_VERSION: ${VALIDATOR_VERSION:-1.6.3}
+        XRECHNUNG_VERSION: ${XRECHNUNG_VERSION:-3.0.2}
+        XRECHNUNG_CONFIG_RELEASE: ${XRECHNUNG_CONFIG_RELEASE:-2026-08-31}
+        VALIDATOR_SHA256: ${VALIDATOR_SHA256:-}
+        XRECHNUNG_CONFIG_SHA256: ${XRECHNUNG_CONFIG_SHA256:-}
+    ports: ["${VALIDATOR_PORT:-8081}:8080"]
+
+volumes:
+  pgdata:
+  miniodata:
+
+secrets:
+  # Optional: zusätzliche CA für TLS-prüfende Proxys (EXTRA_CA_FILE in .env). Standard: leere Datei.
+  extra_ca:
+    file: ${EXTRA_CA_FILE:-./empty-ca.pem}

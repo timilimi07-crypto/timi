@@ -1,0 +1,22 @@
+{
+  "name": "@erl/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./llm": "./src/llm/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^5.12.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "vitest": "^5.1.1"
+  }
+}

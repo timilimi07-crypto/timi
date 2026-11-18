@@ -1,0 +1,3 @@
+# Ermöglicht `docker compose up` direkt im Projekt-Root.
+include:
+  - infra/docker-compose.yml

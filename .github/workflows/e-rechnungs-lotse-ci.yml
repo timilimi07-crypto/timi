@@ -1,0 +1,87 @@
+name: E-Rechnungs-Lotse CI
+
+on:
+  push:
+    paths:
+      - "e-rechnungs-lotse/**"
+      - ".github/workflows/e-rechnungs-lotse-ci.yml"
+  pull_request:
+    paths:
+      - "e-rechnungs-lotse/**"
+      - ".github/workflows/e-rechnungs-lotse-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: erl-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: e-rechnungs-lotse
+
+jobs:
+  check:
+    name: Lint, Typecheck, Unit-Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: e-rechnungs-lotse/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: e-rechnungs-lotse/.nvmrc
+          cache: pnpm
+          cache-dependency-path: e-rechnungs-lotse/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+
+  e2e:
+    name: E2E (Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: e-rechnungs-lotse/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: e-rechnungs-lotse/.nvmrc
+          cache: pnpm
+          cache-dependency-path: e-rechnungs-lotse/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @erl/web exec playwright install --with-deps chromium
+      - run: pnpm --filter @erl/web build
+      - run: pnpm test:e2e
+        env:
+          CI: "true"
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: e-rechnungs-lotse/apps/web/playwright-report
+          retention-days: 7
+
+  validator-image:
+    name: Validator-Image bauen + Health-Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t erl-validator services/validator
+      - run: |
+          docker run -d --name erlv -p 8081:8080 erl-validator
+          for _ in $(seq 1 60); do
+            if curl -fsS http://localhost:8081/server/health; then exit 0; fi
+            sleep 2
+          done
+          docker logs erlv
+          exit 1

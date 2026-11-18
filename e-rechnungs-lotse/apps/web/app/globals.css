@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@theme {
+  --color-lotse-50: #eef6ff;
+  --color-lotse-600: #1d5fa8;
+  --color-lotse-800: #133f70;
+  --color-lotse-900: #0d2c50;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
