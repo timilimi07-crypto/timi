@@ -148,9 +148,16 @@ export async function listEmails(
     Prisma.sql`e."isArchived" = false`,
   ];
 
-  if (f.status) conds.push(Prisma.sql`e.status = ${f.status}::"EmailStatus"`);
-  else if (f.view === "open") conds.push(Prisma.sql`e.status <> 'DONE'`);
-  else if (f.view === "done") conds.push(Prisma.sql`e.status = 'DONE'`);
+  // Status gilt für den Verlauf = Status seiner neuesten (passenden) E-Mail.
+  // Deshalb wird er erst NACH der Auswahl der neuesten E-Mail je Verlauf gefiltert –
+  // sonst stünde ein erledigter Verlauf mit neuer Antwort in „Offen“ UND „Erledigt“.
+  const statusCond = f.status
+    ? Prisma.sql`t.status = ${f.status}::"EmailStatus"`
+    : f.view === "open"
+      ? Prisma.sql`t.status <> 'DONE'`
+      : f.view === "done"
+        ? Prisma.sql`t.status = 'DONE'`
+        : Prisma.sql`TRUE`;
 
   if (f.category) conds.push(Prisma.sql`c.key = ${f.category}`);
   if (f.priority) conds.push(Prisma.sql`e.priority = ${f.priority}::"Priority"`);
@@ -183,23 +190,23 @@ export async function listEmails(
   const rank = f.sort === "priority" ? PRIORITY_RANK : Prisma.sql`0`;
   const cursor = decodeCursor(opts.cursor);
   const cursorCond = cursor
-    ? Prisma.sql`WHERE (t.rank > ${cursor.r} OR (t.rank = ${cursor.r} AND (t."receivedAt" < ${new Date(cursor.t)} OR (t."receivedAt" = ${new Date(cursor.t)} AND t.id < ${cursor.i}))))`
+    ? Prisma.sql`AND (t.rank > ${cursor.r} OR (t.rank = ${cursor.r} AND (t."receivedAt" < ${new Date(cursor.t)} OR (t."receivedAt" = ${new Date(cursor.t)} AND t.id < ${cursor.i}))))`
     : Prisma.empty;
 
   const rows = await db.$queryRaw<{ id: string; receivedAt: Date; rank: number }[]>`
     WITH f AS (
-      SELECT e.id, e."threadId", e."receivedAt", (${rank})::int AS rank
+      SELECT e.id, e."threadId", e."receivedAt", e.status, (${rank})::int AS rank
       FROM "Email" e
       LEFT JOIN "Category" c ON c.id = e."categoryId"
       WHERE ${Prisma.join(conds, " AND ")}
     ),
     t AS (
-      SELECT DISTINCT ON (COALESCE("threadId", id)) id, "receivedAt", rank
+      SELECT DISTINCT ON (COALESCE("threadId", id)) id, "receivedAt", status, rank
       FROM f
       ORDER BY COALESCE("threadId", id), "receivedAt" DESC, id DESC
     )
     SELECT t.id, t."receivedAt", t.rank FROM t
-    ${cursorCond}
+    WHERE ${statusCond} ${cursorCond}
     ORDER BY t.rank ASC, t."receivedAt" DESC, t.id DESC
     LIMIT ${limit + 1}`;
 

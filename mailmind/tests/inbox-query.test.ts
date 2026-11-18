@@ -126,6 +126,16 @@ describe("listEmails", () => {
     expect(items.map((i) => i.id)).not.toContain(foreign[0]!.id);
   });
 
+  it("Status eines Verlaufs = Status der neuesten E-Mail (kein Verlauf in zwei Spalten)", async () => {
+    // Weber-Verlauf: ältere Mails erledigt, neueste Antwort neu → nur in „Offen“/„Neu“.
+    await db.email.updateMany({ where: { id: { in: [ids.get("info-04a")!, ids.get("info-04b")!] } }, data: { status: "DONE" } });
+    expect(demoIds((await list({ view: "open" })).items)).toContain("info-04c");
+    expect(demoIds((await list({ view: "done" })).items)).not.toContain("info-04b");
+    expect(demoIds((await list({ status: "NEW", view: "all" })).items)).toContain("info-04c");
+    expect(demoIds((await list({ status: "DONE", view: "all" })).items)).not.toContain("info-04b");
+    await db.email.updateMany({ where: { id: { in: [ids.get("info-04a")!, ids.get("info-04b")!] } }, data: { status: "NEW" } });
+  });
+
   it("ignoriert ungültige Filterwerte statt zu scheitern", () => {
     expect(parseInboxFilters({ view: "quatsch", priority: "MEGA", after: "gestern", sort: "x" })).toMatchObject({ view: "open", sort: "newest", priority: undefined, after: undefined });
   });

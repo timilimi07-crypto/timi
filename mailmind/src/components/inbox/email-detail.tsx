@@ -27,7 +27,8 @@ import { PRIORITY_META, PRIORITY_ORDER, SENTIMENT_LABEL, STATUS_LABEL, type Prio
 import { cn } from "@/lib/utils";
 import { BodyFrame } from "./body-frame";
 import { detailKey, fetchDetail, useEmailPatch, useTaskToggle, type EmailDetail, type EmailListItem } from "./data";
-import { PhishingBadge, shortDate } from "./email-row";
+import { PhishingBadge } from "./email-row";
+import { shortDate } from "@/lib/format";
 import { ReplyPanel, type ReplyPanelHandle } from "./reply-panel";
 
 const selectCls =

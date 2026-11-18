@@ -70,4 +70,25 @@ export const restoreStatusSchema = z.object({
 
 export const replyRequestSchema = z.object({ tone: z.enum(["FORMAL", "CASUAL", "SHORT"]).default("FORMAL") });
 
-export const taskUpdateSchema = z.object({ status: z.enum(["OPEN", "DONE"]) });
+const isoDate = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Datum im Format JJJJ-MM-TT")
+  .refine((v) => !Number.isNaN(Date.parse(`${v}T12:00:00Z`)), "Ungültiges Datum");
+
+export const taskUpdateSchema = z
+  .object({
+    status: z.enum(["OPEN", "DONE"]),
+    title: z.string().trim().min(1, "Bitte einen Titel angeben").max(200),
+    dueDate: isoDate.nullable(),
+  })
+  .partial()
+  .refine((v) => Object.keys(v).length > 0, "Keine Änderung angegeben");
+
+export const taskCreateSchema = z.object({
+  title: z.string().trim().min(1, "Bitte einen Titel angeben").max(200),
+  dueDate: isoDate.nullable().optional(),
+  emailId: z.string().min(1).optional(),
+});
+
+/** Fristen als 12:00 UTC des Kalendertags speichern (zeitzonensicher, wie bei KI-Aufgaben). */
+export const dueDateToDb = (v: string | null | undefined) => (v ? new Date(`${v}T12:00:00Z`) : null);

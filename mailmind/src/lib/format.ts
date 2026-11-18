@@ -40,3 +40,13 @@ export function formatShortDay(isoDay: string): string {
   const [, m, d] = isoDay.split("-");
   return `${d}.${m}.`;
 }
+
+const timeOnly = new Intl.DateTimeFormat("de-DE", { hour: "2-digit", minute: "2-digit", timeZone: TIME_ZONE });
+const dayMonth = new Intl.DateTimeFormat("de-DE", { day: "2-digit", month: "2-digit", timeZone: TIME_ZONE });
+const isoDayFmt = new Intl.DateTimeFormat("en-CA", { timeZone: TIME_ZONE });
+
+/** Listen-Datum: heute nur Uhrzeit („16:18“), sonst Tag und Monat („15.11.“). Server und Client. */
+export function shortDate(iso: string | Date, now = new Date()): string {
+  const d = typeof iso === "string" ? new Date(iso) : iso;
+  return isoDayFmt.format(d) === isoDayFmt.format(now) ? timeOnly.format(d) : dayMonth.format(d);
+}

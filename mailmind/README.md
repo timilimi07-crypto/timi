@@ -2,12 +2,13 @@
 
 **KI-gestützte E-Mail-Zentrale für Firmen.** MailMind ruft eingehende E-Mails aus mehreren Postfächern ab und fasst sie mit Claude (Anthropic) zusammen. Jede E-Mail wird kategorisiert und priorisiert, Aufgaben und Fristen werden automatisch erkannt. So wissen Mitarbeiter morgens in zwei Minuten, was wichtig ist, was heute erledigt werden muss und was warten kann.
 
-> **Stand: Phase 4 von 7**
+> **Stand: Phase 5 von 7**
 > - Phase 1: Projekt-Setup, Datenbankschema, Anmeldung mit Rollen, Grundlayout (Light/Dark Mode, responsiv, Befehlspalette).
 > - Phase 2: Postfach-Anbindung (IMAP, Gmail, Outlook, Demo), automatischer Abruf per Worker, Sync-Button, Abruf-Limits, Threads und Anhänge, KI-Modellwahl pro Firma, KI-Kosten im Admin-Dashboard.
 > - Phase 3: KI-Pipeline – Vorsortierung mit Haiku, Analyse mit Sonnet (Zusammenfassung, Kategorie, Priorität, Stimmung, Aufgaben, erkannte Daten), Sicherheit + „Bitte prüfen“, lernt aus Korrekturen, inkrementelle Thread-Zusammenfassung, Prompt-Caching, Maskierung, KI-Tageslimit, Qualitätstest.
 > - Phase 4: Posteingang im 3-Spalten-Layout (Superhuman-Stil): Vorladen, optimistische Aktionen mit Rückgängig, Detailansicht, Volltextsuche, Filter, Tastaturkürzel, Phishing-Warnung.
-> - Als Nächstes: Phase 5 – Dashboard („Heute wichtig“, Fristen, Diagramme), Kanban, Aufgaben-Ansicht.
+> - Phase 5: Dashboard („Heute wichtig“, Fristen, Kennzahlen, Diagramme), Kanban mit Drag & Drop, Aufgaben-Ansicht.
+> - Als Nächstes: Phase 6 – Team-Funktionen (Zuweisen, Notizen, Kommentare), Regel-Editor, Tages-Digest.
 
 ## Tech-Stack
 
@@ -190,6 +191,22 @@ Der Bericht enthält pro E-Mail Kategorie, Priorität (mit Sicherheit), „Bitte
 Admins wählen die Modelle pro Firma unter **Einstellungen → Allgemein**. Ohne Firmeneinstellung gelten `ANTHROPIC_MODEL` / `ANTHROPIC_MODEL_FAST` aus der `.env`.
 
 Jeder KI-Aufruf wird mit Tokens und Kosten protokolliert. Admins sehen im **Dashboard** die KI-Kosten von heute und vom laufenden Monat, eine Hochrechnung samt Vergleich zum Vormonat, den Verlauf der letzten 30 Tage nach Modell und eine Aufteilung nach Modell. Beträge in US-Dollar (Abrechnungswährung von Anthropic). Preise sind in `src/lib/ai/models.ts` hinterlegt.
+
+## Dashboard, Kanban, Aufgaben
+
+**Dashboard:** Begrüßung mit Tageszusammenfassung („2 dringende E-Mails · 1 Aufgabe heute fällig“) und Kennzahlen (Neu, Dringend, Offene Aufgaben, Heute fällig + überfällig). Jede Kachel führt in die passend gefilterte Ansicht. Außerdem:
+- Hinweise auf Phishing-Verdacht und „Bitte prüfen“
+- **Heute wichtig**: offene Verläufe mit Dringend/Hoch, Phishing-Verdacht oder „Bitte prüfen“, Dringendes zuerst, mit KI-Zusammenfassung
+- **Fristen**: überfällig, heute, morgen, nächste 7 Tage, direkt abhakbar
+- Diagramme: E-Mails pro Tag (14 Tage) und pro Kategorie (7 Tage), jeweils mit Hover-Details
+- für Admins: KI-Kosten
+
+**Kanban:** Spalten Neu, In Bearbeitung, Wartet und Erledigt (die letzten 30). Karten ziehen ändert den Status des ganzen Verlaufs, sofort und mit „Rückgängig“. Per Tastatur: Griff fokussieren, Leertaste, ← → wechselt die Spalte, Leertaste legt ab. Auf Touch-Geräten gibt es zusätzlich ein Status-Auswahlfeld auf jeder Karte. Filter: Kategorie, Priorität, Sortierung, Newsletter & Spam.
+
+**Aufgaben:** alle von der KI erkannten und eigenen To-dos, gruppiert nach überfällig, heute, morgen, diese Woche, später und ohne Frist.
+- Neue Aufgabe mit Enter anlegen.
+- Titel direkt bearbeiten, Frist per Datumsfeld ändern, abhaken, löschen. Alles wirkt sofort und wird bei Fehlern zurückgenommen.
+- Link zur zugehörigen E-Mail, Suche, Reiter „Erledigt“ (letzte 30 Tage).
 
 ## Posteingang
 

@@ -3,19 +3,11 @@
 import { memo } from "react";
 import { AlertTriangle, ListTodo, Paperclip, ShieldAlert, Sparkles } from "lucide-react";
 import { colorClasses } from "@/lib/colors";
-import { formatUsd, TIME_ZONE } from "@/lib/format";
+import { formatUsd, shortDate } from "@/lib/format";
 import { PRIORITY_META, type PriorityKey } from "@/lib/labels";
 import { cn } from "@/lib/utils";
 import type { EmailListItem } from "./data";
 
-const timeFmt = new Intl.DateTimeFormat("de-DE", { hour: "2-digit", minute: "2-digit", timeZone: TIME_ZONE });
-const dayFmt = new Intl.DateTimeFormat("de-DE", { day: "2-digit", month: "2-digit", timeZone: TIME_ZONE });
-const dayKey = new Intl.DateTimeFormat("en-CA", { timeZone: TIME_ZONE });
-
-export function shortDate(iso: string) {
-  const d = new Date(iso);
-  return dayKey.format(d) === dayKey.format(new Date()) ? timeFmt.format(d) : dayFmt.format(d);
-}
 
 /** Roter Warnhinweis für mögliche Phishing-Mails (Liste und Detail). */
 export function PhishingBadge({ className }: { className?: string }) {

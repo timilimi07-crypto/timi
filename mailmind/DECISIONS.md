@@ -136,3 +136,19 @@ Format: **Entscheidung** – Begründung. Neue Einträge unten anhängen.
 58. **Globale Tastenkürzel laufen in der Capture-Phase** und markieren behandelte Tasten, damit Sequenzen wie `G E` nicht zusätzlich das `E` (Erledigt) des Posteingangs auslösen.
 
 59. **Antwortvorschläge** mit dem Hauptmodell (Effort `low` für schnelle Antwort), Platzhalter in eckigen Klammern statt erfundener Fakten, gespeichert als `ReplyDraft`. Kosten erscheinen im KI-Kostenprotokoll (Dashboard), nicht in den Auswertungskosten der einzelnen E-Mail.
+
+## Phase 5 – Dashboard, Kanban, Aufgaben
+
+60. **Status eines Verlaufs = Status seiner neuesten E-Mail.** Der Statusfilter wird erst nach der Auswahl der neuesten E-Mail je Verlauf angewendet. Vorher stand ein erledigter Verlauf mit neuer Antwort in „Offen“ und „Erledigt“ gleichzeitig (im Kanban in zwei Spalten). Mit Regressionstest.
+
+61. **„Heute wichtig“** = offene Verläufe mit Priorität Dringend/Hoch, Phishing-Verdacht oder „Bitte prüfen“, sortiert nach Wichtigkeit (max. 8). Nutzt dieselbe Abfrage wie der Posteingang, die Ergebnisse sind also deckungsgleich.
+
+62. **Fristen werden als 12:00 UTC des Kalendertags gespeichert** (KI und manuell gleich). Der Tag ist damit in jeder Zeitzone eindeutig; „heute“, „morgen“ und „überfällig“ werden in Europe/Berlin bestimmt.
+
+63. **Dashboard-Diagramme einfarbig** (je eine Datenreihe, Farbe `--series-1`, hell/dunkel abgestimmt). Keine Legende nötig, Werte per Hover bzw. als Beschriftung. Kategorien als horizontale Balken, sortiert nach Anzahl.
+
+64. **Kanban mit `@dnd-kit/core`** (zugänglich, Tastatursteuerung). Pfeiltasten springen direkt in die Nachbarspalte statt in Pixelschritten. Auf Touch-Geräten (`hover: none`) zeigen Karten zusätzlich ein Status-Auswahlfeld, weil Ziehen über den Bildschirmrand auf schmalen Displays unzuverlässig ist. „Erledigt“ zeigt die letzten 30 Verläufe.
+
+65. **Aufgaben-Ansicht** zeigt alle offenen Aufgaben und die in den letzten 30 Tagen erledigten. Aufgaben gelöschter E-Mails werden ausgeblendet. Löschen ist auch für KI-Aufgaben erlaubt (z. B. wenn die KI etwas Unnötiges erkannt hat). Zuweisen an Personen folgt in Phase 6.
+
+66. **Regressionstest für die Client/Server-Grenze** (`src/lib/client-boundary.test.ts`): Server-Module dürfen aus `"use client"`-Modulen nur Komponenten und Typen importieren. Dieser Fehler trat zweimal auf (Funktion `shortDate`, Konstante `STATUSES`) und zeigt sich sonst erst zur Laufzeit. Gemeinsame Hilfsfunktionen liegen deshalb in neutralen Modulen (`lib/format.ts`, `components/kanban/statuses.ts`).
