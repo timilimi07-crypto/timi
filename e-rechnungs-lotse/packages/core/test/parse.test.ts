@@ -1,11 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
-  detectFormat,
-  parseInvoice,
-  UnsafeXmlError,
-  UnsupportedFormatError,
-} from "../src/index.js";
-import { fixture } from "./helpers.js";
+import { detectFormat, parseInvoice, UnsafeXmlError, UnsupportedFormatError } from "../src/index";
+import { fixture } from "./helpers";
 
 describe("parseInvoice – XRechnung UBL", () => {
   const inv = parseInvoice(fixture("synthetic/xrechnung-ubl-minimal.xml"));

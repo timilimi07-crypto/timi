@@ -120,6 +120,73 @@ Jedes Feld ist im Code mit seiner BT-/BG-ID dokumentiert; maschinenlesbar in `BT
 `invoices` erhält `file_format`, `analysis_status`, `embedded_xml_filename`; Enum `invoice_profile` entspricht
 `InvoiceProfile` (Altwert `ZUGFERD_FACTURX` → `UNBEKANNT`). Prüfergebnisse gehören in `validation_runs.findings` (JSON).
 
+## Erklär-Schicht (`packages/core/src/explanations`)
+
+**Eine Quelle für alle deutschen Texte:** `explanations/de.json` (versioniert über `version`, Schema mit zod in
+`table.ts`; ein ungültiger Eintrag bricht Start und Tests ab). Je Regel-ID:
+
+| Feld                            | Bedeutung                                                              |
+| ------------------------------- | ---------------------------------------------------------------------- |
+| `titel`                         | wenige Wörter – erscheint auch als `ValidationFinding.message`         |
+| `erklaerung_einfach`            | 1–2 Sätze: Was ist los?                                                |
+| `was_tun`                       | konkrete Handlung für den Empfänger                                    |
+| `betrifft_mich_als_empfaenger`  | relevant für Zahlung oder Vorsteuerabzug? (steuert auch die Rückfrage) |
+| `schwere_hinweis` (optional)    | warum es wichtig ist, z. B. Vorsteuer                                  |
+| `bitte_an_lieferant` (optional) | Satz für die Rückfrage-E-Mail (Ergänzung zum vorgegebenen Schema)      |
+
+Schlüssel sind exakte Regel-IDs oder Präfixe mit `*` (`cvc-*`, `UBL-CR-*`, `CII-SR-*`, `BR-CL-*`).
+Enthalten: alle eigenen Regeln (`OWN_RULE_IDS`, per Test erzwungen – auch jede `"ERL-…"`/`"KOSIT-…"`-Kennung im
+Quellcode) und rund 70 KoSIT-/EN-16931-/BR-DE-Regeln.
+
+**Ablauf `explainFindings()` je Befund:**
+
+1. Tabelle (exakt, sonst längster Präfix) → `quelle: "tabelle"`
+2. Cache `explanation_cache` (Schlüssel nur Regel-ID) → `quelle: "automatisch"`
+3. Nur wenn `LLM_ENABLED=true`: LLM über `packages/core/llm` (`explainRule`). Gesendet werden ausschließlich
+   `ruleId`, `technicalMessage` und `field` (BT-ID). Vorher werden alle konkreten Werte der Rechnung entfernt
+   (`sensitiveValuesOf` → Namen, Anschriften, Nummern, IBANs, Beträge, Daten) und die Meldung generisch bereinigt
+   (`redactTechnicalMessage`: keine Ziffern außer in Kennungen, keine Zitate, E-Mails, URLs, IBANs). Antwort wird mit
+   zod geprüft, im Cache gespeichert und in der Oberfläche als „automatisch erklärt“ gekennzeichnet.
+4. Sonst Standardtext „Technische Meldung, bitte an Lieferant weitergeben.“ → `quelle: "standardtext"`
+
+Danach `mergeEquivalent()`: Befunde gleicher Schwere und gleichen Titels (z. B. `ERL-RECHNUNG-BRUTTO` und KoSIT
+`BR-CO-15`) werden zu einem Punkt zusammengefasst; die beteiligten Regeln stehen in `verwandt`.
+
+**Darstellung (`present/`):** `buildCheckView()` erzeugt das Ansichtsmodell: Ampel (Farbe + Symbol + Wort),
+Ein-Satz-Zusammenfassung, Eckdaten (von wem, wie viel, bis wann), Hinweisbox (keine E-Rechnung / MINIMUM / BASIC WL),
+„Rechnung wie auf Papier“ und die Rückfrage (`buildSupplierInquiry`, reine Textvorlage: Rechnungsnummer und Datum
+aus dem XML, je Punkt Titel und `bitte_an_lieferant`; enthält Fehler sowie Warnungen, die den Empfänger betreffen).
+Formatierung (`format.ts`) arbeitet nur mit Strings – keine Floats.
+
+| Ampel   | Status                              | Wort                                 |
+| ------- | ----------------------------------- | ------------------------------------ |
+| grün ✓  | `ok`                                | In Ordnung                           |
+| gelb ⚠  | `warnungen` / `pruefung_ausstehend` | Bitte prüfen / Prüfung unvollständig |
+| rot ✕   | `fehlerhaft`                        | Fehlerhaft                           |
+| grau 📄 | `keine_e_rechnung`                  | Keine E-Rechnung                     |
+
+## Prüfmodus `/pruefen` – Datenfluss
+
+```
+Browser ──(Formular, multipart, max. 10 MB)──► Server Action pruefenAction (Next.js, Node-Laufzeit)
+  │ Client prüft Endung/Größe vorab                │ lib/pruefen.ts
+  │                                                ├─ File → Uint8Array (nur Arbeitsspeicher)
+  │                                                ├─ analyseInvoice()  ──POST XML──► KoSIT-Validator (eigener Container)
+  │                                                ├─ buildCheckView()  ──nur bei LLM_ENABLED, ohne Rechnungsdaten──► LLM (EU)
+  │                                                ├─ Puffer mit Nullen überschreiben (finally)
+  ◄──────────── CheckView (serialisiert) ──────────┘
+```
+
+- **Nichts wird gespeichert:** keine Datei im Objektspeicher, kein Eintrag in `invoices`/`validation_runs`/
+  `audit_events`, keine temporäre Datei, kein Log mit Inhalten. Fehler werden ohne Details beantwortet.
+  Nachweis: E2E-Test `apps/web/e2e/datenschutz.spec.ts` zählt Tabellenzeilen und Objekte vor/nach Prüfungen.
+- Einzige Datenbank-Schreibung im Prüfmodus: `explanation_cache` (nur bei LLM an; Inhalt: Erklärtext je Regel-ID).
+- Der Hinweis „Ihre Datei wird nach der Prüfung sofort gelöscht“ steht über dem Upload.
+- Barrierearm: Beschriftete Felder, Fokus springt nach der Prüfung auf das Ergebnis, `aria-live`-Statusmeldungen,
+  Ampel nie nur über Farbe, Details per Tastatur aufklappbar, Druckansicht per Print-CSS.
+  Gemessen: Lighthouse Accessibility **100** auf `/pruefen` (CI-Schwelle 90, `pnpm --filter @erl/web test:a11y`),
+  axe-core (WCAG 2.1 AA) ohne Verstöße für Startzustand und alle Ergebnisarten.
+
 ## Validator
 
 - Daemon-Modus: `java -jar validator.jar -s config/scenarios.xml -r config -D -H 0.0.0.0 -P 8080`
@@ -148,3 +215,6 @@ Jedes Feld ist im Code mit seiner BT-/BG-ID dokumentiert; maschinenlesbar in `BT
 - Lizenz der FeRD-Beispiele (über ZUGFeRD-Corpus, Apache-2.0) vor Veröffentlichung klären.
 - PDF/A-3-Konformität wird nur an der XMP-Kennung erkannt, nicht vollständig geprüft (z. B. veraPDF).
 - Gutschriften (381) mit negativen Beträgen im PDF-Abgleich: Vorzeichen wird ignoriert.
+- Erklärtexte von einer Steuerfachkraft gegenlesen lassen (insb. `schwere_hinweis` zum Vorsteuerabzug).
+- LLM-Anbieter (EU) auswählen und in `docs/subprozessoren.md` eintragen, bevor `LLM_ENABLED=true` gesetzt wird.
+- Lighthouse misst nur den Startzustand von `/pruefen`; Ergebnisansichten prüft axe-core in den E2E-Tests.

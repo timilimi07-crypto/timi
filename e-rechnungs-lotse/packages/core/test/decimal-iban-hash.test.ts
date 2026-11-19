@@ -6,7 +6,7 @@ import {
   sha256Hex,
   sumDecimals,
   toScaled,
-} from "../src/index.js";
+} from "../src/index";
 
 describe("Dezimalarithmetik ohne Float", () => {
   it("addiert exakt", () => {

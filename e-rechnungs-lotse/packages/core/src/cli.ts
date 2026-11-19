@@ -5,7 +5,7 @@
  */
 import { readFile } from "node:fs/promises";
 import { basename, resolve } from "node:path";
-import { analyseInvoice } from "./analyse.js";
+import { analyseInvoice } from "./analyse";
 
 async function main(argv: string[]): Promise<number> {
   const args = argv.filter((a) => !a.startsWith("--"));

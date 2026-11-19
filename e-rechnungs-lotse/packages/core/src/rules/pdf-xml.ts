@@ -2,8 +2,8 @@
  * ZUGFeRD/Factur-X: Abgleich der Sichtkomponente (PDF-Text) mit dem XML.
  * Das XML ist rechtlich maßgeblich – Abweichungen werden nur gemeldet, nie "korrigiert".
  */
-import { finding, type ValidationFinding } from "../findings.js";
-import type { NormalizedInvoice } from "../types.js";
+import { finding, type ValidationFinding } from "../findings";
+import type { NormalizedInvoice } from "../types";
 
 const MIN_TEXT_CHARS = 20;
 
@@ -36,13 +36,9 @@ export function comparePdfTextWithInvoice(
   const hay = squash(pdfText);
   if (hay.length < MIN_TEXT_CHARS) {
     return [
-      finding(
-        "format",
-        "info",
-        "ERL-PDF-KEIN-TEXT",
-        "Das PDF enthält keinen auslesbaren Text. Ein Abgleich mit dem XML ist nicht möglich. Maßgeblich ist das XML.",
-        { technicalMessage: "PDF-Textebene leer (z. B. gescanntes Bild)" },
-      ),
+      finding("format", "info", "ERL-PDF-KEIN-TEXT", {
+        technicalMessage: "PDF-Textebene leer (z. B. gescanntes Bild)",
+      }),
     ];
   }
 
@@ -59,16 +55,9 @@ export function comparePdfTextWithInvoice(
   }
   if (missing.length === 0) return [];
   return [
-    finding(
-      "format",
-      "warning",
-      "ERL-PDF-XML-ABWEICHUNG",
-      `PDF und XML weichen ab: ${missing.join(" und ")} aus dem XML ${missing.length > 1 ? "stehen" : "steht"} nicht im PDF. ` +
-        "Rechtlich maßgeblich ist das XML. Klären Sie die Abweichung mit dem Rechnungssteller.",
-      {
-        location: missing.map((m) => m.match(/BT-\d+/)?.[0]).join(", "),
-        technicalMessage: `Im PDF-Text nicht gefunden: ${missing.join(", ")}`,
-      },
-    ),
+    finding("format", "warning", "ERL-PDF-XML-ABWEICHUNG", {
+      location: missing.map((m) => m.match(/BT-\d+/)?.[0]).join(", "),
+      technicalMessage: `Im PDF-Text nicht gefunden: ${missing.join(", ")}`,
+    }),
   ];
 }

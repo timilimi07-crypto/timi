@@ -1,8 +1,8 @@
-import type { NormalizedInvoice } from "../types.js";
-import { normalizeCii } from "./cii.js";
-import { detectFromTree } from "./detect.js";
-import { normalizeUbl } from "./ubl.js";
-import { parseXml } from "./xml.js";
+import type { NormalizedInvoice } from "../types";
+import { normalizeCii } from "./cii";
+import { detectFromTree } from "./detect";
+import { normalizeUbl } from "./ubl";
+import { parseXml } from "./xml";
 
 export {
   detectFormat,
@@ -10,9 +10,9 @@ export {
   profileFromSpecificationId,
   xrechnungVersionFromSpecificationId,
   type UnsupportedReason,
-} from "./detect.js";
-export { ciiDateToIso } from "./cii.js";
-export { MalformedXmlError, UnsafeXmlError } from "./xml.js";
+} from "./detect";
+export { ciiDateToIso } from "./cii";
+export { MalformedXmlError, UnsafeXmlError } from "./xml";
 
 /**
  * Liest eine XRechnung (UBL/CII) bzw. das XML einer ZUGFeRD/Factur-X-Rechnung deterministisch aus.

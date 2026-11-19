@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import {
   bigint,
+  boolean,
   char,
   date,
   index,
@@ -128,3 +129,18 @@ export const auditEvents = pgTable(
   },
   (t) => [index("audit_events_invoice_idx").on(t.invoiceId)],
 );
+
+/**
+ * Cache für automatisch (per LLM) erzeugte Erklärungen unbekannter Prüfregeln.
+ * Schlüssel ist ausschließlich die Regel-ID – es werden keine Rechnungsinhalte gespeichert.
+ */
+export const explanationCache = pgTable("explanation_cache", {
+  ruleId: text("rule_id").primaryKey(),
+  sprache: char("sprache", { length: 2 }).notNull().default("de"),
+  titel: text("titel").notNull(),
+  erklaerungEinfach: text("erklaerung_einfach").notNull(),
+  wasTun: text("was_tun").notNull(),
+  betrifftMichAlsEmpfaenger: boolean("betrifft_mich_als_empfaenger").notNull(),
+  quelle: text("quelle").notNull().default("llm"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});

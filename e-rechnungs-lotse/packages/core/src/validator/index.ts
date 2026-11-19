@@ -2,8 +2,8 @@
  * Client für den KoSIT-Validator im Daemon-Modus (services/validator) und Übersetzung des Prüfberichts.
  * POST / mit dem XML im Body → Bericht (VARL). HTTP 200 = Annahme empfohlen, 406 = Ablehnung empfohlen.
  */
-import { finding, type FindingSeverity, type ValidationFinding } from "../findings.js";
-import { attr, list, parseXml, text, type XmlNode } from "../parse/xml.js";
+import { finding, type FindingSeverity, type ValidationFinding } from "../findings";
+import { attr, list, parseXml, text, type XmlNode } from "../parse/xml";
 
 export type ValidatorResult =
   | {
@@ -65,9 +65,11 @@ function messageFindings(report: XmlNode): ValidationFinding[] {
           : null;
       const userText = raw.replace(/^\[[^\]]+\]\s*/, "");
       out.push(
-        finding("validator", level, code, userText || "Formaler Fehler in der Rechnung.", {
+        finding("validator", level, code, {
           location,
           technicalMessage: raw || code,
+          // Für Regeln ohne Eintrag in der Erklärtabelle bleibt der Text des Prüfprogramms sichtbar.
+          fallbackMessage: userText || "Formaler Fehler in der Rechnung.",
         }),
       );
     }
@@ -90,17 +92,10 @@ export function interpretReport(
       engine,
       reportXml,
       findings: [
-        finding(
-          "validator",
-          "warning",
-          "KOSIT-KEIN-SZENARIO",
-          "Für dieses Rechnungsprofil gibt es im offiziellen Prüfprogramm keine Prüfregeln. " +
-            "Die formale Prüfung war daher nicht möglich.",
-          {
-            technicalMessage:
-              "KoSIT: noScenarioMatched (Profil/Version nicht in der XRechnung-Konfiguration)",
-          },
-        ),
+        finding("validator", "warning", "KOSIT-KEIN-SZENARIO", {
+          technicalMessage:
+            "KoSIT: noScenarioMatched (Profil/Version nicht in der XRechnung-Konfiguration)",
+        }),
       ],
     };
   }
@@ -110,15 +105,9 @@ export function interpretReport(
   const findings = messageFindings(report);
   if (!accepted && !findings.some((f) => f.severity === "error")) {
     findings.push(
-      finding(
-        "validator",
-        "error",
-        "KOSIT-ABGELEHNT",
-        "Das offizielle Prüfprogramm empfiehlt, die Rechnung abzulehnen.",
-        {
-          technicalMessage: "KoSIT assessment: reject",
-        },
-      ),
+      finding("validator", "error", "KOSIT-ABGELEHNT", {
+        technicalMessage: "KoSIT assessment: reject",
+      }),
     );
   }
   return {
@@ -136,14 +125,9 @@ function unreachable(reason: string): ValidatorResult {
     status: "nicht_erreichbar",
     reason,
     findings: [
-      finding(
-        "validator",
-        "info",
-        "KOSIT-NICHT-ERREICHBAR",
-        "Die formale Prüfung konnte gerade nicht durchgeführt werden, weil der Prüfdienst nicht erreichbar ist. " +
-          "Die Prüfung wird nachgeholt. Sie müssen nichts tun.",
-        { technicalMessage: `Validator nicht erreichbar: ${reason}` },
-      ),
+      finding("validator", "info", "KOSIT-NICHT-ERREICHBAR", {
+        technicalMessage: `Validator nicht erreichbar: ${reason}`,
+      }),
     ],
   };
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { createValidatorClient, interpretReport, simplifyXpath } from "../src/index.js";
-import { fixture } from "./helpers.js";
+import { createValidatorClient, interpretReport, simplifyXpath } from "../src/index";
+import { fixture } from "./helpers";
 
 const report = (name: string) => fixture(`validator-reports/${name}`);
 
@@ -95,6 +95,6 @@ describe("createValidatorClient", () => {
     if (r.status !== "nicht_erreichbar") throw new Error();
     expect(r.reason).toMatch(reason);
     expect(r.findings[0]).toMatchObject({ ruleId: "KOSIT-NICHT-ERREICHBAR", severity: "info" });
-    expect(r.findings[0]!.message).toMatch(/Sie müssen nichts tun/);
+    expect(r.findings[0]!.message).toBe("Formale Prüfung gerade nicht möglich");
   });
 });

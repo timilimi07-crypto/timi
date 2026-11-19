@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const schritte = [
   {
     titel: "Empfangen",
@@ -28,6 +30,13 @@ export default function Startseite() {
         Seit 2025 müssen Sie E-Rechnungen empfangen können. Der E-Rechnungs-Lotse nimmt Ihnen die
         Arbeit ab: Er prüft jede Rechnung, zeigt sie verständlich an und bewahrt sie sicher auf.
       </p>
+
+      <Link
+        href="/pruefen"
+        className="mt-8 inline-block rounded-lg bg-lotse-600 px-6 py-4 text-lg font-semibold text-white hover:bg-lotse-800 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-lotse-600"
+      >
+        Jetzt eine Rechnung prüfen
+      </Link>
 
       <ol className="mt-12 grid gap-4 sm:grid-cols-2">
         {schritte.map((s, i) => (

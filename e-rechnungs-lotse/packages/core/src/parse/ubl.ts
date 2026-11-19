@@ -4,8 +4,8 @@ import type {
   NormalizedInvoice,
   Party,
   PostalAddress,
-} from "../types.js";
-import { at, attr, list, text, type XmlNode } from "./xml.js";
+} from "../types";
+import { at, attr, list, text, type XmlNode } from "./xml";
 
 function ublAddress(addr: unknown): PostalAddress {
   return {

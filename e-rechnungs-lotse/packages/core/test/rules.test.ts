@@ -8,8 +8,8 @@ import {
   parseInvoice,
   profileFromSpecificationId,
   type NormalizedInvoice,
-} from "../src/index.js";
-import { fixture } from "./helpers.js";
+} from "../src/index";
+import { fixture } from "./helpers";
 
 const kosit = (): NormalizedInvoice =>
   parseInvoice(fixture("official/kosit-xrechnung-testsuite/01.05a-INVOICE_ubl.xml"));
@@ -39,7 +39,9 @@ describe("checkPlausibility – Grundfälle", () => {
     const inv = kosit();
     inv.currency = null;
     inv.totals.payableAmount = null;
-    expect(checkPlausibility(inv).filter((f) => f.ruleId === "ERL-PFLICHT")).toHaveLength(2);
+    const r = ids(inv);
+    expect(r).toContain("ERL-PFLICHT-WAEHRUNG");
+    expect(r).toContain("ERL-PFLICHT-ZAHLBETRAG");
   });
 
   it("meldet ungültige Beträge und überspringt dann die Rechenprüfung", () => {
@@ -160,11 +162,12 @@ describe("§ 14 Abs. 4 UStG", () => {
       exemptionReasonCode: null,
     });
     const f = checkPlausibility(inv).find((x) => x.ruleId === "ERL-UST14-BEFREIUNG");
-    expect(f?.message).toMatch(/Steuerschuldnerschaft/);
+    expect(f?.message).toBe("Hinweis auf Steuerbefreiung fehlt");
+    expect(f?.technicalMessage).toMatch(/Kategorie AE/);
     inv.taxBreakdown[0]!.category = "E";
-    expect(checkPlausibility(inv).find((x) => x.ruleId === "ERL-UST14-BEFREIUNG")?.message).toMatch(
-      /Steuerbefreiung/,
-    );
+    expect(
+      checkPlausibility(inv).find((x) => x.ruleId === "ERL-UST14-BEFREIUNG")?.technicalMessage,
+    ).toMatch(/Kategorie E/);
   });
 });
 
@@ -226,7 +229,7 @@ describe("PDF/XML-Abgleich", () => {
     const inv = kosit();
     const [f] = comparePdfTextWithInvoice("Rechnung Nr. 1 über 1,00 EUR und weiterer Text", inv);
     expect(f).toMatchObject({ ruleId: "ERL-PDF-XML-ABWEICHUNG", severity: "warning" });
-    expect(f!.message).toMatch(/maßgeblich ist das XML/);
+    expect(f!.technicalMessage).toMatch(/Rechnungsnummer \(BT-1\)/);
     expect(comparePdfTextWithInvoice("   ", inv)[0]?.ruleId).toBe("ERL-PDF-KEIN-TEXT");
   });
 });

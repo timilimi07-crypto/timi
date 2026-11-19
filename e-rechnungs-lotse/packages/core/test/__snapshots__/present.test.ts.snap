@@ -1,0 +1,136 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Erklärungen für 5 typische Dateien (Snapshot) > MINIMUM 1`] = `
+{
+  "befunde": [
+    {
+      "quelle": "tabelle",
+      "ruleId": "ERL-PROFIL-MINIMUM",
+      "severity": "warning",
+      "titel": "Keine vollwertige E-Rechnung (MINIMUM)",
+      "was_tun": "Prüfen Sie die Angaben im PDF. Bitten Sie den Lieferanten, künftig das Profil EN 16931 oder XRechnung zu nutzen.",
+    },
+    {
+      "quelle": "tabelle",
+      "ruleId": "ERL-PDFA3",
+      "severity": "info",
+      "titel": "PDF-Format nicht ganz korrekt",
+      "was_tun": "Nichts zu tun. Sie können den Lieferanten bei Gelegenheit darauf hinweisen.",
+    },
+    {
+      "quelle": "tabelle",
+      "ruleId": "ERL-ZUGFERD-XML-MASSGEBLICH",
+      "severity": "info",
+      "titel": "PDF mit eingebetteten Rechnungsdaten",
+      "was_tun": "Nichts zu tun.",
+    },
+  ],
+  "hinweis": "In Deutschland keine vollwertige E-Rechnung",
+  "zusammenfassung": "Holzbau Beispiel GmbH & Co. KG verlangt 595,00 €, zahlbar bis 02.12.2026. 1 Punkt sollten Sie kurz prüfen.",
+}
+`;
+
+exports[`Erklärungen für 5 typische Dateien (Snapshot) > PDF/XML-Abweichung 1`] = `
+{
+  "befunde": [
+    {
+      "quelle": "tabelle",
+      "ruleId": "ERL-UST14-ZEITPUNKT",
+      "severity": "warning",
+      "titel": "Leistungsdatum fehlt",
+      "was_tun": "Fragen Sie kurz beim Lieferanten nach, ob Leistungsdatum und Rechnungsdatum gleich sind.",
+    },
+    {
+      "quelle": "tabelle",
+      "ruleId": "ERL-PDF-XML-ABWEICHUNG",
+      "severity": "warning",
+      "titel": "PDF und XML weichen ab",
+      "was_tun": "Zahlen Sie erst, wenn der Lieferant die Abweichung geklärt hat. Maßgeblich ist der Betrag aus den XML-Daten, den Sie hier sehen.",
+    },
+    {
+      "quelle": "tabelle",
+      "ruleId": "ERL-PDFA3",
+      "severity": "info",
+      "titel": "PDF-Format nicht ganz korrekt",
+      "was_tun": "Nichts zu tun. Sie können den Lieferanten bei Gelegenheit darauf hinweisen.",
+    },
+    {
+      "quelle": "tabelle",
+      "ruleId": "ERL-ZUGFERD-XML-MASSGEBLICH",
+      "severity": "info",
+      "titel": "PDF mit eingebetteten Rechnungsdaten",
+      "was_tun": "Nichts zu tun.",
+    },
+  ],
+  "hinweis": null,
+  "zusammenfassung": "[Seller name] verlangt 336,90 €. 2 Punkte sollten Sie kurz prüfen.",
+}
+`;
+
+exports[`Erklärungen für 5 typische Dateien (Snapshot) > fehlerhaft 1`] = `
+{
+  "befunde": [
+    {
+      "quelle": "tabelle",
+      "ruleId": "ERL-RECHNUNG-BRUTTO",
+      "severity": "error",
+      "titel": "Bruttobetrag stimmt nicht",
+      "was_tun": "Zahlen Sie erst, wenn der Lieferant eine korrigierte Rechnung geschickt hat.",
+    },
+    {
+      "quelle": "tabelle",
+      "ruleId": "ERL-RECHNUNG-ZAHLBETRAG",
+      "severity": "error",
+      "titel": "Zahlbetrag stimmt nicht",
+      "was_tun": "Klären Sie mit dem Lieferanten, welcher Betrag richtig ist, bevor Sie zahlen.",
+    },
+    {
+      "quelle": "tabelle",
+      "ruleId": "ERL-UST14-ZEITPUNKT",
+      "severity": "warning",
+      "titel": "Leistungsdatum fehlt",
+      "was_tun": "Fragen Sie kurz beim Lieferanten nach, ob Leistungsdatum und Rechnungsdatum gleich sind.",
+    },
+  ],
+  "hinweis": null,
+  "zusammenfassung": "[Seller name] verlangt 336,90 €. Die Rechnung hat 2 Fehler – bitte nicht ungeprüft bezahlen.",
+}
+`;
+
+exports[`Erklärungen für 5 typische Dateien (Snapshot) > gültig 1`] = `
+{
+  "befunde": [],
+  "hinweis": null,
+  "zusammenfassung": "[Seller name] verlangt 12,60 €. Die Rechnung ist in Ordnung.",
+}
+`;
+
+exports[`Erklärungen für 5 typische Dateien (Snapshot) > keine E-Rechnung 1`] = `
+{
+  "befunde": [
+    {
+      "quelle": "tabelle",
+      "ruleId": "ERL-KEINE-E-RECHNUNG",
+      "severity": "warning",
+      "titel": "Keine E-Rechnung",
+      "was_tun": "In der Übergangszeit dürfen Sie diese Rechnung noch annehmen. Bitten Sie den Lieferanten, künftig E-Rechnungen zu senden.",
+    },
+  ],
+  "hinweis": "Das ist keine E-Rechnung im Sinne des Gesetzes",
+  "zusammenfassung": "Diese Datei ist keine E-Rechnung im Sinne des Gesetzes.",
+}
+`;
+
+exports[`Rückfrage an den Lieferanten > Snapshot für eine fehlerhafte Rechnung 1`] = `
+"Guten Tag,
+
+vielen Dank für Ihre Rechnung 123456XX vom 04.04.2016. Bei der Prüfung ist uns Folgendes aufgefallen:
+
+- Bruttobetrag stimmt nicht: Nettobetrag plus Umsatzsteuer ergibt nicht den angegebenen Bruttobetrag. Bitte prüfen Sie die Summen.
+- Zahlbetrag stimmt nicht: Bruttobetrag abzüglich Anzahlungen ergibt nicht den Zahlbetrag. Bitte prüfen Sie den zu zahlenden Betrag.
+- Leistungsdatum fehlt: In der Rechnung fehlt das Liefer- bzw. Leistungsdatum. Bitte teilen Sie uns mit, ob es dem Rechnungsdatum entspricht, und geben Sie es künftig an.
+
+Bitte senden Sie uns eine korrigierte E-Rechnung (XRechnung oder ZUGFeRD) zu.
+
+Vielen Dank und freundliche Grüße"
+`;

@@ -4,22 +4,22 @@
  * Ablauf: Hash → Formaterkennung → (PDF: XML herauslösen) → Parsing → eigene Regeln → KoSIT-Validator → Status.
  * Kein Sprachmodell-Aufruf. Alle Rechnungsdaten stammen deterministisch aus dem XML (CLAUDE.md, Regel a).
  */
-import { finding, hasSeverity, type ValidationFinding } from "./findings.js";
-import { sha256Hex } from "./hash.js";
+import { finding, hasSeverity, type ValidationFinding } from "./findings";
+import { sha256Hex } from "./hash";
 import {
   MalformedXmlError,
   parseInvoice,
   UnsafeXmlError,
   UnsupportedFormatError,
-} from "./parse/index.js";
-import { inspectPdf, isPdf, PdfReadError, selectInvoiceAttachment } from "./pdf/index.js";
-import { checkPlausibility, comparePdfTextWithInvoice } from "./rules/index.js";
-import type { InvoiceProfile, NormalizedInvoice } from "./types.js";
+} from "./parse/index";
+import { inspectPdf, isPdf, PdfReadError, selectInvoiceAttachment } from "./pdf/index";
+import { checkPlausibility, comparePdfTextWithInvoice } from "./rules/index";
+import type { InvoiceProfile, NormalizedInvoice } from "./types";
 import {
   createValidatorClient,
   type ValidatorClient,
   type ValidatorResult,
-} from "./validator/index.js";
+} from "./validator/index";
 
 /**
  * - `ubl` / `cii`: reine XML-Datei (XRechnung oder anderes EN-16931-XML) in UBL- bzw. CII-Syntax
@@ -121,15 +121,9 @@ export async function analyseInvoice(
 
   if (file.byteLength > (options.maxBytes ?? DEFAULT_MAX_BYTES)) {
     findings.push(
-      finding(
-        "format",
-        "error",
-        "ERL-DATEI-ZU-GROSS",
-        "Die Datei ist zu groß und wurde nicht geprüft.",
-        {
-          technicalMessage: `${file.byteLength} Bytes > Limit ${options.maxBytes ?? DEFAULT_MAX_BYTES}`,
-        },
-      ),
+      finding("format", "error", "ERL-DATEI-ZU-GROSS", {
+        technicalMessage: `${file.byteLength} Bytes > Limit ${options.maxBytes ?? DEFAULT_MAX_BYTES}`,
+      }),
     );
     return finish(false);
   }
@@ -143,18 +137,10 @@ export async function analyseInvoice(
       pdf = await inspectPdf(file);
     } catch (e) {
       findings.push(
-        finding(
-          "format",
-          "error",
-          "ERL-PDF-DEFEKT",
-          "Die PDF-Datei ist beschädigt oder verschlüsselt und kann nicht gelesen werden.",
-          {
-            technicalMessage:
-              e instanceof PdfReadError
-                ? String((e.cause as Error)?.message ?? e.cause)
-                : String(e),
-          },
-        ),
+        finding("format", "error", "ERL-PDF-DEFEKT", {
+          technicalMessage:
+            e instanceof PdfReadError ? String((e.cause as Error)?.message ?? e.cause) : String(e),
+        }),
       );
       return finish(false);
     }
@@ -162,16 +148,9 @@ export async function analyseInvoice(
     if (!selected) {
       result.format = "pdf_ohne_xml";
       findings.push(
-        finding(
-          "format",
-          "warning",
-          "ERL-KEINE-E-RECHNUNG",
-          "Diese PDF-Datei enthält keine Rechnungsdaten im XML-Format. Sie ist daher keine E-Rechnung. " +
-            "Bitten Sie den Rechnungssteller um eine E-Rechnung (XRechnung oder ZUGFeRD).",
-          {
-            technicalMessage: `Kein Rechnungsanhang gefunden (Anhänge: ${pdf.attachments.map((a) => a.filename).join(", ") || "keine"})`,
-          },
-        ),
+        finding("format", "warning", "ERL-KEINE-E-RECHNUNG", {
+          technicalMessage: `Kein Rechnungsanhang gefunden (Anhänge: ${pdf.attachments.map((a) => a.filename).join(", ") || "keine"})`,
+        }),
       );
       return finish(false);
     }
@@ -179,28 +158,16 @@ export async function analyseInvoice(
     result.embeddedXmlFilename = selected.attachment.filename;
     if (!selected.standardName) {
       findings.push(
-        finding(
-          "format",
-          "info",
-          "ERL-ZUGFERD-ANHANGNAME",
-          "Der XML-Anhang hat einen ungewöhnlichen Dateinamen.",
-          {
-            technicalMessage: `Anhang "${selected.attachment.filename}" statt factur-x.xml/zugferd-invoice.xml/xrechnung.xml`,
-          },
-        ),
+        finding("format", "info", "ERL-ZUGFERD-ANHANGNAME", {
+          technicalMessage: `Anhang "${selected.attachment.filename}" statt factur-x.xml/zugferd-invoice.xml/xrechnung.xml`,
+        }),
       );
     }
     if (pdf.pdfaPart !== "3") {
       findings.push(
-        finding(
-          "format",
-          "info",
-          "ERL-PDFA3",
-          "Das PDF ist nicht als PDF/A-3 gekennzeichnet, wie es ZUGFeRD verlangt.",
-          {
-            technicalMessage: `XMP pdfaid:part = ${pdf.pdfaPart ?? "fehlt"}`,
-          },
-        ),
+        finding("format", "info", "ERL-PDFA3", {
+          technicalMessage: `XMP pdfaid:part = ${pdf.pdfaPart ?? "fehlt"}`,
+        }),
       );
     }
     xml = decodeXml(selected.attachment.content);
@@ -209,13 +176,9 @@ export async function analyseInvoice(
     xml = decodeXml(file);
     if (!looksLikeXml(xml)) {
       findings.push(
-        finding(
-          "format",
-          "warning",
-          "ERL-FORMAT-UNBEKANNT",
-          "Die Datei ist weder eine XML-Rechnung noch ein PDF. Sie ist keine E-Rechnung.",
-          { technicalMessage: "Weder %PDF- noch XML erkannt" },
-        ),
+        finding("format", "warning", "ERL-FORMAT-UNBEKANNT", {
+          technicalMessage: "Weder %PDF- noch XML erkannt",
+        }),
       );
       return finish(false);
     }
@@ -232,9 +195,6 @@ export async function analyseInvoice(
           "format",
           "warning",
           e.reason === "ZUGFERD_1" ? "ERL-ZUGFERD-1" : "ERL-FORMAT-UNBEKANNT",
-          e.reason === "ZUGFERD_1"
-            ? "Das ist eine Rechnung im veralteten Format ZUGFeRD 1.0. Sie gilt nicht als E-Rechnung nach EN 16931."
-            : "Die XML-Datei ist keine E-Rechnung im Format XRechnung oder ZUGFeRD.",
           { technicalMessage: e.message },
         ),
       );
@@ -242,18 +202,10 @@ export async function analyseInvoice(
     }
     const unsafe = e instanceof UnsafeXmlError;
     findings.push(
-      finding(
-        "format",
-        "error",
-        unsafe ? "ERL-XML-UNSICHER" : "ERL-XML-DEFEKT",
-        unsafe
-          ? "Die Datei enthält unzulässige XML-Anweisungen und wurde aus Sicherheitsgründen nicht verarbeitet."
-          : "Die XML-Daten der Rechnung sind beschädigt und können nicht gelesen werden.",
-        {
-          technicalMessage:
-            e instanceof MalformedXmlError || unsafe ? (e as Error).message : String(e),
-        },
-      ),
+      finding("format", "error", unsafe ? "ERL-XML-UNSICHER" : "ERL-XML-DEFEKT", {
+        technicalMessage:
+          e instanceof MalformedXmlError || unsafe ? (e as Error).message : String(e),
+      }),
     );
     return finish(true);
   }
@@ -268,12 +220,10 @@ export async function analyseInvoice(
   if (pdfText !== null) {
     findings.push(...comparePdfTextWithInvoice(pdfText, invoice));
     findings.push(
-      finding(
-        "format",
-        "info",
-        "ERL-ZUGFERD-XML-MASSGEBLICH",
-        "Diese Rechnung besteht aus PDF und XML. Rechtlich maßgeblich sind die XML-Daten; alle angezeigten Rechnungsdaten stammen daraus.",
-      ),
+      finding("format", "info", "ERL-ZUGFERD-XML-MASSGEBLICH", {
+        technicalMessage:
+          "ZUGFeRD/Factur-X: eingebettetes XML ist maßgeblich, PDF ist Sichtkomponente",
+      }),
     );
   }
 
@@ -288,15 +238,9 @@ export async function analyseInvoice(
         status: "nicht_erreichbar",
         reason: String((e as Error)?.message ?? e),
         findings: [
-          finding(
-            "validator",
-            "info",
-            "KOSIT-NICHT-ERREICHBAR",
-            "Die formale Prüfung konnte gerade nicht durchgeführt werden. Sie wird nachgeholt.",
-            {
-              technicalMessage: String(e),
-            },
-          ),
+          finding("validator", "info", "KOSIT-NICHT-ERREICHBAR", {
+            technicalMessage: String(e),
+          }),
         ],
       };
     }
@@ -309,15 +253,9 @@ export async function analyseInvoice(
     };
   } else {
     findings.push(
-      finding(
-        "validator",
-        "info",
-        "KOSIT-NICHT-KONFIGURIERT",
-        "Die formale Prüfung ist noch nicht erfolgt.",
-        {
-          technicalMessage: "Kein Validator konfiguriert",
-        },
-      ),
+      finding("validator", "info", "KOSIT-NICHT-KONFIGURIERT", {
+        technicalMessage: "Kein Validator konfiguriert",
+      }),
     );
   }
 

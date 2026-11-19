@@ -22,6 +22,13 @@
       "when": 1795032825219,
       "tag": "0002_analyse_kern",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795080832618,
+      "tag": "0003_explanation_cache",
+      "breakpoints": true
     }
   ]
 }

@@ -43,10 +43,18 @@ jobs:
       - run: pnpm test
 
   e2e:
-    name: E2E (Playwright)
+    name: E2E (Playwright) + Barrierefreiheit
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     needs: check
+    env:
+      VALIDATOR_URL: http://localhost:8081
+      DATABASE_URL: postgres://erl:erl@localhost:5432/erl
+      S3_ENDPOINT: http://localhost:9000
+      S3_REGION: eu-central-1
+      S3_ACCESS_KEY_ID: erl-local
+      S3_SECRET_ACCESS_KEY: erl-local-secret
+      LLM_ENABLED: "false"
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -58,17 +66,28 @@ jobs:
           cache: pnpm
           cache-dependency-path: e-rechnungs-lotse/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
+      # Validator (für grüne Ampel), Postgres + MinIO (Nachweis: Prüfmodus speichert nichts)
+      - run: docker compose up -d --build --wait validator postgres
+      - run: docker compose up -d minio minio-init
+      - run: pnpm migrate
       - run: pnpm --filter @erl/web exec playwright install --with-deps chromium
       - run: pnpm --filter @erl/web build
       - run: pnpm test:e2e
         env:
           CI: "true"
+      - name: Lighthouse Accessibility /pruefen (>= 90)
+        run: |
+          pnpm --filter @erl/web start --port 3000 &
+          for _ in $(seq 1 30); do curl -fsS http://localhost:3000/api/health && break; sleep 1; done
+          pnpm --filter @erl/web test:a11y http://localhost:3000/pruefen 0.9
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
           path: e-rechnungs-lotse/apps/web/playwright-report
           retention-days: 7
+      - if: failure()
+        run: docker compose logs validator minio-init
 
   validator-integration:
     name: Validator-Integration (docker compose)

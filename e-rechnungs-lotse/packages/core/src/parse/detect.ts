@@ -1,5 +1,5 @@
-import type { DetectedFormat, InvoiceProfile } from "../types.js";
-import { parseXml, text, type XmlNode } from "./xml.js";
+import type { DetectedFormat, InvoiceProfile } from "../types";
+import { parseXml, text, type XmlNode } from "./xml";
 
 export type UnsupportedReason = "KEINE_RECHNUNG" | "ZUGFERD_1";
 

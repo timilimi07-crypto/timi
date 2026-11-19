@@ -8,8 +8,8 @@ import {
   pdfaPartFromBytes,
   selectInvoiceAttachment,
   sha256Hex,
-} from "../src/index.js";
-import { fixture, fixtureBytes, stubValidator } from "./helpers.js";
+} from "../src/index";
+import { fixture, fixtureBytes, stubValidator } from "./helpers";
 
 const KOSIT = "official/kosit-xrechnung-testsuite/01.05a-INVOICE_ubl.xml";
 const enc = (s: string) => new TextEncoder().encode(s);
@@ -26,7 +26,12 @@ describe("analyseInvoice – Grundverhalten", () => {
   it("übernimmt Validator-Fehler und setzt Status fehlerhaft", async () => {
     const v = stubValidator({
       accepted: false,
-      findings: [finding("validator", "error", "BR-01", "Fehler", { location: "/Invoice[1]" })],
+      findings: [
+        finding("validator", "error", "BR-01", {
+          location: "/Invoice[1]",
+          fallbackMessage: "Fehler",
+        }),
+      ],
     });
     const a = await analyseInvoice(fixtureBytes(KOSIT), "r.xml", { validator: v });
     expect(a.status).toBe("fehlerhaft");
@@ -40,7 +45,7 @@ describe("analyseInvoice – Grundverhalten", () => {
     expect(a.status).toBe("pruefung_ausstehend");
     expect(a.validation.status).toBe("nicht_erreichbar");
     const f = a.findings.find((x) => x.ruleId === "KOSIT-NICHT-ERREICHBAR")!;
-    expect(f.message).toMatch(/Prüfdienst nicht erreichbar/);
+    expect(f.message).toBe("Formale Prüfung gerade nicht möglich");
     expect(a.invoice?.invoiceNumber).toBeTruthy();
   });
 
@@ -71,7 +76,7 @@ describe("analyseInvoice – Grundverhalten", () => {
           status: "kein_szenario",
           engine: "KoSIT",
           reportXml: "",
-          findings: [finding("validator", "warning", "KOSIT-KEIN-SZENARIO", "x")],
+          findings: [finding("validator", "warning", "KOSIT-KEIN-SZENARIO")],
         }),
       },
     });
@@ -167,8 +172,8 @@ describe("PDF-Hilfsfunktionen", () => {
 });
 
 describe("computeStatus", () => {
-  const w = [finding("regel", "warning", "W", "w")];
-  const e = [finding("regel", "error", "E", "e")];
+  const w = [finding("regel", "warning", "ERL-IBAN")];
+  const e = [finding("regel", "error", "ERL-RECHNUNG-BRUTTO")];
   it.each([
     ["cii", [], "geprueft", true, "ok"],
     ["cii", w, "geprueft", true, "warnungen"],

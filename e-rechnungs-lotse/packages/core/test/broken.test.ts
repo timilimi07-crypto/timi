@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { analyseInvoice } from "../src/index.js";
-import { fixtureBytes, stubValidator } from "./helpers.js";
+import { analyseInvoice } from "../src/index";
+import { fixtureBytes, stubValidator } from "./helpers";
 
 const analyse = (name: string) =>
   analyseInvoice(fixtureBytes(`broken/${name}`), name, { validator: stubValidator() });
@@ -29,7 +29,7 @@ describe("kaputte Varianten (fixtures/broken)", () => {
     const a = await analyse("pdf-xml-abweichung.pdf");
     const f = a.findings.find((x) => x.ruleId === "ERL-PDF-XML-ABWEICHUNG")!;
     expect(f.location).toBe("BT-1, BT-112");
-    expect(f.message).toMatch(/Rechtlich maßgeblich ist das XML/);
+    expect(f.message).toBe("PDF und XML weichen ab");
     // Die angezeigten Daten stammen aus dem XML, nicht aus dem PDF-Text.
     expect(a.invoice?.invoiceNumber).toBe("123456XX");
   });

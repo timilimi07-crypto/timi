@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import type { ValidatorClient, ValidatorResult } from "../src/index.js";
+import type { ValidatorClient, ValidatorResult } from "../src/index";
 
 export const FIXTURES = fileURLToPath(new URL("../fixtures/", import.meta.url));
 

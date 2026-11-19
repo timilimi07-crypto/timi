@@ -1,0 +1,791 @@
+{
+  "schemaVersion": 1,
+  "version": "2026-11-19.1",
+  "sprache": "de",
+  "regeln": {
+    "ERL-BETRAG-FORMAT": {
+      "titel": "Betrag nicht lesbar",
+      "erklaerung_einfach": "Ein Betrag in der Rechnung ist keine gültige Zahl. So lässt sich die Rechnung nicht nachrechnen.",
+      "was_tun": "Zahlen Sie erst, wenn der Lieferant eine korrigierte E-Rechnung geschickt hat.",
+      "betrifft_mich_als_empfaenger": true,
+      "bitte_an_lieferant": "Ein Betrag in der E-Rechnung ist keine gültige Zahl. Bitte prüfen Sie die Beträge."
+    },
+    "ERL-DATEI-ZU-GROSS": {
+      "titel": "Datei zu groß",
+      "erklaerung_einfach": "Die Datei ist größer als erlaubt und wurde nicht geprüft.",
+      "was_tun": "Prüfen Sie, ob Sie die richtige Datei gewählt haben. E-Rechnungen sind meist kleiner als 1 MB.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "ERL-FAELLIGKEIT": {
+      "titel": "Fälligkeit vor Rechnungsdatum",
+      "erklaerung_einfach": "Das Zahlungsziel liegt vor dem Rechnungsdatum. Das ist vermutlich ein Tippfehler.",
+      "was_tun": "Fragen Sie beim Lieferanten nach, bis wann Sie zahlen sollen.",
+      "betrifft_mich_als_empfaenger": true,
+      "bitte_an_lieferant": "Das Fälligkeitsdatum liegt vor dem Rechnungsdatum. Bitte nennen Sie uns das richtige Zahlungsziel."
+    },
+    "ERL-FORMAT-UNBEKANNT": {
+      "titel": "Keine E-Rechnung erkannt",
+      "erklaerung_einfach": "Die Datei ist weder eine XRechnung noch eine ZUGFeRD-Rechnung.",
+      "was_tun": "Prüfen Sie, ob Sie die richtige Datei hochgeladen haben. Sonst bitten Sie den Lieferanten um eine E-Rechnung.",
+      "betrifft_mich_als_empfaenger": true,
+      "bitte_an_lieferant": "Die übermittelte Datei ist keine E-Rechnung. Bitte senden Sie uns die Rechnung als E-Rechnung (XRechnung oder ZUGFeRD)."
+    },
+    "ERL-IBAN": {
+      "titel": "Bankverbindung prüfen",
+      "erklaerung_einfach": "Die IBAN in der Rechnung ist formal falsch. Eine Überweisung dorthin würde nicht ankommen.",
+      "was_tun": "Überweisen Sie erst, wenn der Lieferant Ihnen die richtige IBAN bestätigt hat.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Falsche Bankdaten können auch ein Zeichen für Betrug sein. Bestätigen Sie die IBAN am besten telefonisch.",
+      "bitte_an_lieferant": "Die IBAN in der Rechnung ist formal ungültig. Bitte bestätigen Sie uns Ihre Bankverbindung."
+    },
+    "ERL-KEINE-E-RECHNUNG": {
+      "titel": "Keine E-Rechnung",
+      "erklaerung_einfach": "Die PDF-Datei enthält keine maschinenlesbaren Rechnungsdaten. Sie ist eine „sonstige Rechnung“, keine E-Rechnung.",
+      "was_tun": "In der Übergangszeit dürfen Sie diese Rechnung noch annehmen. Bitten Sie den Lieferanten, künftig E-Rechnungen zu senden.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Die Übergangszeit für Papier- und PDF-Rechnungen endet in der Regel Ende 2026, für kleinere Lieferanten Ende 2027.",
+      "bitte_an_lieferant": "Wir haben Ihre Rechnung als PDF ohne E-Rechnungsdaten erhalten. Bitte senden Sie uns Rechnungen künftig als E-Rechnung (XRechnung oder ZUGFeRD ab Profil EN 16931)."
+    },
+    "ERL-PDF-DEFEKT": {
+      "titel": "PDF nicht lesbar",
+      "erklaerung_einfach": "Die PDF-Datei ist beschädigt oder mit einem Passwort geschützt.",
+      "was_tun": "Bitten Sie den Lieferanten, die Rechnung erneut zu senden.",
+      "betrifft_mich_als_empfaenger": true,
+      "bitte_an_lieferant": "Ihre PDF-Datei lässt sich nicht öffnen (beschädigt oder passwortgeschützt). Bitte senden Sie die Rechnung erneut."
+    },
+    "ERL-PDF-KEIN-TEXT": {
+      "titel": "PDF ohne lesbaren Text",
+      "erklaerung_einfach": "Das PDF ist vermutlich ein eingescanntes Bild. Wir können es deshalb nicht mit den XML-Daten vergleichen.",
+      "was_tun": "Nichts zu tun. Maßgeblich sind die XML-Daten, die Sie hier sehen.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "ERL-PDF-XML-ABWEICHUNG": {
+      "titel": "PDF und XML weichen ab",
+      "erklaerung_einfach": "Im sichtbaren PDF steht eine andere Rechnungsnummer oder ein anderer Betrag als in den XML-Daten. Rechtlich gelten die XML-Daten.",
+      "was_tun": "Zahlen Sie erst, wenn der Lieferant die Abweichung geklärt hat. Maßgeblich ist der Betrag aus den XML-Daten, den Sie hier sehen.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Das XML ist rechtlich maßgeblich – nicht das, was im PDF zu sehen ist.",
+      "bitte_an_lieferant": "Rechnungsnummer oder Betrag im PDF stimmen nicht mit den XML-Daten der E-Rechnung überein. Bitte prüfen Sie die Rechnung und senden Sie uns eine stimmige Fassung."
+    },
+    "ERL-PDFA3": {
+      "titel": "PDF-Format nicht ganz korrekt",
+      "erklaerung_einfach": "Das PDF ist nicht als PDF/A-3 gekennzeichnet, wie es der ZUGFeRD-Standard vorsieht. Für Sie ändert das meist nichts.",
+      "was_tun": "Nichts zu tun. Sie können den Lieferanten bei Gelegenheit darauf hinweisen.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "ERL-PFLICHT-WAEHRUNG": {
+      "titel": "Währung fehlt",
+      "erklaerung_einfach": "Es ist nicht angegeben, in welcher Währung die Beträge sind.",
+      "was_tun": "Fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "bitte_an_lieferant": "In der E-Rechnung fehlt die Währung. Bitte ergänzen Sie diese Angabe."
+    },
+    "ERL-PFLICHT-ZAHLBETRAG": {
+      "titel": "Zahlbetrag fehlt",
+      "erklaerung_einfach": "Die Rechnung nennt keinen Betrag, den Sie zahlen sollen.",
+      "was_tun": "Zahlen Sie erst, wenn der Lieferant den Betrag genannt hat.",
+      "betrifft_mich_als_empfaenger": true,
+      "bitte_an_lieferant": "In der E-Rechnung fehlt der zu zahlende Betrag. Bitte senden Sie uns eine korrigierte Rechnung."
+    },
+    "ERL-PROFIL-BASICWL": {
+      "titel": "Keine vollwertige E-Rechnung (BASIC WL)",
+      "erklaerung_einfach": "Die Rechnungsdaten nutzen das ZUGFeRD-Profil BASIC WL. Darin fehlen die Rechnungspositionen. In Deutschland ist das keine vollwertige E-Rechnung.",
+      "was_tun": "Prüfen Sie die Angaben im PDF. Bitten Sie den Lieferanten, künftig das Profil EN 16931 oder XRechnung zu nutzen.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "In der Übergangszeit dürfen Sie die Rechnung noch annehmen. Maßgeblich sind dann die Angaben im PDF.",
+      "bitte_an_lieferant": "Ihre Rechnung nutzt das ZUGFeRD-Profil BASIC WL. Das ist in Deutschland keine vollwertige E-Rechnung. Bitte senden Sie uns Rechnungen künftig mindestens im Profil EN 16931 oder als XRechnung."
+    },
+    "ERL-PROFIL-MINIMUM": {
+      "titel": "Keine vollwertige E-Rechnung (MINIMUM)",
+      "erklaerung_einfach": "Die Rechnungsdaten nutzen das ZUGFeRD-Profil MINIMUM. Es enthält nur wenige Eckdaten. In Deutschland ist das keine vollwertige E-Rechnung.",
+      "was_tun": "Prüfen Sie die Angaben im PDF. Bitten Sie den Lieferanten, künftig das Profil EN 16931 oder XRechnung zu nutzen.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "In der Übergangszeit dürfen Sie die Rechnung noch annehmen. Maßgeblich sind dann die Angaben im PDF.",
+      "bitte_an_lieferant": "Ihre Rechnung nutzt das ZUGFeRD-Profil MINIMUM. Das ist in Deutschland keine vollwertige E-Rechnung. Bitte senden Sie uns Rechnungen künftig mindestens im Profil EN 16931 oder als XRechnung."
+    },
+    "ERL-PROFIL-UNBEKANNT": {
+      "titel": "Standard nicht erkennbar",
+      "erklaerung_einfach": "Die Rechnung nennt keinen bekannten Standard wie XRechnung oder ZUGFeRD.",
+      "was_tun": "Meist unkritisch. Achten Sie auf die übrigen Hinweise.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "ERL-RECHNUNG-BRUTTO": {
+      "titel": "Bruttobetrag stimmt nicht",
+      "erklaerung_einfach": "Nettobetrag plus Umsatzsteuer ergibt nicht den angegebenen Bruttobetrag. Die Rechnung ist falsch gerechnet.",
+      "was_tun": "Zahlen Sie erst, wenn der Lieferant eine korrigierte Rechnung geschickt hat.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Mit einer falsch gerechneten Rechnung kann der Vorsteuerabzug gefährdet sein.",
+      "bitte_an_lieferant": "Nettobetrag plus Umsatzsteuer ergibt nicht den angegebenen Bruttobetrag. Bitte prüfen Sie die Summen."
+    },
+    "ERL-RECHNUNG-NETTO": {
+      "titel": "Nettobetrag stimmt nicht",
+      "erklaerung_einfach": "Die Positionen ergeben zusammen mit Rabatten und Zuschlägen nicht den angegebenen Nettobetrag.",
+      "was_tun": "Zahlen Sie erst, wenn der Lieferant eine korrigierte Rechnung geschickt hat.",
+      "betrifft_mich_als_empfaenger": true,
+      "bitte_an_lieferant": "Die Summe der Positionen (abzüglich Rabatte, zuzüglich Zuschläge) ergibt nicht den Nettobetrag. Bitte prüfen Sie die Summen."
+    },
+    "ERL-RECHNUNG-POSITIONEN": {
+      "titel": "Positionen ergeben andere Summe",
+      "erklaerung_einfach": "Die einzelnen Rechnungspositionen ergeben zusammen nicht die angegebene Summe.",
+      "was_tun": "Zahlen Sie erst, wenn der Lieferant eine korrigierte Rechnung geschickt hat.",
+      "betrifft_mich_als_empfaenger": true,
+      "bitte_an_lieferant": "Die Summe der Rechnungspositionen stimmt nicht mit der angegebenen Positionssumme überein. Bitte prüfen Sie die Positionen."
+    },
+    "ERL-RECHNUNG-STEUERSATZ": {
+      "titel": "Steuerbetrag passt nicht zum Steuersatz",
+      "erklaerung_einfach": "Für einen Steuersatz ist die Umsatzsteuer falsch berechnet.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an, bevor Sie zahlen.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Lassen Sie den Vorsteuerabzug für diese Rechnung von Ihrem Steuerbüro prüfen.",
+      "bitte_an_lieferant": "Die Umsatzsteuer ist für mindestens einen Steuersatz falsch berechnet. Bitte prüfen Sie die Steuerbeträge."
+    },
+    "ERL-RECHNUNG-STEUERSUMME": {
+      "titel": "Umsatzsteuer-Summe stimmt nicht",
+      "erklaerung_einfach": "Die Steuerbeträge der einzelnen Steuersätze ergeben zusammen nicht die angegebene Gesamtsteuer.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an, bevor Sie zahlen.",
+      "betrifft_mich_als_empfaenger": true,
+      "bitte_an_lieferant": "Die Steuerbeträge je Steuersatz ergeben nicht die angegebene Gesamtsteuer. Bitte prüfen Sie die Umsatzsteuer."
+    },
+    "ERL-RECHNUNG-ZAHLBETRAG": {
+      "titel": "Zahlbetrag stimmt nicht",
+      "erklaerung_einfach": "Bruttobetrag abzüglich Anzahlungen ergibt nicht den Betrag, den Sie zahlen sollen.",
+      "was_tun": "Klären Sie mit dem Lieferanten, welcher Betrag richtig ist, bevor Sie zahlen.",
+      "betrifft_mich_als_empfaenger": true,
+      "bitte_an_lieferant": "Bruttobetrag abzüglich Anzahlungen ergibt nicht den Zahlbetrag. Bitte prüfen Sie den zu zahlenden Betrag."
+    },
+    "ERL-UST14-BEFREIUNG": {
+      "titel": "Hinweis auf Steuerbefreiung fehlt",
+      "erklaerung_einfach": "Die Rechnung enthält keine Umsatzsteuer, nennt aber keinen Grund dafür – zum Beispiel „Steuerschuldnerschaft des Leistungsempfängers“ (Reverse Charge) oder eine Steuerbefreiung.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung mit dem Hinweis an. Bei Reverse Charge zahlen Sie die Umsatzsteuer selbst ans Finanzamt – fragen Sie Ihr Steuerbüro.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz.",
+      "bitte_an_lieferant": "In der Rechnung fehlt der Hinweis, warum keine Umsatzsteuer berechnet wird (z. B. „Steuerschuldnerschaft des Leistungsempfängers“ oder der Grund der Steuerbefreiung). Bitte ergänzen Sie diesen Hinweis."
+    },
+    "ERL-UST14-DATUM": {
+      "titel": "Rechnungsdatum fehlt",
+      "erklaerung_einfach": "Die Rechnung hat kein Ausstellungsdatum. Das ist eine Pflichtangabe.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz – ohne sie kann der Vorsteuerabzug gefährdet sein.",
+      "bitte_an_lieferant": "In der Rechnung fehlt das Rechnungsdatum. Bitte senden Sie uns eine korrigierte Rechnung."
+    },
+    "ERL-UST14-EMPFAENGER": {
+      "titel": "Ihre Anschrift ist unvollständig",
+      "erklaerung_einfach": "Ihr Name oder Ihre Anschrift als Rechnungsempfänger fehlt oder ist unvollständig.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung mit Ihrer vollständigen Anschrift an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz – ohne sie kann der Vorsteuerabzug gefährdet sein.",
+      "bitte_an_lieferant": "Unser Name bzw. unsere Anschrift ist in der Rechnung unvollständig. Bitte ergänzen Sie die Angaben."
+    },
+    "ERL-UST14-ENTGELT": {
+      "titel": "Nettobetrag je Steuersatz fehlt",
+      "erklaerung_einfach": "Die Rechnung zeigt nicht, welcher Nettobetrag zu welchem Steuersatz gehört.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz – ohne sie kann der Vorsteuerabzug gefährdet sein.",
+      "bitte_an_lieferant": "In der Rechnung fehlt die Aufteilung der Nettobeträge nach Steuersätzen. Bitte ergänzen Sie diese Angabe."
+    },
+    "ERL-UST14-LEISTENDER": {
+      "titel": "Angaben zum Lieferanten unvollständig",
+      "erklaerung_einfach": "Name oder Anschrift des Lieferanten fehlen oder sind unvollständig.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz – ohne sie kann der Vorsteuerabzug gefährdet sein.",
+      "bitte_an_lieferant": "Ihr Name bzw. Ihre Anschrift ist in der Rechnung unvollständig. Bitte ergänzen Sie die Angaben."
+    },
+    "ERL-UST14-LEISTUNG": {
+      "titel": "Menge oder Art der Leistung fehlt",
+      "erklaerung_einfach": "Aus der Rechnung geht nicht klar hervor, was geliefert oder geleistet wurde und in welcher Menge.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung mit allen Positionen an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz – ohne sie kann der Vorsteuerabzug gefährdet sein.",
+      "bitte_an_lieferant": "In der Rechnung fehlen Menge oder Bezeichnung der Leistung. Bitte ergänzen Sie diese Angaben."
+    },
+    "ERL-UST14-NUMMER": {
+      "titel": "Rechnungsnummer fehlt",
+      "erklaerung_einfach": "Die Rechnung hat keine Rechnungsnummer. Das ist eine Pflichtangabe.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz – ohne sie kann der Vorsteuerabzug gefährdet sein.",
+      "bitte_an_lieferant": "In der Rechnung fehlt die Rechnungsnummer. Bitte senden Sie uns eine korrigierte Rechnung."
+    },
+    "ERL-UST14-STEUER": {
+      "titel": "Steuersatz oder Steuerbetrag fehlt",
+      "erklaerung_einfach": "Für mindestens einen Teil der Rechnung fehlt der Steuersatz oder der Umsatzsteuerbetrag.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz – ohne sie kann der Vorsteuerabzug gefährdet sein.",
+      "bitte_an_lieferant": "In der Rechnung fehlt der Steuersatz oder der Steuerbetrag. Bitte ergänzen Sie diese Angaben."
+    },
+    "ERL-UST14-STEUERNR": {
+      "titel": "Steuernummer des Lieferanten fehlt",
+      "erklaerung_einfach": "Die Rechnung enthält weder die Steuernummer noch die Umsatzsteuer-Identifikationsnummer (USt-IdNr.) des Lieferanten.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an, bevor Sie die Vorsteuer geltend machen.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz – ohne sie ist der Vorsteuerabzug gefährdet.",
+      "bitte_an_lieferant": "In der Rechnung fehlt Ihre Steuernummer oder Umsatzsteuer-Identifikationsnummer. Bitte senden Sie uns eine korrigierte Rechnung."
+    },
+    "ERL-UST14-ZEITPUNKT": {
+      "titel": "Leistungsdatum fehlt",
+      "erklaerung_einfach": "Steht kein Leistungsdatum drin, gilt oft das Rechnungsdatum – kurz beim Lieferanten nachfragen, ob das stimmt.",
+      "was_tun": "Fragen Sie kurz beim Lieferanten nach, ob Leistungsdatum und Rechnungsdatum gleich sind.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Das Leistungsdatum ist eine Pflichtangabe. Oft genügt der Hinweis „Leistungsdatum entspricht Rechnungsdatum“.",
+      "bitte_an_lieferant": "In der Rechnung fehlt das Liefer- bzw. Leistungsdatum. Bitte teilen Sie uns mit, ob es dem Rechnungsdatum entspricht, und geben Sie es künftig an."
+    },
+    "ERL-XML-DEFEKT": {
+      "titel": "Rechnungsdaten beschädigt",
+      "erklaerung_einfach": "Die XML-Daten der Rechnung sind beschädigt und lassen sich nicht lesen.",
+      "was_tun": "Bitten Sie den Lieferanten, die Rechnung erneut zu senden.",
+      "betrifft_mich_als_empfaenger": true,
+      "bitte_an_lieferant": "Die XML-Daten Ihrer E-Rechnung sind beschädigt und nicht lesbar. Bitte senden Sie die Rechnung erneut."
+    },
+    "ERL-XML-UNSICHER": {
+      "titel": "Datei aus Sicherheitsgründen abgelehnt",
+      "erklaerung_einfach": "Die Datei enthält technische Anweisungen, die in einer Rechnung nichts zu suchen haben. Wir haben sie nicht verarbeitet.",
+      "was_tun": "Fragen Sie den Absender, ob er die Datei wirklich geschickt hat. Öffnen Sie sie nicht mit anderen Programmen.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Das kann ein Angriffsversuch sein.",
+      "bitte_an_lieferant": "Die übermittelte XML-Datei enthält unzulässige Anweisungen und wurde nicht verarbeitet. Bitte senden Sie eine normale E-Rechnung."
+    },
+    "ERL-XRECHNUNG-VERSION": {
+      "titel": "Veraltete XRechnung-Version",
+      "erklaerung_einfach": "Die Rechnung nutzt eine ältere Version der XRechnung. Aktuell ist Version 3.0.",
+      "was_tun": "Meist unkritisch. Bitten Sie den Lieferanten bei Gelegenheit, seine Software zu aktualisieren.",
+      "betrifft_mich_als_empfaenger": false,
+      "bitte_an_lieferant": "Ihre E-Rechnung nutzt eine veraltete XRechnung-Version. Bitte stellen Sie auf XRechnung 3.0 um."
+    },
+    "ERL-ZUGFERD-1": {
+      "titel": "Veraltetes Format ZUGFeRD 1.0",
+      "erklaerung_einfach": "ZUGFeRD 1.0 erfüllt die heutige Norm nicht. Die Rechnung gilt deshalb nicht als E-Rechnung.",
+      "was_tun": "Bitten Sie den Lieferanten um eine E-Rechnung nach aktuellem Standard.",
+      "betrifft_mich_als_empfaenger": true,
+      "bitte_an_lieferant": "Ihre Rechnung nutzt das veraltete Format ZUGFeRD 1.0. Bitte senden Sie uns eine E-Rechnung nach aktuellem Standard (ZUGFeRD ab Profil EN 16931 oder XRechnung)."
+    },
+    "ERL-ZUGFERD-ANHANGNAME": {
+      "titel": "Ungewöhnlicher Name der Rechnungsdaten",
+      "erklaerung_einfach": "Die XML-Daten im PDF haben nicht den üblichen Dateinamen. Wir haben sie trotzdem gefunden.",
+      "was_tun": "Nichts zu tun.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "ERL-ZUGFERD-XML-MASSGEBLICH": {
+      "titel": "PDF mit eingebetteten Rechnungsdaten",
+      "erklaerung_einfach": "Diese Rechnung besteht aus einem PDF zum Ansehen und aus XML-Daten. Rechtlich gelten die XML-Daten – diese sehen Sie hier.",
+      "was_tun": "Nichts zu tun.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "KOSIT-ABGELEHNT": {
+      "titel": "Prüfprogramm empfiehlt Ablehnung",
+      "erklaerung_einfach": "Das offizielle Prüfprogramm für E-Rechnungen hat die Rechnung als fehlerhaft bewertet.",
+      "was_tun": "Fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "bitte_an_lieferant": "Ihre E-Rechnung besteht die offizielle Prüfung (KoSIT-Validator) nicht. Bitte senden Sie uns eine korrigierte E-Rechnung."
+    },
+    "KOSIT-KEIN-SZENARIO": {
+      "titel": "Formale Prüfung nicht möglich",
+      "erklaerung_einfach": "Für diese Art von E-Rechnung hat das offizielle Prüfprogramm keine Prüfregeln. Unsere eigenen Prüfungen sind trotzdem gelaufen.",
+      "was_tun": "Achten Sie auf die übrigen Hinweise. Gibt es keine Fehler, können Sie die Rechnung normal bearbeiten.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "KOSIT-NICHT-ERREICHBAR": {
+      "titel": "Formale Prüfung gerade nicht möglich",
+      "erklaerung_einfach": "Das offizielle Prüfprogramm ist gerade nicht erreichbar. Unsere eigenen Prüfungen sind gelaufen, die formale Prüfung fehlt noch.",
+      "was_tun": "Prüfen Sie die Rechnung in einigen Minuten noch einmal.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "KOSIT-NICHT-KONFIGURIERT": {
+      "titel": "Formale Prüfung nicht eingerichtet",
+      "erklaerung_einfach": "Das offizielle Prüfprogramm ist für diese Prüfung nicht eingerichtet. Unsere eigenen Prüfungen sind gelaufen.",
+      "was_tun": "Wenden Sie sich an die Betreuung des E-Rechnungs-Lotsen.",
+      "betrifft_mich_als_empfaenger": false
+    },
+
+    "BR-01": {
+      "titel": "Standard-Kennung fehlt",
+      "erklaerung_einfach": "Die Rechnung gibt nicht an, nach welchem Standard sie aufgebaut ist.",
+      "was_tun": "Fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-02": {
+      "titel": "Rechnungsnummer fehlt",
+      "erklaerung_einfach": "Die Rechnung hat keine Rechnungsnummer. Das ist eine Pflichtangabe.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz."
+    },
+    "BR-03": {
+      "titel": "Rechnungsdatum fehlt",
+      "erklaerung_einfach": "Die Rechnung hat kein Ausstellungsdatum. Das ist eine Pflichtangabe.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz."
+    },
+    "BR-04": {
+      "titel": "Art der Rechnung fehlt",
+      "erklaerung_einfach": "Es ist nicht angegeben, ob es eine Rechnung, Gutschrift oder Korrektur ist.",
+      "was_tun": "Fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-05": {
+      "titel": "Währung fehlt",
+      "erklaerung_einfach": "Es ist nicht angegeben, in welcher Währung die Beträge sind.",
+      "was_tun": "Fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-06": {
+      "titel": "Name des Lieferanten fehlt",
+      "erklaerung_einfach": "In der Rechnung fehlt der Name des Lieferanten.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz."
+    },
+    "BR-07": {
+      "titel": "Ihr Name fehlt",
+      "erklaerung_einfach": "In der Rechnung fehlt Ihr Name als Rechnungsempfänger.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz."
+    },
+    "BR-08": {
+      "titel": "Anschrift des Lieferanten fehlt",
+      "erklaerung_einfach": "In der Rechnung fehlt die Anschrift des Lieferanten.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz."
+    },
+    "BR-09": {
+      "titel": "Land des Lieferanten fehlt",
+      "erklaerung_einfach": "In der Anschrift des Lieferanten fehlt das Land.",
+      "was_tun": "Fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-10": {
+      "titel": "Ihre Anschrift fehlt",
+      "erklaerung_einfach": "In der Rechnung fehlt Ihre Anschrift als Rechnungsempfänger.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz."
+    },
+    "BR-11": {
+      "titel": "Ihr Land fehlt",
+      "erklaerung_einfach": "In Ihrer Anschrift als Rechnungsempfänger fehlt das Land.",
+      "was_tun": "Fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-12": {
+      "titel": "Summe der Positionen fehlt",
+      "erklaerung_einfach": "Die Rechnung nennt nicht die Summe aller Positionen.",
+      "was_tun": "Fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-13": {
+      "titel": "Nettobetrag fehlt",
+      "erklaerung_einfach": "Die Rechnung nennt keinen Gesamtbetrag ohne Umsatzsteuer.",
+      "was_tun": "Fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-14": {
+      "titel": "Bruttobetrag fehlt",
+      "erklaerung_einfach": "Die Rechnung nennt keinen Gesamtbetrag mit Umsatzsteuer.",
+      "was_tun": "Fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-15": {
+      "titel": "Zahlbetrag fehlt",
+      "erklaerung_einfach": "Die Rechnung nennt keinen Betrag, den Sie zahlen sollen.",
+      "was_tun": "Zahlen Sie erst, wenn der Lieferant den Betrag genannt hat.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-16": {
+      "titel": "Keine Rechnungsposition",
+      "erklaerung_einfach": "Die Rechnung enthält keine einzige Position. Es ist nicht erkennbar, was berechnet wird.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung mit allen Positionen an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Menge und Art der Leistung sind Pflichtangaben nach § 14 Umsatzsteuergesetz."
+    },
+    "BR-21": {
+      "titel": "Positionsnummer fehlt",
+      "erklaerung_einfach": "Eine Rechnungsposition hat keine Nummer.",
+      "was_tun": "Meist unkritisch. Weisen Sie den Lieferanten darauf hin.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-22": {
+      "titel": "Menge fehlt",
+      "erklaerung_einfach": "Bei einer Rechnungsposition fehlt die Menge.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Die Menge ist eine Pflichtangabe nach § 14 Umsatzsteuergesetz."
+    },
+    "BR-23": {
+      "titel": "Mengeneinheit fehlt",
+      "erklaerung_einfach": "Bei einer Rechnungsposition fehlt die Einheit, zum Beispiel Stück oder Stunde.",
+      "was_tun": "Fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-24": {
+      "titel": "Betrag einer Position fehlt",
+      "erklaerung_einfach": "Bei einer Rechnungsposition fehlt der Nettobetrag.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-25": {
+      "titel": "Bezeichnung einer Position fehlt",
+      "erklaerung_einfach": "Bei einer Rechnungsposition fehlt die Bezeichnung. Es ist nicht klar, was berechnet wird.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Die Art der Leistung ist eine Pflichtangabe nach § 14 Umsatzsteuergesetz."
+    },
+    "BR-26": {
+      "titel": "Einzelpreis fehlt",
+      "erklaerung_einfach": "Bei einer Rechnungsposition fehlt der Preis pro Einheit.",
+      "was_tun": "Fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-27": {
+      "titel": "Negativer Einzelpreis",
+      "erklaerung_einfach": "Ein Einzelpreis ist negativ. Rabatte müssen anders angegeben werden.",
+      "was_tun": "Fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-CO-04": {
+      "titel": "Steuerart einer Position fehlt",
+      "erklaerung_einfach": "Bei einer Rechnungsposition ist nicht angegeben, welche Umsatzsteuer gilt.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-CO-09": {
+      "titel": "USt-IdNr. ohne Ländercode",
+      "erklaerung_einfach": "Eine Umsatzsteuer-Identifikationsnummer beginnt nicht mit dem Ländercode, zum Beispiel „DE“.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-CO-10": {
+      "titel": "Positionen ergeben andere Summe",
+      "erklaerung_einfach": "Die einzelnen Rechnungspositionen ergeben zusammen nicht die angegebene Summe.",
+      "was_tun": "Zahlen Sie erst, wenn der Lieferant eine korrigierte Rechnung geschickt hat.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-CO-11": {
+      "titel": "Summe der Rabatte stimmt nicht",
+      "erklaerung_einfach": "Die einzelnen Rabatte ergeben nicht die angegebene Rabattsumme.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-CO-12": {
+      "titel": "Summe der Zuschläge stimmt nicht",
+      "erklaerung_einfach": "Die einzelnen Zuschläge ergeben nicht die angegebene Zuschlagssumme.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-CO-13": {
+      "titel": "Nettobetrag stimmt nicht",
+      "erklaerung_einfach": "Positionen, Rabatte und Zuschläge ergeben zusammen nicht den angegebenen Nettobetrag.",
+      "was_tun": "Zahlen Sie erst, wenn der Lieferant eine korrigierte Rechnung geschickt hat.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-CO-14": {
+      "titel": "Umsatzsteuer-Summe stimmt nicht",
+      "erklaerung_einfach": "Die Steuerbeträge der einzelnen Steuersätze ergeben zusammen nicht die Gesamtsteuer.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an, bevor Sie zahlen.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-CO-15": {
+      "titel": "Bruttobetrag stimmt nicht",
+      "erklaerung_einfach": "Nettobetrag plus Umsatzsteuer ergibt nicht den angegebenen Bruttobetrag.",
+      "was_tun": "Zahlen Sie erst, wenn der Lieferant eine korrigierte Rechnung geschickt hat.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Mit einer falsch gerechneten Rechnung kann der Vorsteuerabzug gefährdet sein."
+    },
+    "BR-CO-16": {
+      "titel": "Zahlbetrag stimmt nicht",
+      "erklaerung_einfach": "Bruttobetrag abzüglich Anzahlungen ergibt nicht den Betrag, den Sie zahlen sollen.",
+      "was_tun": "Klären Sie mit dem Lieferanten, welcher Betrag richtig ist, bevor Sie zahlen.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-CO-17": {
+      "titel": "Steuerbetrag passt nicht zum Steuersatz",
+      "erklaerung_einfach": "Für einen Steuersatz ist die Umsatzsteuer falsch berechnet.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an, bevor Sie zahlen.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-CO-18": {
+      "titel": "Umsatzsteuer-Aufstellung fehlt",
+      "erklaerung_einfach": "Die Rechnung enthält keine Aufstellung der Umsatzsteuer nach Steuersätzen.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Steuersatz und Steuerbetrag sind Pflichtangaben nach § 14 Umsatzsteuergesetz."
+    },
+    "BR-CO-25": {
+      "titel": "Zahlungsziel fehlt",
+      "erklaerung_einfach": "Die Rechnung nennt weder ein Fälligkeitsdatum noch Zahlungsbedingungen.",
+      "was_tun": "Fragen Sie beim Lieferanten nach, bis wann Sie zahlen sollen.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-CO-26": {
+      "titel": "Kennung des Lieferanten fehlt",
+      "erklaerung_einfach": "Der Lieferant ist in der Rechnung nicht eindeutig gekennzeichnet, zum Beispiel durch USt-IdNr. oder Handelsregisternummer.",
+      "was_tun": "Fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-S-08": {
+      "titel": "Nettobetrag zum Steuersatz stimmt nicht",
+      "erklaerung_einfach": "Die Positionen mit normalem Steuersatz ergeben nicht den Nettobetrag in der Steueraufstellung.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-S-09": {
+      "titel": "Steuerbetrag passt nicht zum Steuersatz",
+      "erklaerung_einfach": "Die Umsatzsteuer für den normalen Steuersatz ist falsch berechnet.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an, bevor Sie zahlen.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-AE-10": {
+      "titel": "Hinweis auf Reverse Charge fehlt",
+      "erklaerung_einfach": "Die Rechnung enthält keine Umsatzsteuer, weil Sie selbst die Steuer schulden (Reverse Charge). Der dafür nötige Hinweis fehlt aber.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung mit dem Hinweis an. Fragen Sie Ihr Steuerbüro, wie Sie die Umsatzsteuer selbst abführen.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14a Umsatzsteuergesetz."
+    },
+    "BR-E-10": {
+      "titel": "Grund der Steuerbefreiung fehlt",
+      "erklaerung_einfach": "Die Rechnung ist steuerfrei, nennt aber keinen Grund dafür.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung mit dem Grund an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz."
+    },
+    "BR-DE-1": {
+      "titel": "Zahlungsangaben fehlen",
+      "erklaerung_einfach": "Die Rechnung sagt nicht, wie Sie bezahlen sollen, zum Beispiel per Überweisung.",
+      "was_tun": "Fragen Sie beim Lieferanten nach der Bankverbindung.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-DE-2": {
+      "titel": "Ansprechpartner des Lieferanten fehlt",
+      "erklaerung_einfach": "In der XRechnung fehlen die Kontaktdaten des Lieferanten. Das ist eine Formvorschrift der XRechnung.",
+      "was_tun": "Für Sie meist unkritisch. Weisen Sie den Lieferanten darauf hin.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-DE-3": {
+      "titel": "Ort des Lieferanten fehlt",
+      "erklaerung_einfach": "In der Anschrift des Lieferanten fehlt der Ort.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Die vollständige Anschrift ist eine Pflichtangabe nach § 14 Umsatzsteuergesetz."
+    },
+    "BR-DE-4": {
+      "titel": "Postleitzahl des Lieferanten fehlt",
+      "erklaerung_einfach": "In der Anschrift des Lieferanten fehlt die Postleitzahl.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-DE-5": {
+      "titel": "Name des Ansprechpartners fehlt",
+      "erklaerung_einfach": "In der XRechnung fehlt der Name eines Ansprechpartners beim Lieferanten.",
+      "was_tun": "Für Sie meist unkritisch. Weisen Sie den Lieferanten darauf hin.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-DE-6": {
+      "titel": "Telefonnummer des Lieferanten fehlt",
+      "erklaerung_einfach": "In der XRechnung fehlt eine Telefonnummer des Lieferanten.",
+      "was_tun": "Für Sie meist unkritisch. Weisen Sie den Lieferanten darauf hin.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-DE-7": {
+      "titel": "E-Mail des Lieferanten fehlt",
+      "erklaerung_einfach": "In der XRechnung fehlt eine E-Mail-Adresse des Lieferanten.",
+      "was_tun": "Für Sie meist unkritisch. Weisen Sie den Lieferanten darauf hin.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-DE-8": {
+      "titel": "Ihr Ort fehlt",
+      "erklaerung_einfach": "In Ihrer Anschrift als Rechnungsempfänger fehlt der Ort.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Die vollständige Anschrift ist eine Pflichtangabe nach § 14 Umsatzsteuergesetz."
+    },
+    "BR-DE-9": {
+      "titel": "Ihre Postleitzahl fehlt",
+      "erklaerung_einfach": "In Ihrer Anschrift als Rechnungsempfänger fehlt die Postleitzahl.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-DE-10": {
+      "titel": "Ort der Lieferadresse fehlt",
+      "erklaerung_einfach": "In der Lieferadresse fehlt der Ort.",
+      "was_tun": "Für Sie meist unkritisch. Weisen Sie den Lieferanten darauf hin.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-DE-11": {
+      "titel": "Postleitzahl der Lieferadresse fehlt",
+      "erklaerung_einfach": "In der Lieferadresse fehlt die Postleitzahl.",
+      "was_tun": "Für Sie meist unkritisch. Weisen Sie den Lieferanten darauf hin.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-DE-13": {
+      "titel": "Zahlungsangaben widersprüchlich",
+      "erklaerung_einfach": "Die Rechnung enthält Angaben zu mehreren Zahlungsarten gleichzeitig, zum Beispiel Überweisung und Lastschrift.",
+      "was_tun": "Fragen Sie beim Lieferanten nach, wie Sie zahlen sollen.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-DE-14": {
+      "titel": "Steuersatz fehlt",
+      "erklaerung_einfach": "In der Umsatzsteuer-Aufstellung fehlt der Steuersatz.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz."
+    },
+    "BR-DE-15": {
+      "titel": "Käuferreferenz fehlt",
+      "erklaerung_einfach": "Die XRechnung verlangt eine Käuferreferenz, zum Beispiel eine Leitweg-ID. Die braucht vor allem die öffentliche Verwaltung.",
+      "was_tun": "Für Sie als Betrieb meist unkritisch. Weisen Sie den Lieferanten darauf hin.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-DE-16": {
+      "titel": "Steuernummer des Lieferanten fehlt",
+      "erklaerung_einfach": "Die Rechnung enthält weder die Steuernummer noch die Umsatzsteuer-Identifikationsnummer des Lieferanten.",
+      "was_tun": "Fordern Sie eine korrigierte Rechnung an, bevor Sie die Vorsteuer geltend machen.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Pflichtangabe nach § 14 Umsatzsteuergesetz – ohne sie ist der Vorsteuerabzug gefährdet."
+    },
+    "BR-DE-17": {
+      "titel": "Unzulässige Rechnungsart",
+      "erklaerung_einfach": "Die angegebene Rechnungsart ist in der XRechnung nicht erlaubt.",
+      "was_tun": "Fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-DE-18": {
+      "titel": "Skonto falsch angegeben",
+      "erklaerung_einfach": "Die Skonto-Angaben sind nicht im vorgeschriebenen Format. Die Skonto-Bedingungen sind deshalb unklar.",
+      "was_tun": "Fragen Sie beim Lieferanten nach, welches Skonto bis wann gilt.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-DE-19": {
+      "titel": "IBAN ungültig",
+      "erklaerung_einfach": "Die IBAN für die Überweisung ist formal falsch. Eine Zahlung dorthin würde nicht ankommen.",
+      "was_tun": "Überweisen Sie erst, wenn der Lieferant Ihnen die richtige IBAN bestätigt hat.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Falsche Bankdaten können auch ein Zeichen für Betrug sein. Bestätigen Sie die IBAN am besten telefonisch."
+    },
+    "BR-DE-20": {
+      "titel": "IBAN für Lastschrift ungültig",
+      "erklaerung_einfach": "Die IBAN, von der abgebucht werden soll, ist formal falsch.",
+      "was_tun": "Prüfen Sie, ob Ihr Konto richtig angegeben ist, und informieren Sie den Lieferanten.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-DE-21": {
+      "titel": "Falsche XRechnung-Kennung",
+      "erklaerung_einfach": "Die Rechnung gibt eine Standard-Kennung an, die nicht zur XRechnung passt.",
+      "was_tun": "Für Sie meist unkritisch. Weisen Sie den Lieferanten darauf hin.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-DE-22": {
+      "titel": "Doppelte Dateinamen in Anhängen",
+      "erklaerung_einfach": "Zwei Anhänge der Rechnung haben denselben Dateinamen.",
+      "was_tun": "Für Sie meist unkritisch. Weisen Sie den Lieferanten darauf hin.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-DE-23-a": {
+      "titel": "Bankverbindung für Überweisung fehlt",
+      "erklaerung_einfach": "Sie sollen überweisen, aber die Bankverbindung des Lieferanten fehlt.",
+      "was_tun": "Fragen Sie beim Lieferanten nach der Bankverbindung.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-DE-23-b": {
+      "titel": "Zahlungsangaben widersprüchlich",
+      "erklaerung_einfach": "Sie sollen überweisen, die Rechnung enthält aber zusätzlich Angaben zu Karte oder Lastschrift.",
+      "was_tun": "Fragen Sie beim Lieferanten nach, wie Sie zahlen sollen.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-DE-24-a": {
+      "titel": "Kartenangaben fehlen",
+      "erklaerung_einfach": "Es soll per Karte gezahlt werden, aber die Kartenangaben fehlen.",
+      "was_tun": "Fragen Sie beim Lieferanten nach, wie Sie zahlen sollen.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-DE-24-b": {
+      "titel": "Zahlungsangaben widersprüchlich",
+      "erklaerung_einfach": "Es soll per Karte gezahlt werden, die Rechnung enthält aber zusätzlich Angaben zu Überweisung oder Lastschrift.",
+      "was_tun": "Fragen Sie beim Lieferanten nach, wie Sie zahlen sollen.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-DE-25-a": {
+      "titel": "Lastschrift-Angaben fehlen",
+      "erklaerung_einfach": "Der Betrag soll abgebucht werden, aber die Angaben zur Lastschrift fehlen.",
+      "was_tun": "Fragen Sie beim Lieferanten nach, ob und von welchem Konto abgebucht wird.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-DE-25-b": {
+      "titel": "Zahlungsangaben widersprüchlich",
+      "erklaerung_einfach": "Der Betrag soll abgebucht werden, die Rechnung enthält aber zusätzlich Angaben zu Überweisung oder Karte.",
+      "was_tun": "Fragen Sie beim Lieferanten nach, wie Sie zahlen sollen.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-DE-26": {
+      "titel": "Bezug zur ursprünglichen Rechnung fehlt",
+      "erklaerung_einfach": "Das ist eine Korrekturrechnung, sie nennt aber nicht die Rechnung, die korrigiert wird.",
+      "was_tun": "Fragen Sie beim Lieferanten nach, welche Rechnung korrigiert wird.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "BR-DE-27": {
+      "titel": "Telefonnummer unvollständig",
+      "erklaerung_einfach": "Die Telefonnummer des Lieferanten ist zu kurz oder unvollständig.",
+      "was_tun": "Für Sie meist unkritisch. Weisen Sie den Lieferanten darauf hin.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-DE-28": {
+      "titel": "E-Mail-Adresse ungültig",
+      "erklaerung_einfach": "Die E-Mail-Adresse des Lieferanten hat kein gültiges Format.",
+      "was_tun": "Für Sie meist unkritisch. Weisen Sie den Lieferanten darauf hin.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-DE-TMP-32": {
+      "titel": "Leistungsdatum fehlt",
+      "erklaerung_einfach": "Steht kein Leistungsdatum drin, gilt oft das Rechnungsdatum – kurz beim Lieferanten nachfragen, ob das stimmt.",
+      "was_tun": "Fragen Sie kurz beim Lieferanten nach, ob Leistungsdatum und Rechnungsdatum gleich sind.",
+      "betrifft_mich_als_empfaenger": true,
+      "schwere_hinweis": "Das Leistungsdatum ist eine Pflichtangabe. Oft genügt der Hinweis „Leistungsdatum entspricht Rechnungsdatum“."
+    },
+    "cvc-complex-type.2.4.a": {
+      "titel": "Technischer Aufbaufehler",
+      "erklaerung_einfach": "In den Rechnungsdaten steht ein Feld an einer Stelle, an der es nicht stehen darf. Die Software des Lieferanten erzeugt fehlerhafte Dateien.",
+      "was_tun": "Leiten Sie die technische Meldung an den Lieferanten weiter und fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "cvc-complex-type.2.4.b": {
+      "titel": "Pflichtfeld fehlt im Aufbau",
+      "erklaerung_einfach": "In den Rechnungsdaten fehlt ein Feld, das der Standard vorschreibt. Die Software des Lieferanten erzeugt fehlerhafte Dateien.",
+      "was_tun": "Leiten Sie die technische Meldung an den Lieferanten weiter und fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "cvc-datatype-valid.1.2.1": {
+      "titel": "Wert im falschen Format",
+      "erklaerung_einfach": "Ein Wert hat das falsche Format, zum Beispiel ein Datum oder eine Zahl.",
+      "was_tun": "Leiten Sie die technische Meldung an den Lieferanten weiter und fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "cvc-*": {
+      "titel": "Technischer Formatfehler",
+      "erklaerung_einfach": "Die Rechnungsdaten entsprechen technisch nicht dem Standard. Die Software des Lieferanten erzeugt fehlerhafte Dateien.",
+      "was_tun": "Leiten Sie die technische Meldung an den Lieferanten weiter und fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    },
+    "UBL-CR-*": {
+      "titel": "Nicht erlaubtes Zusatzfeld",
+      "erklaerung_einfach": "Die Rechnung enthält ein Zusatzfeld, das der Standard nicht vorsieht. Meist ist der Inhalt trotzdem lesbar.",
+      "was_tun": "Für Sie meist unkritisch. Weisen Sie den Lieferanten darauf hin.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "CII-SR-*": {
+      "titel": "Nicht erlaubtes Zusatzfeld",
+      "erklaerung_einfach": "Die Rechnung enthält ein Zusatzfeld, das der Standard nicht vorsieht. Meist ist der Inhalt trotzdem lesbar.",
+      "was_tun": "Für Sie meist unkritisch. Weisen Sie den Lieferanten darauf hin.",
+      "betrifft_mich_als_empfaenger": false
+    },
+    "BR-CL-*": {
+      "titel": "Unbekannter Code",
+      "erklaerung_einfach": "Die Rechnung verwendet einen Code (zum Beispiel für Land, Währung oder Einheit), den der Standard nicht kennt.",
+      "was_tun": "Leiten Sie die technische Meldung an den Lieferanten weiter und fordern Sie eine korrigierte E-Rechnung an.",
+      "betrifft_mich_als_empfaenger": true
+    }
+  }
+}

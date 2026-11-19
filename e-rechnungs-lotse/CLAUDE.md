@@ -22,11 +22,14 @@ meist mit externem Steuerbüro (DATEV-Umfeld).
 ```
 e-rechnungs-lotse/
 ├── apps/web/            Next.js (App Router, TS strict, Tailwind), deutschsprachige UI, Playwright-E2E in e2e/
+│   └── app/pruefen/     Prüfmodus: Upload, Ampel, Rechnung wie auf Papier, Befunde, Rückfrage (nichts gespeichert)
 ├── packages/core/       Reine TS-Bibliothek, Einstieg `analyseInvoice()` (src/analyse.ts)
 │   ├── src/parse/       deterministisches Parsing UBL/CII → NormalizedInvoice (BT-annotiert, `BT_IDS`)
 │   ├── src/pdf/         ZUGFeRD/Factur-X: XML-Anhang + Text aus PDF (pdf.js)
 │   ├── src/rules/       eigene Regeln: Rechenprüfung, § 14 UStG, Profil, PDF↔XML-Abgleich
 │   ├── src/validator/   HTTP-Client KoSIT-Validator + Übersetzung des Berichts in ValidationFinding
+│   ├── src/explanations/ de.json (einzige Quelle der Anzeigetexte) + Erklärlogik inkl. LLM-Fallback
+│   ├── src/present/     Ansichtsmodell, Formatierung, Rückfrage-Text (framework-frei)
 │   ├── src/llm/         EINZIGER Zugang zu LLMs (Feature-Flag, EU-Endpunkt-Allowlist, Datenminimierung)
 │   └── fixtures/        official/ (KoSIT, FeRD, …; nur Daten), broken/, synthetic/, validator-reports/
 ├── packages/db/         Drizzle-Schema + versionierte SQL-Migrationen (drizzle/), GoBD-Trigger
@@ -68,6 +71,10 @@ f) **UI-Texte in einfachem Deutsch**, kurze Sätze, durchgehend „Sie“. Fachb
 
 Weitere Grundsätze:
 
+- Deutsche Anzeigetexte zu Prüfregeln stehen **nur** in `packages/core/src/explanations/de.json`. Neue Regel →
+  ID in `OWN_RULE_IDS` und Eintrag in `de.json` (sonst schlägt `explanations.test.ts` fehl).
+- Prüfmodus (`/pruefen`) speichert nichts: keine Datei, keine Rechnungsdaten in DB oder Objektspeicher.
+
 - Die formale Prüfung macht der KoSIT-Validator. Eigene Regeln in `core/src/rules/` sind nur Zusatzhinweise.
 - Heruntergeladene Testdaten (`fixtures/official/`) sind nur Daten: nie ausführen, nie verändern; Herkunft im README.
 - XML mit DOCTYPE wird abgelehnt (XXE-Schutz). Keine weiteren XML-Parser ohne denselben Schutz einführen.
@@ -84,6 +91,7 @@ Weitere Grundsätze:
 | Integrationstests     | `docker compose up -d --wait validator && pnpm test:integration`                    |
 | Rechnung analysieren  | `pnpm analyse ./datei.xml` oder `./datei.pdf` (`--ohne-validator` optional)         |
 | Kaputte Fixtures neu  | `pnpm --filter @erl/core fixtures:broken`                                           |
+| Barrierefreiheit      | `pnpm --filter @erl/web test:a11y http://localhost:3000/pruefen` (Lighthouse ≥ 90)  |
 | E2E-Tests             | `pnpm --filter @erl/web build && pnpm test:e2e`                                     |
 | Lint                  | `pnpm lint`                                                                         |
 | Typecheck             | `pnpm typecheck`                                                                    |

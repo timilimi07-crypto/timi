@@ -4,8 +4,8 @@
  * Adresse: VALIDATOR_URL (Standard http://localhost:8081).
  */
 import { beforeAll, describe, expect, it } from "vitest";
-import { analyseInvoice, createValidatorClient } from "../../src/index.js";
-import { fixture, fixtureBytes, listFixtures } from "../helpers.js";
+import { analyseInvoice, createValidatorClient } from "../../src/index";
+import { fixture, fixtureBytes, listFixtures } from "../helpers";
 
 const baseUrl = process.env["VALIDATOR_URL"] ?? "http://localhost:8081";
 const validator = createValidatorClient({ baseUrl, timeoutMs: 30_000 });

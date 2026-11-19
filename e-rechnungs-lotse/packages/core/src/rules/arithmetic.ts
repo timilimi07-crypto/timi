@@ -4,22 +4,17 @@
  * Toleranz: 0,01 je Steuersatz (Anzahl der BG-23-Einträge, mindestens 1). Sie fängt zulässige
  * Rundungsdifferenzen ab, wenn Erzeuger je Steuersatz runden. Echte Rechenfehler sind größer.
  */
-import { absBig, centAtScale, fromScaled, tryScaled } from "../decimal.js";
-import { finding, type ValidationFinding } from "../findings.js";
-import type { NormalizedInvoice } from "../types.js";
+import { absBig, centAtScale, fromScaled, tryScaled } from "../decimal";
+import { finding, type OwnRuleId, type ValidationFinding } from "../findings";
+import type { NormalizedInvoice } from "../types";
 
 const SCALE = 6;
 const CENT = centAtScale(SCALE);
 
 const show = (v: bigint) => fromScaled(v, SCALE);
 
-function rule(
-  ruleId: string,
-  location: string,
-  message: string,
-  technicalMessage: string,
-): ValidationFinding {
-  return finding("regel", "error", ruleId, message, { location, technicalMessage });
+function rule(ruleId: OwnRuleId, location: string, technicalMessage: string): ValidationFinding {
+  return finding("regel", "error", ruleId, { location, technicalMessage });
 }
 
 /** Positionen, die in die Summe BT-106 eingehen (ohne EXTENDED-Unter- und Info-Positionen). */
@@ -34,16 +29,10 @@ export function amountFormatFindings(inv: NormalizedInvoice): ValidationFinding[
   const check = (value: string | null, location: string) => {
     if (value !== null && tryScaled(value, SCALE) === null) {
       out.push(
-        finding(
-          "regel",
-          "error",
-          "ERL-BETRAG-FORMAT",
-          `Ein Betrag in der Rechnung ist keine gültige Zahl (${location}).`,
-          {
-            location,
-            technicalMessage: `Ungültiger Dezimalwert "${value}" in ${location}`,
-          },
-        ),
+        finding("regel", "error", "ERL-BETRAG-FORMAT", {
+          location,
+          technicalMessage: `Ungültiger Dezimalwert "${value}" in ${location}`,
+        }),
       );
     }
   };
@@ -85,7 +74,6 @@ export function arithmeticFindings(inv: NormalizedInvoice): ValidationFinding[] 
         rule(
           "ERL-RECHNUNG-POSITIONEN",
           "BT-106",
-          "Die Summe der Rechnungspositionen stimmt nicht mit der angegebenen Positionssumme überein.",
           `Summe BT-131 = ${show(lineSum)}, BT-106 = ${show(lineTotal)}`,
         ),
       );
@@ -102,7 +90,6 @@ export function arithmeticFindings(inv: NormalizedInvoice): ValidationFinding[] 
         rule(
           "ERL-RECHNUNG-NETTO",
           "BT-109",
-          "Positionen abzüglich Abschläge und zuzüglich Zuschläge ergeben nicht den Nettobetrag.",
           `BT-106 − BT-107 + BT-108 = ${show(expected)}, BT-109 = ${show(net)}`,
         ),
       );
@@ -118,7 +105,6 @@ export function arithmeticFindings(inv: NormalizedInvoice): ValidationFinding[] 
         rule(
           "ERL-RECHNUNG-BRUTTO",
           "BT-112",
-          "Nettobetrag plus Umsatzsteuer ergibt nicht den Bruttobetrag.",
           `BT-109 + BT-110 = ${show(expected)}, BT-112 = ${show(gross)}`,
         ),
       );
@@ -135,7 +121,6 @@ export function arithmeticFindings(inv: NormalizedInvoice): ValidationFinding[] 
         rule(
           "ERL-RECHNUNG-STEUERSUMME",
           "BT-110",
-          "Die Summe der Steuerbeträge je Steuersatz stimmt nicht mit der Gesamtsteuer überein.",
           `Summe BT-117 = ${show(sum)}, BT-110 = ${show(taxTotal)}`,
         ),
       );
@@ -155,7 +140,6 @@ export function arithmeticFindings(inv: NormalizedInvoice): ValidationFinding[] 
         rule(
           "ERL-RECHNUNG-STEUERSATZ",
           `BG-23[${i + 1}]/BT-117`,
-          `Der Steuerbetrag zum Steuersatz ${b.rate} % passt nicht zur Bemessungsgrundlage.`,
           `BT-116 × BT-119 = ${fromScaled(expected / unit, SCALE)}, BT-117 = ${show(tax)} (Toleranz 0,01)`,
         ),
       );
@@ -172,7 +156,6 @@ export function arithmeticFindings(inv: NormalizedInvoice): ValidationFinding[] 
         rule(
           "ERL-RECHNUNG-ZAHLBETRAG",
           "BT-115",
-          "Bruttobetrag abzüglich Vorauszahlungen ergibt nicht den Zahlbetrag.",
           `BT-112 − BT-113 + BT-114 = ${show(expected)}, BT-115 = ${show(payable)}`,
         ),
       );

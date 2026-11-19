@@ -3,8 +3,8 @@
  * Der Validator wird hier durch eine Attrappe ersetzt; die echte Prüfung läuft im Integrationstest.
  */
 import { describe, expect, it } from "vitest";
-import { analyseInvoice, type InvoiceAnalysis } from "../src/index.js";
-import { fixtureBytes, listFixtures, stubValidator } from "./helpers.js";
+import { analyseInvoice, type InvoiceAnalysis } from "../src/index";
+import { fixtureBytes, listFixtures, stubValidator } from "./helpers";
 
 const analyse = (path: string) =>
   analyseInvoice(fixtureBytes(path), path.split("/").pop()!, { validator: stubValidator() });
@@ -100,7 +100,7 @@ describe("Feldinhalte offizieller Rechnungen", () => {
       expect.objectContaining({ ruleId: "ERL-PROFIL-BASICWL", severity: "warning" }),
     );
     expect(min.findings.find((f) => f.ruleId === "ERL-PROFIL-MINIMUM")?.message).toMatch(
-      /keine vollwertige E-Rechnung/,
+      /Keine vollwertige E-Rechnung/,
     );
     expect(min.status).toBe("warnungen");
   });

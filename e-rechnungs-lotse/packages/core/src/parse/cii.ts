@@ -4,8 +4,8 @@ import type {
   NormalizedInvoice,
   Party,
   PostalAddress,
-} from "../types.js";
-import { at, attr, list, text, type XmlNode } from "./xml.js";
+} from "../types";
+import { at, attr, list, text, type XmlNode } from "./xml";
 
 /**
  * CII-Datum (Format 102 = JJJJMMTT) → ISO yyyy-mm-dd.

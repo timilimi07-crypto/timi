@@ -10,3 +10,12 @@
 body {
   @apply bg-slate-50 text-slate-900 antialiased;
 }
+
+@media print {
+  body {
+    @apply bg-white text-black;
+  }
+  @page {
+    margin: 15mm;
+  }
+}
