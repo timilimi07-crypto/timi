@@ -1260,11 +1260,14 @@ p + p { margin-top: 1rem; }
 /* Mit JS: erst einblenden, wenn der Hero (mit eigenem Telefon-Button) verlassen wurde */
 .js .call-fab { transform: translate(-50%, 140%); opacity: 0; }
 .js .call-fab.is-visible { transform: translateX(-50%); opacity: 1; }
-body { padding-bottom: 88px; }   /* Platz, damit der Button den Footer nicht verdeckt */
+/* Ohne JS kein schwebender Button: Er läge sonst über dem Telefon-Button im Hero.
+   Telefonnummern stehen in Hero, Info-Karten, Abschnitten und Footer ohnehin überall. */
+.no-js .call-fab { display: none; }
+.js body { padding-bottom: 88px; }   /* Platz, damit der Button den Footer nicht verdeckt */
 
 @media (min-width: 960px) {
   .call-fab { display: none; }
-  body { padding-bottom: 0; }
+  .js body { padding-bottom: 0; }
 }
 
 /* ==========================================================================
