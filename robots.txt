@@ -1,0 +1,4 @@
+# DEMO-Version: Suchmaschinen bitte draußen bleiben.
+# Vor dem Livegang ersetzen durch:  User-agent: *  /  Allow: /
+User-agent: *
+Disallow: /
