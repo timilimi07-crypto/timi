@@ -1,9 +1,9 @@
 /* ==========================================================================
    Restaurant Xanthi – script.js
    --------------------------------------------------------------------------
-   OBEN: Alles, was der Inhaber selbst pflegen kann (Hinweisfeld, Zeiten,
-         Speisekarte). Einfach Texte/Preise ändern, speichern, fertig.
-   UNTEN: Technik (Live-Status, Speisekarte, Animationen). Hier muss im
+   OBEN: Was der Inhaber selbst pflegen kann (Hinweisfeld, Öffnungszeiten
+         für den Live-Status). Die SPEISEKARTE steht direkt in index.html.
+   UNTEN: Technik (Live-Status, Speisekarten-Tabs, Animationen). Hier muss im
          Alltag nichts angepasst werden.
    ========================================================================== */
 
@@ -42,111 +42,6 @@ const OEFFNUNGSZEITEN = {
   5: [['17:00', '22:00']],                      // Freitag
   6: [['17:00', '22:00']]                       // Samstag
 };
-
-
-/* ==========================================================================
-   3. SPEISEKARTE
-   Pro Gericht:  name, beschreibung (optional), preis (Zahl), veg (true = vegetarisch)
-   Neue Kategorie = neuer Block { id, titel, kurz, gerichte: [...] }
-   ========================================================================== */
-const SPEISEKARTE = [
-  {
-    id: 'suppen', titel: 'Suppen', kurz: 'Suppen',
-    gerichte: [
-      { name: 'Hühnersuppe', preis: 5.80 },
-      { name: 'Tomatensuppe', beschreibung: 'mit Croûtons', preis: 5.80, veg: true },
-      { name: 'Gulaschsuppe', beschreibung: 'groß, scharf', preis: 7.60 }
-    ]
-  },
-  {
-    id: 'salate', titel: 'Salate', kurz: 'Salate',
-    gerichte: [
-      { name: 'Kleiner gemischter Salat', preis: 5.20, veg: true },
-      { name: 'Gemischter Salat mit Thunfisch', beschreibung: 'mit Thunfisch, Käse, Oliven und Peperoni', preis: 10.50 },
-      { name: 'Gemischter Salat mit Putenbrust', beschreibung: 'mit gebratener Putenbrust', preis: 12.50 },
-      { name: 'Gemischter Salat mit Scampi', beschreibung: 'mit 2 Scampispießen', preis: 13.50 }
-    ]
-  },
-  {
-    id: 'vorspeisen', titel: 'Vorspeisen', kurz: 'Vorspeisen',
-    gerichte: [
-      { name: 'Tzatziki', preis: 5.20, veg: true },
-      { name: 'Tarama', beschreibung: 'Kaviarcreme', preis: 6.70 },
-      { name: 'Überbackener Schafskäse', beschreibung: 'mit Peperoni und Tomate', preis: 9.60, veg: true },
-      { name: 'Garides', beschreibung: 'Scampis mit Zwiebeln und Feta in Tomatensauce', preis: 11.50 }
-    ]
-  },
-  {
-    id: 'gyros', titel: 'Gyros', kurz: 'Gyros',
-    gerichte: [
-      { name: 'Gyros Teller', beschreibung: 'mit Salat, Tzatziki und Pommes', preis: 16.50 },
-      { name: 'Gyros Champignon', preis: 17.90 },
-      { name: 'Gyros Fourno', beschreibung: 'mit Champignons und Metaxasauce, überbacken, dazu Brot', preis: 19.50 }
-    ]
-  },
-  {
-    id: 'grill', titel: 'Vom Grill', kurz: 'Vom Grill',
-    gerichte: [
-      { name: 'Souvlaki', beschreibung: '2 Schweinespieße mit Salat, Tzatziki und Reis', preis: 17.20 },
-      { name: 'Bifteki', beschreibung: 'gefüllt mit Tomate, Feta und Peperoni', preis: 17.80 },
-      { name: 'Paidakia', beschreibung: '5 Lammkoteletts', preis: 21.50 },
-      { name: 'Filet-Teller', beschreibung: 'Schwein, Hähnchen, Pute und Lamm', preis: 25.50 }
-    ]
-  },
-  {
-    id: 'grill-spezial', titel: 'Spezialitäten vom Grill', kurz: 'Grill-Spezialitäten',
-    gerichte: [
-      { name: 'Schweinefilet', beschreibung: 'mit Champignons', preis: 20.40 },
-      { name: 'Herkules-Spieß', beschreibung: 'Pute und Schwein', preis: 19.40 },
-      { name: 'Lammfilets', beschreibung: 'mit Kräuterbutter und Kartoffelecken', preis: 26.50 },
-      { name: 'Entrecôte', beschreibung: 'ca. 250 g, mit Kräuterbutter und Champignons', preis: 25.80 }
-    ]
-  },
-  {
-    id: 'pfanne', titel: 'Aus der Pfanne', kurz: 'Pfanne',
-    gerichte: [
-      { name: 'Grillpfanne Zeus', preis: 23.20 },
-      { name: 'Schlemmerröllchen Akropolis', preis: 19.20 },
-      { name: 'Putenbrust Athene', beschreibung: 'mit Broccoli und Sahnesauce', preis: 19.80 },
-      { name: 'Veggi-Pfanne', beschreibung: 'mit Reisnudeln und Gemüse', preis: 15.50, veg: true }
-    ]
-  },
-  {
-    id: 'ofen', titel: 'Aus dem Ofen', kurz: 'Ofen',
-    gerichte: [
-      { name: 'Lammhaxe Stifado', preis: 20.50 },
-      { name: 'Lammhaxe Fasolia', beschreibung: 'mit grünen Bohnen und Fladenbrot', preis: 20.50 },
-      { name: 'Juwetzi Lamm', preis: 20.20 }
-    ]
-  },
-  {
-    id: 'gefluegel', titel: 'Geflügel', kurz: 'Geflügel',
-    gerichte: [
-      { name: 'Hähnchenbrust mit Ananas', beschreibung: 'mit Ananas und Metaxasauce', preis: 19.50 },
-      { name: 'Putenbrust vom Grill', beschreibung: 'mit Kräuterbutter', preis: 17.80 },
-      { name: 'Hähnchenbrustfilet', beschreibung: 'mit Metaxasauce', preis: 18.80 },
-      { name: 'Putenpfanne Hera', preis: 19.60 }
-    ]
-  },
-  {
-    id: 'meer', titel: 'Aus dem Meer', kurz: 'Fisch',
-    gerichte: [
-      { name: 'Seezungenfilet', beschreibung: 'mit Knoblauchsauce', preis: 20.20 },
-      { name: 'Fischplatte Poseidon', beschreibung: 'Rotbarsch, Lachs und Seezunge', preis: 16.80 },
-      { name: 'Kalamaris', beschreibung: 'aus der Pfanne', preis: 19.80 },
-      { name: 'Scampis auf Bandnudeln', beschreibung: 'in Hummersauce', preis: 18.90 }
-    ]
-  },
-  {
-    id: 'klein', titel: 'Für den kleinen Hunger', kurz: 'Kleiner Hunger',
-    gerichte: [
-      { name: 'Gyros Teller klein', preis: 11.80 },
-      { name: 'Bifteki klein', preis: 13.90 },
-      { name: 'Rinderleberpfanne', preis: 13.80 },
-      { name: 'Putenbrust überbacken', preis: 12.80 }
-    ]
-  }
-];
 
 
 /* ==========================================================================
@@ -239,56 +134,61 @@ const SPEISEKARTE = [
     return row;
   }
 
-  /* ---------- 3. Speisekarte mit Tabs ---------- */
-  const euro = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
-  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-
-  function renderCategory(cat) {
-    const items = cat.gerichte.map((g, i) => `
-      <li class="dish" style="--i:${i}">
-        <span class="dish__name">${esc(g.name)}${g.veg ? '<span class="veg-badge" title="vegetarisch"><svg class="icon" aria-hidden="true"><use href="#i-leaf"/></svg>veg.<span class="visually-hidden">, vegetarisch</span></span>' : ''}</span>
-        <span class="dish__price">${euro.format(g.preis)}</span>
-        <span class="dish__desc">${g.beschreibung ? esc(g.beschreibung) : ''}</span>
-      </li>`).join('');
-    return `
-      <div class="menu__panel-inner">
-        <h3 class="menu__cat-title">${esc(cat.titel)}<span class="menu__cat-count">${cat.gerichte.length} Gerichte</span></h3>
-        <ul class="menu__list">${items}</ul>
-      </div>`;
-  }
-
+  /* ---------- 3. Speisekarte: Tabs aus dem vorhandenen HTML bauen ----------
+     Die Gerichte stehen in index.html. Hier werden nur die Tabs ergänzt –
+     ohne JS bleibt die komplette Karte sichtbar (Progressive Enhancement). */
   function initMenu() {
     const tabs = $('#menu-tabs');
-    const panel = $('#menu-panel');
-    if (!tabs || !panel || !SPEISEKARTE.length) return;
+    const cats = $$('#menu-panel .menu__cat');
+    if (!tabs || !cats.length) return;
 
-    tabs.innerHTML = SPEISEKARTE.map((cat, i) => `
-      <button class="menu__tab" type="button" role="tab" id="tab-${cat.id}"
-        aria-controls="menu-panel" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}"
-        data-index="${i}">${esc(cat.kurz || cat.titel)}</button>`).join('');
+    // Anzahl der Gerichte und Stagger-Index automatisch ergänzen
+    cats.forEach((cat) => {
+      const dishes = $$('.dish', cat);
+      $('.menu__cat-title', cat).insertAdjacentHTML('beforeend', `<span class="menu__cat-count">${dishes.length} Gerichte</span>`);
+      dishes.forEach((d, i) => d.style.setProperty('--i', i));
+    });
 
-    const buttons = $$('.menu__tab', tabs);
-    let current = 0;
-    let busy = null;
+    const buttons = cats.map((cat) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'menu__tab';
+      b.id = `tab-${cat.id}`;
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-controls', cat.id);
+      b.textContent = cat.dataset.tab || $('.menu__cat-title', cat).firstChild.textContent.trim();
+      tabs.appendChild(b);
+      cat.setAttribute('role', 'tabpanel');
+      cat.setAttribute('aria-labelledby', b.id);
+      cat.tabIndex = 0;
+      return b;
+    });
 
-    function show(index, focus) {
-      if (index === current && panel.firstElementChild) return;
+    let current = -1;
+    let timer = null;
+
+    function select(index, focus) {
+      if (index === current) return;
       buttons.forEach((b, i) => {
         b.setAttribute('aria-selected', i === index);
         b.tabIndex = i === index ? 0 : -1;
       });
       const btn = buttons[index];
-      panel.setAttribute('aria-labelledby', btn.id);
       if (focus) btn.focus();
       // aktiven Tab in der horizontalen Leiste sichtbar machen (ohne die Seite vertikal zu scrollen)
       tabs.scrollTo({ left: btn.offsetLeft - tabs.clientWidth / 2 + btn.clientWidth / 2, behavior: MOTION ? 'smooth' : 'auto' });
 
-      const swap = () => { panel.innerHTML = renderCategory(SPEISEKARTE[index]); current = index; };
-      const old = $('.menu__panel-inner', panel);
-      clearTimeout(busy);
+      const old = cats[current];
+      const next = cats[index];
+      current = index;
+      const swap = () => {
+        // Kategorie wird wieder eingeblendet → die Gerichte-Animation startet neu
+        cats.forEach((c) => { c.hidden = c !== next; c.classList.remove('is-leaving'); });
+      };
+      clearTimeout(timer);
       if (MOTION && old) {
-        old.classList.add('is-leaving');           // weiches Ausblenden …
-        busy = setTimeout(swap, 200);               // … dann neue Gerichte einfliegen lassen
+        old.classList.add('is-leaving');   // weiches Ausblenden …
+        timer = setTimeout(swap, 200);      // … dann fliegen die neuen Gerichte ein
       } else {
         swap();
       }
@@ -296,7 +196,7 @@ const SPEISEKARTE = [
 
     tabs.addEventListener('click', (e) => {
       const btn = e.target.closest('.menu__tab');
-      if (btn) show(Number(btn.dataset.index));
+      if (btn) select(buttons.indexOf(btn));
     });
     // Tastatur: Pfeiltasten, Pos1, Ende (ARIA-Tabs-Muster)
     tabs.addEventListener('keydown', (e) => {
@@ -307,11 +207,12 @@ const SPEISEKARTE = [
       let next = map[e.key];
       if (next > max) next = 0;
       if (next < 0) next = max;
-      show(next, true);
+      select(next, true);
     });
 
-    panel.innerHTML = renderCategory(SPEISEKARTE[0]);
-    panel.setAttribute('aria-labelledby', buttons[0].id);
+    tabs.hidden = false;
+    $('#menu-panel').classList.add('is-tabbed');
+    select(0);
   }
 
   /* ---------- Zahlen hochzählen ---------- */

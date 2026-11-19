@@ -1,5 +1,5 @@
 # Netlify-Konfiguration für die Xanthi-Demo.
-# In Netlify als "Base directory" den Ordner  xanthi  angeben – kein Build nötig.
+# Repo-Wurzel = Website. Kein Build-Befehl, kein Base directory nötig.
 [build]
   publish = "."
 

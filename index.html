@@ -390,15 +390,141 @@
 
         <div class="menu__app" data-reveal-group>
           <div class="menu__tabs-wrap" data-reveal>
-            <div class="menu__tabs" role="tablist" aria-label="Kategorien der Speisekarte" id="menu-tabs"></div>
+            <div class="menu__tabs" role="tablist" aria-label="Kategorien der Speisekarte" id="menu-tabs" hidden></div>
           </div>
-          <div class="menu__panel" id="menu-panel" role="tabpanel" tabindex="0" data-reveal>
-            <noscript>
-              <p class="menu__noscript">Unsere vollständige Speisekarte wird mit JavaScript angezeigt. Fragen Sie uns gern telefonisch: <a href="tel:+493820776968">038207 76968</a>.</p>
-            </noscript>
+          <!--
+            ===================== SPEISEKARTE – HIER PFLEGEN =====================
+            Preis ändern:  nur die Zahl in <span class="dish__price">…</span> anpassen.
+            Neues Gericht: eine <li class="dish">…</li>-Zeile kopieren und ändern.
+            Vegetarisch:   <abbr class="veg" title="vegetarisch">veg.</abbr> hinter den Namen setzen.
+            Neue Kategorie: einen <section class="menu__cat">-Block kopieren;
+                           data-tab = kurze Beschriftung des Tabs.
+            Die Tabs entstehen automatisch per JavaScript – ohne JS steht die
+            ganze Karte untereinander da (gut für Google und alle Besucher).
+            ======================================================================
+          -->
+          <div class="menu__panel" id="menu-panel" data-reveal>
+
+            <!-- ===== Suppen ===== -->
+            <section class="menu__cat" id="karte-suppen" data-tab="Suppen">
+              <h3 class="menu__cat-title">Suppen</h3>
+              <ul class="menu__list">
+                <li class="dish"><span class="dish__name">Hühnersuppe</span><span class="dish__price">5,80 €</span></li>
+                <li class="dish"><span class="dish__name">Tomatensuppe <abbr class="veg" title="vegetarisch">veg.</abbr></span><span class="dish__price">5,80 €</span><span class="dish__desc">mit Croûtons</span></li>
+                <li class="dish"><span class="dish__name">Gulaschsuppe</span><span class="dish__price">7,60 €</span><span class="dish__desc">groß, scharf</span></li>
+              </ul>
+            </section>
+
+            <!-- ===== Salate ===== -->
+            <section class="menu__cat" id="karte-salate" data-tab="Salate">
+              <h3 class="menu__cat-title">Salate</h3>
+              <ul class="menu__list">
+                <li class="dish"><span class="dish__name">Kleiner gemischter Salat <abbr class="veg" title="vegetarisch">veg.</abbr></span><span class="dish__price">5,20 €</span></li>
+                <li class="dish"><span class="dish__name">Gemischter Salat mit Thunfisch</span><span class="dish__price">10,50 €</span><span class="dish__desc">mit Thunfisch, Käse, Oliven und Peperoni</span></li>
+                <li class="dish"><span class="dish__name">Gemischter Salat mit Putenbrust</span><span class="dish__price">12,50 €</span><span class="dish__desc">mit gebratener Putenbrust</span></li>
+                <li class="dish"><span class="dish__name">Gemischter Salat mit Scampi</span><span class="dish__price">13,50 €</span><span class="dish__desc">mit 2 Scampispießen</span></li>
+              </ul>
+            </section>
+
+            <!-- ===== Vorspeisen ===== -->
+            <section class="menu__cat" id="karte-vorspeisen" data-tab="Vorspeisen">
+              <h3 class="menu__cat-title">Vorspeisen</h3>
+              <ul class="menu__list">
+                <li class="dish"><span class="dish__name">Tzatziki <abbr class="veg" title="vegetarisch">veg.</abbr></span><span class="dish__price">5,20 €</span></li>
+                <li class="dish"><span class="dish__name">Tarama</span><span class="dish__price">6,70 €</span><span class="dish__desc">Kaviarcreme</span></li>
+                <li class="dish"><span class="dish__name">Überbackener Schafskäse <abbr class="veg" title="vegetarisch">veg.</abbr></span><span class="dish__price">9,60 €</span><span class="dish__desc">mit Peperoni und Tomate</span></li>
+                <li class="dish"><span class="dish__name">Garides</span><span class="dish__price">11,50 €</span><span class="dish__desc">Scampis mit Zwiebeln und Feta in Tomatensauce</span></li>
+              </ul>
+            </section>
+
+            <!-- ===== Gyros ===== -->
+            <section class="menu__cat" id="karte-gyros" data-tab="Gyros">
+              <h3 class="menu__cat-title">Gyros</h3>
+              <ul class="menu__list">
+                <li class="dish"><span class="dish__name">Gyros Teller</span><span class="dish__price">16,50 €</span><span class="dish__desc">mit Salat, Tzatziki und Pommes</span></li>
+                <li class="dish"><span class="dish__name">Gyros Champignon</span><span class="dish__price">17,90 €</span></li>
+                <li class="dish"><span class="dish__name">Gyros Fourno</span><span class="dish__price">19,50 €</span><span class="dish__desc">mit Champignons und Metaxasauce, überbacken, dazu Brot</span></li>
+              </ul>
+            </section>
+
+            <!-- ===== Vom Grill ===== -->
+            <section class="menu__cat" id="karte-grill" data-tab="Vom Grill">
+              <h3 class="menu__cat-title">Vom Grill</h3>
+              <ul class="menu__list">
+                <li class="dish"><span class="dish__name">Souvlaki</span><span class="dish__price">17,20 €</span><span class="dish__desc">2 Schweinespieße mit Salat, Tzatziki und Reis</span></li>
+                <li class="dish"><span class="dish__name">Bifteki</span><span class="dish__price">17,80 €</span><span class="dish__desc">gefüllt mit Tomate, Feta und Peperoni</span></li>
+                <li class="dish"><span class="dish__name">Paidakia</span><span class="dish__price">21,50 €</span><span class="dish__desc">5 Lammkoteletts</span></li>
+                <li class="dish"><span class="dish__name">Filet-Teller</span><span class="dish__price">25,50 €</span><span class="dish__desc">Schwein, Hähnchen, Pute und Lamm</span></li>
+              </ul>
+            </section>
+
+            <!-- ===== Spezialitäten vom Grill ===== -->
+            <section class="menu__cat" id="karte-grill-spezial" data-tab="Grill-Spezialitäten">
+              <h3 class="menu__cat-title">Spezialitäten vom Grill</h3>
+              <ul class="menu__list">
+                <li class="dish"><span class="dish__name">Schweinefilet</span><span class="dish__price">20,40 €</span><span class="dish__desc">mit Champignons</span></li>
+                <li class="dish"><span class="dish__name">Herkules-Spieß</span><span class="dish__price">19,40 €</span><span class="dish__desc">Pute und Schwein</span></li>
+                <li class="dish"><span class="dish__name">Lammfilets</span><span class="dish__price">26,50 €</span><span class="dish__desc">mit Kräuterbutter und Kartoffelecken</span></li>
+                <li class="dish"><span class="dish__name">Entrecôte</span><span class="dish__price">25,80 €</span><span class="dish__desc">ca. 250 g, mit Kräuterbutter und Champignons</span></li>
+              </ul>
+            </section>
+
+            <!-- ===== Aus der Pfanne ===== -->
+            <section class="menu__cat" id="karte-pfanne" data-tab="Pfanne">
+              <h3 class="menu__cat-title">Aus der Pfanne</h3>
+              <ul class="menu__list">
+                <li class="dish"><span class="dish__name">Grillpfanne Zeus</span><span class="dish__price">23,20 €</span></li>
+                <li class="dish"><span class="dish__name">Schlemmerröllchen Akropolis</span><span class="dish__price">19,20 €</span></li>
+                <li class="dish"><span class="dish__name">Putenbrust Athene</span><span class="dish__price">19,80 €</span><span class="dish__desc">mit Broccoli und Sahnesauce</span></li>
+                <li class="dish"><span class="dish__name">Veggi-Pfanne <abbr class="veg" title="vegetarisch">veg.</abbr></span><span class="dish__price">15,50 €</span><span class="dish__desc">mit Reisnudeln und Gemüse</span></li>
+              </ul>
+            </section>
+
+            <!-- ===== Aus dem Ofen ===== -->
+            <section class="menu__cat" id="karte-ofen" data-tab="Ofen">
+              <h3 class="menu__cat-title">Aus dem Ofen</h3>
+              <ul class="menu__list">
+                <li class="dish"><span class="dish__name">Lammhaxe Stifado</span><span class="dish__price">20,50 €</span></li>
+                <li class="dish"><span class="dish__name">Lammhaxe Fasolia</span><span class="dish__price">20,50 €</span><span class="dish__desc">mit grünen Bohnen und Fladenbrot</span></li>
+                <li class="dish"><span class="dish__name">Juwetzi Lamm</span><span class="dish__price">20,20 €</span></li>
+              </ul>
+            </section>
+
+            <!-- ===== Geflügel ===== -->
+            <section class="menu__cat" id="karte-gefluegel" data-tab="Geflügel">
+              <h3 class="menu__cat-title">Geflügel</h3>
+              <ul class="menu__list">
+                <li class="dish"><span class="dish__name">Hähnchenbrust mit Ananas</span><span class="dish__price">19,50 €</span><span class="dish__desc">mit Ananas und Metaxasauce</span></li>
+                <li class="dish"><span class="dish__name">Putenbrust vom Grill</span><span class="dish__price">17,80 €</span><span class="dish__desc">mit Kräuterbutter</span></li>
+                <li class="dish"><span class="dish__name">Hähnchenbrustfilet</span><span class="dish__price">18,80 €</span><span class="dish__desc">mit Metaxasauce</span></li>
+                <li class="dish"><span class="dish__name">Putenpfanne Hera</span><span class="dish__price">19,60 €</span></li>
+              </ul>
+            </section>
+
+            <!-- ===== Aus dem Meer ===== -->
+            <section class="menu__cat" id="karte-meer" data-tab="Fisch">
+              <h3 class="menu__cat-title">Aus dem Meer</h3>
+              <ul class="menu__list">
+                <li class="dish"><span class="dish__name">Seezungenfilet</span><span class="dish__price">20,20 €</span><span class="dish__desc">mit Knoblauchsauce</span></li>
+                <li class="dish"><span class="dish__name">Fischplatte Poseidon</span><span class="dish__price">16,80 €</span><span class="dish__desc">Rotbarsch, Lachs und Seezunge</span></li>
+                <li class="dish"><span class="dish__name">Kalamaris</span><span class="dish__price">19,80 €</span><span class="dish__desc">aus der Pfanne</span></li>
+                <li class="dish"><span class="dish__name">Scampis auf Bandnudeln</span><span class="dish__price">18,90 €</span><span class="dish__desc">in Hummersauce</span></li>
+              </ul>
+            </section>
+
+            <!-- ===== Für den kleinen Hunger ===== -->
+            <section class="menu__cat" id="karte-klein" data-tab="Kleiner Hunger">
+              <h3 class="menu__cat-title">Für den kleinen Hunger</h3>
+              <ul class="menu__list">
+                <li class="dish"><span class="dish__name">Gyros Teller klein</span><span class="dish__price">11,80 €</span></li>
+                <li class="dish"><span class="dish__name">Bifteki klein</span><span class="dish__price">13,90 €</span></li>
+                <li class="dish"><span class="dish__name">Rinderleberpfanne</span><span class="dish__price">13,80 €</span></li>
+                <li class="dish"><span class="dish__name">Putenbrust überbacken</span><span class="dish__price">12,80 €</span></li>
+              </ul>
+            </section>
           </div>
           <div class="menu__notes" data-reveal>
-            <p><span class="veg-badge"><svg class="icon" aria-hidden="true"><use href="#i-leaf"/></svg>veg.</span> = vegetarisch</p>
+            <p><abbr class="veg" title="vegetarisch">veg.</abbr> = vegetarisch</p>
             <p>Preise Stand 2023 – werden vor Veröffentlichung aktualisiert.</p>
             <p>Allergene und Zusatzstoffe auf Nachfrage – sprechen Sie uns gern an.</p>
           </div>
