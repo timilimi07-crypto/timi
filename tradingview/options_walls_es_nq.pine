@@ -9,6 +9,12 @@
 //   NQ / MNQ  → QQQ-Walls
 //   SPY / QQQ → Walls direkt auf den ETF-Strikes
 //
+// Verhalten bei Berührung (Einstellung "Modus"):
+//   Auflösen       – eine Wall gilt nach dem ersten Anlaufen als erledigt.
+//                    Die Linie endet an der Berührung (blass) oder verschwindet.
+//   Reaktionszone  – die Wall bleibt die ganze Woche als Zone (± Breite)
+//                    stehen, im Label steht, wie oft sie getestet wurde.
+//
 // TradingView liefert in Pine KEINE Options-Daten (Open Interest).
 // Darum werden die Walls jede Woche in die Felder "SPY Walls" / "QQQ Walls"
 // eingefügt. Das Skript tradingview/options_walls.py holt sie automatisch
@@ -16,15 +22,23 @@
 // und gibt genau die Zeilen aus, die hier eingefügt werden.
 //
 // Format:  Datum; Strike+C/P=OpenInterest; ...
-//   2026-11-13; 600C=45210; 610C=28800; 580P=52100; 570P=31050
+//   2026-11-20; 600C=45210; 610C=28800; 580P=52100; 570P=31050
 // Trennzeichen ; , oder Zeilenumbruch. Ohne "=OI" wird der Strike immer gezeigt.
-indicator("SPY/QQQ Options-Walls → ES/NQ", "Walls", overlay = true, max_lines_count = 200, max_labels_count = 200)
+indicator("SPY/QQQ Options-Walls → ES/NQ", "Walls", overlay = true, max_lines_count = 200, max_labels_count = 200, max_boxes_count = 200)
 
 // ───────────────────────── Inputs ─────────────────────────
 grpD    = "Daten (jeden Freitag/Wochenende neu einfügen)"
-spyData = input.text_area("2026-11-13; 600C=45210; 610C=28800; 580P=52100; 570P=31050", "SPY Walls", group = grpD, tooltip = "Ausgabe von options_walls.py einfügen.\nFormat: JJJJ-MM-TT; 600C=45210; 580P=52100")
-qqqData = input.text_area("2026-11-13; 620C=33400; 630C=24100; 600P=41800; 590P=22600", "QQQ Walls", group = grpD, tooltip = "Ausgabe von options_walls.py einfügen.\nFormat: JJJJ-MM-TT; 620C=33400; 600P=41800")
+spyData = input.text_area("2026-11-20; 600C=45210; 610C=28800; 580P=52100; 570P=31050", "SPY Walls", group = grpD, tooltip = "Ausgabe von options_walls.py einfügen.\nFormat: JJJJ-MM-TT; 600C=45210; 580P=52100")
+qqqData = input.text_area("2026-11-20; 620C=33400; 630C=24100; 600P=41800; 590P=22600", "QQQ Walls", group = grpD, tooltip = "Ausgabe von options_walls.py einfügen.\nFormat: JJJJ-MM-TT; 620C=33400; 600P=41800")
 minOI   = input.int(20000, "Mindest-Open-Interest (über)", minval = 0, step = 1000, group = grpD)
+
+grpT      = "Berührung"
+mode      = input.string("Reaktionszone", "Modus", options = ["Reaktionszone", "Auflösen"], group = grpT, tooltip = "Reaktionszone: Wall bleibt die ganze Woche, Tests werden gezählt.\nAuflösen: Wall ist nach dem ersten Anlaufen erledigt.")
+zoneEtf   = input.float(0.20, "Zone ± (in ETF-$)", minval = 0, step = 0.05, group = grpT, tooltip = "Halbe Zonenbreite in SPY/QQQ-Dollar, wird automatisch in Punkte umgerechnet (0.20 $ ≈ 2 Pkt ES / ≈ 8 Pkt NQ).\nAb hier gilt eine Wall als angelaufen.")
+showZone  = input.bool(true, "Zone als Box zeichnen (Reaktionszone)", group = grpT)
+zoneTr    = input.int(85, "Box-Transparenz", minval = 0, maxval = 100, group = grpT)
+showDead  = input.bool(true, "Aufgelöste Walls blass bis zur Berührung zeigen", group = grpT, tooltip = "Aus: aufgelöste Walls verschwinden komplett.")
+deadTr    = input.int(70, "Transparenz aufgelöst", minval = 0, maxval = 100, group = grpT)
 
 grpS      = "Symbol & Umrechnung"
 srcMode   = input.string("Auto", "ETF-Quelle", options = ["Auto", "SPY", "QQQ"], group = grpS, tooltip = "Auto: NQ/MNQ → QQQ, sonst SPY.")
@@ -63,19 +77,23 @@ type Wall
     float strike
     bool  isCall
     float oi
+    int   firstT  = na     // Zeit der ersten Berührung
+    int   lastT   = na     // Zeit der letzten Berührung
+    int   touches = 0      // Anzahl getrennter Tests
+    bool  inTouch = false  // vorige Kerze war in der Zone
 
-// Parst "2026-11-13; 600C=45210; 580P=52100" → [Walls, Verfallszeit]
+// Parst "2026-11-20; 600C=45210; 580P=52100" → [Walls, Verfallszeit]
 f_parse(string raw, int minOi) =>
     string s = str.replace_all(str.replace_all(str.upper(raw), "\n", ";"), ",", ";")
-    walls = array.new<Wall>()
-    int expT = na
+    res = array.new<Wall>()
+    int eT = na
     for p in str.split(s, ";")
         string e = str.replace_all(str.trim(p), " ", "")
         if str.length(e) == 0
             continue
         if str.match(e, "^[0-9]{4}-[0-9]{2}-[0-9]{2}$") != ""
             d = str.split(e, "-")
-            expT := timestamp("America/New_York", int(str.tonumber(d.get(0))), int(str.tonumber(d.get(1))), int(str.tonumber(d.get(2))), 16, 0)
+            eT := timestamp("America/New_York", int(str.tonumber(d.get(0))), int(str.tonumber(d.get(1))), int(str.tonumber(d.get(2))), 16, 0)
             continue
         kv = str.split(e, "=")
         string left = kv.get(0)
@@ -85,8 +103,8 @@ f_parse(string raw, int minOi) =>
         if (isC or isP) and str.length(left) > 1
             float k = str.tonumber(str.substring(left, 0, str.length(left) - 1))
             if not na(k) and (na(oi) or oi > minOi)
-                walls.push(Wall.new(k, isC, oi))
-    [walls, expT]
+                res.push(Wall.new(k, isC, oi))
+    [res, eT]
 
 // ───────────────────────── Symbol & Faktor ─────────────────────────
 string root  = syminfo.root
@@ -95,6 +113,7 @@ bool   useQ  = srcMode == "QQQ" or (srcMode == "Auto" and (isNQ or syminfo.ticke
 bool   onEtf = syminfo.ticker == "SPY" or syminfo.ticker == "QQQ"
 string etfSym  = useQ ? qqqSym : spySym
 string etfName = useQ ? "QQQ" : "SPY"
+bool   isZone  = mode == "Reaktionszone"
 
 // gaps_on: nur echte gemeinsame Kerzen → kein veralteter ETF-Kurs über Nacht
 etfClose = request.security(etfSym, timeframe.period, close, gaps = barmerge.gaps_on, lookahead = barmerge.lookahead_off)
@@ -104,9 +123,51 @@ if not na(etfClose) and etfClose > 0
 
 float ratio = onEtf ? 1.0 : ratioMode == "Fester Faktor" ? (useQ ? fixQqq : fixSpy) : liveRatio
 
+// ───────────────────────── Walls einlesen (einmal) ─────────────────────────
+var Wall[] walls = array.new<Wall>()
+var int    expT  = na
+if barstate.isfirst
+    [w0, e0] = f_parse(useQ ? qqqData : spyData, minOI)
+    walls := w0
+    expT  := e0
+
+// Zeitraum: Sonntag 18:00 ET (Wochenstart Futures) bis Freitag 16:00 ET (Verfall)
+int wkStart = na(expT) ? na : expT - 4 * 86400000 - 22 * 3600000
+
+// ───────────────────────── Berührungen erkennen ─────────────────────────
+bool newTouchC = false
+bool newTouchP = false
+string touchTxt = ""
+
+float prevClose = close[1]
+bool inWeek = not na(expT) and time >= wkStart and time <= expT
+if inWeek and not na(ratio)
+    float tol = zoneEtf * ratio
+    for w in walls
+        float px  = w.strike * ratio
+        bool  hit = high >= px - tol and low <= px + tol
+        // Gap über die Wall hinweg zählt auch
+        bool  gap = not na(prevClose) and ((prevClose < px and low > px) or (prevClose > px and high < px))
+        bool  touching = hit or gap
+        if touching and not w.inTouch
+            bool alive = isZone or w.touches == 0
+            if alive
+                if w.isCall
+                    newTouchC := true
+                else
+                    newTouchP := true
+                touchTxt += etfName + " " + str.tostring(w.strike) + (w.isCall ? "C" : "P") + " @ " + str.tostring(math.round_to_mintick(px), format.mintick) + " "
+            w.touches := w.touches + 1
+            if na(w.firstT)
+                w.firstT := time
+        if touching
+            w.lastT := time
+        w.inTouch := touching
+
 // ───────────────────────── Zeichnen ─────────────────────────
 var line[]  lines  = array.new<line>()
 var label[] labels = array.new<label>()
+var box[]   boxes  = array.new<box>()
 var table   tbl    = table.new(position.top_right, 1, 4, bgcolor = color.new(color.black, 80), border_width = 0)
 
 if barstate.islast
@@ -116,8 +177,9 @@ if barstate.islast
     for lb in labels
         lb.delete()
     labels.clear()
-
-    [walls, expT] = f_parse(useQ ? qqqData : spyData, minOI)
+    for b in boxes
+        b.delete()
+    boxes.clear()
 
     // größte Walls je Seite
     float maxC = na
@@ -129,37 +191,60 @@ if barstate.islast
             else
                 maxP := na(maxP) ? w.oi : math.max(maxP, w.oi)
 
-    // Zeitraum: Sonntag 18:00 ET (Wochenstart Futures) bis Freitag 16:00 ET (Verfall)
     int x2 = na(expT) ? time + 5 * 86400000 : expT
-    int x1 = na(expT) ? time - 5 * 86400000 : expT - 4 * 86400000 - 22 * 3600000
+    int x1 = na(expT) ? time - 5 * 86400000 : wkStart
     int nC = 0
     int nP = 0
+    int nDead = 0
 
     if not na(ratio)
+        float tol = zoneEtf * ratio
         for w in walls
+            bool dead = not isZone and w.touches > 0
+            if dead
+                nDead += 1
+            if dead and not showDead
+                continue
             float px  = math.round_to_mintick(w.strike * ratio)
             bool  big = hlMax and not na(w.oi) and w.oi == (w.isCall ? maxC : maxP)
-            color col = w.isCall ? callCol : putCol
-            int   wd  = (w.isCall ? callW : putW) + (big ? hlExtra : 0)
-            lines.push(line.new(x1, px, x2, px, xloc = xloc.bar_time, extend = extRight ? extend.right : extend.none, color = col, width = wd, style = f_style(w.isCall ? callStyle : putStyle)))
-            if w.isCall
-                nC += 1
-            else
-                nP += 1
+            color base = w.isCall ? callCol : putCol
+            color col  = dead ? color.new(base, deadTr) : base
+            int   wd   = (w.isCall ? callW : putW) + (big and not dead ? hlExtra : 0)
+            int   xe   = dead ? w.firstT : x2
+            lines.push(line.new(x1, px, xe, px, xloc = xloc.bar_time, extend = extRight and not dead ? extend.right : extend.none, color = col, width = wd, style = dead ? line.style_dotted : f_style(w.isCall ? callStyle : putStyle)))
+            if isZone and showZone and tol > 0
+                boxes.push(box.new(x1, px + tol, x2, px - tol, xloc = xloc.bar_time, extend = extRight ? extend.right : extend.none, border_color = color.new(base, 100), bgcolor = color.new(base, zoneTr)))
+            if not dead
+                if w.isCall
+                    nC += 1
+                else
+                    nP += 1
             if showLbl
                 string txt = (w.isCall ? "Call-Wall " : "Put-Wall ") + str.tostring(px, format.mintick)
                 if showOI and not onEtf
                     txt += "  (" + etfName + " " + str.tostring(w.strike) + (w.isCall ? "C" : "P") + (na(w.oi) ? "" : " · " + f_k(w.oi)) + ")"
                 else if showOI and not na(w.oi)
                     txt += "  (OI " + f_k(w.oi) + ")"
-                labels.push(label.new(x2, px, txt, xloc = xloc.bar_time, style = label.style_label_left, color = color.new(col, 100), textcolor = col, size = sz))
+                if dead
+                    txt := "✕ " + txt + " – aufgelöst"
+                else if isZone and w.touches > 0
+                    txt += "  · " + str.tostring(w.touches) + "× getestet"
+                int lx = dead ? w.firstT : x2
+                labels.push(label.new(lx, px, txt, xloc = xloc.bar_time, style = label.style_label_left, color = color.new(base, 100), textcolor = col, size = sz))
 
     if showTable
         bool stale = na(expT) or timenow > expT + 2 * 3600000
         string hdr = etfName + (onEtf ? "" : " → " + root) + (onEtf ? "" : "  ·  Faktor " + (na(ratio) ? "–" : str.tostring(ratio, "#.####")))
         string vf  = na(expT) ? "Verfall: kein Datum" : "Verfall: " + str.format_time(expT, "EEE dd.MM.yyyy", "America/New_York")
-        string cnt = str.tostring(nC) + " Call- / " + str.tostring(nP) + " Put-Walls · OI > " + f_k(minOI)
+        string cnt = str.tostring(nC) + " Call- / " + str.tostring(nP) + " Put-Walls aktiv" + (isZone ? "" : " · " + str.tostring(nDead) + " aufgelöst") + " · OI > " + f_k(minOI)
         tbl.cell(0, 0, hdr, text_color = color.white, text_size = size.small, text_halign = text.align_left)
         tbl.cell(0, 1, vf, text_color = color.white, text_size = size.small, text_halign = text.align_left)
         tbl.cell(0, 2, cnt, text_color = color.white, text_size = size.small, text_halign = text.align_left)
-        tbl.cell(0, 3, stale ? "⚠ Daten abgelaufen – neue Woche einfügen" : "✓ Daten aktuell", text_color = stale ? color.orange : color.lime, text_size = size.small, text_halign = text.align_left)
+        tbl.cell(0, 3, stale ? "⚠ Daten abgelaufen – neue Woche einfügen" : "✓ Daten aktuell · Modus: " + mode, text_color = stale ? color.orange : color.lime, text_size = size.small, text_halign = text.align_left)
+
+// ───────────────────────── Alerts ─────────────────────────
+alertcondition(newTouchC, "Call-Wall angelaufen", "{{ticker}}: Call-Wall angelaufen ({{close}})")
+alertcondition(newTouchP, "Put-Wall angelaufen", "{{ticker}}: Put-Wall angelaufen ({{close}})")
+alertcondition(newTouchC or newTouchP, "Jede Wall angelaufen", "{{ticker}}: Options-Wall angelaufen ({{close}})")
+if (newTouchC or newTouchP) and barstate.isconfirmed
+    alert("Wall angelaufen: " + touchTxt, alert.freq_once_per_bar_close)
