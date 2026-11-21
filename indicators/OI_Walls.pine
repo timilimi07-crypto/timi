@@ -1,0 +1,172 @@
+//@version=6
+// ═══════════════════════════════════════════════════════════════════════════
+//  Options Walls QQQ/SPY → NQ/ES   (Kurzname: OI Walls)
+// ───────────────────────────────────────────────────────────────────────────
+//  Zeichnet Put Walls, Call Walls, Max Pain und Expected Move von QQQ bzw. SPY
+//  als horizontale Linien – umgerechnet auf das gehandelte Instrument
+//  (NQ / MNQ / NAS100 bzw. ES / MES / US500).
+//
+//  Datenquelle : OptionCharts (optioncharts.io) – Open Interest je Strike
+//  Datenstand  : Schluss Freitag 20.11.2026 (KW 48)
+//                Verfälle 23.–27.11.2026, OI über alle 4 Verfälle summiert
+//
+//  WÖCHENTLICHES UPDATE – nur die Textfelder ersetzen:
+//   1. Indikator im Chart → Zahnrad (Einstellungen) → Tab "Eingaben".
+//   2. In "QQQ Levels" und "SPY Levels" alles markieren und durch die neuen
+//      Levels ersetzen. Eine Zeile pro Level:   Strike:Typ:OI
+//         Typ = C (Call), P (Put), MP (Max Pain); OI ist optional.
+//         Beispiele:  700:C:46697   600:P:19652   670:MP
+//      Leerzeichen werden ignoriert, Kommas gehen zusätzlich als Trenner:
+//         700:C:46697, 600:P:19652, 670:MP
+//      Ungültige Zeilen werden still übersprungen.
+//   3. "Expected Move" je ETF als "unten-oben" eintragen, z. B. 586.16-649.32
+//   4. OK klicken – fertig. (Optional: die Defaults unten im Code ersetzen und
+//      den Datenstand oben anpassen, dann sind neue Charts gleich aktuell.)
+// ═══════════════════════════════════════════════════════════════════════════
+indicator("Options Walls QQQ/SPY → NQ/ES", shorttitle = "OI Walls", overlay = true, max_lines_count = 150, max_labels_count = 150)
+
+// ───────────────────────── Inputs ─────────────────────────
+const string GRP_MAP = "Zuordnung & Umrechnung"
+string i_under   = input.string("Auto", "Underlying", options = ["Auto", "QQQ", "SPY"], group = GRP_MAP, tooltip = "Auto: NQ/MNQ/NAS100/NDX/US100/USTEC/QQQ → QQQ-Levels, sonst SPY-Levels.")
+string i_facMode = input.string("Live", "Faktor", options = ["Live", "Fix"], group = GRP_MAP, tooltip = "Live: Chartkurs ÷ ETF-Kurs (letzter gültiger Wert).\nFix: feste Faktoren unten (auch Fallback, solange Live noch keinen Wert hat).")
+float  i_fixNQ   = input.float(41.3, "Fix-Faktor NAS100 ÷ QQQ", minval = 0.0001, step = 0.01, group = GRP_MAP)
+float  i_fixES   = input.float(10.02, "Fix-Faktor US500 ÷ SPY", minval = 0.0001, step = 0.01, group = GRP_MAP)
+
+const string GRP_LVL = "Levels (Strike:Typ:OI)"
+const string TIP_LVL = "Eine Zeile pro Level: Strike:Typ:OI\nTyp = C (Call), P (Put), MP (Max Pain), OI optional.\nKommas als Trenner erlaubt, Leerzeichen egal."
+string i_qqqLevels = input.text_area("700:C:46697\n600:P:19652\n640:P:17201\n560:P:15195\n570:P:13639\n660:C:13916\n677:C:13114\n670:MP:0", "QQQ Levels", tooltip = TIP_LVL, group = GRP_LVL)
+string i_qqqEM     = input.string("586.16-649.32", "QQQ Expected Move (unten-oben)", group = GRP_LVL)
+string i_spyLevels = input.text_area("700:P:67612\n675:P:51274\n730:P:25368\n720:P:24113\n695:P:20316\n725:P:19595\n710:P:16690\n734:P:15125\n775:C:39017\n800:C:35752\n770:C:27958\n760:C:15992\n737:MP:0", "SPY Levels", tooltip = TIP_LVL, group = GRP_LVL)
+string i_spyEM     = input.string("670.99-723.87", "SPY Expected Move (unten-oben)", group = GRP_LVL)
+
+const string GRP_FLT = "Filter"
+int  i_wallOI = input.int(20000, "Wall ab OI", minval = 0, step = 1000, group = GRP_FLT, tooltip = "Ab diesem OI: durchgezogene Linie. Level ohne OI-Angabe gelten immer als Wall.")
+bool i_showT2 = input.bool(true, "Tier 2 zeigen", group = GRP_FLT)
+int  i_t2OI   = input.int(15000, "Tier 2 ab OI", minval = 0, step = 1000, group = GRP_FLT, tooltip = "Zwischen Tier 2 und Wall: gestrichelte Linie.")
+bool i_showMP = input.bool(true, "Max Pain zeigen", group = GRP_FLT)
+bool i_showEM = input.bool(true, "Expected Move zeigen", group = GRP_FLT)
+
+const string GRP_STY = "Darstellung"
+color i_colCall   = input.color(color.red, "Call Wall", group = GRP_STY)
+color i_colPut    = input.color(color.lime, "Put Wall", group = GRP_STY)
+color i_colMP     = input.color(color.orange, "Max Pain", group = GRP_STY)
+color i_colEM     = input.color(color.gray, "Expected Move", group = GRP_STY)
+int   i_width     = input.int(2, "Linienstärke", minval = 1, maxval = 4, group = GRP_STY)
+int   i_lblOffset = input.int(8, "Label-Abstand (Bars)", minval = 0, maxval = 200, group = GRP_STY)
+bool  i_showTbl   = input.bool(true, "Info-Tabelle zeigen", group = GRP_STY)
+
+// ───────────────────────── Funktionen ─────────────────────────
+// Zerlegt den Level-Text in drei parallele Arrays (Strike, Typ, OI).
+parseLevels(string _raw) =>
+    array<float>  _strikes = array.new<float>()
+    array<string> _types   = array.new<string>()
+    array<float>  _ois     = array.new<float>()
+    string _norm = str.replace_all(_raw, " ", "")
+    _norm := str.replace_all(_norm, ",", "\n")
+    array<string> _rows = str.split(_norm, "\n")
+    for _row in _rows
+        array<string> _parts = str.split(_row, ":")
+        int _nParts = _parts.size()
+        if _nParts >= 2
+            float  _k   = str.tonumber(_parts.get(0))
+            string _t   = str.upper(_parts.get(1))
+            float  _oi  = _nParts >= 3 ? str.tonumber(_parts.get(2)) : na
+            bool   _okT = _t == "C" or _t == "P" or _t == "MP"
+            if not na(_k) and _k > 0 and _okT
+                _strikes.push(_k)
+                _types.push(_t)
+                _ois.push(_oi)
+    [_strikes, _types, _ois]
+
+// Zerlegt "unten-oben" in zwei Zahlen (Dezimalkomma wird akzeptiert).
+parseEM(string _rawEM) =>
+    string _clean = str.replace_all(str.replace_all(_rawEM, " ", ""), ",", ".")
+    array<string> _emParts = str.split(_clean, "-")
+    float _lo = na
+    float _hi = na
+    if _emParts.size() == 2
+        float _a = str.tonumber(_emParts.get(0))
+        float _b = str.tonumber(_emParts.get(1))
+        if not na(_a) and not na(_b)
+            _lo := math.min(_a, _b)
+            _hi := math.max(_a, _b)
+    [_lo, _hi]
+
+// Zeichnet eine Linie + Label und merkt sich beide in den übergebenen Arrays.
+drawLevel(array<line> _lnArr, array<label> _lbArr, float _px, color _col, string _lnStyle, string _txt) =>
+    _lnArr.push(line.new(bar_index - 1, _px, bar_index, _px, xloc = xloc.bar_index, extend = extend.both, color = _col, style = _lnStyle, width = i_width))
+    _lbArr.push(label.new(bar_index + i_lblOffset, _px, _txt, xloc = xloc.bar_index, color = color.new(_col, 85), style = label.style_label_left, textcolor = _col, size = size.small))
+
+// ───────────────────────── Zuordnung ─────────────────────────
+string tkr        = str.upper(syminfo.ticker)
+bool   isQQQChart = tkr == "QQQ"
+bool   isSPYChart = tkr == "SPY"
+bool   autoQQQ    = isQQQChart or str.contains(tkr, "NQ") or str.contains(tkr, "NAS") or str.contains(tkr, "NDX") or str.contains(tkr, "US100") or str.contains(tkr, "USTEC")
+bool   useQQQ     = i_under == "QQQ" ? true : i_under == "SPY" ? false : autoQQQ
+string etfName    = useQQQ ? "QQQ" : "SPY"
+string etfSym     = useQQQ ? "NASDAQ:QQQ" : "AMEX:SPY"
+bool   chartIsEtf = (useQQQ and isQQQChart) or (not useQQQ and isSPYChart)
+
+// ───────────────────────── Faktor ─────────────────────────
+// request.security bewusst im globalen Scope.
+float etfClose = request.security(etfSym, timeframe.period, close, gaps = barmerge.gaps_on, ignore_invalid_symbol = true)
+
+var float liveFactor = na
+if not na(etfClose) and etfClose > 0
+    liveFactor := close / etfClose
+
+bool   liveOk    = i_facMode == "Live" and not na(liveFactor)
+float  fixFactor = useQQQ ? i_fixNQ : i_fixES
+float  factor    = chartIsEtf ? 1.0 : liveOk ? liveFactor : fixFactor
+string factorSrc = chartIsEtf ? "ETF-Chart" : liveOk ? "Live" : i_facMode == "Live" ? "Fix, Fallback" : "Fix"
+
+// ───────────────────────── Zeichnen ─────────────────────────
+var array<line>  gLines  = array.new<line>()
+var array<label> gLabels = array.new<label>()
+var table        infoTbl = table.new(position.top_right, 1, 1, bgcolor = color.new(color.black, 25), frame_color = color.gray, frame_width = 1)
+
+if barstate.islast
+    // alte Objekte entfernen, damit nichts doppelt entsteht
+    for oldLn in gLines
+        oldLn.delete()
+    gLines.clear()
+    for oldLb in gLabels
+        oldLb.delete()
+    gLabels.clear()
+
+    // Options-Levels
+    [lvlStrikes, lvlTypes, lvlOIs] = parseLevels(useQQQ ? i_qqqLevels : i_spyLevels)
+    for [idx, kStrike] in lvlStrikes
+        string kType   = lvlTypes.get(idx)
+        float  kOI     = lvlOIs.get(idx)
+        float  kPx     = math.round_to_mintick(kStrike * factor)
+        string kPxTxt  = str.tostring(kPx, format.mintick)
+        string kStrTxt = str.tostring(kStrike, "#.##")
+        if kType == "MP"
+            if i_showMP
+                drawLevel(gLines, gLabels, kPx, i_colMP, line.style_dotted, "Max Pain " + etfName + " " + kStrTxt + "  " + kPxTxt)
+        else
+            bool noOI = na(kOI)
+            bool isT1 = noOI or kOI >= i_wallOI
+            bool isT2 = not isT1 and i_showT2 and kOI >= i_t2OI
+            if isT1 or isT2
+                bool   isCall = kType == "C"
+                color  kCol   = isCall ? i_colCall : i_colPut
+                string kName  = (isCall ? "Call " : "Put ") + (isT1 ? "Wall" : "T2")
+                string kOITxt = noOI ? "" : " (" + str.tostring(kOI / 1000.0, "#.#") + "k)"
+                drawLevel(gLines, gLabels, kPx, kCol, isT1 ? line.style_solid : line.style_dashed, kName + " " + etfName + " " + kStrTxt + kOITxt + "  " + kPxTxt)
+
+    // Expected Move
+    if i_showEM
+        [emLo, emHi] = parseEM(useQQQ ? i_qqqEM : i_spyEM)
+        if not na(emLo) and not na(emHi)
+            float emLoPx = math.round_to_mintick(emLo * factor)
+            float emHiPx = math.round_to_mintick(emHi * factor)
+            drawLevel(gLines, gLabels, emLoPx, i_colEM, line.style_dotted, "EM unten " + etfName + " " + str.tostring(emLo, "#.##") + "  " + str.tostring(emLoPx, format.mintick))
+            drawLevel(gLines, gLabels, emHiPx, i_colEM, line.style_dotted, "EM oben " + etfName + " " + str.tostring(emHi, "#.##") + "  " + str.tostring(emHiPx, format.mintick))
+
+    // Info-Tabelle
+    if i_showTbl
+        infoTbl.cell(0, 0, etfName + " → Chart | Faktor " + str.tostring(factor, "#.####") + " (" + factorSrc + ")", text_color = color.white, text_size = size.small)
+    else
+        infoTbl.clear(0, 0)
