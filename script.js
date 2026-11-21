@@ -467,6 +467,36 @@ const OEFFNUNGSZEITEN = {
     });
   }
 
+  /* ---------- Hero: griechische Klassiker wechseln sich ab (Gyros → Souvlaki → …) ---------- */
+  function initRotator() {
+    const el = $('[data-rotator]');
+    if (!MOTION || !el) return;                 // ohne Animation bleibt die ganze Liste stehen
+    const words = el.dataset.rotator.split('|');
+    const full = el.textContent;
+    el.innerHTML = `<span class="visually-hidden">${full.replace(/&/g, '&amp;')}</span><span class="rotator__box" aria-hidden="true">${words.map((w) => `<span class="rotator__word">${w}</span>`).join('')}</span>`;
+    const box = $('.rotator__box', el);
+    const items = $$('.rotator__word', el);
+    const hero = $('.hero');
+    let i = 0;
+    const show = (n, prev) => {
+      if (prev != null) { items[prev].classList.remove('is-active'); items[prev].classList.add('is-out'); }
+      items[n].classList.remove('is-out');
+      items[n].classList.add('is-active');
+      box.style.width = `${items[n].offsetWidth}px`;
+    };
+    show(0);
+    window.addEventListener('resize', () => { box.style.width = `${items[i].offsetWidth}px`; }, { passive: true });
+    if (document.fonts) document.fonts.ready.then(() => { box.style.width = `${items[i].offsetWidth}px`; });
+    setInterval(() => {
+      if (document.hidden || (hero && hero.classList.contains('is-offscreen')) || root.classList.contains('is-intro')) return;
+      const prev = i;
+      i = (i + 1) % items.length;
+      // das übernächste Wort wieder "unten" parken, damit es von unten hereingleitet
+      items.forEach((w, k) => { if (k !== i && k !== prev) w.classList.remove('is-out'); });
+      show(i, prev);
+    }, 2200);
+  }
+
   /* ---------- Großes Gästezitat: Wörter "leuchten" beim Scrollen nacheinander auf ---------- */
   function initWordFill() {
     const fig = $('[data-wordfill]');
@@ -628,6 +658,7 @@ const OEFFNUNGSZEITEN = {
   initStage();
   initBleed();
   initWordFill();
+  initRotator();
   // Nach dem Laden der Schriften stimmen die Maße – ScrollTrigger neu vermessen
   if (window.ScrollTrigger && document.fonts) document.fonts.ready.then(() => window.ScrollTrigger.refresh());
   $$('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });

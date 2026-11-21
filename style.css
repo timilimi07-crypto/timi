@@ -2046,6 +2046,120 @@ html.lenis { scroll-behavior: auto; }
 .goodtoknow li { display: flex; gap: .75rem; align-items: flex-start; font-size: .93rem; line-height: 1.45; }
 .goodtoknow .icon { color: var(--terracotta-ink); margin-top: .1rem; }
 
+/* ---------- Griechische Identität: Flagge, griechische Schrift, zweisprachige Kapitel ---------- */
+.flag {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 1.5em;
+  height: 1em;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / .35), 0 2px 6px rgb(0 0 0 / .2);
+  vertical-align: -.12em;
+}
+.nav__logo-sub { display: flex; align-items: center; gap: .4rem; }
+.nav__logo-sub .flag { width: 14px; height: 9.5px; box-shadow: 0 0 0 .5px rgb(255 255 255 / .5); }
+
+/* Hero */
+.hero__eyebrow { display: inline-flex; align-items: center; gap: .65rem; }
+.hero__eyebrow .flag { width: 27px; height: 18px; }
+@media (max-width: 559px) { .hide-sm { display: none; } }
+.hero__greeting {
+  margin-top: .9rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.35rem, 3.6vw, 1.9rem);
+  line-height: 1.2;
+  color: #fff;
+}
+.hero__greeting span {
+  margin-left: .6rem;
+  font-family: var(--font-sans);
+  font-size: .5em;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  vertical-align: .25em;
+}
+.hero__title { position: relative; isolation: isolate; margin-top: .5rem; }
+/* großer griechischer Schriftzug "ΞΑΝΘΗ" als Wasserzeichen hinter dem Namen */
+.hero__watermark {
+  position: absolute;
+  left: 50%; top: 52%;
+  z-index: -1;
+  transform: translate(-50%, -50%);
+  font-family: "GFS Didot", var(--font-serif);
+  font-size: min(21vw, 15.5rem);
+  line-height: 1;
+  letter-spacing: .06em;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(217 185 138 / .32);
+  pointer-events: none;
+  user-select: none;
+}
+@supports not (-webkit-text-stroke: 1px #000) { .hero__watermark { color: rgb(217 185 138 / .08); } }
+.motion .hero__watermark { opacity: 0; animation: fadeIn 2.6s ease 1.2s forwards; }
+
+/* wechselnde griechische Klassiker */
+.rotator { font-family: var(--font-serif); font-style: italic; font-size: 1.22em; color: var(--gold); }
+.rotator__box {
+  position: relative;
+  display: inline-block;
+  height: 1.4em;
+  overflow: hidden;
+  vertical-align: -.38em;
+  transition: width .5s var(--ease-out);
+}
+.rotator__word {
+  line-height: 1.4em;
+  position: absolute;
+  left: 0; top: 0;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: transform .6s var(--ease-out), opacity .6s var(--ease-out);
+}
+.rotator__word.is-active { opacity: 1; transform: none; }
+.rotator__word.is-out { opacity: 0; transform: translateY(-100%); }
+
+/* Zweisprachige Kapitel: griechisch · deutsch */
+.kicker__el {
+  font-family: var(--font-serif);
+  font-size: 1.32em;
+  font-weight: 400;
+  letter-spacing: .02em;
+  text-transform: none;
+  color: var(--blue);
+}
+.kicker__el::after { content: "·"; margin-left: .55rem; color: var(--terracotta); }
+.celebrate .kicker__el, .stage .kicker__el { color: #fff; }
+
+/* Speisekarte: griechischer Originalname */
+.dish__el {
+  margin-left: .3rem;
+  font-family: var(--font-serif);
+  font-size: .98em;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* Laufband: griechische Schreibweise klein dahinter */
+.marquee span em {
+  margin-left: .35em;
+  font-family: var(--font-serif);
+  font-style: normal;
+  font-size: .6em;
+  color: var(--terracotta-ink);
+  vertical-align: .35em;
+}
+
+/* CTA + Footer */
+.cta__greek { font-family: var(--font-serif); font-size: clamp(1.4rem, 3.4vw, 2rem); color: var(--gold); margin-bottom: -.4rem; }
+.footer__logo-el { margin-left: .3rem; font-size: .55em; letter-spacing: .04em; color: var(--gold); vertical-align: .2em; }
+.footer__slogan { display: flex; align-items: flex-start; gap: .5rem; }
+.footer__slogan .flag { margin-top: .1em; }
+.footer__slogan .flag { width: 18px; height: 12px; }
+
 /* ==========================================================================
    6. Scroll-Animationen
    Nur aktiv, wenn <html> die Klasse "motion" trägt (JS an + keine reduzierte

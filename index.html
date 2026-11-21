@@ -7,14 +7,14 @@
   <!-- DEMO: Seite soll NICHT bei Google erscheinen. Vor dem Livegang entfernen! -->
   <meta name="robots" content="noindex, nofollow">
 
-  <title>Restaurant Xanthi – Der Mecklenburger Grieche in Kritzmow bei Rostock</title>
-  <meta name="description" content="Restaurant Xanthi im Kritzmowpark vor den Toren Rostocks: griechische Küche, Grillplatten, Familien- und Firmenfeiern bis 40 Personen und Partyservice. Reservierung: 038207 76968.">
+  <title>Griechisches Restaurant Xanthi – Der Mecklenburger Grieche | Kritzmow bei Rostock</title>
+  <meta name="description" content="Griechisches Restaurant Xanthi im Kritzmowpark vor den Toren Rostocks: original griechische Küche – Gyros, Souvlaki, Tzatziki & Ouzo –, Grillplatten, Familien- und Firmenfeiern bis 40 Personen und Partyservice. Reservierung: 038207 76968.">
   <meta name="theme-color" content="#0b2a49">
   <meta name="format-detection" content="telephone=yes">
 
   <!-- Open Graph (Vorschau beim Teilen per WhatsApp/Facebook). og:image + og:url ergänzen, sobald Fotos und Domain feststehen -->
   <meta property="og:type" content="restaurant">
-  <meta property="og:title" content="Restaurant Xanthi – Der Mecklenburger Grieche">
+  <meta property="og:title" content="Griechisches Restaurant Xanthi – Der Mecklenburger Grieche">
   <meta property="og:description" content="Griechenland-Urlaub – nur ohne Flug. Im Kritzmowpark, direkt vor den Toren Rostocks.">
   <meta property="og:locale" content="de_DE">
 
@@ -233,6 +233,14 @@
       </g>
     </symbol>
 
+    <!-- Griechische Flagge (9 Streifen, Kreuz im Obereck) -->
+    <symbol id="g-flag" viewBox="0 0 27 18">
+      <rect width="27" height="18" fill="#0d5eaf"/>
+      <g fill="#fff"><rect y="2" width="27" height="2"/><rect y="6" width="27" height="2"/><rect y="10" width="27" height="2"/><rect y="14" width="27" height="2"/></g>
+      <rect width="10" height="10" fill="#0d5eaf"/>
+      <g fill="#fff"><rect x="4" width="2" height="10"/><rect y="4" width="10" height="2"/></g>
+    </symbol>
+
     <!-- Münze für den Ladebildschirm (Drachme-Optik) -->
     <symbol id="g-coin" viewBox="0 0 100 100">
       <defs><radialGradient id="gr-coin" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#fbe7b8"/><stop offset=".55" stop-color="#d9b98a"/><stop offset="1" stop-color="#9c7440"/></radialGradient></defs>
@@ -276,7 +284,7 @@
     <nav class="nav container" aria-label="Hauptnavigation">
       <a class="nav__logo" href="#start" aria-label="Restaurant Xanthi – zum Seitenanfang">
         <span class="nav__logo-word">XANTHI</span>
-        <span class="nav__logo-sub">Der Mecklenburger Grieche</span>
+        <span class="nav__logo-sub"><svg class="flag" viewBox="0 0 27 18" aria-hidden="true"><use href="#g-flag"/></svg>Der Mecklenburger Grieche</span>
       </a>
 
       <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-menu">
@@ -329,16 +337,18 @@
       </div>
 
       <div class="hero__content container" data-hero-content>
-        <p class="hero__eyebrow" data-hero="0">Kritzmow · vor den Toren Rostocks</p>
+        <p class="hero__eyebrow" data-hero="0"><svg class="flag" viewBox="0 0 27 18" aria-hidden="true"><use href="#g-flag"/></svg><span>Griechisches Restaurant<span class="hide-sm"> · Kritzmow bei Rostock</span></span></p>
+        <p class="hero__greeting" data-hero="1" lang="el">Καλώς ήρθατε!<span lang="de">Herzlich willkommen</span></p>
         <h1 class="hero__title" id="hero-title">
           <span class="hero__pre" data-hero="1">Restaurant</span>
+          <span class="hero__watermark" aria-hidden="true" lang="el">ΞΑΝΘΗ</span>
           <span class="hero__name">
             <span class="visually-hidden">Xanthi</span>
             <span class="hero__letters" aria-hidden="true"><span data-l="X" style="--n:0">X</span><span data-l="a" style="--n:1">a</span><span data-l="n" style="--n:2">n</span><span data-l="t" style="--n:3">t</span><span data-l="h" style="--n:4">h</span><span data-l="i" style="--n:5">i</span></span>
           </span>
           <span class="hero__slogan" data-hero="3">Der Mecklenburger Grieche</span>
         </h1>
-        <p class="hero__lead" data-hero="4">Griechenland-Urlaub – nur ohne Flug.<br> Herzlich, familiär und mit allem, was der Grill hergibt.</p>
+        <p class="hero__lead" data-hero="4">Original griechische Küche: <span class="rotator" data-rotator="Gyros|Souvlaki|Tzatziki|Bifteki|Paidakia|Ouzo">Gyros, Souvlaki, Tzatziki &amp; Ouzo</span><br> Griechenland-Urlaub – nur ohne Flug.</p>
         <div class="hero__actions" data-hero="5">
           <a class="btn btn--light btn--lg" href="#speisekarte">
             Zur Speisekarte
@@ -393,8 +403,8 @@
     <!-- Laufband mit Gerichten (Deko; zweite Hälfte ist eine Kopie für die Endlos-Schleife) -->
     <div class="marquee" aria-hidden="true">
       <div class="marquee__track">
-        <span>Gyros</span><i></i><span>Souvlaki</span><i></i><span>Tzatziki</span><i></i><span>Bifteki</span><i></i><span>Paidakia</span><i></i><span>Kalamaris</span><i></i><span>Stifado</span><i></i><span>Garides</span><i></i><span>Ouzo</span><i></i>
-        <span>Gyros</span><i></i><span>Souvlaki</span><i></i><span>Tzatziki</span><i></i><span>Bifteki</span><i></i><span>Paidakia</span><i></i><span>Kalamaris</span><i></i><span>Stifado</span><i></i><span>Garides</span><i></i><span>Ouzo</span><i></i>
+        <span>Gyros <em lang="el">Γύρος</em></span><i></i><span>Souvlaki <em lang="el">Σουβλάκι</em></span><i></i><span>Tzatziki <em lang="el">Τζατζίκι</em></span><i></i><span>Bifteki <em lang="el">Μπιφτέκι</em></span><i></i><span>Paidakia <em lang="el">Παϊδάκια</em></span><i></i><span>Kalamaris <em lang="el">Καλαμαράκια</em></span><i></i><span>Stifado <em lang="el">Στιφάδο</em></span><i></i><span>Garides <em lang="el">Γαρίδες</em></span><i></i><span>Ouzo <em lang="el">Ούζο</em></span><i></i>
+        <span>Gyros <em lang="el">Γύρος</em></span><i></i><span>Souvlaki <em lang="el">Σουβλάκι</em></span><i></i><span>Tzatziki <em lang="el">Τζατζίκι</em></span><i></i><span>Bifteki <em lang="el">Μπιφτέκι</em></span><i></i><span>Paidakia <em lang="el">Παϊδάκια</em></span><i></i><span>Kalamaris <em lang="el">Καλαμαράκια</em></span><i></i><span>Stifado <em lang="el">Στιφάδο</em></span><i></i><span>Garides <em lang="el">Γαρίδες</em></span><i></i><span>Ouzo <em lang="el">Ούζο</em></span><i></i>
       </div>
     </div>
 
@@ -403,7 +413,7 @@
       <div class="container">
         <div class="about__intro" data-reveal-group>
           <div class="about__text">
-            <p class="kicker" data-reveal>Über uns</p>
+            <p class="kicker" data-reveal><span class="kicker__el" lang="el">Η ιστορία μας</span>Über uns</p>
             <h2 class="section-title" id="about-title" data-reveal>Bei uns gehören Gäste zur Familie</h2>
             <div class="meander meander--small" aria-hidden="true" data-meander><span class="meander__track"><span class="meander__art"></span></span></div>
             <p class="lead" data-reveal>Wer einmal im Xanthi war, kommt wieder – und wird beim zweiten Besuch schon wie ein alter Bekannter begrüßt. Seit über 20 Jahren holt Janni <span class="ph-check" title="Aus Google-Rezensionen übernommen – vor Veröffentlichung mit dem Inhaber bestätigen">prüfen</span> – Inhaber, Koch und, wie er selbst gern betont, tatsächlich Grieche – ein Stück Griechenland nach Kritzmow.</p>
@@ -446,7 +456,7 @@
         <div class="name-story" data-reveal-group>
           <svg class="name-story__column" aria-hidden="true" data-reveal><use href="#g-column"/></svg>
           <div>
-            <p class="kicker" data-reveal>Der Name</p>
+            <p class="kicker" data-reveal><span class="kicker__el" lang="el">Το όνομα</span>Der Name</p>
             <h3 class="h3" data-reveal>Warum eigentlich „Xanthi“?</h3>
             <p data-reveal>Xanthi ist eine Stadt im Nordosten Griechenlands, in der Region Thrakien. Berühmt ist sie für ihre malerische Altstadt mit verwinkelten Gassen und prächtigen alten Häusern – Zeugen jener Zeit, als Xanthi ein Zentrum des Tabakhandels war.</p>
             <p data-reveal>Ein Name, der nach Sonne, Geschichte und Gastfreundschaft klingt. Genau das möchten wir Ihnen auf den Tisch bringen.</p>
@@ -466,7 +476,7 @@
       <svg class="divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 60V30C120 8 240 0 360 14s240 40 360 34 240-34 360-38 240 18 360 26v24Z"/></svg>
       <div class="container">
         <header class="section-head" data-reveal-group>
-          <p class="kicker" data-reveal>Hausspezialitäten</p>
+          <p class="kicker" data-reveal><span class="kicker__el" lang="el">Σπεσιαλιτέ</span>Hausspezialitäten</p>
           <h2 class="section-title" id="specials-title" data-reveal>Vom Grill, für den großen Hunger</h2>
           <div class="meander meander--small meander--center" aria-hidden="true" data-meander><span class="meander__track"><span class="meander__art"></span></span></div>
           <p class="lead" data-reveal>Unsere Grillplatten sind Klassiker – und alle mit Salat und Tzatziki. Wer sich nicht entscheiden kann, nimmt einfach von allem.</p>
@@ -577,7 +587,7 @@
     <section class="section menu" id="speisekarte" aria-labelledby="menu-title">
       <div class="container">
         <header class="section-head" data-reveal-group>
-          <p class="kicker" data-reveal>Speisekarte</p>
+          <p class="kicker" data-reveal><span class="kicker__el" lang="el">Μενού</span>Speisekarte</p>
           <h2 class="section-title" id="menu-title" data-reveal>Kalí órexi – guten Appetit!</h2>
           <div class="meander meander--small meander--center" aria-hidden="true" data-meander><span class="meander__track"><span class="meander__art"></span></span></div>
           <p class="lead" data-reveal>Eine Auswahl aus unserer Karte – von der Suppe bis zum Seezungenfilet.</p>
@@ -625,10 +635,10 @@
             <section class="menu__cat" id="karte-vorspeisen" data-tab="Vorspeisen">
               <h3 class="menu__cat-title">Vorspeisen</h3>
               <ul class="menu__list">
-                <li class="dish"><span class="dish__name">Tzatziki <abbr class="veg" title="vegetarisch">veg.</abbr></span><span class="dish__price">5,20 €</span></li>
-                <li class="dish"><span class="dish__name">Tarama</span><span class="dish__price">6,70 €</span><span class="dish__desc">Kaviarcreme</span></li>
+                <li class="dish"><span class="dish__name">Tzatziki <span class="dish__el" lang="el">Τζατζίκι</span> <abbr class="veg" title="vegetarisch">veg.</abbr></span><span class="dish__price">5,20 €</span></li>
+                <li class="dish"><span class="dish__name">Tarama <span class="dish__el" lang="el">Ταραμάς</span></span><span class="dish__price">6,70 €</span><span class="dish__desc">Kaviarcreme</span></li>
                 <li class="dish"><span class="dish__name">Überbackener Schafskäse <abbr class="veg" title="vegetarisch">veg.</abbr></span><span class="dish__price">9,60 €</span><span class="dish__desc">mit Peperoni und Tomate</span></li>
-                <li class="dish"><span class="dish__name">Garides</span><span class="dish__price">11,50 €</span><span class="dish__desc">Scampis mit Zwiebeln und Feta in Tomatensauce</span></li>
+                <li class="dish"><span class="dish__name">Garides <span class="dish__el" lang="el">Γαρίδες</span></span><span class="dish__price">11,50 €</span><span class="dish__desc">Scampis mit Zwiebeln und Feta in Tomatensauce</span></li>
               </ul>
             </section>
 
@@ -636,7 +646,7 @@
             <section class="menu__cat" id="karte-gyros" data-tab="Gyros">
               <h3 class="menu__cat-title">Gyros</h3>
               <ul class="menu__list">
-                <li class="dish"><span class="dish__name">Gyros Teller</span><span class="dish__price">16,50 €</span><span class="dish__desc">mit Salat, Tzatziki und Pommes</span></li>
+                <li class="dish"><span class="dish__name">Gyros Teller <span class="dish__el" lang="el">Γύρος</span></span><span class="dish__price">16,50 €</span><span class="dish__desc">mit Salat, Tzatziki und Pommes</span></li>
                 <li class="dish"><span class="dish__name">Gyros Champignon</span><span class="dish__price">17,90 €</span></li>
                 <li class="dish"><span class="dish__name">Gyros Fourno</span><span class="dish__price">19,50 €</span><span class="dish__desc">mit Champignons und Metaxasauce, überbacken, dazu Brot</span></li>
               </ul>
@@ -646,9 +656,9 @@
             <section class="menu__cat" id="karte-grill" data-tab="Vom Grill">
               <h3 class="menu__cat-title">Vom Grill</h3>
               <ul class="menu__list">
-                <li class="dish"><span class="dish__name">Souvlaki</span><span class="dish__price">17,20 €</span><span class="dish__desc">2 Schweinespieße mit Salat, Tzatziki und Reis</span></li>
-                <li class="dish"><span class="dish__name">Bifteki</span><span class="dish__price">17,80 €</span><span class="dish__desc">gefüllt mit Tomate, Feta und Peperoni</span></li>
-                <li class="dish"><span class="dish__name">Paidakia</span><span class="dish__price">21,50 €</span><span class="dish__desc">5 Lammkoteletts</span></li>
+                <li class="dish"><span class="dish__name">Souvlaki <span class="dish__el" lang="el">Σουβλάκι</span></span><span class="dish__price">17,20 €</span><span class="dish__desc">2 Schweinespieße mit Salat, Tzatziki und Reis</span></li>
+                <li class="dish"><span class="dish__name">Bifteki <span class="dish__el" lang="el">Μπιφτέκι</span></span><span class="dish__price">17,80 €</span><span class="dish__desc">gefüllt mit Tomate, Feta und Peperoni</span></li>
+                <li class="dish"><span class="dish__name">Paidakia <span class="dish__el" lang="el">Παϊδάκια</span></span><span class="dish__price">21,50 €</span><span class="dish__desc">5 Lammkoteletts</span></li>
                 <li class="dish"><span class="dish__name">Filet-Teller</span><span class="dish__price">25,50 €</span><span class="dish__desc">Schwein, Hähnchen, Pute und Lamm</span></li>
               </ul>
             </section>
@@ -679,9 +689,9 @@
             <section class="menu__cat" id="karte-ofen" data-tab="Ofen">
               <h3 class="menu__cat-title">Aus dem Ofen</h3>
               <ul class="menu__list">
-                <li class="dish"><span class="dish__name">Lammhaxe Stifado</span><span class="dish__price">20,50 €</span></li>
-                <li class="dish"><span class="dish__name">Lammhaxe Fasolia</span><span class="dish__price">20,50 €</span><span class="dish__desc">mit grünen Bohnen und Fladenbrot</span></li>
-                <li class="dish"><span class="dish__name">Juwetzi Lamm</span><span class="dish__price">20,20 €</span></li>
+                <li class="dish"><span class="dish__name">Lammhaxe Stifado <span class="dish__el" lang="el">Στιφάδο</span></span><span class="dish__price">20,50 €</span></li>
+                <li class="dish"><span class="dish__name">Lammhaxe Fasolia <span class="dish__el" lang="el">Φασολάκια</span></span><span class="dish__price">20,50 €</span><span class="dish__desc">mit grünen Bohnen und Fladenbrot</span></li>
+                <li class="dish"><span class="dish__name">Juwetzi Lamm <span class="dish__el" lang="el">Γιουβέτσι</span></span><span class="dish__price">20,20 €</span></li>
               </ul>
             </section>
 
@@ -702,7 +712,7 @@
               <ul class="menu__list">
                 <li class="dish"><span class="dish__name">Seezungenfilet</span><span class="dish__price">20,20 €</span><span class="dish__desc">mit Knoblauchsauce</span></li>
                 <li class="dish"><span class="dish__name">Fischplatte Poseidon</span><span class="dish__price">16,80 €</span><span class="dish__desc">Rotbarsch, Lachs und Seezunge</span></li>
-                <li class="dish"><span class="dish__name">Kalamaris</span><span class="dish__price">19,80 €</span><span class="dish__desc">aus der Pfanne</span></li>
+                <li class="dish"><span class="dish__name">Kalamaris <span class="dish__el" lang="el">Καλαμαράκια</span></span><span class="dish__price">19,80 €</span><span class="dish__desc">aus der Pfanne</span></li>
                 <li class="dish"><span class="dish__name">Scampis auf Bandnudeln</span><span class="dish__price">18,90 €</span><span class="dish__desc">in Hummersauce</span></li>
               </ul>
             </section>
@@ -729,7 +739,7 @@
         <div class="takeaway" id="ausser-haus" data-reveal-group>
           <span class="takeaway__icon" data-reveal><svg class="icon" aria-hidden="true"><use href="#i-bag"/></svg></span>
           <div class="takeaway__text">
-            <p class="kicker" data-reveal>Außer Haus &amp; Abholung</p>
+            <p class="kicker" data-reveal><span class="kicker__el" lang="el">Πακέτο</span>Außer Haus &amp; Abholung</p>
             <h3 class="h3" data-reveal>Griechisch genießen – auf dem eigenen Sofa</h3>
             <p data-reveal>Für Abholung haben wir eine eigene Außer-Haus-Karte. Einfach anrufen, bestellen und abholen.</p>
             <p class="mini-quote" data-reveal>„Wir hatten Essen zum mitnehmen bestellt und es war mega lecker, gute Portionen, faire Preise und super liebe Inhaber.“ <span>– Diana S., Google</span></p>
@@ -749,7 +759,7 @@
       <div class="container">
         <div class="celebrate__intro" data-reveal-group>
           <div>
-            <p class="kicker" data-reveal>Familienfeiern &amp; Firmenfeiern</p>
+            <p class="kicker" data-reveal><span class="kicker__el" lang="el">Γιορτές</span>Familienfeiern &amp; Firmenfeiern</p>
             <h2 class="section-title" id="celebrate-title" data-reveal>Ihr Fest. Unsere Küche. Ein Abend wie im Urlaub.</h2>
             <div class="meander meander--small" aria-hidden="true" data-meander><span class="meander__track"><span class="meander__art"></span></span></div>
             <p class="lead" data-reveal>Kindstaufe, Einschulung, Jugendweihe, Konfirmation, Hochzeit, Geburtstag oder Firmenfeier – oder einfach, weil es mal wieder Zeit wird, sich mit seinen Lieben zu treffen.</p>
@@ -806,7 +816,7 @@
       <svg class="divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 60V30C120 8 240 0 360 14s240 40 360 34 240-34 360-38 240 18 360 26v24Z"/></svg>
       <div class="container">
         <header class="section-head" data-reveal-group>
-          <p class="kicker" data-reveal>Partyservice</p>
+          <p class="kicker" data-reveal><span class="kicker__el" lang="el">Κέτερινγκ</span>Partyservice</p>
           <h2 class="section-title" id="party-title" data-reveal>Griechenland kommt zu Ihnen nach Hause</h2>
           <div class="meander meander--small meander--center" aria-hidden="true" data-meander><span class="meander__track"><span class="meander__art"></span></span></div>
           <p class="lead" data-reveal>Lassen Sie sich von unserer Speisekarte inspirieren – oder erinnern Sie sich an ein Abendessen aus Ihrem letzten Griechenland-Urlaub. Wir kochen es.</p>
@@ -866,7 +876,7 @@
     <section class="section reviews" id="stimmen" aria-labelledby="reviews-title">
       <div class="container">
         <header class="section-head" data-reveal-group>
-          <p class="kicker" data-reveal>Stimmen unserer Gäste</p>
+          <p class="kicker" data-reveal><span class="kicker__el" lang="el">Κριτικές</span>Stimmen unserer Gäste</p>
           <h2 class="section-title" id="reviews-title" data-reveal>Was unsere Gäste sagen</h2>
           <div class="meander meander--small meander--center" aria-hidden="true" data-meander><span class="meander__track"><span class="meander__art"></span></span></div>
           <p class="lead" data-reveal>Ausgewählte Google-Rezensionen – im Original-Wortlaut, nur gekürzt.</p>
@@ -909,7 +919,7 @@
       <svg class="divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 60V30C120 8 240 0 360 14s240 40 360 34 240-34 360-38 240 18 360 26v24Z"/></svg>
       <div class="container visit__grid">
         <div class="hours" id="oeffnungszeiten" data-reveal-group data-hours>
-          <p class="kicker" data-reveal>Öffnungszeiten</p>
+          <p class="kicker" data-reveal><span class="kicker__el" lang="el">Ωράριο</span>Öffnungszeiten</p>
           <h2 class="section-title" data-reveal>Wann wir für Sie da sind</h2>
           <table class="hours__table">
             <caption class="visually-hidden">Öffnungszeiten Restaurant Xanthi</caption>
@@ -927,7 +937,7 @@
         </div>
 
         <div class="directions" id="anfahrt" data-reveal-group>
-          <p class="kicker" data-reveal>Anfahrt</p>
+          <p class="kicker" data-reveal><span class="kicker__el" lang="el">Διαδρομή</span>Anfahrt</p>
           <h2 class="section-title" data-reveal>So finden Sie zum Griechen</h2>
           <div class="directions__taxi" data-reveal>
             <svg class="icon" aria-hidden="true"><use href="#i-taxi"/></svg>
@@ -964,6 +974,7 @@
       <svg class="cta__olive cta__olive--right" aria-hidden="true" data-parallax="-0.08"><use href="#g-olive"/></svg>
       <div class="cta__rays" aria-hidden="true"></div>
       <div class="container cta__inner" data-reveal-group>
+        <p class="cta__greek" lang="el" data-reveal>Σας περιμένουμε!</p>
         <h2 class="cta__title" id="cta-title" data-reveal>Lust auf Griechenland?</h2>
         <p class="cta__text" data-reveal>Rufen Sie an und reservieren Sie Ihren Tisch – wir freuen uns auf Sie.</p>
         <a class="btn btn--accent btn--xl" href="tel:+493820776968" data-reveal>
@@ -979,8 +990,8 @@
     <div class="meander meander--footer" aria-hidden="true"><span class="meander__track"><span class="meander__art"></span></span></div>
     <div class="container footer__grid">
       <div class="footer__brand">
-        <p class="footer__logo">XANTHI</p>
-        <p class="footer__slogan">Der Mecklenburger Grieche</p>
+        <p class="footer__logo">XANTHI <span class="footer__logo-el" lang="el">Ξάνθη</span></p>
+        <p class="footer__slogan"><svg class="flag" viewBox="0 0 27 18" aria-hidden="true"><use href="#g-flag"/></svg><span>Griechisches Restaurant · Der Mecklenburger Grieche</span></p>
         <p class="footer__greeting" lang="el">Αντίο σας!</p>
         <p class="footer__greeting-de">Bis bald im Xanthi!</p>
       </div>
