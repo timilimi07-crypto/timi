@@ -427,7 +427,7 @@ const OEFFNUNGSZEITEN = {
     const lines = (i) => $$('.stage__title .line > span', slides[i]);
     const st = (i) => $$('[data-st]', slides[i]);
     const floats = (i) => $$('.stage__float', slides[i]);
-    const amph = (i) => $('.stage__amphora', slides[i]);
+    const dish = (i) => $('.stage__dish', slides[i]);
     const vh = () => window.innerHeight;
 
     for (let i = 1; i < n; i++) {
@@ -435,7 +435,7 @@ const OEFFNUNGSZEITEN = {
       gsap.set(lines(i), { yPercent: 110 });
       gsap.set(st(i), { autoAlpha: 0, y: 30 });
       gsap.set(floats(i), { autoAlpha: 0, rotation: -90, y: () => vh() * 0.7 });
-      gsap.set(amph(i), { autoAlpha: 0 });   // es bleibt nur EINE Amphore stehen (die der ersten Platte)
+      gsap.set(dish(i), { autoAlpha: 0, rotation: -150, scale: 0.72 });
     }
 
     const tl = gsap.timeline({ defaults: { ease: 'power2.inOut' } });
@@ -446,9 +446,9 @@ const OEFFNUNGSZEITEN = {
         .to(floats(i - 1), { y: () => -vh() * 0.75, rotation: '+=140', autoAlpha: 0, duration: 0.7, stagger: 0.06, ease: 'power2.in' }, t)
         .to(lines(i - 1), { yPercent: -110, duration: 0.45, stagger: 0.06, ease: 'power2.in' }, t + 0.05)
         .to(st(i - 1), { autoAlpha: 0, y: -24, duration: 0.35, stagger: 0.03, ease: 'power1.in' }, t + 0.05)
-        // die Amphore bleibt stehen und "wippt" beim Wechsel kurz mit
-        .to(amph(0), { rotation: 7, scale: 0.95, duration: 0.45, ease: 'power2.inOut' }, t + 0.1)
-        .to(amph(0), { rotation: 0, scale: 1, duration: 0.5, ease: 'back.out(2)' }, t + 0.55)
+        // der alte Teller dreht sich hinaus, der neue dreht sich herein
+        .to(dish(i - 1), { rotation: 150, scale: 0.72, autoAlpha: 0, duration: 0.6, ease: 'power2.in' }, t + 0.05)
+        .to(dish(i), { rotation: 0, scale: 1, autoAlpha: 1, duration: 0.75, ease: 'power3.out' }, t + 0.45)
         .to(floats(i), { y: 0, rotation: 0, autoAlpha: 1, duration: 0.7, stagger: 0.08, ease: 'power3.out' }, t + 0.4)
         .to(lines(i), { yPercent: 0, duration: 0.5, stagger: 0.08, ease: 'power3.out' }, t + 0.55)
         .to(st(i), { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.05, ease: 'power2.out' }, t + 0.6);
@@ -458,7 +458,7 @@ const OEFFNUNGSZEITEN = {
     ST.create({
       trigger: stage,
       start: 'top top',
-      end: () => `+=${(n - 1) * vh() * 1.2}`,
+      end: () => `+=${(n - 1) * vh() * 0.65}`,   // kompakt: ca. ⅔ Bildschirm pro Wechsel
       pin: true,
       scrub: 0.8,
       animation: tl,
