@@ -21,6 +21,15 @@
   font-style: italic;
   font-display: swap;
 }
+/* GFS Didot: klassische griechische Schrift – greift automatisch nur bei griechischen Zeichen */
+@font-face {
+  font-family: "GFS Didot";
+  src: url("fonts/gfs-didot-greek-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
 @font-face {
   font-family: "Inter";
   src: url("fonts/inter-latin-wght-normal.woff2") format("woff2");
@@ -48,7 +57,7 @@
   --muted: #56616c;
 
   /* Typografie */
-  --font-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-serif: "Cormorant Garamond", "GFS Didot", Georgia, "Times New Roman", serif;
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
   /* Maße */
@@ -517,77 +526,218 @@ p + p { margin-top: 1rem; }
   .nav__cta, .no-js .nav__cta { display: inline-flex; min-height: 44px; padding: .55rem 1.15rem; font-size: .9rem; }
 }
 
-/* ---------- 3. Hero ---------- */
+/* ---------- 3. Hero: Sonnenuntergang über der Ägäis ----------
+   Ebenen von hinten nach vorn: Himmel (Verlauf) → Sterne → Sonne → Inseln →
+   Meer mit Lichtglitzern → Dämmerung (beim Scrollen) → Möwen → Dorf am Felsen →
+   Säule & Olivenzweig → Wellen → Vignette. Alle Bewegungen sind transform/opacity.
+   --horizon = Höhe der Horizontlinie, --sun-x = horizontale Sonnenposition. */
 .hero {
+  --horizon: 80%;
+  --sun-x: 20%;
+  --sun-size: 120px;
   position: relative;
   isolation: isolate;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   min-height: 100vh;
   min-height: 100svh;
   margin-top: calc(-1 * var(--nav-h));   /* liegt unter der transparenten Navigation */
-  padding: calc(var(--nav-h) + 3rem) 0 5rem;
+  padding: calc(var(--nav-h) + 2.25rem) 0 9rem;
   overflow: hidden;
-  background:
-    radial-gradient(120% 80% at 50% 0%, #1a5185 0%, transparent 60%),
-    linear-gradient(180deg, var(--blue) 0%, var(--blue-deep) 60%, var(--blue-night) 100%);
+  background: linear-gradient(180deg,
+    #04172b 0%,
+    #0a2747 calc(var(--horizon) * .45),
+    #1d4f80 calc(var(--horizon) * .78),
+    #b77c5c calc(var(--horizon) - 4%),
+    #f1b27a var(--horizon),
+    #0b2a49 var(--horizon));
   color: #fff;
   text-align: center;
 }
 .no-js .hero { margin-top: 0; }
+@media (min-width: 760px) {
+  .hero { --horizon: 72%; --sun-x: 22%; --sun-size: 220px; align-items: center; padding-bottom: 7rem; }
+}
 
-.hero__bg { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
-.hero__bg > * { position: absolute; }
-/* Parallax: JS setzt nur die Variable --py, die Bewegung selbst ist ein reiner transform */
-[data-parallax] { transform: translate3d(0, var(--py, 0px), 0) scaleX(var(--flip, 1)); will-change: transform; }
-.hero__glow {
-  top: 8%; left: 50%;
-  width: min(90vw, 720px);
-  aspect-ratio: 1;
-  margin-left: calc(min(90vw, 720px) / -2);
+.scene { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.scene > * { position: absolute; }
+/* Parallax-Transform: Scroll (--py) + Maus (--mx/--my × Tiefe) */
+.scene [data-parallax], .scene [style*="--depth"] {
+  transform: translate3d(calc(var(--mx, 0) * var(--depth, 0) * 1px), calc(var(--py, 0px) + var(--my, 0) * var(--depth, 0) * .5px), 0);
+}
+
+/* Sterne */
+.scene__stars { inset: 0 0 auto 0; height: var(--horizon); }
+.scene__stars i {
+  position: absolute;
+  width: var(--s); height: var(--s);
   border-radius: 50%;
-  background: radial-gradient(circle, rgb(217 185 138 / .28) 0%, rgb(217 185 138 / .08) 40%, transparent 68%);
+  background: #fff6e4;
+  opacity: .5;
+  animation: twinkle var(--t) ease-in-out var(--d) infinite;
 }
-.hero__column {
-  bottom: -2%;
-  width: clamp(90px, 16vw, 190px);
+@keyframes twinkle { 0%, 100% { opacity: .15; } 50% { opacity: .9; } }
+
+/* Sonne: Mittelpunkt genau auf dem Horizont, die untere Hälfte verschwindet im Meer */
+.scene__sun {
+  left: var(--sun-x);
+  top: var(--horizon);
+  width: 0; height: 0;
+}
+.scene__sun-disc, .scene__sun-glow {
+  position: absolute;
+  left: 0; top: 0;
+  border-radius: 50%;
+  translate: -50% -50%;
+}
+.scene__sun-disc {
+  width: var(--sun-size); height: var(--sun-size);
+  background: radial-gradient(circle at 50% 40%, #fff1cf 0%, #ffd38f 45%, #f39a5c 100%);
+  box-shadow: 0 0 60px 10px rgb(255 190 120 / .45);
+}
+.scene__sun-glow {
+  width: calc(var(--sun-size) * 4.2); height: calc(var(--sun-size) * 4.2);
+  background: radial-gradient(circle, rgb(255 196 128 / .38) 0%, rgb(255 160 100 / .14) 35%, transparent 65%);
+  animation: sunPulse 6s ease-in-out infinite;
+}
+@keyframes sunPulse { 0%, 100% { opacity: .8; scale: 1; } 50% { opacity: 1; scale: 1.06; } }
+
+/* Inseln am Horizont */
+.scene__islands {
+  left: 0; right: 0;
+  top: calc(var(--horizon) - 5.4vw);
+  width: 100%;
+  height: 5.5vw;
+  min-height: 34px;
+}
+.scene__islands .far { fill: #2a4f78; opacity: .75; }
+.scene__islands .near { fill: #1a3b5f; }
+
+/* Meer */
+.scene__sea {
+  left: 0; right: 0; bottom: 0;
+  top: var(--horizon);
+  background: linear-gradient(180deg, #2b5c8a 0%, #133b63 18%, #0b2a49 50%, #061a2e 100%);
+  overflow: hidden;
+}
+.scene__glints { position: absolute; inset: 0; }
+.scene__glints i {
+  position: absolute;
+  width: var(--w);
+  height: 2px;
+  margin-left: calc(var(--w) / -2);
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, #ffd9a3, transparent);
+  opacity: .2;
+  animation: glint var(--t) ease-in-out var(--d) infinite;
+}
+@keyframes glint {
+  0%, 100% { opacity: .1; transform: scaleX(.6); }
+  50% { opacity: .95; transform: scaleX(1); }
+}
+
+/* Dämmerung: wird beim Runterscrollen dunkler (opacity per JS) */
+.scene__dusk { inset: 0; background: linear-gradient(180deg, #020c17, #04172b 70%); opacity: 0; }
+
+/* Möwen gleiten langsam durchs Bild */
+.scene__birds {
+  top: 22%; left: 0;
+  width: 46px;
+  fill: none;
+  stroke: rgb(255 240 220 / .7);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  animation: birds 38s linear infinite;
+}
+@keyframes birds {
+  0%   { transform: translate(-60px, 0); }
+  50%  { transform: translate(55vw, -30px); }
+  100% { transform: translate(110vw, 10px); }
+}
+
+/* Santorini-Dorf am Felsen (rechts) */
+.scene__village {
+  right: 0; bottom: 0;
+  width: min(62vw, 300px);
   height: auto;
-  aspect-ratio: 120 / 400;
-  color: var(--gold);
-  opacity: .22;
+  aspect-ratio: 600 / 400;
 }
-.hero__column--left { left: clamp(-30px, 3vw, 6%); }
-.hero__column--right { right: clamp(-30px, 3vw, 6%); bottom: -8%; width: clamp(70px, 12vw, 150px); opacity: .14; }
-.hero__olive {
-  top: 16%; right: 8%;
-  width: clamp(140px, 22vw, 260px);
+.scene__village .cliff { fill: #071c31; }
+.scene__village .h { fill: #e9e2d6; }
+.scene__village .hs { fill: #b8b2ab; }
+.scene__village .door { fill: #2d6aa8; }
+.scene__village .dome { fill: #2f74bd; }
+.scene__village .cross { fill: none; stroke: #e9e2d6; stroke-width: 2; }
+.scene__village .win { fill: #ffcf7a; }
+@media (min-width: 760px) {
+  .scene__village { width: min(44vw, 640px); }
+}
+
+/* Säule (Vordergrund, nur große Screens) und Olivenzweig */
+.scene__column {
+  display: none;
+  left: 2%; bottom: -3%;
+  width: clamp(80px, 9vw, 130px);
+  aspect-ratio: 120 / 400;
+  height: auto;
+  color: var(--gold);
+  opacity: .28;
+}
+@media (min-width: 1100px) { .scene__column { display: block; } }
+.scene__olive {
+  top: calc(var(--nav-h) + 4%);
+  right: -30px;
+  width: clamp(150px, 24vw, 300px);
   aspect-ratio: 220 / 90;
   height: auto;
   color: var(--gold);
-  opacity: .35;
-  transform-origin: center;
+  opacity: .32;
 }
-@media (max-width: 640px) {
-  .hero__olive { top: auto; bottom: 22%; right: -30px; opacity: .22; }
+.scene__olive use { transform-origin: 100% 50%; animation: sway 7s ease-in-out infinite; }
+@keyframes sway { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-3deg); } }
+
+/* Wellen: drei Ebenen, unterschiedlich schnell (Endlos-Schleife um genau eine Kachelbreite) */
+.scene__waves { left: 0; right: 0; bottom: 0; height: 120px; overflow: hidden; }
+.wave {
+  position: absolute;
+  left: 0; bottom: 0;
+  width: calc(100% + var(--tile));
+  height: var(--h);
+  background: var(--img) 0 100% / var(--tile) 100% repeat-x;
+  animation: waveMove var(--dur) linear infinite;
 }
-.hero__waves {
-  left: -5%; right: -5%; bottom: 3%;
-  height: 120px;
-  opacity: .35;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='40' viewBox='0 0 160 40'%3E%3Cpath d='M0 20c20-12 40-12 60 0s40 12 60 0 30-9 40-6' fill='none' stroke='%23d9b98a' stroke-opacity='.45' stroke-width='1.2'/%3E%3C/svg%3E") 0 0 / 160px 40px repeat;
-  -webkit-mask: linear-gradient(transparent, #000 40%, #000 60%, transparent);
-          mask: linear-gradient(transparent, #000 40%, #000 60%, transparent);
+.wave--1 {
+  --tile: 520px; --h: 96px; --dur: 26s;
+  --img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='96' viewBox='0 0 520 96' preserveAspectRatio='none'%3E%3Cpath d='M0 40C65 16 195 16 260 40s195 24 260 0v56H0Z' fill='%230e3358' fill-opacity='.75'/%3E%3Cpath d='M0 40C65 16 195 16 260 40s195 24 260 0' fill='none' stroke='%23d9b98a' stroke-opacity='.25' stroke-width='1.5'/%3E%3C/svg%3E");
+  opacity: .9;
+}
+.wave--2 {
+  --tile: 380px; --h: 70px; --dur: 16s;
+  --img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='380' height='70' viewBox='0 0 380 70' preserveAspectRatio='none'%3E%3Cpath d='M0 28C48 8 142 8 190 28s142 20 190 0v42H0Z' fill='%23092440'/%3E%3Cpath d='M0 28C48 8 142 8 190 28s142 20 190 0' fill='none' stroke='%23ffffff' stroke-opacity='.12' stroke-width='1.2'/%3E%3C/svg%3E");
+  animation-direction: reverse;
+}
+.wave--3 {
+  --tile: 300px; --h: 44px; --dur: 11s;
+  --img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='44' viewBox='0 0 300 44' preserveAspectRatio='none'%3E%3Cpath d='M0 18C38 4 112 4 150 18s112 14 150 0v26H0Z' fill='%23061a2e'/%3E%3C/svg%3E");
+}
+@keyframes waveMove { to { transform: translateX(calc(-1 * var(--tile))); } }
+
+/* Vignette: dunkelt den Bereich hinter dem Text leicht ab (Lesbarkeit) */
+.scene__vignette {
+  inset: 0;
+  background: radial-gradient(ellipse 70% 55% at 50% 40%, rgb(4 23 43 / .5), transparent 70%);
 }
 
-.hero__content { position: relative; display: flex; flex-direction: column; align-items: center; }
+/* Inhalt */
+.hero__content { position: relative; display: flex; flex-direction: column; align-items: center; will-change: transform, opacity; }
 .hero__eyebrow {
-  font-size: .78rem;
+  font-size: .76rem;
   font-weight: 600;
   letter-spacing: .24em;
   text-transform: uppercase;
   color: var(--gold);
 }
-.hero__title { display: flex; flex-direction: column; align-items: center; margin-top: 1.25rem; font-weight: 400; }
+.hero__title { display: flex; flex-direction: column; align-items: center; margin-top: 1.1rem; font-weight: 400; }
 .hero__pre {
   font-family: var(--font-serif);
   font-style: italic;
@@ -598,15 +748,27 @@ p + p { margin-top: 1rem; }
   font-family: var(--font-serif);
   font-weight: 600;
   font-size: clamp(4.4rem, 19vw, 10.5rem);
-  line-height: .92;
+  line-height: .95;
   letter-spacing: .06em;
   padding-left: .06em; /* optischer Ausgleich fürs Letter-Spacing */
+  text-shadow: 0 6px 40px rgb(4 23 43 / .6);
+}
+.hero__letters { display: inline-flex; }
+.hero__letters > span { position: relative; display: inline-block; }
+/* Goldener Lichtschimmer, der einmal über die Buchstaben läuft */
+.hero__letters > span::after {
+  content: attr(data-l);
+  position: absolute;
+  inset: 0;
+  color: #ffdba3;
+  text-shadow: 0 0 24px rgb(255 200 130 / .8);
+  opacity: 0;
 }
 .hero__slogan {
   display: flex;
   align-items: center;
   gap: .9rem;
-  margin-top: 1rem;
+  margin-top: .9rem;
   font-family: var(--font-serif);
   font-style: italic;
   font-size: clamp(1.45rem, 4.6vw, 2.4rem);
@@ -621,17 +783,156 @@ p + p { margin-top: 1rem; }
 }
 .hero__lead {
   max-width: 34rem;
-  margin-top: 1.6rem;
+  margin-top: 1.4rem;
   font-size: clamp(1.02rem, 2.4vw, 1.18rem);
-  color: rgb(255 255 255 / .86);
+  color: rgb(255 255 255 / .88);
+  text-shadow: 0 2px 16px rgb(4 23 43 / .7);
 }
+.hero__lead br { display: none; }
+@media (min-width: 640px) { .hero__lead br { display: inline; } }
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: .8rem;
-  margin-top: 2.2rem;
+  margin-top: 2rem;
 }
+
+/* Glanzlicht, das regelmäßig über den Telefon-Button wandert */
+.btn--shine { position: relative; overflow: hidden; isolation: isolate; }
+.btn--shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / .35) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: shine 5s ease-in-out 3s infinite;
+}
+@keyframes shine { 0%, 60% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
+
+/* Scroll-Hinweis */
+.hero__scroll {
+  position: absolute;
+  left: 50%; bottom: 2.4rem;
+  display: none;
+  width: 26px; height: 42px;
+  margin-left: -13px;
+  border: 1.5px solid rgb(255 255 255 / .55);
+  border-radius: 14px;
+}
+.hero__scroll span {
+  position: absolute;
+  left: 50%; top: 8px;
+  width: 4px; height: 8px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--gold);
+  animation: scrollHint 2s ease-in-out infinite;
+}
+@keyframes scrollHint { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(14px); } }
+@media (min-width: 760px) and (min-height: 760px) { .hero__scroll { display: block; } }
+
+/* ---------- Laufband mit Gerichten ---------- */
+.marquee {
+  position: relative;
+  margin-top: clamp(3rem, 7vw, 4.5rem);
+  padding-block: 1.1rem;
+  overflow: hidden;
+  border-block: 1px solid var(--line);
+  background: var(--white);
+  -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+          mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee__track {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+.marquee:hover .marquee__track { animation-play-state: paused; }
+.marquee span {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  line-height: 1;
+  color: var(--blue);
+  white-space: nowrap;
+}
+.marquee i {
+  width: 22px; height: 22px;
+  flex-shrink: 0;
+  background: var(--terracotta);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 21V3h18v14H7V7h10v6h-6' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 21V3h18v14H7V7h10v6h-6' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+/* gap am Ende der ersten Hälfte mitrechnen, damit die Schleife nahtlos ist */
+@keyframes marquee { to { transform: translateX(calc(-50% - 1rem)); } }
+
+/* ---------- Griechisches Schriftband (Scroll-gekoppelt) ---------- */
+.scrolltext {
+  overflow: hidden;
+  padding-block: clamp(1.5rem, 5vw, 3rem) calc(60px + clamp(2rem, 5vw, 3.5rem));
+}
+.scrolltext__row {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 11vw, 8.5rem);
+  line-height: 1.05;
+  white-space: nowrap;
+  color: var(--blue);
+  transform: translate3d(var(--sx, 0px), 0, 0);
+  will-change: transform;
+}
+.scrolltext__row:first-child { margin-left: -10vw; }
+.scrolltext__row--outline {
+  margin-left: -60vw;
+  font-style: italic;
+  color: transparent;
+  -webkit-text-stroke: 1.2px var(--terracotta);
+}
+@supports not (-webkit-text-stroke: 1px #000) { .scrolltext__row--outline { color: var(--terracotta); opacity: .5; } }
+.scrolltext__row span { color: var(--terracotta-ink); }
+.scrolltext__row--outline span { color: transparent; }
+
+/* ---------- Wellen-Übergänge zwischen Abschnitten ---------- */
+.divider {
+  position: absolute;
+  left: 0;
+  top: -59px;
+  width: 100%;
+  height: 60px;
+  fill: currentColor;
+  pointer-events: none;
+}
+.specials, .celebrate, .party, .visit, .cta { position: relative; }
+.specials .divider { color: var(--sand); }
+.celebrate .divider { color: var(--blue-deep); }
+.party .divider { color: var(--white); transform: scaleX(-1); }
+.visit .divider { color: var(--sand); transform: scaleX(-1); }
+.cta .divider { color: var(--blue); }
+.celebrate, .cta { overflow: visible; }
+.celebrate { overflow-x: clip; }
+.cta { overflow-x: clip; }
+
+/* ---------- 3D-Neigung der Karten (nur Maus, per JS) ---------- */
+[data-tilt] { transform-style: preserve-3d; }
+.tilt-glare {
+  position: absolute;
+  left: 0; top: 0;
+  width: 360px; height: 360px;
+  margin: -180px 0 0 -180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 255 255 / .35), transparent 60%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s;
+  mix-blend-mode: soft-light;
+}
+[data-tilt]:hover .tilt-glare { opacity: 1; }
+.special, .quick__card, .party__card, .fact { overflow: hidden; }
+.quick__card, .party__card, .fact { position: relative; }
 
 /* ---------- 4. Info-Karten ---------- */
 .quick { position: relative; z-index: 2; margin-top: -3rem; }
@@ -708,11 +1009,16 @@ p + p { margin-top: 1rem; }
 .anniversary__badge { display: flex; align-items: center; gap: 1rem; color: var(--gold); }
 .anniversary__num {
   font-family: var(--font-serif);
-  font-size: clamp(5rem, 16vw, 8rem);
+  font-size: clamp(4.2rem, 12vw, 5.6rem);
   font-weight: 600;
   line-height: .85;
   font-variant-numeric: tabular-nums lining-nums;
 }
+.anniversary__wreath { position: relative; display: grid; place-items: center; width: clamp(150px, 30vw, 190px); aspect-ratio: 1; }
+.anniversary__wreath .anniversary__num { position: relative; margin-top: .05em; }
+.laurel { position: absolute; inset: 0; width: 100%; height: 100%; }
+.laurel .stem { fill: none; stroke: var(--gold); stroke-width: 1.4; opacity: .7; }
+.laurel .leaf { fill: var(--gold); transform-box: fill-box; transform-origin: center; }
 .anniversary__label { font-family: var(--font-serif); font-style: italic; font-size: 1.6rem; line-height: 1.1; }
 .anniversary .ph { background-color: rgb(255 255 255 / .05); border-color: rgb(255 255 255 / .3); }
 .anniversary .ph__inner { color: #fff; }
@@ -1176,6 +1482,18 @@ p + p { margin-top: 1rem; }
   color: #fff;
   text-align: center;
 }
+.cta__rays {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 1400px; height: 1400px;
+  margin: -700px 0 0 -700px;
+  background: repeating-conic-gradient(from 0deg, rgb(217 185 138 / .09) 0deg 6deg, transparent 6deg 18deg);
+  -webkit-mask: radial-gradient(circle, #000 0%, transparent 62%);
+          mask: radial-gradient(circle, #000 0%, transparent 62%);
+  animation: rays 90s linear infinite;
+  pointer-events: none;
+}
+@keyframes rays { to { transform: rotate(1turn); } }
 .cta__inner { position: relative; display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
 .cta__title { font-family: var(--font-serif); font-weight: 600; font-size: clamp(2.6rem, 9vw, 5rem); line-height: 1.02; text-wrap: balance; }
 .cta__text { max-width: 30rem; font-size: 1.1rem; color: rgb(255 255 255 / .85); margin-bottom: .8rem; }
@@ -1284,7 +1602,6 @@ p + p { margin-top: 1rem; }
 }
 .motion [data-hero="0"] { --h: 0; }
 .motion [data-hero="1"] { --h: 1; }
-.motion [data-hero="2"] { --h: 2; animation-name: heroInBig; animation-duration: 1.4s; }
 .motion [data-hero="3"] { --h: 3.6; }
 .motion [data-hero="4"] { --h: 4.6; }
 .motion [data-hero="5"] { --h: 5.6; }
@@ -1296,7 +1613,32 @@ p + p { margin-top: 1rem; }
   from { opacity: 0; transform: translateY(30px) scale(.96); }
   to   { opacity: 1; transform: none; }
 }
-.motion .hero__bg { animation: fadeIn 2s ease forwards; opacity: 0; }
+/* Buchstaben von "Xanthi" steigen einzeln auf, danach läuft ein goldener Schimmer darüber */
+.motion .hero__letters > span {
+  opacity: 0;
+  transform: translateY(.45em) rotate(8deg);
+  transform-origin: 50% 100%;
+  animation: letterIn 1s var(--ease-out) forwards;
+  animation-delay: calc(450ms + var(--n) * 90ms);
+}
+@keyframes letterIn { to { opacity: 1; transform: none; } }
+.motion .hero__letters > span::after { animation: glow 1.4s ease-in-out forwards; animation-delay: calc(1500ms + var(--n) * 110ms); }
+@keyframes glow { 0% { opacity: 0; } 40% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Szene blendet weich ein; im Dorf gehen nacheinander die Lichter an */
+.motion .scene { animation: fadeIn 1.6s ease forwards; opacity: 0; }
+.motion .scene__sun-disc { animation: sunRise 2.4s var(--ease-out) .2s both; }
+@keyframes sunRise { from { transform: translateY(40%); opacity: 0; } to { transform: none; opacity: 1; } }
+.motion .scene__village .win { opacity: 0; animation: lightOn .6s ease forwards; animation-delay: calc(1.6s + var(--w) * 160ms); }
+@keyframes lightOn { 0% { opacity: 0; } 60% { opacity: 1; } 75% { opacity: .5; } 100% { opacity: 1; } }
+
+/* Lorbeerblätter wachsen von unten nach oben */
+.motion .anniversary:not(.is-in) .laurel .leaf { transform: scale(0); }
+.motion .anniversary.is-in .laurel .leaf { animation: leafIn .55s var(--ease-out) backwards; animation-delay: calc(400ms + var(--i) * 90ms); }
+@keyframes leafIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* Endlos-Animationen der Szene pausieren, sobald der Hero nicht mehr sichtbar ist (spart Akku) */
+.hero.is-offscreen *, .hero.is-offscreen *::after { animation-play-state: paused !important; }
 @keyframes fadeIn { to { opacity: 1; } }
 
 /* Abschnitte: Überschrift → Text → Karten, je leicht versetzt */
@@ -1355,12 +1697,14 @@ p + p { margin-top: 1rem; }
     transition-duration: .01ms !important;
     transition-delay: 0s !important;
   }
-  .hero__bg > * { transform: none !important; }
+  .scene [data-parallax], .scene [style*="--depth"], .scrolltext__row { transform: none !important; }
+  .marquee__track { flex-wrap: wrap; width: auto; justify-content: center; }
+  .marquee__track > :nth-child(n+19) { display: none; }
 }
 
 /* Druckansicht: schlicht und tintensparend */
 @media print {
-  .demo-bar, .progress, .site-header, .call-fab, .hero__bg, .meander, .ph { display: none !important; }
+  .demo-bar, .progress, .site-header, .call-fab, .scene, .marquee, .scrolltext, .divider, .meander, .ph { display: none !important; }
   body { background: #fff; padding: 0; }
   .hero, .celebrate, .cta, .footer, .anniversary { background: #fff !important; color: #000 !important; }
 }

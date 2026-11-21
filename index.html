@@ -194,43 +194,63 @@
 
   <main id="inhalt">
 
-    <!-- 3. Hero -->
+    <!-- 3. Hero: animierte Sonnenuntergangs-Szene über der Ägäis (reines SVG/CSS, keine Fotos) -->
     <section class="hero" id="start" aria-labelledby="hero-title">
-      <div class="hero__bg" aria-hidden="true">
-        <div class="hero__glow" data-parallax="0.25"></div>
-        <svg class="hero__column hero__column--left" data-parallax="0.45"><use href="#g-column"/></svg>
-        <svg class="hero__column hero__column--right" data-parallax="0.3"><use href="#g-column"/></svg>
-        <svg class="hero__olive" data-parallax="-0.12"><use href="#g-olive"/></svg>
-        <div class="hero__waves" data-parallax="0.12"></div>
+      <div class="scene" aria-hidden="true">
+        <div class="scene__stars" data-parallax="0.08" style="--depth:4"><i style="left:33.4%;top:9.7%;--s:2px;--d:0.3s;--t:3.8s"></i><i style="left:37.4%;top:6.2%;--s:2px;--d:0.1s;--t:3.6s"></i><i style="left:9.6%;top:7.4%;--s:3px;--d:0.2s;--t:3.9s"></i><i style="left:92.1%;top:28.0%;--s:2px;--d:2.3s;--t:3.5s"></i><i style="left:94.8%;top:5.8%;--s:2px;--d:1.2s;--t:2.9s"></i><i style="left:14.1%;top:15.7%;--s:2px;--d:0.4s;--t:3.9s"></i><i style="left:20.7%;top:7.7%;--s:2px;--d:2.3s;--t:4.0s"></i><i style="left:49.7%;top:24.2%;--s:2px;--d:1.9s;--t:4.8s"></i><i style="left:37.0%;top:13.4%;--s:2px;--d:2.8s;--t:3.1s"></i><i style="left:57.0%;top:24.0%;--s:2px;--d:2.9s;--t:3.2s"></i><i style="left:95.1%;top:8.5%;--s:3px;--d:0.7s;--t:3.4s"></i><i style="left:90.7%;top:20.0%;--s:2px;--d:3.1s;--t:3.9s"></i><i style="left:85.3%;top:15.9%;--s:2px;--d:2.4s;--t:3.9s"></i><i style="left:45.9%;top:35.9%;--s:2px;--d:1.9s;--t:4.2s"></i><i style="left:8.7%;top:30.7%;--s:3px;--d:1.1s;--t:3.5s"></i><i style="left:65.9%;top:4.9%;--s:3px;--d:1.4s;--t:4.0s"></i></div>
+        <div class="scene__sun" data-parallax="0.55" style="--depth:14"><span class="scene__sun-glow"></span><span class="scene__sun-disc"></span></div>
+        <svg class="scene__islands" viewBox="0 0 1440 90" preserveAspectRatio="none" data-parallax="0.2" style="--depth:8">
+          <path d="M0 90V62c60-10 110-34 170-30 50 4 80 24 140 22 46-2 70-20 110-18 30 2 50 18 80 26v28Z" class="far"/>
+          <path d="M860 90V70c40-6 70-26 120-24 46 2 64 18 110 20 40 2 60-12 96-10 24 2 40 10 60 16v18Z" class="far"/>
+          <path d="M150 90V74c40-10 70-22 116-20 40 2 60 16 104 18 30 2 46-6 70-4v22Z" class="near"/>
+        </svg>
+        <div class="scene__sea">
+          <div class="scene__glints"><i style="left:calc(var(--sun-x) + -0.1vw);top:2.0%;--w:8px;--d:0.86s;--t:3.0s"></i><i style="left:calc(var(--sun-x) + -1.0vw);top:7.3%;--w:18px;--d:1.49s;--t:2.1s"></i><i style="left:calc(var(--sun-x) + -1.2vw);top:12.6%;--w:14px;--d:0.41s;--t:2.5s"></i><i style="left:calc(var(--sun-x) + 0.7vw);top:17.9%;--w:21px;--d:2.96s;--t:2.9s"></i><i style="left:calc(var(--sun-x) + -1.9vw);top:23.2%;--w:19px;--d:0.25s;--t:2.0s"></i><i style="left:calc(var(--sun-x) + 2.8vw);top:28.5%;--w:20px;--d:2.49s;--t:2.1s"></i><i style="left:calc(var(--sun-x) + -4.2vw);top:33.8%;--w:24px;--d:1.60s;--t:2.8s"></i><i style="left:calc(var(--sun-x) + -3.8vw);top:39.1%;--w:26px;--d:2.58s;--t:3.3s"></i><i style="left:calc(var(--sun-x) + 3.6vw);top:44.4%;--w:35px;--d:1.37s;--t:3.2s"></i><i style="left:calc(var(--sun-x) + 11.3vw);top:49.6%;--w:37px;--d:1.68s;--t:2.4s"></i><i style="left:calc(var(--sun-x) + -2.8vw);top:54.9%;--w:38px;--d:1.20s;--t:2.1s"></i><i style="left:calc(var(--sun-x) + 13.9vw);top:60.2%;--w:40px;--d:0.33s;--t:2.8s"></i><i style="left:calc(var(--sun-x) + -12.2vw);top:65.5%;--w:44px;--d:1.61s;--t:3.3s"></i><i style="left:calc(var(--sun-x) + 3.7vw);top:70.8%;--w:42px;--d:0.62s;--t:2.4s"></i><i style="left:calc(var(--sun-x) + 4.6vw);top:76.1%;--w:53px;--d:1.81s;--t:2.6s"></i><i style="left:calc(var(--sun-x) + -13.9vw);top:81.4%;--w:51px;--d:2.93s;--t:2.6s"></i><i style="left:calc(var(--sun-x) + -7.2vw);top:86.7%;--w:51px;--d:2.25s;--t:3.0s"></i><i style="left:calc(var(--sun-x) + -0.9vw);top:92.0%;--w:59px;--d:1.55s;--t:2.1s"></i></div>
+        </div>
+        <div class="scene__dusk" data-dusk></div>
+        <svg class="scene__birds" viewBox="0 0 60 20"><path d="M2 12q7-8 14 0q7-8 14 0"/><path d="M34 6q5-5 10 0q5-5 10 0"/></svg>
+        <svg class="scene__village" viewBox="0 0 600 400" preserveAspectRatio="xMaxYMax meet" data-parallax="0.12" style="--depth:10"><path class="cliff" d="M600 400V112c-40-6-62 22-98 30-44 10-58 42-104 52-50 12-74 56-126 76-50 20-100 58-168 90-40 18-70 30-104 40Z"/><rect x="440" y="66" width="20" height="74" class="h"/><path d="M444 82a6 6 0 0 1 12 0v10h-12Z" class="door"/><path d="M440 66l10-12 10 12Z" class="dome"/><rect x="468" y="92" width="64" height="50" class="h"/><rect x="514" y="92" width="18" height="50" class="hs"/><path d="M474 92a26 26 0 0 1 52 0Z" class="dome"/><path d="M500 66v-14M494 58h12" class="cross"/><rect x="490" y="118" width="10" height="24" rx="5" class="win" style="--w:20"/><rect x="540" y="100" width="52" height="42" class="h"/><rect x="577" y="100" width="15" height="42" class="hs"/><rect x="546" y="128" width="7" height="14" class="door"/><rect x="556" y="110" width="6" height="8" rx="1" class="win" style="--w:0"/><rect x="570" y="110" width="6" height="8" rx="1" class="win" style="--w:1"/><rect x="395" y="150" width="56" height="46" class="h"/><rect x="435" y="150" width="16" height="46" class="hs"/><rect x="401" y="182" width="7" height="14" class="door"/><rect x="411" y="160" width="6" height="8" rx="1" class="win" style="--w:2"/><rect x="425" y="160" width="6" height="8" rx="1" class="win" style="--w:3"/><rect x="452" y="132" width="34" height="22" class="h"/><rect x="476" y="132" width="10" height="22" class="hs"/><rect x="458" y="140" width="7" height="14" class="door"/><rect x="468" y="142" width="6" height="8" rx="1" class="win" style="--w:4"/><rect x="520" y="150" width="72" height="52" class="h"/><rect x="572" y="150" width="20" height="52" class="hs"/><rect x="526" y="188" width="7" height="14" class="door"/><rect x="536" y="160" width="6" height="8" rx="1" class="win" style="--w:5"/><rect x="550" y="160" width="6" height="8" rx="1" class="win" style="--w:6"/><rect x="330" y="200" width="62" height="50" class="h"/><rect x="375" y="200" width="17" height="50" class="hs"/><rect x="336" y="236" width="7" height="14" class="door"/><rect x="346" y="210" width="6" height="8" rx="1" class="win" style="--w:7"/><rect x="360" y="210" width="6" height="8" rx="1" class="win" style="--w:8"/><path d="M344.0 200a17 17 0 0 1 34 0Z" class="dome"/><path d="M361.0 183v-9M357.0 178h8" class="cross"/><rect x="410" y="204" width="52" height="42" class="h"/><rect x="447" y="204" width="15" height="42" class="hs"/><rect x="416" y="232" width="7" height="14" class="door"/><rect x="426" y="214" width="6" height="8" rx="1" class="win" style="--w:9"/><rect x="440" y="214" width="6" height="8" rx="1" class="win" style="--w:10"/><rect x="280" y="240" width="46" height="38" class="h"/><rect x="313" y="240" width="13" height="38" class="hs"/><rect x="286" y="264" width="7" height="14" class="door"/><rect x="296" y="250" width="6" height="8" rx="1" class="win" style="--w:11"/><rect x="230" y="268" width="52" height="42" class="h"/><rect x="267" y="268" width="15" height="42" class="hs"/><rect x="236" y="296" width="7" height="14" class="door"/><rect x="246" y="278" width="6" height="8" rx="1" class="win" style="--w:12"/><rect x="260" y="278" width="6" height="8" rx="1" class="win" style="--w:13"/><rect x="300" y="290" width="70" height="50" class="h"/><rect x="350" y="290" width="20" height="50" class="hs"/><rect x="306" y="326" width="7" height="14" class="door"/><rect x="316" y="300" width="6" height="8" rx="1" class="win" style="--w:14"/><rect x="330" y="300" width="6" height="8" rx="1" class="win" style="--w:15"/><rect x="170" y="302" width="50" height="38" class="h"/><rect x="206" y="302" width="14" height="38" class="hs"/><rect x="176" y="326" width="7" height="14" class="door"/><rect x="186" y="312" width="6" height="8" rx="1" class="win" style="--w:16"/><rect x="120" y="332" width="42" height="30" class="h"/><rect x="150" y="332" width="12" height="30" class="hs"/><rect x="126" y="348" width="7" height="14" class="door"/><rect x="136" y="342" width="6" height="8" rx="1" class="win" style="--w:17"/><rect x="200" y="342" width="62" height="40" class="h"/><rect x="245" y="342" width="17" height="40" class="hs"/><rect x="206" y="368" width="7" height="14" class="door"/><rect x="216" y="352" width="6" height="8" rx="1" class="win" style="--w:18"/><rect x="230" y="352" width="6" height="8" rx="1" class="win" style="--w:19"/></svg>
+        <svg class="scene__column" data-parallax="-0.1" style="--depth:26"><use href="#g-column"/></svg>
+        <svg class="scene__olive" style="--depth:30"><use href="#g-olive"/></svg>
+        <div class="scene__waves">
+          <span class="wave wave--1" data-parallax="0.06" style="--depth:16"></span>
+          <span class="wave wave--2" data-parallax="0.03" style="--depth:22"></span>
+          <span class="wave wave--3"></span>
+        </div>
+        <div class="scene__vignette"></div>
       </div>
 
-      <div class="hero__content container">
+      <div class="hero__content container" data-hero-content>
         <p class="hero__eyebrow" data-hero="0">Kritzmow · vor den Toren Rostocks</p>
         <h1 class="hero__title" id="hero-title">
           <span class="hero__pre" data-hero="1">Restaurant</span>
-          <span class="hero__name" data-hero="2">Xanthi</span>
+          <span class="hero__name">
+            <span class="visually-hidden">Xanthi</span>
+            <span class="hero__letters" aria-hidden="true"><span data-l="X" style="--n:0">X</span><span data-l="a" style="--n:1">a</span><span data-l="n" style="--n:2">n</span><span data-l="t" style="--n:3">t</span><span data-l="h" style="--n:4">h</span><span data-l="i" style="--n:5">i</span></span>
+          </span>
           <span class="hero__slogan" data-hero="3">Der Mecklenburger Grieche</span>
         </h1>
-        <p class="hero__lead" data-hero="4">Griechenland-Urlaub – nur ohne Flug.<br>Herzlich, familiär und mit allem, was der Grill hergibt.</p>
+        <p class="hero__lead" data-hero="4">Griechenland-Urlaub – nur ohne Flug.<br> Herzlich, familiär und mit allem, was der Grill hergibt.</p>
         <div class="hero__actions" data-hero="5">
           <a class="btn btn--light btn--lg" href="#speisekarte">
             Zur Speisekarte
             <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
           </a>
-          <a class="btn btn--accent btn--lg" href="tel:+493820776968">
+          <a class="btn btn--accent btn--lg btn--shine" href="tel:+493820776968">
             <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
             038207 76968
           </a>
         </div>
       </div>
 
+      <a class="hero__scroll" href="#ueber-uns" aria-label="Weiter nach unten scrollen"><span></span></a>
       <div class="meander meander--hero" aria-hidden="true" data-meander><span class="meander__track"><span class="meander__art"></span></span></div>
     </section>
 
     <!-- 4. Info-Karten -->
     <section class="quick" aria-label="Auf einen Blick">
       <div class="container quick__grid" data-reveal-group>
-        <article class="quick__card" data-reveal>
+        <article class="quick__card" data-reveal data-tilt>
           <span class="quick__icon"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg></span>
           <div>
             <h2 class="quick__title">Öffnungszeiten</h2>
@@ -242,7 +262,7 @@
             <a class="link-arrow" href="#oeffnungszeiten">Alle Zeiten <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
           </div>
         </article>
-        <article class="quick__card" data-reveal>
+        <article class="quick__card" data-reveal data-tilt>
           <span class="quick__icon"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg></span>
           <div>
             <h2 class="quick__title">Reservierung</h2>
@@ -250,7 +270,7 @@
             <a class="link-arrow link-arrow--strong" href="tel:+493820776968">038207 76968 <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
           </div>
         </article>
-        <article class="quick__card" data-reveal>
+        <article class="quick__card" data-reveal data-tilt>
           <span class="quick__icon"><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg></span>
           <div>
             <h2 class="quick__title">Anfahrt</h2>
@@ -260,6 +280,14 @@
         </article>
       </div>
     </section>
+
+    <!-- Laufband mit Gerichten (Deko; zweite Hälfte ist eine Kopie für die Endlos-Schleife) -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>Gyros</span><i></i><span>Souvlaki</span><i></i><span>Tzatziki</span><i></i><span>Bifteki</span><i></i><span>Paidakia</span><i></i><span>Kalamaris</span><i></i><span>Stifado</span><i></i><span>Garides</span><i></i><span>Ouzo</span><i></i>
+        <span>Gyros</span><i></i><span>Souvlaki</span><i></i><span>Tzatziki</span><i></i><span>Bifteki</span><i></i><span>Paidakia</span><i></i><span>Kalamaris</span><i></i><span>Stifado</span><i></i><span>Garides</span><i></i><span>Ouzo</span><i></i>
+      </div>
+    </div>
 
     <!-- 5. Über uns -->
     <section class="section about" id="ueber-uns" aria-labelledby="about-title">
@@ -285,7 +313,10 @@
         <!-- 10 Jahre Xanthi -->
         <div class="anniversary" data-reveal-group>
           <div class="anniversary__badge" data-reveal aria-hidden="true">
-            <span class="anniversary__num" data-count="10">10</span>
+            <span class="anniversary__wreath">
+              <svg class="laurel" viewBox="0 0 200 200" aria-hidden="true"><path class="stem" d="M80 173A76 76 0 0 1 68 31M120 173A76 76 0 0 0 132 31"/><g transform="translate(82.1 166.6) rotate(225)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:0"/></g><g transform="translate(117.9 166.6) rotate(-45)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:0"/></g><g transform="translate(78.5 180.2) rotate(165)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:0"/></g><g transform="translate(121.5 180.2) rotate(15)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:0"/></g><g transform="translate(60.4 156.5) rotate(245)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:1"/></g><g transform="translate(139.6 156.5) rotate(-65)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:1"/></g><g transform="translate(52.4 168.0) rotate(185)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:1"/></g><g transform="translate(147.6 168.0) rotate(-5)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:1"/></g><g transform="translate(43.5 139.6) rotate(265)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:2"/></g><g transform="translate(156.5 139.6) rotate(-85)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:2"/></g><g transform="translate(32.0 147.6) rotate(205)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:2"/></g><g transform="translate(168.0 147.6) rotate(-25)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:2"/></g><g transform="translate(33.4 117.9) rotate(285)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:3"/></g><g transform="translate(166.6 117.9) rotate(-105)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:3"/></g><g transform="translate(19.8 121.5) rotate(225)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:3"/></g><g transform="translate(180.2 121.5) rotate(-45)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:3"/></g><g transform="translate(31.3 94.0) rotate(305)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:4"/></g><g transform="translate(168.7 94.0) rotate(-125)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:4"/></g><g transform="translate(17.3 92.8) rotate(245)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:4"/></g><g transform="translate(182.7 92.8) rotate(-65)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:4"/></g><g transform="translate(37.5 70.8) rotate(325)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:5"/></g><g transform="translate(162.5 70.8) rotate(-145)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:5"/></g><g transform="translate(24.8 64.9) rotate(265)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:5"/></g><g transform="translate(175.2 64.9) rotate(-85)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:5"/></g><g transform="translate(51.2 51.2) rotate(345)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:6"/></g><g transform="translate(148.8 51.2) rotate(-165)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:6"/></g><g transform="translate(41.3 41.3) rotate(285)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:6"/></g><g transform="translate(158.7 41.3) rotate(-105)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:6"/></g><g transform="translate(70.8 37.5) rotate(365)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:7"/></g><g transform="translate(129.2 37.5) rotate(-185)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:7"/></g><g transform="translate(64.9 24.8) rotate(305)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:7"/></g><g transform="translate(135.1 24.8) rotate(-125)"><ellipse class="leaf" rx="10" ry="3.8" style="--i:7"/></g></svg>
+              <span class="anniversary__num" data-count="10">10</span>
+            </span>
             <span class="anniversary__label">Jahre<br>Xanthi</span>
           </div>
           <div class="anniversary__text">
@@ -315,8 +346,15 @@
       </div>
     </section>
 
+    <!-- Schriftband: bewegt sich beim Scrollen seitwärts (Zeilen gegenläufig) -->
+    <div class="scrolltext" aria-hidden="true">
+      <p class="scrolltext__row" data-scroll-x="-0.35"><span lang="el">Καλώς ήρθατε</span> · Herzlich willkommen · <span lang="el">Καλώς ήρθατε</span> · Herzlich willkommen ·</p>
+      <p class="scrolltext__row scrolltext__row--outline" data-scroll-x="0.35"><span lang="el">Καλή όρεξη</span> · Guten Appetit · <span lang="el">Καλή όρεξη</span> · Guten Appetit ·</p>
+    </div>
+
     <!-- 6. Hausspezialitäten -->
     <section class="section specials" id="spezialitaeten" aria-labelledby="specials-title">
+      <svg class="divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 60V30C120 8 240 0 360 14s240 40 360 34 240-34 360-38 240 18 360 26v24Z"/></svg>
       <div class="container">
         <header class="section-head" data-reveal-group>
           <p class="kicker" data-reveal>Hausspezialitäten</p>
@@ -326,7 +364,7 @@
         </header>
 
         <div class="specials__grid" data-reveal-group>
-          <article class="special special--featured" data-reveal>
+          <article class="special special--featured" data-reveal data-tilt>
             <figure class="ph ph--flat">
               <div class="ph__inner" role="img" aria-label="Platzhalter für ein Foto der Xanthi-Platte">
                 <svg class="icon" aria-hidden="true"><use href="#i-camera"/></svg>
@@ -344,32 +382,32 @@
             </div>
           </article>
 
-          <article class="special" data-reveal>
+          <article class="special" data-reveal data-tilt>
             <h3 class="special__name">Kosynthos-Platte</h3>
             <p class="special__desc">Gyros, 1 Spieß, 1 Hackröllchen, 1 Steak, 1 Lammkotelett, Salat, Tzatziki, Pommes</p>
             <p class="special__price"><mark class="ph-text">[Preis]</mark></p>
           </article>
-          <article class="special" data-reveal>
+          <article class="special" data-reveal data-tilt>
             <h3 class="special__name">Ouzo-Teller</h3>
             <p class="special__desc">Gyros, 1 Spieß, 1 Steak, 1 Hackröllchen, Salat, Tzatziki, Pommes – <em>und 1 Ouzo</em></p>
             <p class="special__price"><mark class="ph-text">[Preis]</mark></p>
           </article>
-          <article class="special" data-reveal>
+          <article class="special" data-reveal data-tilt>
             <h3 class="special__name">Aimonio-Platte</h3>
             <p class="special__desc">Lammfilet, Lammkotelett, Hähnchenfilet, Scampi, Tzatziki, Salat, Fladenbrot</p>
             <p class="special__price"><mark class="ph-text">[Preis]</mark></p>
           </article>
-          <article class="special" data-reveal>
+          <article class="special" data-reveal data-tilt>
             <h3 class="special__name">Athen-Teller</h3>
             <p class="special__desc">Gyros, 1 Spieß, 1 Hackröllchen, Salat, Tzatziki, Pommes</p>
             <p class="special__price"><mark class="ph-text">[Preis]</mark></p>
           </article>
-          <article class="special" data-reveal>
+          <article class="special" data-reveal data-tilt>
             <h3 class="special__name">Olympos-Teller</h3>
             <p class="special__desc">Gyros, 1 Steak, Leber, Salat, Tzatziki, Pommes</p>
             <p class="special__price"><mark class="ph-text">[Preis]</mark></p>
           </article>
-          <article class="special" data-reveal>
+          <article class="special" data-reveal data-tilt>
             <h3 class="special__name">Apollon-Teller</h3>
             <p class="special__desc">Gyros, 1 Spieß, Salat, Tzatziki, Pommes</p>
             <p class="special__price"><mark class="ph-text">[Preis]</mark></p>
@@ -549,6 +587,7 @@
 
     <!-- 8. Familien- & Firmenfeiern -->
     <section class="section celebrate" id="feiern" aria-labelledby="celebrate-title">
+      <svg class="divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 60V30C120 8 240 0 360 14s240 40 360 34 240-34 360-38 240 18 360 26v24Z"/></svg>
       <div class="container">
         <div class="celebrate__intro" data-reveal-group>
           <div>
@@ -571,22 +610,22 @@
         </div>
 
         <ul class="facts" data-reveal-group>
-          <li class="fact" data-reveal>
+          <li class="fact" data-reveal data-tilt>
             <svg class="icon fact__icon" aria-hidden="true"><use href="#i-users"/></svg>
             <span class="fact__value"><small>bis</small> <span data-count="40">40</span></span>
             <span class="fact__label">Personen im Klubraum</span>
           </li>
-          <li class="fact" data-reveal>
+          <li class="fact" data-reveal data-tilt>
             <svg class="icon fact__icon" aria-hidden="true"><use href="#i-dish"/></svg>
             <span class="fact__value"><small>bis</small> <span data-count="7">7</span></span>
             <span class="fact__label">Gänge – oder kaltes Buffet</span>
           </li>
-          <li class="fact" data-reveal>
+          <li class="fact" data-reveal data-tilt>
             <svg class="icon fact__icon" aria-hidden="true"><use href="#i-music"/></svg>
             <span class="fact__value fact__value--text">Musik</span>
             <span class="fact__label">auf Wunsch – wir vermitteln einen Alleinunterhalter</span>
           </li>
-          <li class="fact" data-reveal>
+          <li class="fact" data-reveal data-tilt>
             <svg class="icon fact__icon" aria-hidden="true"><use href="#i-house"/></svg>
             <span class="fact__value fact__value--text">Ganzes Haus</span>
             <span class="fact__label">auf Anfrage mieten Sie das komplette Restaurant</span>
@@ -602,6 +641,7 @@
 
     <!-- 9. Partyservice -->
     <section class="section party" id="partyservice" aria-labelledby="party-title">
+      <svg class="divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 60V30C120 8 240 0 360 14s240 40 360 34 240-34 360-38 240 18 360 26v24Z"/></svg>
       <div class="container">
         <header class="section-head" data-reveal-group>
           <p class="kicker" data-reveal>Partyservice</p>
@@ -611,13 +651,13 @@
         </header>
 
         <div class="party__grid" data-reveal-group>
-          <article class="party__card" data-reveal>
+          <article class="party__card" data-reveal data-tilt>
             <svg class="icon party__icon" aria-hidden="true"><use href="#i-dish"/></svg>
             <h3 class="h3">Buffet oder Menü – bis in die gute Stube</h3>
             <p>Sie feiern zu Hause? Wir liefern ein kaltes Buffet oder ein mehrgängiges Menü direkt zu Ihnen. Sie kümmern sich um die Gäste, wir uns um das Essen.</p>
           </article>
 
-          <article class="party__card party__card--tent" data-reveal>
+          <article class="party__card party__card--tent" data-reveal data-tilt>
             <svg class="icon party__icon" aria-hidden="true"><use href="#i-tent"/></svg>
             <h3 class="h3">Die komplette Party für Hof &amp; Garten</h3>
             <p>Kein Platz im Wohnzimmer? Kein Problem. Wir bringen die Taverne gleich mit:</p>
@@ -647,6 +687,7 @@
 
     <!-- 10. Öffnungszeiten + Anfahrt -->
     <section class="section visit" aria-label="Öffnungszeiten und Anfahrt">
+      <svg class="divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 60V30C120 8 240 0 360 14s240 40 360 34 240-34 360-38 240 18 360 26v24Z"/></svg>
       <div class="container visit__grid">
         <div class="hours" id="oeffnungszeiten" data-reveal-group data-hours>
           <p class="kicker" data-reveal>Öffnungszeiten</p>
@@ -693,8 +734,10 @@
 
     <!-- 11. Call to Action -->
     <section class="cta" aria-labelledby="cta-title">
+      <svg class="divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 60V30C120 8 240 0 360 14s240 40 360 34 240-34 360-38 240 18 360 26v24Z"/></svg>
       <svg class="cta__olive cta__olive--left" aria-hidden="true" data-parallax="0.08"><use href="#g-olive"/></svg>
       <svg class="cta__olive cta__olive--right" aria-hidden="true" data-parallax="-0.08"><use href="#g-olive"/></svg>
+      <div class="cta__rays" aria-hidden="true"></div>
       <div class="container cta__inner" data-reveal-group>
         <h2 class="cta__title" id="cta-title" data-reveal>Lust auf Griechenland?</h2>
         <p class="cta__text" data-reveal>Rufen Sie an und reservieren Sie Ihren Tisch – wir freuen uns auf Sie.</p>

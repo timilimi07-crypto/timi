@@ -9,7 +9,7 @@ xanthi-demo/
 ├── style.css     Design-Tokens, Layout (mobile-first), Animationen
 ├── script.js     OBEN: Hinweisfeld (Betriebsurlaub) + Öffnungszeiten für den Live-Status
 │                 UNTEN: Live-Status, Speisekarten-Tabs, Scroll-Animationen, Navigation
-├── fonts/        Cormorant Garamond + Inter, lokal (SIL Open Font License)
+├── fonts/        Cormorant Garamond, Inter, GFS Didot (griechisch), lokal (SIL Open Font License)
 ├── favicon.svg
 ├── robots.txt    Demo: alles gesperrt
 └── netlify.toml  Netlify-Konfiguration (noindex-Header, Caching)

@@ -301,7 +301,32 @@ const OEFFNUNGSZEITEN = {
         const offset = host.classList.contains('hero') ? y : (r.top + r.height / 2 - vh / 2) * -1;
         el.style.setProperty('--py', `${(offset * speed).toFixed(1)}px`);
       }
+
+      if (!MOTION) return;
+
+      // Hero: Inhalt gleitet nach oben weg, die Sonne geht unter, der Himmel wird dunkler
+      if (hero && y < heroH) {
+        const p = y / heroH;
+        if (heroContent) {
+          heroContent.style.transform = `translate3d(0, ${(y * 0.32).toFixed(1)}px, 0)`;
+          heroContent.style.opacity = Math.max(0, 1 - p * 1.4).toFixed(3);
+        }
+        if (dusk) dusk.style.opacity = Math.min(p * 1.1, 0.9).toFixed(3);
+      }
+
+      // Griechisches Schriftband: Zeilen laufen beim Scrollen gegenläufig seitwärts
+      for (const row of scrollRows) {
+        const r = row.parentElement.getBoundingClientRect();
+        if (r.bottom < -50 || r.top > vh + 50) continue;
+        const speed = parseFloat(row.dataset.scrollX) || 0;
+        row.style.setProperty('--sx', `${((vh - r.top) * speed).toFixed(1)}px`);
+      }
     }
+    const heroContent = $('[data-hero-content]');
+    const dusk = $('[data-dusk]');
+    const scrollRows = $$('[data-scroll-x]');
+    let heroH = hero ? hero.offsetHeight : 1;
+    window.addEventListener('resize', () => { heroH = hero ? hero.offsetHeight : 1; }, { passive: true });
 
     const onScroll = () => {
       if (!ticking) { ticking = true; requestAnimationFrame(update); }
@@ -363,6 +388,59 @@ const OEFFNUNGSZEITEN = {
     }, { rootMargin: '-45% 0px -50% 0px' }).observe(hero);
   }
 
+  /* ---------- Hero: Szene folgt sanft der Maus (Tiefenwirkung, nur Desktop) ---------- */
+  function initPointerParallax() {
+    const hero = $('.hero');
+    if (!MOTION || !hero || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    let tx = 0, ty = 0, cx = 0, cy = 0, raf = null;
+    const loop = () => {
+      cx += (tx - cx) * 0.06;            // weiches Nachziehen
+      cy += (ty - cy) * 0.06;
+      hero.style.setProperty('--mx', cx.toFixed(3));
+      hero.style.setProperty('--my', cy.toFixed(3));
+      raf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.001 ? requestAnimationFrame(loop) : null;
+    };
+    hero.addEventListener('pointermove', (e) => {
+      const r = hero.getBoundingClientRect();
+      tx = -((e.clientX - r.left) / r.width - 0.5) * 2;
+      ty = -((e.clientY - r.top) / r.height - 0.5) * 2;
+      if (!raf) raf = requestAnimationFrame(loop);
+    });
+    hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; if (!raf) raf = requestAnimationFrame(loop); });
+  }
+
+  /* ---------- Endlos-Animationen im Hero pausieren, wenn er nicht zu sehen ist ---------- */
+  function initHeroPause() {
+    const hero = $('.hero');
+    if (!hero || !('IntersectionObserver' in window)) return;
+    new IntersectionObserver(([e]) => hero.classList.toggle('is-offscreen', !e.isIntersecting)).observe(hero);
+  }
+
+  /* ---------- Karten neigen sich 3D-artig zur Maus, mit Lichtreflex ---------- */
+  function initTilt() {
+    if (!MOTION || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    $$('[data-tilt]').forEach((card) => {
+      let glare = null;
+      const ready = () => !card.hasAttribute('data-reveal') || card.classList.contains('is-done');
+      card.addEventListener('pointerenter', () => {
+        if (!glare) { glare = document.createElement('span'); glare.className = 'tilt-glare'; card.appendChild(glare); }
+      });
+      card.addEventListener('pointermove', (e) => {
+        if (!ready()) return;
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;
+        const py = (e.clientY - r.top) / r.height;
+        card.style.transition = 'transform .12s ease-out, box-shadow .35s';
+        card.style.transform = `perspective(900px) rotateX(${((0.5 - py) * 7).toFixed(2)}deg) rotateY(${((px - 0.5) * 9).toFixed(2)}deg) translateY(-4px)`;
+        if (glare) glare.style.transform = `translate(${(px * r.width).toFixed(0)}px, ${(py * r.height).toFixed(0)}px)`;
+      });
+      card.addEventListener('pointerleave', () => {
+        card.style.transition = '';
+        card.style.transform = '';
+      });
+    });
+  }
+
   /* ---------- Start ---------- */
   initNotice();
   updateStatus();
@@ -373,5 +451,8 @@ const OEFFNUNGSZEITEN = {
   initScroll();
   initReveal(todayRow);
   initScrollSpy();
+  initPointerParallax();
+  initHeroPause();
+  initTilt();
   $$('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
 })();
