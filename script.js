@@ -145,7 +145,7 @@ const OEFFNUNGSZEITEN = {
     // Anzahl der Gerichte und Stagger-Index automatisch ergänzen
     cats.forEach((cat) => {
       const dishes = $$('.dish', cat);
-      $('.menu__cat-title', cat).insertAdjacentHTML('beforeend', `<span class="menu__cat-count">${dishes.length} Gerichte</span>`);
+      $('.menu__cat-title', cat).insertAdjacentHTML('beforeend', ` <span class="menu__cat-count">${dishes.length} Gerichte</span>`);
       dishes.forEach((d, i) => d.style.setProperty('--i', i));
     });
 
