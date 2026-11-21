@@ -38,6 +38,19 @@ Die vier großen Platten stehen in `index.html` im Bereich `data-stage` als `<ar
 Titel, Untertitel, Spruch, Zutaten und `[Preis]` lassen sich dort direkt ändern. Die Farbe kommt aus der
 Klasse (`stage__slide--blue`, `--terracotta`, `--olive`, `--night`). Ohne JavaScript stehen die Platten einfach untereinander.
 
+## Gästestimmen (Google-Rezensionen)
+
+Der Bereich `id="stimmen"` zeigt ausgewählte Google-Rezensionen im Wortlaut (gekürzt, Namen abgekürzt).
+Keine Sterne und keine Durchschnittsnote, weil sie nicht vorlagen. Erfundene Bewertungen wären unzulässig.
+**Vor dem Livegang:** entweder das Einverständnis der Verfasser einholen oder die Bewertungen über ein offizielles
+Google-Bewertungs-Widget einbinden. Die Texte gehören den Verfassern.
+
+## Gelbe „prüfen“-Markierungen
+
+Diese Angaben stammen aus Google-Rezensionen bzw. Antworten des Inhabers und müssen mit Janni bestätigt werden:
+Name/Schreibweise „Janni“ und „seit über 20 Jahren“, Lage auf der Gebäuderückseite (Apotheke/Getränkemarkt),
+Parken mit Kennzeichen-Eintrag (Fair Parken), Terrasse, Kinderwagen/Kinder, Gutscheine.
+
 ## Lokal ansehen
 
 - Schnell: `index.html` doppelklicken. Chrome lädt über `file://` aber keine lokalen Schriften, dann erscheinen Ersatzschriften.

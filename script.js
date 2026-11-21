@@ -467,6 +467,22 @@ const OEFFNUNGSZEITEN = {
     });
   }
 
+  /* ---------- Großes Gästezitat: Wörter "leuchten" beim Scrollen nacheinander auf ---------- */
+  function initWordFill() {
+    const fig = $('[data-wordfill]');
+    const gsap = window.gsap;
+    if (!MOTION || !fig || !gsap || !window.ScrollTrigger) return;
+    const p = $('p', fig);
+    const words = p.textContent.trim().split(/\s+/);
+    p.innerHTML = words.map((w) => `<span class="fill-w">${w.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))}</span>`).join(' ');
+    gsap.fromTo($$('.fill-w', p), { opacity: 0.14 }, {
+      opacity: 1,
+      stagger: 0.08,
+      ease: 'none',
+      scrollTrigger: { trigger: fig, start: 'top 80%', end: 'bottom 45%', scrub: true }
+    });
+  }
+
   /* ---------- Großes Foto zieht beim Scrollen auf volle Breite auf ---------- */
   function initBleed() {
     const frame = $('[data-bleed]');
@@ -611,6 +627,7 @@ const OEFFNUNGSZEITEN = {
   initTilt();
   initStage();
   initBleed();
+  initWordFill();
   // Nach dem Laden der Schriften stimmen die Maße – ScrollTrigger neu vermessen
   if (window.ScrollTrigger && document.fonts) document.fonts.ready.then(() => window.ScrollTrigger.refresh());
   $$('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });

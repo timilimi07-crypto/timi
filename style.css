@@ -1854,6 +1854,198 @@ p + p { margin-top: 1rem; }
 /* Sanftes Scrollen (Lenis) verträgt kein CSS-Smooth-Scroll */
 html.lenis { scroll-behavior: auto; }
 
+/* ---------- Markierung: Info aus Google-Rezensionen, vor Livegang mit Inhaber prüfen ---------- */
+.ph-check {
+  display: inline-block;
+  margin-left: .25em;
+  padding: 0 .45em;
+  border-radius: 999px;
+  background: #fff1b8;
+  color: #5a4300;
+  font-family: var(--font-sans);
+  font-size: .62em;
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: .06em;
+  line-height: 1.7;
+  text-transform: uppercase;
+  vertical-align: .2em;
+  cursor: help;
+}
+
+/* ---------- Hero: kleiner Beleg aus den Rezensionen ---------- */
+.hero__proof {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .1rem .45rem;
+  margin-top: 1.5rem;
+  font-size: .92rem;
+  color: rgb(255 255 255 / .85);
+  text-decoration: none;
+  text-shadow: 0 2px 12px rgb(4 23 43 / .7);
+}
+.hero__proof-quote { font-family: var(--font-serif); font-style: italic; font-size: 1.2em; color: var(--gold); }
+.hero__proof-by { opacity: .85; }
+.hero__proof:hover .hero__proof-by { text-decoration: underline; text-underline-offset: 3px; }
+.motion [data-hero="6"] { --h: 6.6; }
+
+/* ---------- Kleine Gästestimmen in anderen Abschnitten ---------- */
+.mini-quote {
+  margin-top: 1rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--terracotta);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.12rem;
+  line-height: 1.45;
+  color: var(--blue);
+}
+.mini-quote span { display: block; margin-top: .3rem; font-family: var(--font-sans); font-style: normal; font-size: .78rem; font-weight: 600; letter-spacing: .04em; color: var(--muted); }
+.mini-quote--light { color: #fff; border-color: var(--gold); }
+.mini-quote--light span { color: rgb(255 255 255 / .7); }
+.motto__voices { display: grid; gap: 1.2rem; max-width: 60rem; text-align: left; }
+@media (min-width: 760px) { .motto__voices { grid-template-columns: 1fr 1fr; gap: 2.5rem; } }
+
+/* ---------- Stimmen unserer Gäste ---------- */
+.reviews { overflow: hidden; }
+.bigquote {
+  max-width: 62rem;
+  margin: 0 auto clamp(2.5rem, 6vw, 4rem);
+  text-align: center;
+}
+.bigquote__text { margin: 0; }
+.bigquote__text p {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(1.9rem, 5.2vw, 4.1rem);
+  line-height: 1.12;
+  letter-spacing: -.01em;
+  color: var(--blue);
+  text-wrap: balance;
+}
+.bigquote__text p::before { content: "„"; color: var(--terracotta); }
+.bigquote__text p::after { content: "“"; color: var(--terracotta); }
+
+.bigquote__by { margin-top: 1.4rem; font-size: .82rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--terracotta-ink); }
+
+.praise {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .6rem;
+  max-width: 54rem;
+  margin: 0 auto clamp(3rem, 7vw, 4.5rem);
+}
+.praise li {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .55rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  font-size: .92rem;
+  font-weight: 500;
+}
+.praise .icon { color: var(--terracotta-ink); width: 1.15rem; height: 1.15rem; }
+
+/* Zwei gegenläufige Bänder mit Rezensionskarten */
+.reviews__rail {
+  display: grid;
+  gap: 1.1rem;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+          mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.reviews__row { display: flex; width: max-content; }
+.reviews__track { display: flex; gap: 1.1rem; padding-right: 1.1rem; }
+.reviews__row--1 { animation: railLeft 70s linear infinite; }
+.reviews__row--2 { animation: railRight 80s linear infinite; }
+.reviews__rail:hover .reviews__row,
+.reviews__rail:focus-within .reviews__row { animation-play-state: paused; }
+@keyframes railLeft { to { transform: translateX(-50%); } }
+@keyframes railRight { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+.review { width: min(78vw, 360px); flex-shrink: 0; }
+.review figure {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.5rem 1.5rem 1.3rem;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out);
+}
+.review figure::before { /* großes Anführungszeichen als Deko */
+  content: "“";
+  position: absolute;
+  right: 1.1rem; top: -.15rem;
+  font-family: var(--font-serif);
+  font-size: 5rem;
+  line-height: 1;
+  color: var(--terracotta);
+  opacity: .22;
+}
+.review figure:hover { transform: translateY(-4px) rotate(-.4deg); box-shadow: var(--shadow-md); }
+.review__tag {
+  align-self: flex-start;
+  margin-bottom: .8rem;
+  padding: .15rem .6rem;
+  border-radius: 999px;
+  background: var(--sand);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--terracotta-ink);
+}
+.review__text { margin: 0 0 1.1rem; flex-grow: 1; }
+.review__text p { font-size: .98rem; line-height: 1.55; color: var(--ink); }
+.review__by { display: flex; align-items: center; gap: .7rem; padding-top: .9rem; border-top: 1px solid var(--line); }
+.review__avatar {
+  display: grid;
+  place-items: center;
+  width: 38px; height: 38px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.reviews__row--2 .review__avatar { background: var(--terracotta-ink); }
+.review__by strong { display: block; font-size: .92rem; }
+.review__by small { display: block; font-size: .76rem; color: var(--muted); }
+
+.reviews__foot { display: flex; flex-direction: column; align-items: center; gap: .8rem; margin-top: clamp(2.5rem, 6vw, 3.5rem); text-align: center; }
+
+/* Reduzierte Bewegung: keine Laufbänder, stattdessen wischbare Reihe */
+@media (prefers-reduced-motion: reduce) {
+  .reviews__rail { -webkit-mask: none; mask: none; }
+  .reviews__row { animation: none !important; transform: none !important; width: auto; overflow-x: auto; padding: .5rem var(--gutter) 1rem; scroll-snap-type: x mandatory; }
+  .reviews__track[aria-hidden="true"] { display: none; }
+  .review { scroll-snap-align: start; }
+}
+
+/* ---------- Anfahrt: Tipp + "Gut zu wissen" ---------- */
+.directions__hint { margin-top: .4rem; font-size: .95rem; color: var(--muted); }
+.directions__hint q { font-family: var(--font-serif); font-style: italic; font-size: 1.1em; color: var(--blue); }
+.goodtoknow {
+  display: grid;
+  gap: .7rem;
+  margin-top: 1.4rem;
+  padding: 1.2rem 1.3rem;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+.goodtoknow li { display: flex; gap: .75rem; align-items: flex-start; font-size: .93rem; line-height: 1.45; }
+.goodtoknow .icon { color: var(--terracotta-ink); margin-top: .1rem; }
+
 /* ==========================================================================
    6. Scroll-Animationen
    Nur aktiv, wenn <html> die Klasse "motion" trägt (JS an + keine reduzierte
