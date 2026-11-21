@@ -336,6 +336,157 @@ const OEFFNUNGSZEITEN = {
     update();
   }
 
+  /* ---------- Sanftes Scrollen (Lenis), gekoppelt an GSAP ScrollTrigger ---------- */
+  let lenis = null;
+  function initSmoothScroll() {
+    if (!MOTION || !window.Lenis) return;
+    const navH = () => ($('.site-header') ? $('.site-header').offsetHeight : 68);
+    lenis = new window.Lenis({ lerp: 0.1, wheelMultiplier: 1, anchors: { offset: -(navH() + 12) }, autoRaf: !window.gsap });
+    if (window.gsap && window.ScrollTrigger) {
+      lenis.on('scroll', window.ScrollTrigger.update);
+      window.gsap.ticker.add((t) => lenis.raf(t * 1000));
+      window.gsap.ticker.lagSmoothing(0);
+    }
+  }
+
+  /* ---------- Ladebildschirm: Zähler 0–100 %, dann fährt der Vorhang hoch ---------- */
+  function initLoader() {
+    const loader = $('.loader');
+    if (!loader || !root.classList.contains('has-loader')) return;
+    root.classList.add('is-intro');          // Hero-Animationen warten
+    if (lenis) lenis.stop();
+    const count = $('[data-loader-count]', loader);
+    const t0 = performance.now();
+    const MIN = 1300, MAX = 4500;            // nie kürzer als 1,3 s, nie länger als 4,5 s
+    let ready = false, shown = 0, done = false;
+
+    const markReady = () => { ready = true; };
+    if (document.readyState === 'complete') markReady(); else window.addEventListener('load', markReady, { once: true });
+
+    const finish = () => {
+      if (done) return;
+      done = true;
+      count.textContent = '100';
+      try { sessionStorage.setItem('xanthi-intro', '1'); } catch (e) { /* privater Modus */ }
+      setTimeout(() => {
+        loader.classList.add('is-leaving');
+        setTimeout(() => {
+          root.classList.remove('is-intro');   // Hero startet, während der Vorhang hochfährt
+          if (lenis) lenis.start();
+          if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+        }, 250);
+        setTimeout(() => { loader.remove(); root.classList.remove('has-loader'); }, 1100);
+      }, 220);
+    };
+
+    const tick = (now) => {
+      const elapsed = now - t0;
+      // bis 90 % zeitbasiert, den Rest erst, wenn die Seite wirklich geladen ist
+      const target = ready && elapsed > MIN ? 100 : Math.min(90, (elapsed / MIN) * 90);
+      shown += (target - shown) * 0.12;
+      count.textContent = Math.round(shown);
+      if ((ready && elapsed > MIN && shown > 99.4) || elapsed > MAX) finish();
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  /* ---------- Überschriften in Wörter zerlegen (für das Aufsteigen aus der Maske) ---------- */
+  function splitTitles() {
+    if (!MOTION) return;
+    $$('.section-title, .cta__title').forEach((el) => {
+      if (el.children.length) return;          // nur reine Text-Überschriften
+      const words = el.textContent.trim().split(/\s+/);
+      el.innerHTML = words.map((w, i) => `<span class="split-w"><span style="--wi:${i}">${w.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))}</span></span>`).join(' ');
+      el.classList.add('is-split');
+    });
+  }
+
+  /* ---------- Spezialitäten-Bühne: fixiert, Farbe/Titel/Zutaten wechseln beim Scrollen ---------- */
+  function initStage() {
+    const stage = $('[data-stage]');
+    const gsap = window.gsap, ST = window.ScrollTrigger;
+    if (!MOTION || !stage || !gsap || !ST) return;   // sonst: Platten stehen untereinander
+    gsap.registerPlugin(ST);
+    ST.config({ ignoreMobileResize: true });
+
+    const slides = $$('.stage__slide', stage);
+    const n = slides.length;
+    // Farbflächen in eine eigene Ebene hinter alle Inhalte verschieben
+    const bgLayer = document.createElement('div');
+    bgLayer.className = 'stage__bgs';
+    const bgs = slides.map((sl) => {
+      const bg = $('.stage__bg', sl);
+      bg.style.setProperty('--c', getComputedStyle(sl).getPropertyValue('--c'));
+      bgLayer.appendChild(bg);
+      return bg;
+    });
+    stage.prepend(bgLayer);
+    stage.classList.add('is-pinned');
+
+    const lines = (i) => $$('.stage__title .line > span', slides[i]);
+    const st = (i) => $$('[data-st]', slides[i]);
+    const floats = (i) => $$('.stage__float', slides[i]);
+    const amph = (i) => $('.stage__amphora', slides[i]);
+    const vh = () => window.innerHeight;
+
+    for (let i = 1; i < n; i++) {
+      gsap.set(bgs[i], { yPercent: 100 });
+      gsap.set(lines(i), { yPercent: 110 });
+      gsap.set(st(i), { autoAlpha: 0, y: 30 });
+      gsap.set(floats(i), { autoAlpha: 0, rotation: -90, y: () => vh() * 0.7 });
+      gsap.set(amph(i), { autoAlpha: 0 });   // es bleibt nur EINE Amphore stehen (die der ersten Platte)
+    }
+
+    const tl = gsap.timeline({ defaults: { ease: 'power2.inOut' } });
+    const HOLD = 0.35, STEP = 1.35;
+    for (let i = 1; i < n; i++) {
+      const t = HOLD + (i - 1) * STEP;
+      tl.to(bgs[i], { yPercent: 0, duration: 1 }, t)
+        .to(floats(i - 1), { y: () => -vh() * 0.75, rotation: '+=140', autoAlpha: 0, duration: 0.7, stagger: 0.06, ease: 'power2.in' }, t)
+        .to(lines(i - 1), { yPercent: -110, duration: 0.45, stagger: 0.06, ease: 'power2.in' }, t + 0.05)
+        .to(st(i - 1), { autoAlpha: 0, y: -24, duration: 0.35, stagger: 0.03, ease: 'power1.in' }, t + 0.05)
+        // die Amphore bleibt stehen und "wippt" beim Wechsel kurz mit
+        .to(amph(0), { rotation: 7, scale: 0.95, duration: 0.45, ease: 'power2.inOut' }, t + 0.1)
+        .to(amph(0), { rotation: 0, scale: 1, duration: 0.5, ease: 'back.out(2)' }, t + 0.55)
+        .to(floats(i), { y: 0, rotation: 0, autoAlpha: 1, duration: 0.7, stagger: 0.08, ease: 'power3.out' }, t + 0.4)
+        .to(lines(i), { yPercent: 0, duration: 0.5, stagger: 0.08, ease: 'power3.out' }, t + 0.55)
+        .to(st(i), { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.05, ease: 'power2.out' }, t + 0.6);
+    }
+    tl.to({}, { duration: HOLD });            // kurz stehen lassen, bevor es weitergeht
+
+    ST.create({
+      trigger: stage,
+      start: 'top top',
+      end: () => `+=${(n - 1) * vh() * 1.2}`,
+      pin: true,
+      scrub: 0.8,
+      animation: tl,
+      anticipatePin: 1,
+      invalidateOnRefresh: true
+    });
+  }
+
+  /* ---------- Großes Foto zieht beim Scrollen auf volle Breite auf ---------- */
+  function initBleed() {
+    const frame = $('[data-bleed]');
+    const gsap = window.gsap;
+    if (!MOTION || !frame || !gsap || !window.ScrollTrigger) return;
+    const section = frame.closest('.bleed');
+    gsap.fromTo(frame, { scale: window.innerWidth < 760 ? 0.86 : 0.74 }, {
+      scale: 1, ease: 'none',
+      scrollTrigger: { trigger: section, start: 'top 85%', end: 'center 55%', scrub: true }
+    });
+    gsap.fromTo($('.bleed__media', frame), { yPercent: -6 }, {
+      yPercent: 6, ease: 'none',
+      scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true }
+    });
+    gsap.fromTo($('.bleed__text', frame), { y: 80, autoAlpha: 0 }, {
+      y: 0, autoAlpha: 1, ease: 'none',
+      scrollTrigger: { trigger: section, start: 'top 60%', end: 'center 50%', scrub: true }
+    });
+  }
+
   /* ---------- Mobiles Menü ---------- */
   function initNav() {
     const toggle = $('.nav__toggle');
@@ -350,6 +501,7 @@ const OEFFNUNGSZEITEN = {
       menu.classList.toggle('is-open', open);
       document.body.classList.toggle('menu-open', open);
       document.body.style.overflow = open ? 'hidden' : '';
+      if (lenis) { if (open) lenis.stop(); else lenis.start(); }
       label.textContent = open ? 'Menü schließen' : 'Menü öffnen';
       $('.site-header').classList.toggle('is-solid', open || window.scrollY > 24);
     };
@@ -442,6 +594,9 @@ const OEFFNUNGSZEITEN = {
   }
 
   /* ---------- Start ---------- */
+  initSmoothScroll();
+  initLoader();
+  splitTitles();
   initNotice();
   updateStatus();
   setInterval(updateStatus, 60 * 1000);
@@ -454,5 +609,9 @@ const OEFFNUNGSZEITEN = {
   initPointerParallax();
   initHeroPause();
   initTilt();
+  initStage();
+  initBleed();
+  // Nach dem Laden der Schriften stimmen die Maße – ScrollTrigger neu vermessen
+  if (window.ScrollTrigger && document.fonts) document.fonts.ready.then(() => window.ScrollTrigger.refresh());
   $$('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
 })();

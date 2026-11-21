@@ -23,6 +23,7 @@
   <!-- Schriften liegen lokal im Ordner /fonts (DSGVO: keine Verbindung zu Google Fonts) -->
   <link rel="preload" href="fonts/cormorant-garamond-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="vendor/lenis.css">
   <link rel="stylesheet" href="style.css">
 
   <!--
@@ -34,7 +35,11 @@
   <script>
     (function (d) {
       var c = 'js';
-      if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) c += ' motion';
+      if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        c += ' motion';
+        // Ladebildschirm nur beim ersten Aufruf pro Browser-Sitzung
+        try { if (!sessionStorage.getItem('xanthi-intro')) c += ' has-loader'; } catch (e) {}
+      }
       d.documentElement.className = c;
     })(document);
   </script>
@@ -81,6 +86,10 @@
   }
   </script>
 
+  <!-- Animations-Bibliotheken, lokal gehostet (siehe vendor/README.txt) -->
+  <script src="vendor/gsap.min.js" defer></script>
+  <script src="vendor/ScrollTrigger.min.js" defer></script>
+  <script src="vendor/lenis.min.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 
@@ -143,7 +152,105 @@
         <ellipse cx="164" cy="44" rx="4.5" ry="6" transform="rotate(-20 164 44)"/>
       </g>
     </symbol>
+
+    <!-- ===== Bühnen-Grafiken: Amphore + Zutaten (Verläufe in <defs>) ===== -->
+    <defs>
+      <radialGradient id="gr-amph" cx="35%" cy="35%" r="75%"><stop offset="0" stop-color="#e59a68"/><stop offset=".55" stop-color="#c2683f"/><stop offset="1" stop-color="#7a3518"/></radialGradient>
+      <linearGradient id="gr-amph-neck" x1="0" x2="1"><stop offset="0" stop-color="#d98457"/><stop offset=".6" stop-color="#b65c34"/><stop offset="1" stop-color="#7a3518"/></linearGradient>
+      <radialGradient id="gr-tomato" cx="35%" cy="35%" r="70%"><stop offset="0" stop-color="#ff8a6a"/><stop offset=".5" stop-color="#e8402a"/><stop offset="1" stop-color="#a51d12"/></radialGradient>
+      <radialGradient id="gr-olive" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#a9b45a"/><stop offset=".6" stop-color="#6b7a3a"/><stop offset="1" stop-color="#3a4318"/></radialGradient>
+      <radialGradient id="gr-olive-dark" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#7a5a7a"/><stop offset=".6" stop-color="#3e2a3e"/><stop offset="1" stop-color="#1c1220"/></radialGradient>
+      <radialGradient id="gr-lemon" cx="50%" cy="50%" r="55%"><stop offset="0" stop-color="#fff6c4"/><stop offset=".8" stop-color="#ffe26a"/><stop offset="1" stop-color="#f5c623"/></radialGradient>
+      <linearGradient id="gr-anise" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a86a3c"/><stop offset="1" stop-color="#5a3418"/></linearGradient>
+      <linearGradient id="gr-chili" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff6b4a"/><stop offset=".6" stop-color="#d4261a"/><stop offset="1" stop-color="#8e140c"/></linearGradient>
+      <radialGradient id="gr-garlic" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#fffaf0"/><stop offset=".7" stop-color="#efe4d0"/><stop offset="1" stop-color="#c9b89a"/></radialGradient>
+      <pattern id="pat-meander" width="20" height="16" patternUnits="userSpaceOnUse"><path d="M0 15H20M3 15V3H17V12H7V6H13V9" fill="none" stroke="#e59a68" stroke-width="1.6"/></pattern>
+    </defs>
+
+    <symbol id="g-amphora" viewBox="0 0 200 330">
+      <ellipse cx="100" cy="322" rx="58" ry="7" fill="#000" opacity=".18"/>
+      <path d="M80 38C48 30 40 74 64 96" fill="none" stroke="#9a4824" stroke-width="7" stroke-linecap="round"/>
+      <path d="M120 38c32-8 40 36 16 58" fill="none" stroke="#9a4824" stroke-width="7" stroke-linecap="round"/>
+      <path d="M82 22c0 26-4 44-18 58-34 32-44 82-30 130 12 42 42 76 58 88h16c16-12 46-46 58-88 14-48 4-98-30-130-14-14-18-32-18-58Z" fill="url(#gr-amph)"/>
+      <path d="M82 22c0 26-4 44-18 58l72 0c-14-14-18-32-18-58Z" fill="url(#gr-amph-neck)"/>
+      <rect x="70" y="10" width="60" height="14" rx="5" fill="#9a4824"/>
+      <path d="M33 150c45 10 89 10 134 0l3 40c-47 11-93 11-140 0Z" fill="#1d1410"/>
+      <path d="M33 150c45 10 89 10 134 0l3 40c-47 11-93 11-140 0Z" fill="url(#pat-meander)" opacity=".9"/>
+      <path d="M44 214c38 9 74 9 112 0" fill="none" stroke="#1d1410" stroke-width="4"/>
+      <path d="M50 120c33 7 67 7 100 0" fill="none" stroke="#1d1410" stroke-width="3"/>
+      <path d="M58 100c-14 26-18 56-12 84" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="7" stroke-linecap="round"/>
+      <path d="M88 298l-8 18h40l-8-18Z" fill="#7a3518"/>
+    </symbol>
+
+    <symbol id="g-tomato" viewBox="0 0 100 100">
+      <circle cx="50" cy="56" r="38" fill="url(#gr-tomato)"/>
+      <ellipse cx="36" cy="42" rx="9" ry="5" fill="#fff" opacity=".35" transform="rotate(-30 36 42)"/>
+      <path d="M50 16l5 11 12-3-8 9 9 8-12-1-6 10-6-10-12 1 9-8-8-9 12 3Z" fill="#3f7a2a"/>
+      <path d="M50 16V6" stroke="#3f7a2a" stroke-width="3" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="g-olives" viewBox="0 0 100 100">
+      <path d="M50 10C60 30 70 34 88 30" fill="none" stroke="#5b6b2a" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M70 30c4-10 14-14 24-12-2 10-12 16-24 12Z" fill="#6b7a3a"/>
+      <ellipse cx="38" cy="58" rx="20" ry="27" fill="url(#gr-olive)" transform="rotate(-18 38 58)"/>
+      <ellipse cx="66" cy="66" rx="17" ry="23" fill="url(#gr-olive-dark)" transform="rotate(22 66 66)"/>
+      <ellipse cx="31" cy="46" rx="4" ry="7" fill="#fff" opacity=".35" transform="rotate(-18 31 46)"/>
+      <ellipse cx="61" cy="56" rx="3" ry="6" fill="#fff" opacity=".3" transform="rotate(22 61 56)"/>
+    </symbol>
+    <symbol id="g-lemon" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="44" fill="#f2c21b"/>
+      <circle cx="50" cy="50" r="39" fill="#fff8d6"/>
+      <circle cx="50" cy="50" r="35" fill="url(#gr-lemon)"/>
+      <g stroke="#fff8d6" stroke-width="3"><path d="M50 15V85M15 50H85M25 25l50 50M75 25 25 75"/></g>
+      <circle cx="50" cy="50" r="5" fill="#fff8d6"/>
+    </symbol>
+    <symbol id="g-anise" viewBox="0 0 100 100">
+      <g fill="url(#gr-anise)">
+        <path id="anise-pod" d="M50 50C44 36 44 20 50 8c6 12 6 28 0 42Z"/>
+        <use href="#anise-pod" transform="rotate(45 50 50)"/><use href="#anise-pod" transform="rotate(90 50 50)"/><use href="#anise-pod" transform="rotate(135 50 50)"/>
+        <use href="#anise-pod" transform="rotate(180 50 50)"/><use href="#anise-pod" transform="rotate(225 50 50)"/><use href="#anise-pod" transform="rotate(270 50 50)"/><use href="#anise-pod" transform="rotate(315 50 50)"/>
+      </g>
+      <g fill="#e0b07a"><ellipse cx="50" cy="26" rx="3" ry="5"/><ellipse cx="74" cy="50" rx="5" ry="3"/><ellipse cx="50" cy="74" rx="3" ry="5"/><ellipse cx="26" cy="50" rx="5" ry="3"/></g>
+      <circle cx="50" cy="50" r="6" fill="#4a2a12"/>
+    </symbol>
+    <symbol id="g-garlic" viewBox="0 0 100 100">
+      <path d="M50 8c4 10 4 16 8 22 18 8 32 22 32 40 0 16-18 24-40 24S10 86 10 70c0-18 14-32 32-40 4-6 4-12 8-22Z" fill="url(#gr-garlic)"/>
+      <g fill="none" stroke="#c9b89a" stroke-width="2"><path d="M50 32c-8 18-8 40 0 60"/><path d="M38 38c-12 14-14 36-6 52"/><path d="M62 38c12 14 14 36 6 52"/></g>
+      <path d="M40 94c6 3 14 3 20 0" stroke="#a89878" stroke-width="2" fill="none"/>
+    </symbol>
+    <symbol id="g-chili" viewBox="0 0 100 100">
+      <path d="M72 20c-6 30-22 54-58 72 0 0 6 4 14 0 34-16 52-40 56-68Z" fill="url(#gr-chili)"/>
+      <path d="M70 22c4-6 10-8 16-6l-2 6c-4-1-8 0-10 4Z" fill="#3f7a2a"/>
+      <path d="M80 16c2-6 6-10 12-10" stroke="#3f7a2a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M62 34c-4 14-12 26-24 36" stroke="#fff" stroke-opacity=".35" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="g-herbs" viewBox="0 0 100 100">
+      <path d="M20 90C40 60 56 36 84 10" fill="none" stroke="#4f6a24" stroke-width="2.5" stroke-linecap="round"/>
+      <g fill="#6b8a34">
+        <path d="M34 70c-14-2-22-10-24-20 12 0 22 8 24 20Z"/><path d="M38 66c2-14 10-22 20-24 0 12-8 22-20 24Z"/>
+        <path d="M50 50c-14-2-22-10-24-20 12 0 22 8 24 20Z"/><path d="M54 46c2-14 10-22 20-24 0 12-8 22-20 24Z"/>
+        <path d="M66 30c-12-2-18-8-20-16 10 0 18 6 20 16Z"/><path d="M70 26c2-12 8-18 16-20 0 10-6 18-16 20Z"/>
+      </g>
+    </symbol>
+
+    <!-- Münze für den Ladebildschirm (Drachme-Optik) -->
+    <symbol id="g-coin" viewBox="0 0 100 100">
+      <defs><radialGradient id="gr-coin" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#fbe7b8"/><stop offset=".55" stop-color="#d9b98a"/><stop offset="1" stop-color="#9c7440"/></radialGradient></defs>
+      <circle cx="50" cy="50" r="48" fill="url(#gr-coin)"/>
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#8a6534" stroke-width="1.5" stroke-dasharray="2 3.2"/>
+      <circle cx="50" cy="50" r="34" fill="none" stroke="#8a6534" stroke-width="1"/>
+      <text x="50" y="64" text-anchor="middle" font-family="Georgia, serif" font-size="40" font-weight="700" fill="#6e4b22">X</text>
+    </symbol>
   </svg>
+
+  <!-- Ladebildschirm (nur beim ersten Besuch pro Sitzung, nur mit JS + Animationen) -->
+  <div class="loader" aria-hidden="true">
+    <div class="loader__glow"></div>
+    <svg class="loader__coin"><use href="#g-coin"/></svg>
+    <p class="loader__count"><span data-loader-count>0</span> %</p>
+  </div>
+
+  <!-- Filmkorn über der ganzen Seite (reine Deko) -->
+  <div class="grain" aria-hidden="true"></div>
 
   <a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
 
@@ -360,51 +467,99 @@
           <p class="kicker" data-reveal>Hausspezialitäten</p>
           <h2 class="section-title" id="specials-title" data-reveal>Vom Grill, für den großen Hunger</h2>
           <div class="meander meander--small meander--center" aria-hidden="true" data-meander><span class="meander__track"><span class="meander__art"></span></span></div>
-          <p class="lead" data-reveal>Unsere Grillplatten sind Klassiker – und alle mit Salat und hausgemachtem Tzatziki. Wer sich nicht entscheiden kann, nimmt einfach von allem.</p>
+          <p class="lead" data-reveal>Unsere Grillplatten sind Klassiker – und alle mit Salat und Tzatziki. Wer sich nicht entscheiden kann, nimmt einfach von allem.</p>
         </header>
 
-        <div class="specials__grid" data-reveal-group>
-          <article class="special special--featured" data-reveal data-tilt>
-            <figure class="ph ph--flat">
-              <div class="ph__inner" role="img" aria-label="Platzhalter für ein Foto der Xanthi-Platte">
-                <svg class="icon" aria-hidden="true"><use href="#i-camera"/></svg>
-                <span class="ph__label">Foto: Xanthi-Platte</span>
-                <span class="ph__hint">Platzhalter – echtes Foto folgt</span>
-              </div>
-            </figure>
-            <div class="special__body">
-              <p class="special__tag">Für 2 Personen · Unser Namensgeber</p>
-              <h3 class="special__name">Xanthi-Platte</h3>
-              <ul class="chips" aria-label="Zutaten">
-                <li>Gyros</li><li>2 Steaks</li><li>2 Spieße</li><li>2 Hackröllchen</li><li>2 Lammkoteletts</li><li>Salat</li><li>Tzatziki</li><li>Pommes</li>
-              </ul>
-              <p class="special__price"><mark class="ph-text">[Preis]</mark></p>
-            </div>
-          </article>
+      </div>
 
+      <!-- Fixierte Bühne: beim Scrollen bleibt die Amphore stehen, Farbe, Titel und Zutaten wechseln.
+           Ohne JS / bei reduzierter Bewegung stehen die vier Platten einfach untereinander. -->
+      <div class="stage" data-stage>
+        <article class="stage__slide stage__slide--blue" aria-labelledby="stage-t0">
+          <div class="stage__bg"></div>
+          <p class="stage__num" data-st>01 <span>/ 04</span></p>
+          <div class="stage__head">
+            <h3 class="stage__title" id="stage-t0"><span class="line"><span>Xanthi-</span></span><span class="line"><span>Platte</span></span></h3>
+            <p class="stage__sub" data-st>Für 2 Personen · unser Namensgeber</p>
+          </div>
+          <div class="stage__object" aria-hidden="true">
+            <span class="stage__float stage__float--f1"><svg><use href="#g-tomato"/></svg></span><span class="stage__float stage__float--f2"><svg><use href="#g-olives"/></svg></span><span class="stage__float stage__float--f3"><svg><use href="#g-lemon"/></svg></span>
+            <span class="stage__amphora"><svg><use href="#g-amphora"/></svg></span>
+          </div>
+          <p class="stage__tag" data-st>Zu zweit bestellen, <em>gemeinsam schwärmen.</em></p>
+          <div class="stage__ingr" data-st>
+            <p class="stage__label">Auf dem Teller</p>
+            <p>Gyros, 2 Steaks, 2 Spieße, 2 Hackröllchen, 2 Lammkoteletts, Salat, Tzatziki, Pommes</p>
+          </div>
+          <p class="stage__price" data-st><mark class="ph-text">[Preis]</mark></p>
+        </article>
+        <article class="stage__slide stage__slide--terracotta" aria-labelledby="stage-t1">
+          <div class="stage__bg"></div>
+          <p class="stage__num" data-st>02 <span>/ 04</span></p>
+          <div class="stage__head">
+            <h3 class="stage__title" id="stage-t1"><span class="line"><span>Ouzo-</span></span><span class="line"><span>Teller</span></span></h3>
+            <p class="stage__sub" data-st>Grillteller mit Ouzo</p>
+          </div>
+          <div class="stage__object" aria-hidden="true">
+            <span class="stage__float stage__float--f1"><svg><use href="#g-anise"/></svg></span><span class="stage__float stage__float--f2"><svg><use href="#g-lemon"/></svg></span><span class="stage__float stage__float--f3"><svg><use href="#g-olives"/></svg></span>
+            <span class="stage__amphora"><svg><use href="#g-amphora"/></svg></span>
+          </div>
+          <p class="stage__tag" data-st>Der einzige Teller, der <em>„Jamas!“</em> sagt.</p>
+          <div class="stage__ingr" data-st>
+            <p class="stage__label">Auf dem Teller</p>
+            <p>Gyros, 1 Spieß, 1 Steak, 1 Hackröllchen, Salat, Tzatziki, Pommes – und 1 Ouzo</p>
+          </div>
+          <p class="stage__price" data-st><mark class="ph-text">[Preis]</mark></p>
+        </article>
+        <article class="stage__slide stage__slide--olive" aria-labelledby="stage-t2">
+          <div class="stage__bg"></div>
+          <p class="stage__num" data-st>03 <span>/ 04</span></p>
+          <div class="stage__head">
+            <h3 class="stage__title" id="stage-t2"><span class="line"><span>Aimonio-</span></span><span class="line"><span>Platte</span></span></h3>
+            <p class="stage__sub" data-st>Lamm · Hähnchen · Scampi</p>
+          </div>
+          <div class="stage__object" aria-hidden="true">
+            <span class="stage__float stage__float--f1"><svg><use href="#g-garlic"/></svg></span><span class="stage__float stage__float--f2"><svg><use href="#g-herbs"/></svg></span><span class="stage__float stage__float--f3"><svg><use href="#g-lemon"/></svg></span>
+            <span class="stage__amphora"><svg><use href="#g-amphora"/></svg></span>
+          </div>
+          <p class="stage__tag" data-st>Das Beste von <em>Land und Meer</em> auf einem Teller.</p>
+          <div class="stage__ingr" data-st>
+            <p class="stage__label">Auf dem Teller</p>
+            <p>Lammfilet, Lammkotelett, Hähnchenfilet, Scampi, Tzatziki, Salat, Fladenbrot</p>
+          </div>
+          <p class="stage__price" data-st><mark class="ph-text">[Preis]</mark></p>
+        </article>
+        <article class="stage__slide stage__slide--night" aria-labelledby="stage-t3">
+          <div class="stage__bg"></div>
+          <p class="stage__num" data-st>04 <span>/ 04</span></p>
+          <div class="stage__head">
+            <h3 class="stage__title" id="stage-t3"><span class="line"><span>Olympos-</span></span><span class="line"><span>Teller</span></span></h3>
+            <p class="stage__sub" data-st>Gyros, Steak &amp; Leber</p>
+          </div>
+          <div class="stage__object" aria-hidden="true">
+            <span class="stage__float stage__float--f1"><svg><use href="#g-chili"/></svg></span><span class="stage__float stage__float--f2"><svg><use href="#g-tomato"/></svg></span><span class="stage__float stage__float--f3"><svg><use href="#g-herbs"/></svg></span>
+            <span class="stage__amphora"><svg><use href="#g-amphora"/></svg></span>
+          </div>
+          <p class="stage__tag" data-st>Ein Teller, so <em>göttlich</em> wie sein Name.</p>
+          <div class="stage__ingr" data-st>
+            <p class="stage__label">Auf dem Teller</p>
+            <p>Gyros, 1 Steak, Leber, Salat, Tzatziki, Pommes</p>
+          </div>
+          <p class="stage__price" data-st><mark class="ph-text">[Preis]</mark></p>
+        </article>
+      </div>
+
+      <div class="container">
+        <h3 class="h3 specials__more" data-reveal-group><span data-reveal>Außerdem vom Grill</span></h3>
+        <div class="specials__grid" data-reveal-group>
           <article class="special" data-reveal data-tilt>
             <h3 class="special__name">Kosynthos-Platte</h3>
             <p class="special__desc">Gyros, 1 Spieß, 1 Hackröllchen, 1 Steak, 1 Lammkotelett, Salat, Tzatziki, Pommes</p>
             <p class="special__price"><mark class="ph-text">[Preis]</mark></p>
           </article>
           <article class="special" data-reveal data-tilt>
-            <h3 class="special__name">Ouzo-Teller</h3>
-            <p class="special__desc">Gyros, 1 Spieß, 1 Steak, 1 Hackröllchen, Salat, Tzatziki, Pommes – <em>und 1 Ouzo</em></p>
-            <p class="special__price"><mark class="ph-text">[Preis]</mark></p>
-          </article>
-          <article class="special" data-reveal data-tilt>
-            <h3 class="special__name">Aimonio-Platte</h3>
-            <p class="special__desc">Lammfilet, Lammkotelett, Hähnchenfilet, Scampi, Tzatziki, Salat, Fladenbrot</p>
-            <p class="special__price"><mark class="ph-text">[Preis]</mark></p>
-          </article>
-          <article class="special" data-reveal data-tilt>
             <h3 class="special__name">Athen-Teller</h3>
             <p class="special__desc">Gyros, 1 Spieß, 1 Hackröllchen, Salat, Tzatziki, Pommes</p>
-            <p class="special__price"><mark class="ph-text">[Preis]</mark></p>
-          </article>
-          <article class="special" data-reveal data-tilt>
-            <h3 class="special__name">Olympos-Teller</h3>
-            <p class="special__desc">Gyros, 1 Steak, Leber, Salat, Tzatziki, Pommes</p>
             <p class="special__price"><mark class="ph-text">[Preis]</mark></p>
           </article>
           <article class="special" data-reveal data-tilt>
@@ -416,7 +571,7 @@
       </div>
     </section>
 
-    <!-- 7. Speisekarte (wird aus dem Objekt SPEISEKARTE in script.js erzeugt) -->
+    <!-- 7. Speisekarte (steht direkt im HTML, die Tabs ergänzt script.js) -->
     <section class="section menu" id="speisekarte" aria-labelledby="menu-title">
       <div class="container">
         <header class="section-head" data-reveal-group>
@@ -682,6 +837,20 @@
           <p class="h3" data-reveal>Sprechen Sie mit uns!</p>
           <a class="btn btn--primary btn--lg" href="tel:+493820776968" data-reveal><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>038207 76968</a>
         </div>
+      </div>
+    </section>
+
+    <!-- Vollbild-Foto, das beim Scrollen von klein auf volle Breite wächst -->
+    <section class="bleed" aria-label="Stimmungsbild">
+      <div class="bleed__frame" data-bleed>
+        <figure class="ph ph--dark bleed__media">
+          <div class="ph__inner" role="img" aria-label="Platzhalter für ein großes Stimmungsfoto aus dem Restaurant">
+            <svg class="icon" aria-hidden="true"><use href="#i-camera"/></svg>
+            <span class="ph__label">Foto: Stimmungsbild aus dem Restaurant</span>
+            <span class="ph__hint">Platzhalter – echtes Foto folgt</span>
+          </div>
+        </figure>
+        <p class="bleed__text" aria-hidden="true">Griechenland-Urlaub<br><em>nur ohne Flug.</em></p>
       </div>
     </section>
 

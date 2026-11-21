@@ -10,6 +10,7 @@ xanthi-demo/
 ├── script.js     OBEN: Hinweisfeld (Betriebsurlaub) + Öffnungszeiten für den Live-Status
 │                 UNTEN: Live-Status, Speisekarten-Tabs, Scroll-Animationen, Navigation
 ├── fonts/        Cormorant Garamond, Inter, GFS Didot (griechisch), lokal (SIL Open Font License)
+├── vendor/       GSAP + ScrollTrigger (fixierte Bühne) und Lenis (sanftes Scrollen), lokal gehostet
 ├── favicon.svg
 ├── robots.txt    Demo: alles gesperrt
 └── netlify.toml  Netlify-Konfiguration (noindex-Header, Caching)
@@ -30,6 +31,12 @@ Die Karte steht direkt in `index.html`, im Abschnitt `id="speisekarte"` (am Komm
 - **Neue Kategorie:** einen `<section class="menu__cat">`-Block kopieren. `data-tab` ist die Beschriftung des Tabs, die `id` muss eindeutig sein.
 
 Die Tabs und die Anzahl der Gerichte erzeugt JavaScript automatisch. Ohne JavaScript steht die ganze Karte untereinander da.
+
+## Hausspezialitäten (die farbige Bühne)
+
+Die vier großen Platten stehen in `index.html` im Bereich `data-stage` als `<article class="stage__slide …">`.
+Titel, Untertitel, Spruch, Zutaten und `[Preis]` lassen sich dort direkt ändern. Die Farbe kommt aus der
+Klasse (`stage__slide--blue`, `--terracotta`, `--olive`, `--night`). Ohne JavaScript stehen die Platten einfach untereinander.
 
 ## Lokal ansehen
 
