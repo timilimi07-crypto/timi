@@ -24,6 +24,7 @@ body.nogl{background:linear-gradient(180deg,#e30613 0,#8a0a10 30%,#efece6 55%)}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
 canvas#bg{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block}
+.grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.06;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 canvas#fx{position:fixed;inset:0;width:100vw;height:100vh;z-index:3;pointer-events:none;display:block}
 main{position:relative;z-index:1}
 .ln{display:block;overflow:hidden;padding:0 .1em 0 .02em;margin:0 -.1em 0 -.02em}
@@ -32,20 +33,6 @@ main{position:relative;z-index:1}
 .eyebrow{font-family:var(--hd);font-weight:700;text-transform:uppercase;letter-spacing:.16em;font-size:13px;display:flex;align-items:center;gap:10px;margin:0 0 14px}
 .eyebrow::before{content:"";width:26px;height:3px;background:currentColor;transform:skewX(-20deg)}
 :focus-visible{outline:2px solid var(--red2);outline-offset:3px;border-radius:6px}
-
-/* ---------- Preloader ---------- */
-#pre{position:fixed;inset:0;z-index:100;background:var(--paper);display:grid;place-items:center;transition:clip-path 1.1s cubic-bezier(.76,0,.24,1);clip-path:inset(0 0 0 0)}
-#pre.done{clip-path:inset(0 0 100% 0)}
-#pre .glow{position:absolute;left:50%;bottom:-48vh;width:130vw;height:90vh;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,#e30613cc,#e3061355 45%,transparent 75%);filter:blur(20px)}
-.coin{width:92px;height:92px;position:relative;transform-style:preserve-3d;animation:spin 1.6s cubic-bezier(.6,0,.4,1) infinite}
-.coin .face{position:absolute;inset:0;border-radius:50%;display:grid;place-items:center;backface-visibility:hidden;
-  background:radial-gradient(circle,#e30613 0 52%,#fff 53% 58%,transparent 59%),repeating-conic-gradient(#d9d9d9 0 6deg,#9e9e9e 6deg 12deg);
-  box-shadow:inset 0 0 0 3px #0002,0 10px 24px -8px #0006}
-.coin .face span{font-family:var(--hd);font-weight:800;font-style:italic;font-size:34px;color:#fff;line-height:1}
-.coin .b{transform:rotateY(180deg)}
-.coin .b span{font-size:22px}
-@keyframes spin{0%{transform:rotateY(0) rotateZ(-8deg)}50%{transform:rotateY(180deg) rotateZ(8deg)}100%{transform:rotateY(360deg) rotateZ(-8deg)}}
-#pre .pct{position:absolute;left:50%;bottom:7vh;transform:translateX(-50%);font-family:var(--hd);font-weight:800;font-style:italic;font-size:20px;color:#fff;letter-spacing:.06em;z-index:1}
 
 /* ---------- Header ---------- */
 .hd{position:fixed;left:0;right:0;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:18px clamp(16px,3vw,36px);color:#fff;transition:color .35s;pointer-events:none}
@@ -67,7 +54,7 @@ main{position:relative;z-index:1}
 
 /* ---------- Hero ---------- */
 #hero{height:100vh;height:100svh;position:relative;display:grid;place-items:center;overflow:hidden}
-.wm{margin:0;text-align:center;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(88px,18.5vw,340px);line-height:.8;letter-spacing:-.005em;will-change:transform,opacity,filter}
+.wm{margin:0;text-align:center;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(88px,18.5vw,340px);line-height:.8;letter-spacing:-.005em;will-change:transform,opacity}
 .wm .ln:nth-child(2)>span{transition-delay:.08s}
 .wm b{color:transparent;-webkit-text-stroke:.03em #fff}
 body.ready .wm .ln>span{transform:none}
@@ -129,7 +116,7 @@ body.ready .hero-meta{opacity:1}
 .st-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px;row-gap:12vh}
 .st-small{grid-column:1/4;font-size:14px;line-height:1.55;font-weight:500;align-self:start}
 .st-small b{display:block;font-family:var(--hd);font-weight:800;text-transform:uppercase;letter-spacing:.1em;font-size:14px;color:var(--red);margin-bottom:8px}
-.stamp{margin:0;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(66px,11.5vw,210px);line-height:.84;color:var(--red);filter:url(#stamp)}
+.stamp{margin:0;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(66px,11.5vw,210px);line-height:.84;color:var(--red);-webkit-mask-image:var(--grain);mask-image:var(--grain);-webkit-mask-size:150px;mask-size:150px}
 .st-h1{grid-column:4/13}
 .st-h2{grid-column:1/11}
 .st-p{grid-column:8/12;font-size:16px;line-height:1.6;color:#2a2a2c}
@@ -154,7 +141,8 @@ body.ready .hero-meta{opacity:1}
 #coach{height:250vh;position:relative;z-index:4}
 .cstage{position:sticky;top:0;height:100vh;height:100svh}
 .cpanel{position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 80% 20%,#5a0309,transparent 70%),radial-gradient(ellipse 50% 50% at 10% 100%,#3a0206,transparent 70%),#0b0b0c;
-  clip-path:inset(var(--it,12vh) var(--is,16vw) var(--it,12vh) var(--is,16vw) round var(--r,32px));overflow:hidden;color:#fff}
+  transform:scale(.7);border-radius:28px;will-change:transform;overflow:hidden;color:#fff;contain:paint}
+.cpanel.flush{border-radius:0}
 .cbg{position:absolute;top:50%;left:0;white-space:nowrap;font-family:var(--hd);font-weight:800;font-style:italic;font-size:32vw;line-height:.8;text-transform:uppercase;color:transparent;-webkit-text-stroke:1.5px #ffffff14;transform:translateY(-50%);will-change:transform}
 .cin{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 clamp(16px,5vw,80px);will-change:transform}
 .cin h2{margin:0;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(56px,9vw,160px);line-height:.86}
@@ -244,36 +232,16 @@ footer{position:relative;color:var(--ink);background:var(--paper);overflow:hidde
 @media(prefers-reduced-motion:reduce){.coin,.ring svg.t,.ring .ar svg,.pulse{animation:none}}
 </style>
 
-<!-- Bibliotheken: zuerst CDN, sonst lokale Kopie aus vendor/ -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
-<script>window.THREE||document.write('<script src="vendor/three.min.js"><\/script>')</script>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-<script>window.Lenis||document.write('<script src="vendor/lenis.min.js"><\/script>')</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
-<script>window.Matter||document.write('<script src="vendor/matter.min.js"><\/script>')</script>
 </head>
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <filter id="stamp" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="3" result="n"/>
-      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -4 2.55" result="holes"/>
-      <feComposite in="SourceGraphic" in2="holes" operator="in" result="punched"/>
-      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="8" result="w"/>
-      <feDisplacementMap in="punched" in2="w" scale="5" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-  </defs>
   <symbol id="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
 </svg>
 
-<div id="pre" aria-hidden="true">
-  <div class="glow"></div>
-  <div class="coin"><div class="face f"><span>24</span></div><div class="face b"><span>2007</span></div></div>
-  <div class="pct">0 %</div>
-</div>
 
 <canvas id="bg" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
 <canvas id="fx" aria-hidden="true"></canvas>
 
 <header class="hd" data-theme="light">
@@ -283,7 +251,7 @@ footer{position:relative;color:var(--ink);background:var(--paper);overflow:hidde
   </a>
   <nav>
     <a class="pillbtn hide-m" href="#coach" data-to="#coach"><span>Coaching</span></a>
-    <a class="pillbtn solid" href="shop.html#/shop"><span>Zum Shop</span></a>
+    <a class="pillbtn solid" href="shop.html#/k/nahrungsergaenzungen"><span>Zum Shop</span></a>
   </nav>
 </header>
 
@@ -422,7 +390,7 @@ footer{position:relative;color:var(--ink);background:var(--paper);overflow:hidde
     </div>
     <div class="fbot">
       <div class="small-mq"><div class="tr" id="mq2"></div></div>
-      <div class="legal"><a href="shop.html">Shop-Prototyp</a><a href="shop.html#/shop">Shop</a><a href="shop.html#/coaching">Coaching</a><span>Impressum</span><span>Datenschutz</span><span>AGB</span><span>Unverbindliches Redesign-Konzept – keine offizielle Website von Eiweissdealer24</span></div>
+      <div class="legal"><a href="shop.html">Shop-Prototyp</a><a href="shop.html#/k/nahrungsergaenzungen">Shop</a><a href="shop.html#/coaching">Coaching</a><span>Impressum</span><span>Datenschutz</span><span>AGB</span><span>Unverbindliches Redesign-Konzept – keine offizielle Website von Eiweissdealer24</span></div>
     </div>
   </footer>
 </main>
@@ -430,7 +398,20 @@ footer{position:relative;color:var(--ink);background:var(--paper);overflow:hidde
 <div class="concept">Redesign-Konzept · Prototyp</div>
 
 <script>
+document.body.classList.add('ready');
+/* Stempel-Maske einmalig erzeugen */
+(() => { try { const c = document.createElement('canvas'); c.width = c.height = 150; const x = c.getContext('2d'); x.fillStyle = '#000'; x.fillRect(0, 0, 150, 150); x.globalCompositeOperation = 'destination-out';
+  for (let i = 0; i < 520; i++) { x.globalAlpha = .35 + Math.random() * .65; x.beginPath(); x.arc(Math.random() * 150, Math.random() * 150, Math.random() * 1.6 + .3, 0, 7); x.fill(); }
+  document.documentElement.style.setProperty('--grain', `url(${c.toDataURL()})`); } catch (e) {} })();
+/* Bibliotheken nicht-blockierend laden: CDN, sonst lokale Kopie */
 (() => {
+  const load = src => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+  const libs = [['THREE', 'https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js', 'vendor/three.min.js'],
+    ['Lenis', 'https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js', 'vendor/lenis.min.js'],
+    ['Matter', 'https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js', 'vendor/matter.min.js']];
+  Promise.all(libs.map(([g, cdn, local]) => window[g] ? 0 : load(cdn).catch(() => load(local)).catch(() => 0))).then(() => start());
+})();
+function start() {
 'use strict';
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -445,13 +426,13 @@ const SKY = 'M0 20V14h8v-4h6v4h6V8l3-6 3 6v6h8v-3h8v3h6V6h2V3h2v3h2v8h8V9h8v5h6v
 
 /* ---------- Kapitel: Eigenmarke ---------- */
 const CH = [
-  {l1:'PREMIUM', l2:'WHEY MIX', col:'#e30613', body:'#121212', eye:'Muskelaufbau', t:['Premium','Whey Mix'], sub:'Wheyprotein · Eiweissdealer24 Eigenmarke',
-   tag:'Muskeln brauchen <em>Material.</em> Hier ist es.', info:'Protein trägt zu einer Zunahme an Muskelmasse bei. Cremig, vielseitig, in mehreren Geschmäckern.'},
-  {l1:'KREATIN', l2:'HCL PULVER', col:'#ff5a00', body:'#121212', eye:'Kraft', t:['Kreatin','HCL'], sub:'Kreatin · Eiweissdealer24 Eigenmarke',
+  {id:1226, price:'ab 34,90 €', l1:'WHEY', l2:'PROTEIN', col:'#e30613', body:'#121212', eye:'Muskelaufbau', t:['Classic','Whey Protein'], sub:'Wheyprotein · Eiweissdealer24 Eigenmarke',
+   tag:'Muskeln brauchen <em>Material.</em> Hier ist es.', info:'Protein trägt zu einer Zunahme an Muskelmasse bei. Als Cookies &amp; Cream, Vanille oder Schokolade – in 750 g oder 1 kg.'},
+  {id:1120, price:'34,90 €', l1:'CREATIN', l2:'MONOHYDRAT', col:'#ff5a00', body:'#121212', eye:'Kraft', t:['Creatin','Monohydrat'], sub:'Kreatin · Eiweissdealer24 Eigenmarke',
    tag:'Für den <em>letzten Satz,</em> der eigentlich zu viel ist.', info:'Kreatin erhöht die körperliche Leistung bei Schnellkrafttraining im Rahmen kurzzeitiger intensiver Belastungen.*', note:'* bei einer täglichen Aufnahme von 3 g Kreatin'},
-  {l1:'EAA', l2:'PULVER', col:'#2b3bff', body:'#f1f1f1', eye:'Training', t:['EAA','Pulver'], sub:'Aminosäuren · Eiweissdealer24 Eigenmarke',
-   tag:'Für alle, die nach dem <em>Warm-up</em> erst anfangen.', info:'Essentielle Aminosäuren als Pulver – einfach in Wasser einrühren und mit ins Gym nehmen.'},
-  {l1:'L-GLUTAMIN', l2:'PULVER', col:'#0d9e63', body:'#f1f1f1', eye:'Alltag & Regeneration', t:['L-Glutamin','Pulver'], sub:'Aminosäure · Eiweissdealer24 Eigenmarke',
+  {id:687, price:'32,90 €', l1:'EAA', l2:'PULVER', col:'#2b3bff', body:'#f1f1f1', eye:'Training', t:['EAA','Pulver'], sub:'Aminosäuren · Eiweissdealer24 Eigenmarke',
+   tag:'Für alle, die nach dem <em>Warm-up</em> erst anfangen.', info:'Essentielle Aminosäuren als Pulver mit Pfirsich-Eistee-Geschmack – einfach in Wasser einrühren und mit ins Gym nehmen.'},
+  {id:686, price:'29,90 €', l1:'L-GLUTAMIN', l2:'PULVER', col:'#0d9e63', body:'#f1f1f1', eye:'Alltag & Regeneration', t:['L-Glutamin','Pulver'], sub:'Aminosäure · Eiweissdealer24 Eigenmarke',
    tag:'Für die Tage nach dem <em>Beintag.</em>', info:'Pur oder im Shake. Frag uns im Laden, wie es in deinen Plan passt.'},
 ];
 const N = CH.length;
@@ -466,7 +447,7 @@ stage.innerHTML = CH.map((c, i) => `
       <p class="c-sub">${c.sub}</p>
     </div>
     <p class="c-tag">${c.tag}</p>
-    <div class="c-info"><b>Gut zu wissen</b><p>${c.info}</p><a href="shop.html#/shop">Im Shop ansehen <svg><use href="#arrow"/></svg></a>${c.note ? `<small>${c.note}</small>` : ''}</div>
+    <div class="c-info"><b>Gut zu wissen</b><p>${c.info}</p><a href="shop.html#/p/${c.id}">${c.price} · Zum Produkt <svg><use href="#arrow"/></svg></a>${c.note ? `<small>${c.note}</small>` : ''}</div>
   </article>`).join('') + `<div class="prog"><div class="n"><span id="pn">01</span><small> / 0${N}</small></div><div class="g" id="pg">${CH[0].eye}</div><div class="bar"><i id="pb"></i></div></div>`;
 const chaps = $$('.chap', stage);
 
@@ -510,8 +491,7 @@ history.scrollRestoration = 'manual';
 window.scrollTo(0, 0);
 let lenis = null;
 if (window.Lenis && !reduced) {
-  lenis = new Lenis({lerp: .085, smoothWheel: true});
-  lenis.stop();
+  lenis = new Lenis({lerp: .1, smoothWheel: true});
 }
 document.addEventListener('click', e => {
   const a = e.target.closest('[data-to]'); if (!a) return;
@@ -522,19 +502,7 @@ document.addEventListener('click', e => {
   lenis ? lenis.scrollTo(y, {duration: 1.6}) : scrollTo({top: y, behavior: reduced ? 'auto' : 'smooth'});
 });
 
-/* ---------- Preloader ---------- */
-let target = 12, shown = 0, ready = false, readyAt = 0;
-const pctEl = $('#pre .pct');
-document.body.style.overflow = 'hidden';
-const finish = () => {
-  if (ready) return; ready = true; readyAt = performance.now();
-  $('#pre').classList.add('done');
-  document.body.classList.add('ready');
-  document.body.style.overflow = '';
-  lenis && lenis.start();
-  setTimeout(() => $('#pre').remove(), 1300);
-};
-setTimeout(() => target = 100, 7000); // Notfall
+let ready = false, readyAt = 0;
 
 /* ---------- Metriken ---------- */
 const M = {};
@@ -546,7 +514,8 @@ function measure() {
   M.storyTop = top($('#story')); M.storyH = $('#story').offsetHeight;
   M.coachTop = top($('#coach'));
   M.brandsTop = top($('#brands'));
-  M.secs = $$('[data-header]').map(el => ({el, theme: el.dataset.header}));
+  M.secs = $$('[data-header]').map(el => { const t = top(el); return {top: t, bottom: t + el.offsetHeight, theme: el.dataset.header}; });
+  M.mq1 = $('#mq1').scrollWidth / 4; M.mq2 = $('#mq2').scrollWidth / 10;
 }
 
 /* ---------- WebGL ---------- */
@@ -560,7 +529,7 @@ const O = {};
 
 try {
   THREE.ColorManagement.legacyMode = false;
-  R = new THREE.WebGLRenderer({canvas: $('#fx'), antialias: true, alpha: true, powerPreference: 'high-performance'});
+  R = new THREE.WebGLRenderer({canvas: $('#fx'), antialias: devicePixelRatio < 1.5 && innerWidth >= 768, alpha: true, powerPreference: 'high-performance'});
   R.outputEncoding = THREE.sRGBEncoding;
   R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = 1.05;
   BR = new THREE.WebGLRenderer({canvas: $('#bg'), antialias: false, powerPreference: 'high-performance'});
@@ -575,12 +544,12 @@ if (gl) {
       uLight: {value: C_DARK.clone()}, uWipe: {value: -1}, uSplit: {value: .4}},
     vertexShader: 'varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.,1.); }',
     fragmentShader: `
-      precision highp float; varying vec2 vUv;
+      precision mediump float; varying vec2 vUv;
       uniform float uTime,uWipe,uSplit; uniform vec2 uRes; uniform vec3 uPrev,uNext,uLight;
       float h(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
       float n(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f);
         return mix(mix(h(i),h(i+vec2(1,0)),f.x), mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x), f.y); }
-      float fbm(vec2 p){ float v=0., a=.5; for(int i=0;i<5;i++){ v+=a*n(p); p=p*2.03+vec2(1.7,9.2); a*=.5; } return v; }
+      float fbm(vec2 p){ float v=0., a=.5; for(int i=0;i<3;i++){ v+=a*n(p); p=p*2.03+vec2(1.7,9.2); a*=.5; } return v; }
       void main(){
         vec2 uv=vUv; float asp=uRes.x/uRes.y; vec2 p=vec2(uv.x*asp,uv.y);
         float t=uTime*.07;
@@ -594,7 +563,6 @@ if (gl) {
         vec3 c=mix(uLight,col,k);
         float band=exp(-pow((wave-uSplit-.02)*7.,2.));
         c=mix(c, mix(c,vec3(1.),.35), band*.45*k);
-        c+= (h(uv*uRes+fract(uTime))-.5)*.045;
         gl_FragColor=vec4(c,1.);
       }`
   });
@@ -650,11 +618,11 @@ function tub(i) {
   const g = new THREE.Group();
   const side = new THREE.MeshStandardMaterial({map: labels[i], roughness: .38, metalness: 0, envMapIntensity: .7});
   const cap = mat(CH[i].body, .5);
-  const body = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 2.2, 80, 1, false, Math.PI, Math.PI * 2), [side, cap, cap]);
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 2.2, 56, 1, false, Math.PI, Math.PI * 2), [side, cap, cap]);
   g.add(body);
-  const lid = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.05, .46, 80), mat('#151515', .55, .1)); lid.position.y = 1.33; g.add(lid);
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(1.05, .035, 10, 80), mat('#0a0a0a', .6)); ring.rotation.x = Math.PI / 2; ring.position.y = 1.16; g.add(ring);
-  const top = new THREE.Mesh(new THREE.TorusGeometry(.98, .05, 10, 80), mat('#202020', .4)); top.rotation.x = Math.PI / 2; top.position.y = 1.56; g.add(top);
+  const lid = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.05, .46, 48), mat('#151515', .55, .1)); lid.position.y = 1.33; g.add(lid);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(1.05, .035, 8, 48), mat('#0a0a0a', .6)); ring.rotation.x = Math.PI / 2; ring.position.y = 1.16; g.add(ring);
+  const top = new THREE.Mesh(new THREE.TorusGeometry(.98, .05, 8, 48), mat('#202020', .4)); top.rotation.x = Math.PI / 2; top.position.y = 1.56; g.add(top);
   g.userData = {side, cap, i};
   return g;
 }
@@ -672,7 +640,7 @@ function dumbbell() {
 }
 function kettlebell() {
   const g = new THREE.Group(), blk = mat('#171717', .55, .25), red = mat('#e30613', .45);
-  const b = new THREE.Mesh(new THREE.SphereGeometry(.92, 56, 40), blk); b.scale.y = .93; g.add(b);
+  const b = new THREE.Mesh(new THREE.SphereGeometry(.92, 40, 28), blk); b.scale.y = .93; g.add(b);
   const h = new THREE.Mesh(new THREE.TorusGeometry(.56, .14, 18, 48, Math.PI), blk); h.position.y = .72; g.add(h);
   [-1, 1].forEach(s => { const l = new THREE.Mesh(new THREE.CylinderGeometry(.14, .14, .3, 18), blk); l.position.set(s * .56, .66, 0); g.add(l); });
   const st = new THREE.Mesh(new THREE.TorusGeometry(.9, .045, 10, 64), red); st.rotation.x = Math.PI / 2; st.position.y = .12; g.add(st);
@@ -719,17 +687,24 @@ function place(o, x, y, s, rx, ry, rz, z = 0) {
   const g = o.g;
   const vis = s > .001 && Math.abs(x) < 2.2 && Math.abs(y) < 2.4;
   g.visible = vis; if (!vis) return;
+  visCount++;
   g.position.set(x * V.halfW, y * V.halfH, z);
   g.scale.setScalar(s * V.sf);
   g.rotation.set(rx, ry, rz);
 }
 
+const Q = [{fx: 1.5, bg: .4}, {fx: 1.25, bg: .33}, {fx: 1, bg: .28}, {fx: .8, bg: .22}];
+let QL = (innerWidth < 768 || (navigator.hardwareConcurrency || 8) <= 4) ? 1 : 0;
+function applyQuality() {
+  if (!gl) return;
+  R.setPixelRatio(Math.min(devicePixelRatio, Q[QL].fx)); BR.setPixelRatio(Q[QL].bg);
+  R.setSize(innerWidth, innerHeight, false); BR.setSize(innerWidth, innerHeight, false);
+}
 function resize() {
   measure();
   if (!gl) return;
   const w = innerWidth, h = innerHeight;
-  R.setPixelRatio(Math.min(devicePixelRatio, 1.75)); R.setSize(w, h, false);
-  BR.setPixelRatio(Math.min(devicePixelRatio, 1) * .6); BR.setSize(w, h, false);
+  applyQuality(); R.setSize(w, h, false); BR.setSize(w, h, false);
   bgMat.uniforms.uRes.value.set(w, h);
   cam.aspect = w / h; cam.updateProjectionMatrix();
   V.halfH = Math.tan(THREE.MathUtils.degToRad(cam.fov / 2)) * cam.position.z;
@@ -745,7 +720,7 @@ function initPhysics() {
   if (!window.Matter || phys) return;
   const {Engine, Bodies, Composite, Mouse, MouseConstraint, Body} = Matter;
   const pit = $('#pit');
-  const engine = Engine.create({gravity: {y: 1.1}});
+  const engine = Engine.create({gravity: {y: 1.1}, enableSleeping: true});
   const W = pit.clientWidth, H = pit.clientHeight;
   const walls = [Bodies.rectangle(W / 2, H + 40, W * 3, 80, {isStatic: true}), Bodies.rectangle(-40, H / 2, 80, H * 4, {isStatic: true}), Bodies.rectangle(W + 40, H / 2, 80, H * 4, {isStatic: true})];
   Composite.add(engine.world, walls);
@@ -768,13 +743,14 @@ function initPhysics() {
   }
   phys = {engine, items, step() {
     Engine.update(engine, 1000 / 60);
-    for (const it of items) { const {x, y} = it.b.position; it.el.style.transform = `translate(${x - it.w / 2}px,${y - it.h / 2}px) rotate(${it.b.angle}rad)`; }
+    for (const it of items) { if (it.b.isSleeping && it.drawn) continue; it.drawn = 1; const {x, y} = it.b.position; it.el.style.transform = `translate3d(${x - it.w / 2}px,${y - it.h / 2}px,0) rotate(${it.b.angle}rad)`; }
   }};
 }
 new IntersectionObserver(es => es.forEach(e => { physOn = e.isIntersecting; if (physOn) initPhysics(); }), {threshold: .25}).observe($('#pit'));
 
 /* ---------- Haupt-Loop ---------- */
-let activeCh = -1, mqX1 = 0, mqX2 = 0, last = performance.now(), firstFrames = 0;
+let activeCh = -1, mqX1 = 0, mqX2 = 0, last = performance.now(), lastSy = -1, lastTheme = '', ema = 16, qT = performance.now() + 1500, visCount = 0, lastVis = 1;
+const EL = {wm: $('#wm'), cp: $('#cpanel'), cin: $('#cin'), cbg: $('#cbg'), hd: $('.hd'), mq1: $('#mq1'), mq2: $('#mq2'), bg: $('#bg')};
 const tmp = {prev: new THREE.Vector3(), next: new THREE.Vector3(), light: new THREE.Vector3(), a: new THREE.Vector3(), b: new THREE.Vector3()};
 
 function frame(now) {
@@ -784,12 +760,6 @@ function frame(now) {
   const t = now / 1000, sy = scrollY, vh = M.vh;
   mouse.x += (mouse.tx - mouse.x) * .05; mouse.y += (mouse.ty - mouse.y) * .05;
 
-  /* Preloader-Zähler */
-  if (!ready) {
-    shown += (target - shown) * .08 + .15; shown = Math.min(shown, target);
-    pctEl.textContent = Math.round(shown) + ' %';
-    if (shown >= 99.5) finish();
-  }
   const intro = ready ? (now - readyAt) / 1000 : 0;
 
   /* Fortschritte */
@@ -807,35 +777,33 @@ function frame(now) {
     if (ch > -1) { $('#pn').textContent = '0' + (ch + 1); $('#pg').textContent = CH[ch].eye; $('#pb').style.width = ((ch + 1) / N * 100) + '%'; }
   }
 
-  /* Hero-Wortmarke */
-  const wm = $('#wm');
-  if (sy < M.heroH * 1.2) { wm.style.transform = `translateY(${sy * .35}px) scale(${1 - heroP * .08})`; wm.style.opacity = 1 - heroP * 1.4; wm.style.filter = `blur(${heroP * 8}px)`; }
+  /* Hero-Wortmarke (nur transform/opacity, nur bei Änderung) */
+  if (sy !== lastSy) {
+    if (sy < M.heroH * 1.2 || lastSy < M.heroH * 1.2) { const hp0 = Math.min(heroP, 1); EL.wm.style.transform = `translate3d(0,${Math.min(sy, M.heroH * 1.2) * .35}px,0) scale(${1 - hp0 * .08})`; EL.wm.style.opacity = Math.max(0, 1 - hp0 * 1.4); }
 
-  /* Coaching-Panel */
-  if (sy > M.coachTop - vh && sy < M.coachTop + vh * 2.5) {
-    const p = easeOut(clamp((sy - M.coachTop + vh * .25) / (vh * 1.05)));
-    const cp = $('#cpanel');
-    cp.style.setProperty('--it', (lerp(M.mob ? 9 : 13, 0, p)) + 'vh');
-    cp.style.setProperty('--is', (lerp(M.mob ? 5 : 17, 0, p)) + 'vw');
-    cp.style.setProperty('--r', lerp(32, 0, p) + 'px');
-    $('#cin').style.transform = `translateY(${(1 - p) * 70}px) scale(${.9 + .1 * p})`;
-    $('#cbg').style.transform = `translate(${-(sy - M.coachTop) * .35}px,-50%)`;
-    cp.classList.toggle('full', p > .82);
+    /* Coaching-Panel: nur transform (GPU) */
+    if (sy > M.coachTop - vh && sy < M.coachTop + vh * 2.5) {
+      const p = easeOut(clamp((sy - M.coachTop + vh * .25) / (vh * 1.05)));
+      EL.cp.style.transform = `scale(${lerp(M.mob ? .88 : .7, 1, p)})`;
+      EL.cp.classList.toggle('flush', p > .995);
+      EL.cin.style.transform = `translate3d(0,${(1 - p) * 60}px,0)`;
+      EL.cbg.style.transform = `translate3d(${-(sy - M.coachTop) * .35}px,-50%,0)`;
+      EL.cp.classList.toggle('full', p > .82);
+    }
+    /* Header-Farbe aus gecachten Positionen */
+    const hy = sy + 34; let theme = 'light';
+    for (const s of M.secs) { if (hy >= s.top && hy < s.bottom) { theme = s.theme; break; } }
+    if (sy > M.storyTop + vh * .2 && sy < M.coachTop - vh * .3) theme = 'dark';
+    if (theme !== lastTheme) { EL.hd.dataset.theme = theme; lastTheme = theme; }
+    lastSy = sy;
   }
-
-  /* Header-Farbe */
-  const hdY = 34; let theme = 'light';
-  for (const s of M.secs) { const r = s.el.getBoundingClientRect(); if (r.top <= hdY && r.bottom > hdY) { theme = s.theme; break; } }
-  if (sy > M.storyTop + vh * .2 && sy < M.coachTop - vh * .3) theme = 'dark';
-  $('.hd').dataset.theme = theme;
 
   /* Laufschriften */
   const vel = lenis ? lenis.velocity : 0;
-  if (sy > M.brandsTop) {
-    const tr1 = $('#mq1'), tr2 = $('#mq2');
-    mqX1 = (mqX1 + (40 + Math.abs(vel) * 25) * dt) % (tr1.scrollWidth / 4);
-    mqX2 = (mqX2 + (30 + Math.abs(vel) * 10) * dt) % (tr2.scrollWidth / 10);
-    tr1.style.transform = `translateX(${-mqX1}px)`; tr2.style.transform = `translateX(${-mqX2}px)`;
+  if (sy > M.brandsTop + M.vh * .5) {
+    mqX1 = (mqX1 + (40 + Math.abs(vel) * 25) * dt) % M.mq1;
+    mqX2 = (mqX2 + (30 + Math.abs(vel) * 10) * dt) % M.mq2;
+    EL.mq1.style.transform = `translate3d(${-mqX1}px,0,0)`; EL.mq2.style.transform = `translate3d(${-mqX2}px,0,0)`;
   }
   if (physOn && phys) phys.step();
 
@@ -859,12 +827,18 @@ function frame(now) {
     const k2 = clamp((sy - M.coachTop) / vh);
     U.uSplit.value = lerp(.6, .93, k) + k2 * .5;
   }
-  BR.render(bgScene, bgCam);
+  const bgVisible = sy < M.coachTop + vh * .15;
+  if (bgVisible) BR.render(bgScene, bgCam);
+  EL.bg.style.visibility = bgVisible ? '' : 'hidden';
+  /* Adaptive Qualität: wird es ruckelig, Auflösung senken */
+  ema = ema * .95 + (dt * 1000) * .05;
+  if (now - qT > 1000) { if (ema > 22 && QL < Q.length - 1) { QL++; applyQuality(); } qT = now; }
 
   /* Akzentlicht */
   rim.color.setRGB(U.uNext.value.x, U.uNext.value.y, U.uNext.value.z).convertSRGBToLinear();
 
   /* Objekte */
+  visCount = 0;
   const L = M.mob ? 'm' : 'd', H0 = HERO[L], S0 = SHOW[L];
   const pop = d => ready ? easeBack(clamp((intro - d) / .9)) : 0;
   const bobY = ph => Math.sin(t * .9 + ph) * .018, mx = mouse.x * .03, my = -mouse.y * .03;
@@ -915,16 +889,14 @@ function frame(now) {
     place(o, x + mx * 1.3, y, s * (M.mob ? .7 : 1), .4 + sy * .0009 * rs, sy * .0012 * rs + i, .3 * Math.sin(i) + sy * .0004 * rs, -.5);
   });
 
-  R.render(scene, cam);
-  if (!ready && firstFrames++ === 2) target = 100;
+  if (visCount || lastVis) R.render(scene, cam);
+  lastVis = visCount;
 }
 
 /* ---------- Start ---------- */
 async function boot() {
   measure();
-  target = 35;
-  try { await Promise.race([Promise.all([document.fonts.load('italic 800 120px "Barlow Condensed"'), document.fonts.load('600 24px Barlow')]), new Promise(r => setTimeout(r, 3000))]); } catch (e) {}
-  target = 65;
+  try { await Promise.race([Promise.all([document.fonts.load('italic 800 120px "Barlow Condensed"'), document.fonts.load('600 24px Barlow')]), new Promise(r => setTimeout(r, 1500))]); } catch (e) {}
   if (gl) {
     CH.forEach(c => labels.push(makeLabel(c)));
     const add = (k, g) => { O[k] = {g}; scene.add(g); return O[k]; };
@@ -934,14 +906,14 @@ async function boot() {
     add('f1', tub(3)); add('f2', kettlebell()); add('f3', shaker('#e30613')); add('f4', tub(1)); add('f5', scoop('#f4efe3')); add('f6', dumbbell());
     R.compile(scene, cam);
   }
-  target = 88;
   resize();
+  ready = true; readyAt = performance.now();
   requestAnimationFrame(frame);
 }
 addEventListener('resize', () => { clearTimeout(resize.t); resize.t = setTimeout(resize, 120); });
-addEventListener('load', measure);
+addEventListener('load', () => { measure(); lastSy = -1; });
 boot();
-})();
+}
 </script>
 </body>
 </html>

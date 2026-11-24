@@ -13,16 +13,19 @@ landing = landing.replace('href="index.html#/', 'href="shop.html#/').replace('hr
 open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(landing)
 
 shop = open(os.path.join(here, 'index.html'), encoding='utf-8').read()
-shop = shop.replace('<a href="#/" class="logo" style="margin-bottom:16px">', '<a href="index.html" class="logo" style="margin-bottom:16px">')
+shop = shop.replace('href="landing.html"', 'href="index.html"')
 open(os.path.join(out, 'shop.html'), 'w', encoding='utf-8').write(shop)
 
 shutil.copytree(os.path.join(here, 'vendor'), os.path.join(out, 'vendor'))
+for f in ('catalog.js', 'details.js'):
+    shutil.copy(os.path.join(here, f), os.path.join(out, f))
 
 # Nicht in Suchmaschinen aufnehmen (Konzept einer echten Marke)
 open(os.path.join(out, 'robots.txt'), 'w').write('User-agent: *\nDisallow: /\n')
 open(os.path.join(out, '_headers'), 'w').write(
     '/*\n  X-Robots-Tag: noindex, nofollow\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Content-Type-Options: nosniff\n'
-    '/vendor/*\n  Cache-Control: public, max-age=31536000, immutable\n')
+    '/vendor/*\n  Cache-Control: public, max-age=31536000, immutable\n'
+    '/*.js\n  Cache-Control: public, max-age=3600\n')
 
 # Für Deploys aus GitHub (Base directory: eiweissdealer24-redesign/netlify)
 open(os.path.join(out, 'netlify.toml'), 'w').write('[build]\n  publish = "."\n  command = ""\n')
