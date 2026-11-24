@@ -15,6 +15,23 @@ Seiten: **Start** · **Kategorie Wheyprotein** (`#/shop`) · **Produkt** (`#/pro
 | **Coaching geht unter**: als Menüpunkt versteckt, nur Fließtext | Eigener großer Bereich auf der Startseite, eigene Landingpage mit Leistungen, Ablauf in 3 Schritten, Wettkampf-Erfahrung und Anfrageformular. Beratung wird auch in Kategorie und Produktseite angeboten. |
 | Laden und Team kaum sichtbar | Team (Manu, Franzi, Mario), Live-Anzeige der Öffnungszeiten, Route, Treuekarte und „Überraschung ab 100 €“ als Fortschrittsbalken im Warenkorb |
 
+## Erlebnis-Startseite (`landing.html`)
+
+Eine immersive Startseite mit Effekten im Stil moderner Marken-Websites:
+
+- **Ladeanimation**: drehende „24/2007“-Münze und Prozentzähler, danach wischt der Vorhang nach oben weg
+- **Fließender WebGL-Hintergrund** in den Markenfarben, der beim Scrollen die Farbe wechselt
+- **3D-Objekte** (Three.js): Dosen der Eigenmarke mit echten Etiketten, Hantel, Kettlebell, Shaker und Messlöffel
+- **Fixierter Produkt-Showcase**: Eine Dose bleibt stehen, dreht sich pro Kapitel einmal und wechselt dabei das Etikett. Dazu wischt die Hintergrundfarbe, und ein passendes Objekt fliegt herein (Whey → Kreatin → EAA → Glutamin).
+- **Story mit Stempel-Typo** (SVG-Filter) und Objekten, die mit unterschiedlicher Geschwindigkeit vorbeischweben
+- **Coaching-Panel**, das sich beim Scrollen von einer Karte zur vollen Fläche aufzieht
+- **Physik-Marken** (Matter.js): Die Marken fallen in eine Box und lassen sich mit der Maus werfen.
+- **Footer** mit riesiger Laufschrift, die mit der Scroll-Geschwindigkeit schneller wird, und schrägen Stickern
+- Weiches Scrollen (Lenis). Die Seite funktioniert auch auf dem Handy und berücksichtigt „Bewegung reduzieren“.
+
+Die Bibliotheken werden vom CDN geladen. Ist das nicht erreichbar (z. B. offline beim Pitch), springt die lokale Kopie in `vendor/` ein.
+Hinweis: Produktnamen der Eigenmarke stammen vom Shop-Banner. Beschreibungen sind Entwürfe, die das Team prüfen sollte.
+
 ## Was funktioniert
 - Warenkorb mit Mengen und Fortschritt bis zur „Überraschung ab 100 €“
 - Filter (Marke, Angebote, Preis) und Sortierung (auch nach Preis pro kg)

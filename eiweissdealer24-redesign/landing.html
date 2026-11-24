@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eiweissdealer24 – Erlebnis-Startseite (Prototyp)</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#e30613; --red2:#ff2b38; --ink:#111112; --paper:#efece6; --mu:#6b6b70;
+  --hd:'Barlow Condensed','Arial Narrow',sans-serif; --bd:'Barlow',system-ui,sans-serif;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
+body{font-family:var(--bd);color:#fff;background:#0b0b0c;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body.nogl{background:linear-gradient(180deg,#e30613 0,#8a0a10 30%,#efece6 55%)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+canvas#bg{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block}
+canvas#fx{position:fixed;inset:0;width:100vw;height:100vh;z-index:3;pointer-events:none;display:block}
+main{position:relative;z-index:1}
+.ln{display:block;overflow:hidden;padding:0 .1em 0 .02em;margin:0 -.1em 0 -.02em}
+.ln>span{display:block;transform:translateY(108%);transition:transform 1s var(--ease)}
+.hd-font{font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase}
+.eyebrow{font-family:var(--hd);font-weight:700;text-transform:uppercase;letter-spacing:.16em;font-size:13px;display:flex;align-items:center;gap:10px;margin:0 0 14px}
+.eyebrow::before{content:"";width:26px;height:3px;background:currentColor;transform:skewX(-20deg)}
+:focus-visible{outline:2px solid var(--red2);outline-offset:3px;border-radius:6px}
+
+/* ---------- Preloader ---------- */
+#pre{position:fixed;inset:0;z-index:100;background:var(--paper);display:grid;place-items:center;transition:clip-path 1.1s cubic-bezier(.76,0,.24,1);clip-path:inset(0 0 0 0)}
+#pre.done{clip-path:inset(0 0 100% 0)}
+#pre .glow{position:absolute;left:50%;bottom:-48vh;width:130vw;height:90vh;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,#e30613cc,#e3061355 45%,transparent 75%);filter:blur(20px)}
+.coin{width:92px;height:92px;position:relative;transform-style:preserve-3d;animation:spin 1.6s cubic-bezier(.6,0,.4,1) infinite}
+.coin .face{position:absolute;inset:0;border-radius:50%;display:grid;place-items:center;backface-visibility:hidden;
+  background:radial-gradient(circle,#e30613 0 52%,#fff 53% 58%,transparent 59%),repeating-conic-gradient(#d9d9d9 0 6deg,#9e9e9e 6deg 12deg);
+  box-shadow:inset 0 0 0 3px #0002,0 10px 24px -8px #0006}
+.coin .face span{font-family:var(--hd);font-weight:800;font-style:italic;font-size:34px;color:#fff;line-height:1}
+.coin .b{transform:rotateY(180deg)}
+.coin .b span{font-size:22px}
+@keyframes spin{0%{transform:rotateY(0) rotateZ(-8deg)}50%{transform:rotateY(180deg) rotateZ(8deg)}100%{transform:rotateY(360deg) rotateZ(-8deg)}}
+#pre .pct{position:absolute;left:50%;bottom:7vh;transform:translateX(-50%);font-family:var(--hd);font-weight:800;font-style:italic;font-size:20px;color:#fff;letter-spacing:.06em;z-index:1}
+
+/* ---------- Header ---------- */
+.hd{position:fixed;left:0;right:0;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:18px clamp(16px,3vw,36px);color:#fff;transition:color .35s;pointer-events:none}
+.hd>*{pointer-events:auto}
+.hd[data-theme="dark"]{color:var(--ink)}
+.logo{display:flex;flex-direction:column;line-height:1;gap:1px}
+.logo svg{width:74px;height:12px;fill:currentColor;margin-left:2px}
+.logo span{font-family:var(--hd);font-weight:800;font-style:italic;font-size:20px;text-transform:uppercase}
+.logo b{color:var(--red2)}
+.hd nav{display:flex;gap:8px}
+.pillbtn{height:40px;padding:0 18px;border-radius:999px;border:1.5px solid currentColor;display:inline-flex;align-items:center;font-family:var(--hd);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;transition:background .2s,color .2s}
+.pillbtn:hover{background:currentColor}
+.pillbtn:hover span{color:var(--red)}
+.hd[data-theme="dark"] .pillbtn:hover span{color:#fff}
+.pillbtn.solid{background:var(--red);border-color:var(--red);color:#fff}
+.pillbtn.solid:hover{background:#fff;border-color:#fff}
+.pillbtn.solid:hover span{color:var(--red)}
+@media(max-width:600px){.hd .hide-m{display:none}}
+
+/* ---------- Hero ---------- */
+#hero{height:100vh;height:100svh;position:relative;display:grid;place-items:center;overflow:hidden}
+.wm{margin:0;text-align:center;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(88px,18.5vw,340px);line-height:.8;letter-spacing:-.005em;will-change:transform,opacity,filter}
+.wm .ln:nth-child(2)>span{transition-delay:.08s}
+.wm b{color:transparent;-webkit-text-stroke:.03em #fff}
+body.ready .wm .ln>span{transform:none}
+.hero-meta{position:absolute;left:0;right:0;bottom:0;padding:0 clamp(16px,3vw,36px) 26px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:0;transition:opacity 1s .5s}
+body.ready .hero-meta{opacity:1}
+.hero-meta p{margin:0;max-width:220px}
+.hero-meta p:last-child{text-align:right}
+.ring{width:96px;height:96px;position:relative;flex-shrink:0}
+.ring svg.t{width:100%;height:100%;animation:rot 12s linear infinite}
+.ring svg.t text{font-family:var(--hd);font-weight:800;font-size:11.5px;letter-spacing:3.2px;fill:#fff;text-transform:uppercase}
+.ring .ar{position:absolute;inset:0;display:grid;place-items:center}
+.ring .ar svg{width:22px;height:22px;stroke:#fff;animation:bob 1.6s ease-in-out infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+@keyframes bob{50%{transform:translateY(5px)}}
+@media(max-width:700px){.hero-meta p{display:none}.hero-meta{justify-content:center}}
+
+/* ---------- Showcase ---------- */
+#show{height:500vh;position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.chap{position:absolute;inset:0;pointer-events:none;--c:#e30613}
+.chap.on{pointer-events:auto}
+.c-title{position:absolute;left:clamp(16px,4vw,64px);top:15vh}
+.c-eye{font-family:var(--hd);font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-size:14px;margin:0 0 12px;display:flex;gap:12px;align-items:center;opacity:0;transform:translateY(10px);transition:.7s var(--ease)}
+.chap.on .c-eye{opacity:1;transform:none;transition-delay:.15s}
+.c-eye i{font-style:normal;padding:3px 9px;border:1.5px solid #fff;border-radius:99px}
+.c-title h2{margin:0;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(64px,8.4vw,156px);line-height:.84}
+.c-title .ln:nth-child(2)>span{transition-delay:.07s}
+.c-sub{margin:16px 0 0;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:13px;opacity:0;transform:translateY(12px);transition:.8s var(--ease)}
+.c-tag{position:absolute;right:clamp(16px,5vw,80px);top:31vh;width:min(360px,27vw);margin:0;font-size:clamp(22px,2.05vw,31px);line-height:1.18;font-weight:500;opacity:0;transform:translateY(24px);transition:.9s var(--ease)}
+.c-tag em{font-family:var(--hd);font-style:italic;font-weight:800;text-transform:uppercase;font-size:1.22em;letter-spacing:.01em}
+.c-info{position:absolute;left:clamp(16px,4vw,64px);bottom:7vh;width:min(330px,25vw);color:var(--c);font-size:13px;line-height:1.5;opacity:0;transform:translateY(16px);transition:.9s var(--ease)}
+.c-info b{display:block;font-family:var(--hd);font-weight:800;text-transform:uppercase;letter-spacing:.1em;font-size:14px;margin-bottom:6px}
+.c-info p{margin:0 0 14px}
+.c-info a{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;border-radius:999px;background:var(--c);color:#fff;font-family:var(--hd);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:15px}
+.c-info a svg{width:16px;height:16px}
+.c-info small{display:block;margin-top:10px;font-size:10.5px;opacity:.75}
+.chap.on .ln>span{transform:none}
+.chap.past .ln>span{transform:translateY(-108%)}
+.chap.on .c-sub,.chap.on .c-tag,.chap.on .c-info{opacity:1;transform:none;transition-delay:.25s}
+.prog{position:absolute;right:clamp(16px,5vw,80px);bottom:7vh;color:var(--ink);text-align:right;font-family:var(--hd);font-weight:800;font-style:italic}
+.prog .n{font-size:56px;line-height:.9}
+.prog .n small{font-size:22px;opacity:.45}
+.prog .g{font-size:15px;letter-spacing:.12em;text-transform:uppercase;font-style:normal;margin-top:6px}
+.prog .bar{width:160px;height:3px;background:#0002;margin:10px 0 0 auto;border-radius:3px;overflow:hidden}
+.prog .bar i{display:block;height:100%;width:25%;background:var(--ink);transition:width .4s}
+@media(max-width:767px){
+  .c-title{top:84px;left:16px;right:16px}
+  .c-title h2{font-size:clamp(52px,15vw,96px)}
+  .c-eye{font-size:12px}
+  .c-sub{display:none}
+  .c-tag{left:16px;right:16px;top:auto;bottom:112px;width:auto;text-align:center;color:var(--ink);font-size:19px}
+  .c-info{left:16px;right:16px;bottom:24px;width:auto;text-align:center}
+  .c-info b,.c-info p,.c-info small{display:none}
+  .prog{display:none}
+}
+
+/* ---------- Story ---------- */
+#story{position:relative;color:var(--ink);padding:22vh clamp(16px,4vw,64px) 30vh}
+.st-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px;row-gap:12vh}
+.st-small{grid-column:1/4;font-size:14px;line-height:1.55;font-weight:500;align-self:start}
+.st-small b{display:block;font-family:var(--hd);font-weight:800;text-transform:uppercase;letter-spacing:.1em;font-size:14px;color:var(--red);margin-bottom:8px}
+.stamp{margin:0;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(66px,11.5vw,210px);line-height:.84;color:var(--red);filter:url(#stamp)}
+.st-h1{grid-column:4/13}
+.st-h2{grid-column:1/11}
+.st-p{grid-column:8/12;font-size:16px;line-height:1.6;color:#2a2a2c}
+.st-p.l{grid-column:2/6}
+.st-p p{margin:0 0 14px}
+.facts{grid-column:1/13;display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--ink)}
+.facts div{padding:18px 18px 0 0}
+.facts b{display:block;font-family:var(--hd);font-weight:800;font-style:italic;font-size:clamp(44px,5vw,80px);line-height:1;color:var(--ink)}
+.facts span{font-size:14px;color:var(--mu)}
+.rv{opacity:0;transform:translateY(40px);transition:1s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.split .w{display:inline-block;overflow:hidden;vertical-align:top;padding-right:.08em;margin-right:-.08em}
+.split .w>span{display:inline-block;transform:translateY(105%);transition:transform 1s var(--ease);transition-delay:calc(var(--i)*55ms)}
+.split.in .w>span{transform:none}
+@media(max-width:767px){
+  .st-grid{row-gap:8vh}
+  .st-small,.st-h1,.st-h2,.st-p,.st-p.l{grid-column:1/13}
+  .facts{grid-template-columns:repeat(2,1fr);row-gap:18px}
+}
+
+/* ---------- Coaching expand ---------- */
+#coach{height:250vh;position:relative;z-index:4}
+.cstage{position:sticky;top:0;height:100vh;height:100svh}
+.cpanel{position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 80% 20%,#5a0309,transparent 70%),radial-gradient(ellipse 50% 50% at 10% 100%,#3a0206,transparent 70%),#0b0b0c;
+  clip-path:inset(var(--it,12vh) var(--is,16vw) var(--it,12vh) var(--is,16vw) round var(--r,32px));overflow:hidden;color:#fff}
+.cbg{position:absolute;top:50%;left:0;white-space:nowrap;font-family:var(--hd);font-weight:800;font-style:italic;font-size:32vw;line-height:.8;text-transform:uppercase;color:transparent;-webkit-text-stroke:1.5px #ffffff14;transform:translateY(-50%);will-change:transform}
+.cin{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 clamp(16px,5vw,80px);will-change:transform}
+.cin h2{margin:0;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(56px,9vw,160px);line-height:.86}
+.cin h2 em{color:var(--red2);font-style:italic}
+.cin .lead{max-width:520px;font-size:18px;line-height:1.5;color:#d4d4d8;margin:22px 0 0}
+.svcs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:5vh}
+.svc{border:1px solid #ffffff22;border-radius:18px;padding:20px;background:#ffffff08;opacity:0;transform:translateY(30px);transition:.8s var(--ease);transition-delay:calc(var(--i)*90ms)}
+.full .svc{opacity:1;transform:none}
+.svc b{display:block;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:26px;line-height:1;margin-bottom:8px}
+.svc span{font-size:14px;color:#a6a6ad}
+.svc .no{font-family:var(--hd);font-weight:800;color:var(--red2);font-size:14px;letter-spacing:.1em;margin-bottom:22px;display:block}
+.cta-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:4vh;opacity:0;transition:opacity .8s .4s}
+.full .cta-row{opacity:1}
+.btn{display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 26px;border-radius:999px;font-family:var(--hd);font-weight:800;font-size:18px;text-transform:uppercase;letter-spacing:.04em;transition:transform .15s,background .2s}
+.btn:active{transform:scale(.97)}
+.btn.red{background:var(--red);color:#fff}
+.btn.red:hover{background:var(--red2)}
+.btn.line{border:1.5px solid #ffffff55}
+.btn.line:hover{border-color:#fff}
+.btn.ink{background:var(--ink);color:#fff}
+.btn svg{width:18px;height:18px}
+@media(max-width:767px){.cin{justify-content:flex-start;padding-top:92px}.cin h2{font-size:12.5vw}.cin .lead{font-size:15px;margin-top:14px}.svcs{margin-top:22px}.cta-row{margin-top:18px}.cta-row .btn{height:46px;font-size:16px}}
+@media(max-width:900px){.svcs{grid-template-columns:repeat(2,1fr)}.svc{padding:14px}.svc b{font-size:20px}.svc span{display:none}.svc .no{margin-bottom:8px}}
+
+/* ---------- Brands physics ---------- */
+#brands{position:relative;color:var(--ink);padding:16vh clamp(16px,4vw,64px) 10vh;background:var(--paper)}
+.br-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:28px}
+.br-head h2{margin:0;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(52px,8vw,130px);line-height:.86}
+.br-head h2 em{color:var(--red);font-style:italic}
+.br-head p{margin:0;max-width:340px;color:#3a3a3d;font-size:16px}
+.pit{position:relative;height:min(72vh,640px);border-radius:28px;background:#ffffffa6;border:1px solid #0000000d;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.pit .hint{position:absolute;left:50%;top:22px;transform:translateX(-50%);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#0006;white-space:nowrap}
+.pill{position:absolute;left:0;top:0;padding:.42em .9em .38em;border-radius:999px;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(20px,2.5vw,36px);line-height:1;white-space:nowrap;will-change:transform;cursor:grab;visibility:hidden}
+.pill:active{cursor:grabbing}
+.pill.r{background:var(--red);color:#fff}
+.pill.k{background:var(--ink);color:#fff}
+.pill.w{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.pill.o{background:var(--paper);color:var(--red);box-shadow:inset 0 0 0 2px var(--red)}
+.pill.big{font-size:clamp(28px,4vw,58px)}
+@media(pointer:coarse){.pill{cursor:default}}
+
+/* ---------- Store ---------- */
+#laden{position:relative;color:var(--ink);padding:6vh clamp(16px,4vw,64px) 16vh;background:var(--paper)}
+.store{display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:16px;align-items:stretch}
+.scard{border-radius:24px;padding:30px;background:linear-gradient(160deg,#ff4b3e,#e30613 55%,#b5040f);color:#fff;box-shadow:0 30px 60px -30px #e3061399;display:flex;flex-direction:column}
+.scard h2{margin:0 0 18px;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:56px;line-height:.86}
+.open{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;background:#ffffff26;padding:6px 12px;border-radius:99px;align-self:flex-start;margin-bottom:18px}
+.open i{width:8px;height:8px;border-radius:50%;background:#7dff9e;box-shadow:0 0 0 4px #7dff9e40}
+.open.closed i{background:#fff8;box-shadow:none}
+.rows div{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #ffffff33;font-size:15px}
+.rows div b{font-weight:700}
+.addr{margin:18px 0 22px;font-size:15px;line-height:1.5}
+.scard .acts{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
+.scard .btn{height:46px;font-size:16px}
+.scard .btn.wh{background:#fff;color:var(--red)}
+.scard .btn.ln2{border:1.5px solid #ffffff80;color:#fff}
+.map{border-radius:24px;overflow:hidden;position:relative;min-height:420px;background:#e6e0d4}
+.map svg{position:absolute;inset:0;width:100%;height:100%}
+.map .lbl{position:absolute;left:16px;bottom:16px;background:#fff;border-radius:12px;padding:10px 14px;font-size:13px;font-weight:600;box-shadow:0 10px 30px -10px #0004}
+.map .lbl small{display:block;color:var(--mu);font-weight:500}
+.pulse{transform-origin:center;transform-box:fill-box;animation:pulse 2s ease-out infinite}
+@keyframes pulse{0%{transform:scale(.4);opacity:.7}100%{transform:scale(2.6);opacity:0}}
+.perks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.perk{border:1.5px dashed #0000002e;border-radius:18px;padding:18px;font-size:14px;color:#3a3a3d}
+.perk b{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
+@media(max-width:800px){.store{grid-template-columns:1fr}.map{min-height:300px}.perks{grid-template-columns:1fr}}
+
+/* ---------- Footer ---------- */
+footer{position:relative;color:var(--ink);background:var(--paper);overflow:hidden;padding-top:6vh}
+.big-mq{position:relative;white-space:nowrap;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(90px,17vw,300px);line-height:.95;color:var(--red);padding:2vh 0}
+.big-mq .tr{display:inline-flex;will-change:transform}
+.big-mq .tr span{padding-right:.35em}
+.sticker{position:absolute;z-index:2;background:var(--red);color:#fff;border-radius:50%;padding:18px 26px;font-family:var(--hd);font-weight:800;text-transform:uppercase;font-size:clamp(13px,1.2vw,17px);letter-spacing:.06em;text-align:center;line-height:1.05;box-shadow:0 14px 30px -12px #0006;transition:transform .3s var(--ease)}
+.sticker:hover{transform:rotate(0) scale(1.08)!important}
+.sticker.s1{left:4vw;top:12%;transform:rotate(-12deg)}
+.sticker.s2{right:6vw;bottom:8%;transform:rotate(10deg)}
+.fbot{position:relative;background:linear-gradient(180deg,transparent,#e3061355 20%,#e30613 70%);padding:12vh 0 0}
+.small-mq{white-space:nowrap;overflow:hidden;color:#fff;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:20px;letter-spacing:.04em;padding:14px 0}
+.small-mq .tr{display:inline-flex;will-change:transform}
+.small-mq .tr span{padding-right:40px;display:inline-flex;align-items:center;gap:40px}
+.small-mq .tr span i{font-style:normal;font-size:12px;letter-spacing:.14em;opacity:.8;line-height:1.1;max-width:120px;white-space:normal}
+.legal{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;font-size:12px;color:#ffffffcc;padding:10px 16px 26px}
+.legal a:hover{color:#fff}
+
+.concept{position:fixed;left:14px;bottom:14px;z-index:30;background:#fff;color:var(--ink);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:8px;box-shadow:0 8px 20px -6px #0008}
+@media(max-width:600px){.concept{display:none}}
+@media(prefers-reduced-motion:reduce){.coin,.ring svg.t,.ring .ar svg,.pulse{animation:none}}
+</style>
+
+<!-- Bibliotheken: zuerst CDN, sonst lokale Kopie aus vendor/ -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+<script>window.THREE||document.write('<script src="vendor/three.min.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>window.Lenis||document.write('<script src="vendor/lenis.min.js"><\/script>')</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+<script>window.Matter||document.write('<script src="vendor/matter.min.js"><\/script>')</script>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="stamp" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="3" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -4 2.55" result="holes"/>
+      <feComposite in="SourceGraphic" in2="holes" operator="in" result="punched"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="8" result="w"/>
+      <feDisplacementMap in="punched" in2="w" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+  <symbol id="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+</svg>
+
+<div id="pre" aria-hidden="true">
+  <div class="glow"></div>
+  <div class="coin"><div class="face f"><span>24</span></div><div class="face b"><span>2007</span></div></div>
+  <div class="pct">0 %</div>
+</div>
+
+<canvas id="bg" aria-hidden="true"></canvas>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<header class="hd" data-theme="light">
+  <a href="#hero" class="logo" data-to="#hero" aria-label="Eiweissdealer24 – nach oben">
+    <svg viewBox="0 0 120 20" aria-hidden="true"><path d="M0 20V14h8v-4h6v4h6V8l3-6 3 6v6h8v-3h8v3h6V6h2V3h2v3h2v8h8V9h8v5h6v-4l4-10 4 10v4h8v-2h8V7h4v7h8v-3h8v9z"/></svg>
+    <span>Eiweissdealer<b>24</b></span>
+  </a>
+  <nav>
+    <a class="pillbtn hide-m" href="#coach" data-to="#coach"><span>Coaching</span></a>
+    <a class="pillbtn solid" href="index.html#/shop"><span>Zum Shop</span></a>
+  </nav>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section id="hero" data-header="light">
+    <h1 class="wm" id="wm"><span class="ln"><span>Eiweiss</span></span><span class="ln"><span>Dealer<b>24</b></span></span></h1>
+    <div class="hero-meta">
+      <p>Supplements, Ernährungs- &amp; Trainings&shy;coaching</p>
+      <a class="ring" href="#show" data-to="#show" aria-label="Weiter scrollen">
+        <svg class="t" viewBox="0 0 100 100"><defs><path id="circ" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs><text><textPath href="#circ">Scroll · Stärker werden · Scroll · Seit 2007 ·</textPath></text></svg>
+        <span class="ar"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16m-6-6 6 6 6-6"/></svg></span>
+      </a>
+      <p>Rostock · Doberaner Str. 110–112 · seit 2007</p>
+    </div>
+  </section>
+
+  <!-- PRODUKT-SHOWCASE (fixiert, 4 Kapitel) -->
+  <section id="show" data-header="light">
+    <div class="stage" id="stage"></div>
+  </section>
+
+  <!-- STORY -->
+  <section id="story" data-header="light">
+    <div class="st-grid">
+      <div class="st-small rv"><b>Wo kommt dein Eiweiß her?</b>Aus einem 120-m²-Laden in der Doberaner Straße. Von Leuten, die wissen, wie sich der letzte Satz anfühlt.</div>
+      <h2 class="stamp st-h1 split">Seit 2007 in Rostock.</h2>
+      <div class="st-p rv">
+        <p>Manu, Franzi und Mario führen den Fitness- und Diätshop Rostock seit 2007. Über 40 Marken, eine eigene Eiweissdealer-Marke und eine Beratung, die sich Zeit nimmt.</p>
+        <p>Keine Frage ist schlimmer als eine ungestellte – im Laden, per WhatsApp, Instagram oder Telefon.</p>
+      </div>
+      <h2 class="stamp st-h2 split">Seit 2016 auf der Bühne.</h2>
+      <div class="st-p l rv">
+        <p>Wir treten selbst bei Bodybuilding-Wettkämpfen an und haben viele Athletinnen und Athleten auf die Bühne vorbereitet. Pro Saison betreuen wir bewusst nur wenige – Qualität vor Quantität.</p>
+        <p>Und keine Sorge: Mit unseren Ernährungsplänen isst du nicht jeden Tag nur Reis und Hühnchen.</p>
+      </div>
+      <div class="facts rv">
+        <div><b>2007</b><span>Laden in Rostock</span></div>
+        <div><b>40+</b><span>Marken im Sortiment</span></div>
+        <div><b>120 m²</b><span>zum Stöbern &amp; Probieren</span></div>
+        <div><b>10 %</b><span>beim 9. Einkauf mit Treuekarte</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COACHING (Panel zieht sich auf) -->
+  <section id="coach" data-header="light">
+    <div class="cstage">
+      <div class="cpanel" id="cpanel">
+        <div class="cbg" id="cbg">Coaching · Coaching · Coaching ·</div>
+        <div class="cin" id="cin">
+          <p class="eyebrow" style="color:var(--red2)">Ernährungs- &amp; Trainingscoaching</p>
+          <h2>Kein Plan?<br><em>Wir schreiben dir einen.</em></h2>
+          <p class="lead">Individuell für deinen Alltag – ob Schichtarbeit, vegan, Leistungssport oder einfach gesünder leben. Und wir bleiben dein Ansprechpartner.</p>
+          <div class="svcs">
+            <div class="svc" style="--i:0"><span class="no">01</span><b>Ernährungs- &amp; Trainingsplan</b><span>Nach Maß, ohne Hungern.</span></div>
+            <div class="svc" style="--i:1"><span class="no">02</span><b>Personal- &amp; Posingtraining</b><span>1:1 mit uns in Rostock.</span></div>
+            <div class="svc" style="--i:2"><span class="no">03</span><b>Fettmessung</b><span>Fortschritt sichtbar machen.</span></div>
+            <div class="svc" style="--i:3"><span class="no">04</span><b>Wettkampf&shy;vorbereitung</b><span>Seit 2016 auf der Bühne.</span></div>
+          </div>
+          <div class="cta-row">
+            <a class="btn red" href="index.html#/coaching">Erstgespräch anfragen <svg><use href="#arrow"/></svg></a>
+            <a class="btn line" href="tel:+493812033871">0381 – 203 38 71</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARKEN (Physik) -->
+  <section id="brands" data-header="dark">
+    <div class="br-head">
+      <h2 class="split">40+ Marken.<br><em>Ein Laden.</em></h2>
+      <p class="rv">Von Optimum Nutrition bis zur eigenen Eiweissdealer-Marke. Schnapp dir eine Marke und wirf sie durch die Gegend.</p>
+    </div>
+    <div class="pit" id="pit"><span class="hint">Ziehen &amp; werfen</span></div>
+  </section>
+
+  <!-- LADEN -->
+  <section id="laden" data-header="dark">
+    <div class="store">
+      <div class="scard rv">
+        <span class="open" id="open"><i></i><span>…</span></span>
+        <h2>Komm<br>vorbei</h2>
+        <div class="rows">
+          <div><span>Montag – Freitag</span><b>10 – 19 Uhr</b></div>
+          <div><span>Samstag</span><b>10 – 15 Uhr</b></div>
+          <div><span>Sonntag</span><b>geschlossen</b></div>
+        </div>
+        <div class="addr">Fitness- und Diätshop Rostock<br>Doberaner Straße 110–112<br>18057 Rostock</div>
+        <div class="acts">
+          <a class="btn wh" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Doberaner+Stra%C3%9Fe+110+18057+Rostock">Route planen</a>
+          <a class="btn ln2" href="tel:+493812033871">Anrufen</a>
+        </div>
+      </div>
+      <div class="map rv" aria-label="Schematische Karte">
+        <svg viewBox="0 0 800 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="800" height="520" fill="#e6e0d4"/>
+          <path d="M520 0 C560 80 640 120 800 110 L800 0Z" fill="#c4ced3"/>
+          <path d="M600 0 C630 60 700 85 800 80" stroke="#b3c0c6" stroke-width="3" fill="none"/>
+          <rect x="70" y="330" width="170" height="120" rx="14" fill="#cfd9bf"/>
+          <rect x="560" y="300" width="150" height="150" rx="14" fill="#cfd9bf"/>
+          <g stroke="#fff" stroke-linecap="round" fill="none">
+            <path d="M-20 250 C200 240 420 270 820 230" stroke-width="26"/>
+            <path d="M300 -20 L360 540" stroke-width="18"/>
+            <path d="M-20 120 L520 160" stroke-width="12"/>
+            <path d="M140 540 L210 120" stroke-width="12"/>
+            <path d="M480 540 L520 -20" stroke-width="12"/>
+            <path d="M-20 420 L820 380" stroke-width="10"/>
+            <path d="M650 540 L700 120" stroke-width="10"/>
+          </g>
+          <path id="dob" d="M20 238 C200 228 420 258 800 218" fill="none"/>
+          <text font-family="Barlow" font-weight="600" font-size="15" fill="#8a857b" letter-spacing="2"><textPath href="#dob" startOffset="6%">DOBERANER STRASSE</textPath></text>
+          <text x="610" y="40" font-family="Barlow" font-weight="600" font-size="14" fill="#8a9aa1" letter-spacing="2">WARNOW</text>
+          <circle class="pulse" cx="405" cy="250" r="22" fill="#e30613"/>
+          <g transform="translate(405 250)">
+            <path d="M0 0 C-22 -28 -26 -40 -26 -50 a26 26 0 1 1 52 0 c0 10 -4 22 -26 50Z" fill="#e30613"/>
+            <circle cy="-50" r="10" fill="#fff"/>
+          </g>
+        </svg>
+        <div class="lbl">Eiweissdealer24<small>Doberaner Str. 110–112 · schematische Karte</small></div>
+      </div>
+    </div>
+    <div class="perks rv">
+      <div class="perk"><b>Überraschung ab 100 €</b>Im Laden und online (außer reduzierte Ware).</div>
+      <div class="perk"><b>Treuekarte</b>10 % Rabatt beim 9. Einkauf im Laden.</div>
+      <div class="perk"><b>Fragen? Einfach schreiben</b>WhatsApp, Instagram, Telefon oder vor Ort.</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer data-header="dark">
+    <div class="big-mq"><div class="tr" id="mq1"></div>
+      <a class="sticker s1" href="mailto:info@eiweissdealer24.de">Schreib<br>uns</a>
+      <a class="sticker s2" href="tel:+493812033871">Ruf<br>an</a>
+    </div>
+    <div class="fbot">
+      <div class="small-mq"><div class="tr" id="mq2"></div></div>
+      <div class="legal"><a href="index.html">Shop-Prototyp</a><a href="index.html#/shop">Shop</a><a href="index.html#/coaching">Coaching</a><span>Impressum</span><span>Datenschutz</span><span>AGB</span><span>© 2026 Eiweissdealer24 · Redesign-Konzept</span></div>
+    </div>
+  </footer>
+</main>
+
+<div class="concept">Redesign-Konzept · Prototyp</div>
+
+<script>
+(() => {
+'use strict';
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const easeIO = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+const easeIn = t => t * t * t;
+const easeBack = t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SKY = 'M0 20V14h8v-4h6v4h6V8l3-6 3 6v6h8v-3h8v3h6V6h2V3h2v3h2v8h8V9h8v5h6v-4l4-10 4 10v4h8v-2h8V7h4v7h8v-3h8v9z';
+
+/* ---------- Kapitel: Eigenmarke ---------- */
+const CH = [
+  {l1:'PREMIUM', l2:'WHEY MIX', col:'#e30613', body:'#121212', eye:'Muskelaufbau', t:['Premium','Whey Mix'], sub:'Wheyprotein · Eiweissdealer24 Eigenmarke',
+   tag:'Muskeln brauchen <em>Material.</em> Hier ist es.', info:'Protein trägt zu einer Zunahme an Muskelmasse bei. Cremig, vielseitig, in mehreren Geschmäckern.'},
+  {l1:'KREATIN', l2:'HCL PULVER', col:'#ff5a00', body:'#121212', eye:'Kraft', t:['Kreatin','HCL'], sub:'Kreatin · Eiweissdealer24 Eigenmarke',
+   tag:'Für den <em>letzten Satz,</em> der eigentlich zu viel ist.', info:'Kreatin erhöht die körperliche Leistung bei Schnellkrafttraining im Rahmen kurzzeitiger intensiver Belastungen.*', note:'* bei einer täglichen Aufnahme von 3 g Kreatin'},
+  {l1:'EAA', l2:'PULVER', col:'#2b3bff', body:'#f1f1f1', eye:'Training', t:['EAA','Pulver'], sub:'Aminosäuren · Eiweissdealer24 Eigenmarke',
+   tag:'Für alle, die nach dem <em>Warm-up</em> erst anfangen.', info:'Essentielle Aminosäuren als Pulver – einfach in Wasser einrühren und mit ins Gym nehmen.'},
+  {l1:'L-GLUTAMIN', l2:'PULVER', col:'#0d9e63', body:'#f1f1f1', eye:'Alltag & Regeneration', t:['L-Glutamin','Pulver'], sub:'Aminosäure · Eiweissdealer24 Eigenmarke',
+   tag:'Für die Tage nach dem <em>Beintag.</em>', info:'Pur oder im Shake. Frag uns im Laden, wie es in deinen Plan passt.'},
+];
+const N = CH.length;
+
+/* Kapitel-DOM erzeugen */
+const stage = $('#stage');
+stage.innerHTML = CH.map((c, i) => `
+  <article class="chap" data-i="${i}" style="--c:${c.col}">
+    <div class="c-title">
+      <p class="c-eye"><i>0${i + 1}</i>${c.eye}</p>
+      <h2><span class="ln"><span>${c.t[0]}</span></span><span class="ln"><span>${c.t[1]}</span></span></h2>
+      <p class="c-sub">${c.sub}</p>
+    </div>
+    <p class="c-tag">${c.tag}</p>
+    <div class="c-info"><b>Gut zu wissen</b><p>${c.info}</p><a href="index.html#/shop">Im Shop ansehen <svg><use href="#arrow"/></svg></a>${c.note ? `<small>${c.note}</small>` : ''}</div>
+  </article>`).join('') + `<div class="prog"><div class="n"><span id="pn">01</span><small> / 0${N}</small></div><div class="g" id="pg">${CH[0].eye}</div><div class="bar"><i id="pb"></i></div></div>`;
+const chaps = $$('.chap', stage);
+
+/* Wort-Split für Reveal-Texte */
+$$('.split').forEach(el => {
+  let i = 0;
+  const walk = node => {
+    [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(w => {
+          if (!w) return;
+          if (/^\s+$/.test(w)) { frag.appendChild(document.createTextNode(w)); return; }
+          const o = document.createElement('span'); o.className = 'w';
+          const s = document.createElement('span'); s.textContent = w; s.style.setProperty('--i', i++);
+          o.appendChild(s); frag.appendChild(o);
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1 && n.tagName !== 'BR') walk(n);
+    });
+  };
+  walk(el);
+});
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold: .2, rootMargin: '0px 0px -8% 0px'});
+$$('.rv,.split').forEach(el => io.observe(el));
+
+/* Öffnungsstatus */
+(() => {
+  const d = new Date(), day = d.getDay(), h = d.getHours() + d.getMinutes() / 60;
+  const open = (day >= 1 && day <= 5 && h >= 10 && h < 19) || (day === 6 && h >= 10 && h < 15);
+  const el = $('#open'); el.classList.toggle('closed', !open);
+  $('span', el).textContent = open ? `Jetzt geöffnet · bis ${day === 6 ? 15 : 19} Uhr` : 'Gerade geschlossen';
+})();
+
+/* Laufschriften */
+$('#mq1').innerHTML = Array(4).fill('<span>info@eiweissdealer24.de ✦</span>').join('');
+$('#mq2').innerHTML = Array(10).fill('<span>Eiweissdealer24 <i>Supplements &amp; Coaching aus Rostock</i></span>').join('');
+
+/* ---------- Smooth Scroll ---------- */
+history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+let lenis = null;
+if (window.Lenis && !reduced) {
+  lenis = new Lenis({lerp: .085, smoothWheel: true});
+  lenis.stop();
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-to]'); if (!a) return;
+  e.preventDefault();
+  const t = $(a.dataset.to);
+  let y = t.getBoundingClientRect().top + scrollY;
+  if (a.dataset.to === '#coach') y += innerHeight * .95;
+  lenis ? lenis.scrollTo(y, {duration: 1.6}) : scrollTo({top: y, behavior: reduced ? 'auto' : 'smooth'});
+});
+
+/* ---------- Preloader ---------- */
+let target = 12, shown = 0, ready = false, readyAt = 0;
+const pctEl = $('#pre .pct');
+document.body.style.overflow = 'hidden';
+const finish = () => {
+  if (ready) return; ready = true; readyAt = performance.now();
+  $('#pre').classList.add('done');
+  document.body.classList.add('ready');
+  document.body.style.overflow = '';
+  lenis && lenis.start();
+  setTimeout(() => $('#pre').remove(), 1300);
+};
+setTimeout(() => target = 100, 7000); // Notfall
+
+/* ---------- Metriken ---------- */
+const M = {};
+function measure() {
+  const top = el => el.getBoundingClientRect().top + scrollY;
+  M.vh = innerHeight; M.vw = innerWidth; M.mob = innerWidth < 768;
+  M.heroH = $('#hero').offsetHeight;
+  M.showTop = top($('#show')); M.showH = $('#show').offsetHeight; M.showEnd = M.showTop + M.showH - M.vh;
+  M.storyTop = top($('#story')); M.storyH = $('#story').offsetHeight;
+  M.coachTop = top($('#coach'));
+  M.brandsTop = top($('#brands'));
+  M.secs = $$('[data-header]').map(el => ({el, theme: el.dataset.header}));
+}
+
+/* ---------- WebGL ---------- */
+let gl = false, R, BR, scene, cam, bgScene, bgCam, bgMat, rim, key;
+const V = {halfW: 5, halfH: 3, sf: 1};
+const hex2v = h => { const n = parseInt(h.slice(1), 16); return new THREE.Vector3((n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255); };
+const COL = CH.map(c => hex2v(c.col));
+const C_RED = hex2v('#e30613'), C_DARK = hex2v('#120405'), C_PAPER = hex2v('#efece6');
+const labels = [];
+const O = {};
+
+try {
+  THREE.ColorManagement.legacyMode = false;
+  R = new THREE.WebGLRenderer({canvas: $('#fx'), antialias: true, alpha: true, powerPreference: 'high-performance'});
+  R.outputEncoding = THREE.sRGBEncoding;
+  R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = 1.05;
+  BR = new THREE.WebGLRenderer({canvas: $('#bg'), antialias: false, powerPreference: 'high-performance'});
+  gl = true;
+} catch (e) { document.body.classList.add('nogl'); }
+
+if (gl) {
+  /* Fließender Hintergrund */
+  bgScene = new THREE.Scene(); bgCam = new THREE.Camera();
+  bgMat = new THREE.ShaderMaterial({
+    uniforms: {uTime: {value: 0}, uRes: {value: new THREE.Vector2(1, 1)}, uPrev: {value: C_RED.clone()}, uNext: {value: C_RED.clone()},
+      uLight: {value: C_DARK.clone()}, uWipe: {value: -1}, uSplit: {value: .4}},
+    vertexShader: 'varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.,1.); }',
+    fragmentShader: `
+      precision highp float; varying vec2 vUv;
+      uniform float uTime,uWipe,uSplit; uniform vec2 uRes; uniform vec3 uPrev,uNext,uLight;
+      float h(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+      float n(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f);
+        return mix(mix(h(i),h(i+vec2(1,0)),f.x), mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x), f.y); }
+      float fbm(vec2 p){ float v=0., a=.5; for(int i=0;i<5;i++){ v+=a*n(p); p=p*2.03+vec2(1.7,9.2); a*=.5; } return v; }
+      void main(){
+        vec2 uv=vUv; float asp=uRes.x/uRes.y; vec2 p=vec2(uv.x*asp,uv.y);
+        float t=uTime*.07;
+        float q=fbm(p*1.1+vec2(t,-t*.7));
+        float r=fbm(p*2.2+vec2(-t*.6,t*.4)+q*1.6);
+        float wave=uv.y + .16*sin(p.x*1.9+uTime*.22+q*3.2) + .24*(r-.5);
+        float edge=uv.y + .07*sin(p.x*4.+uTime*.9) + .08*(q-.5);
+        float w=1.-smoothstep(uWipe-.07,uWipe+.07,edge);
+        vec3 col=mix(uPrev,uNext,w);
+        float k=smoothstep(uSplit-.3,uSplit+.3,wave);
+        vec3 c=mix(uLight,col,k);
+        float band=exp(-pow((wave-uSplit-.02)*7.,2.));
+        c=mix(c, mix(c,vec3(1.),.35), band*.45*k);
+        c+= (h(uv*uRes+fract(uTime))-.5)*.045;
+        gl_FragColor=vec4(c,1.);
+      }`
+  });
+  bgScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), bgMat));
+
+  /* 3D-Szene */
+  scene = new THREE.Scene();
+  cam = new THREE.PerspectiveCamera(35, 1, .1, 100); cam.position.set(0, 0, 10);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x3a3a3a, .9));
+  key = new THREE.DirectionalLight(0xffffff, 2.4); key.position.set(4, 6, 8); scene.add(key);
+  rim = new THREE.DirectionalLight(0xe30613, 3.2); rim.position.set(-6, 3, -5); scene.add(rim);
+  const fill = new THREE.DirectionalLight(0xffffff, .6); fill.position.set(-5, -2, 6); scene.add(fill);
+  // einfache Umgebung für Reflexe
+  const pm = new THREE.PMREMGenerator(R), es = new THREE.Scene();
+  es.background = new THREE.Color(0x2a2a2a);
+  const panel = (c, x, y, z, w, h) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({color: c, side: THREE.DoubleSide})); m.position.set(x, y, z); m.lookAt(0, 0, 0); es.add(m); };
+  panel(0xffffff, 0, 6, 5, 9, 3); panel(0xffffff, -7, 1, 2, 3, 7); panel(0xff3b30, 7, 1, -2, 3, 7); panel(0x888888, 0, -6, 0, 12, 12);
+  scene.environment = pm.fromScene(es, .04).texture;
+}
+
+/* Etiketten als Canvas-Textur */
+function makeLabel(c) {
+  const W = 1536, H = 540, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const x = cv.getContext('2d'), dark = c.body === '#121212', fg = dark ? '#fff' : '#121212', cx = W / 2;
+  x.fillStyle = c.body; x.fillRect(0, 0, W, H);
+  x.fillStyle = c.col; x.fillRect(0, 150, W, 280);
+  x.save(); x.globalAlpha = .09; x.fillStyle = '#fff';
+  for (let i = -300; i < W; i += 54) { x.beginPath(); x.moveTo(i, 150); x.lineTo(i + 22, 150); x.lineTo(i + 122, 430); x.lineTo(i + 100, 430); x.fill(); }
+  x.restore();
+  x.save(); x.translate(cx - 120, 42); x.scale(2, 2); x.fillStyle = fg; x.fill(new Path2D(SKY)); x.restore();
+  x.textAlign = 'center'; x.fillStyle = fg;
+  x.font = 'italic 800 46px "Barlow Condensed"'; x.fillText('EIWEISSDEALER24', cx, 132);
+  const fit = (txt, size, maxW) => { x.font = `italic 800 ${size}px "Barlow Condensed"`; const w = x.measureText(txt).width; if (w > maxW) x.font = `italic 800 ${size * maxW / w}px "Barlow Condensed"`; };
+  x.fillStyle = '#fff';
+  fit(c.l1, 160, 500); x.fillText(c.l1, cx, 318);
+  fit(c.l2, 74, 420); x.fillText(c.l2, cx, 400);
+  x.fillStyle = dark ? '#bdbdbd' : '#555';
+  x.font = '600 24px Barlow'; x.fillText('EIGENMARKE  ·  ROSTOCK  ·  SEIT 2007', cx, 482);
+  // Seitenflächen
+  x.textAlign = 'left'; x.fillStyle = '#ffffffcc'; x.font = '700 22px Barlow';
+  ['SUPPLEMENTS', 'ERNÄHRUNGSCOACHING', 'TRAININGSBERATUNG'].forEach((t, i) => x.fillText(t, cx + 330, 250 + i * 34));
+  x.textAlign = 'right';
+  ['DOBERANER STR. 110–112', '18057 ROSTOCK', 'EIWEISSDEALER24.DE'].forEach((t, i) => x.fillText(t, cx - 330, 250 + i * 34));
+  x.textAlign = 'center'; x.font = 'italic 800 230px "Barlow Condensed"'; x.fillStyle = '#ffffff22';
+  x.fillText('24', 120, 400); x.fillText('24', W - 120, 400);
+  const tx = new THREE.CanvasTexture(cv); tx.encoding = THREE.sRGBEncoding; tx.anisotropy = R.capabilities.getMaxAnisotropy();
+  return tx;
+}
+
+/* Objekte */
+const mat = (c, r = .5, m = 0, extra = {}) => new THREE.MeshStandardMaterial(Object.assign({color: c, roughness: r, metalness: m}, extra));
+function tub(i) {
+  const g = new THREE.Group();
+  const side = new THREE.MeshStandardMaterial({map: labels[i], roughness: .38, metalness: 0, envMapIntensity: .7});
+  const cap = mat(CH[i].body, .5);
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 2.2, 80, 1, false, Math.PI, Math.PI * 2), [side, cap, cap]);
+  g.add(body);
+  const lid = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.05, .46, 80), mat('#151515', .55, .1)); lid.position.y = 1.33; g.add(lid);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(1.05, .035, 10, 80), mat('#0a0a0a', .6)); ring.rotation.x = Math.PI / 2; ring.position.y = 1.16; g.add(ring);
+  const top = new THREE.Mesh(new THREE.TorusGeometry(.98, .05, 10, 80), mat('#202020', .4)); top.rotation.x = Math.PI / 2; top.position.y = 1.56; g.add(top);
+  g.userData = {side, cap, i};
+  return g;
+}
+function setTubLabel(g, i) { if (g.userData.i === i) return; g.userData.i = i; g.userData.side.map = labels[i]; g.userData.side.needsUpdate = true; g.userData.cap.color.set(CH[i].body); }
+function dumbbell() {
+  const g = new THREE.Group(), metal = mat('#c9c9c9', .22, 1), rub = mat('#161616', .75), red = mat('#e30613', .45);
+  const h = new THREE.Mesh(new THREE.CylinderGeometry(.11, .11, 2.9, 24), metal); h.rotation.z = Math.PI / 2; g.add(h);
+  [-1, 1].forEach(s => {
+    [[.82, .22, .98], [.64, .2, 1.2]].forEach(([r, w, x]) => { const p = new THREE.Mesh(new THREE.CylinderGeometry(r, r, w, 56), rub); p.rotation.z = Math.PI / 2; p.position.x = s * x; g.add(p); });
+    const band = new THREE.Mesh(new THREE.CylinderGeometry(.83, .83, .05, 56), red); band.rotation.z = Math.PI / 2; band.position.x = s * .86; g.add(band);
+    const col = new THREE.Mesh(new THREE.CylinderGeometry(.19, .19, .14, 24), metal); col.rotation.z = Math.PI / 2; col.position.x = s * .8; g.add(col);
+    const end = new THREE.Mesh(new THREE.CylinderGeometry(.16, .16, .1, 24), metal); end.rotation.z = Math.PI / 2; end.position.x = s * 1.36; g.add(end);
+  });
+  return g;
+}
+function kettlebell() {
+  const g = new THREE.Group(), blk = mat('#171717', .55, .25), red = mat('#e30613', .45);
+  const b = new THREE.Mesh(new THREE.SphereGeometry(.92, 56, 40), blk); b.scale.y = .93; g.add(b);
+  const h = new THREE.Mesh(new THREE.TorusGeometry(.56, .14, 18, 48, Math.PI), blk); h.position.y = .72; g.add(h);
+  [-1, 1].forEach(s => { const l = new THREE.Mesh(new THREE.CylinderGeometry(.14, .14, .3, 18), blk); l.position.set(s * .56, .66, 0); g.add(l); });
+  const st = new THREE.Mesh(new THREE.TorusGeometry(.9, .045, 10, 64), red); st.rotation.x = Math.PI / 2; st.position.y = .12; g.add(st);
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(.55, .55, .06, 40), blk); base.position.y = -.84; g.add(base);
+  g.position.y = -.1; const w = new THREE.Group(); w.add(g); return w;
+}
+function shaker(liq) {
+  const g = new THREE.Group();
+  const shell = new THREE.Mesh(new THREE.CylinderGeometry(.56, .48, 1.8, 48, 1, true), mat('#e9edf2', .15, 0, {transparent: true, opacity: .42, side: THREE.DoubleSide}));
+  g.add(shell);
+  const l = new THREE.Mesh(new THREE.CylinderGeometry(.51, .46, 1.05, 48), mat(liq, .3, 0, {emissive: liq, emissiveIntensity: .12})); l.position.y = -.35; g.add(l);
+  const bot = new THREE.Mesh(new THREE.CylinderGeometry(.48, .48, .06, 48), mat('#d8dde3', .3)); bot.position.y = -.9; g.add(bot);
+  const cap = new THREE.Mesh(new THREE.CylinderGeometry(.6, .6, .44, 48), mat('#e30613', .4)); cap.position.y = 1.1; g.add(cap);
+  const sp = new THREE.Mesh(new THREE.CylinderGeometry(.13, .18, .28, 24), mat('#e30613', .4)); sp.position.y = 1.45; g.add(sp);
+  const lp = new THREE.Mesh(new THREE.TorusGeometry(.2, .055, 12, 32), mat('#e30613', .4)); lp.position.set(.62, 1.1, 0); g.add(lp);
+  return g;
+}
+function scoop(powder) {
+  const g = new THREE.Group(), w = mat('#f6f6f6', .35);
+  const cup = new THREE.Mesh(new THREE.CylinderGeometry(.5, .42, .6, 44, 1, true), mat('#f6f6f6', .35, 0, {side: THREE.DoubleSide})); g.add(cup);
+  const bt = new THREE.Mesh(new THREE.CircleGeometry(.42, 44), w); bt.rotation.x = Math.PI / 2; bt.position.y = -.3; g.add(bt);
+  const hd = new THREE.Mesh(new THREE.BoxGeometry(1.5, .09, .24), w); hd.position.set(1.15, .22, 0); hd.rotation.z = .22; g.add(hd);
+  if (powder) { const p = new THREE.Mesh(new THREE.SphereGeometry(.5, 36, 18, 0, Math.PI * 2, 0, Math.PI / 2), mat(powder, 1)); p.scale.y = .55; p.position.y = .26; g.add(p); }
+  return g;
+}
+
+/* ---------- Layouts (in Bildschirm-Einheiten −1…1) ---------- */
+// [x, y, scale, rx, ry, rz]
+const HERO = {
+  d: {tubA: [.52, -.3, .86, .22, -.45, -.16], tubB: [-.56, .40, .74, .32, .6, .42], tubC: [.73, .5, .6, -.2, -.3, -.55], dumb: [-.6, -.56, .74, .5, .3, .28], scoop: [.08, .62, .62, .7, .8, -.35]},
+  m: {tubA: [.38, -.46, 1, .22, -.45, -.16], tubB: [-.52, .6, .72, .32, .6, .42], tubC: [.62, .58, .58, -.2, -.3, -.55], dumb: [-.48, -.7, .72, .5, .3, .28], scoop: [-.55, -.18, .55, .7, .8, -.35]}
+};
+const SHOW = {d: {tub: [.16, -.06, 1.12], comp: [-.14, -.5, .82]}, m: {tub: [0, -.04, 1.45], comp: [.5, -.34, .8]}};
+const EXIT = {tubB: [-1.5, 1.5], tubC: [1.5, 1.5], scoop: [.3, 1.7]};
+const FLOAT = [ // [objekt, Position in Story 0…1, x, Tempo, Größe, Drehtempo]
+  ['f1', .08, .7, 1.3, .8, .7], ['f2', .2, -.72, .85, .8, .6], ['f3', .42, .74, 1.15, .75, .55],
+  ['f4', .55, -.6, 1.4, .7, .5], ['f5', .75, .62, .9, .7, .6], ['f6', .9, -.66, 1.25, .75, .55]
+];
+
+let mouse = {x: 0, y: 0, tx: 0, ty: 0};
+addEventListener('pointermove', e => { mouse.tx = e.clientX / innerWidth * 2 - 1; mouse.ty = e.clientY / innerHeight * 2 - 1; }, {passive: true});
+
+function place(o, x, y, s, rx, ry, rz, z = 0) {
+  const g = o.g;
+  const vis = s > .001 && Math.abs(x) < 2.2 && Math.abs(y) < 2.4;
+  g.visible = vis; if (!vis) return;
+  g.position.set(x * V.halfW, y * V.halfH, z);
+  g.scale.setScalar(s * V.sf);
+  g.rotation.set(rx, ry, rz);
+}
+
+function resize() {
+  measure();
+  if (!gl) return;
+  const w = innerWidth, h = innerHeight;
+  R.setPixelRatio(Math.min(devicePixelRatio, 1.75)); R.setSize(w, h, false);
+  BR.setPixelRatio(Math.min(devicePixelRatio, 1) * .6); BR.setSize(w, h, false);
+  bgMat.uniforms.uRes.value.set(w, h);
+  cam.aspect = w / h; cam.updateProjectionMatrix();
+  V.halfH = Math.tan(THREE.MathUtils.degToRad(cam.fov / 2)) * cam.position.z;
+  V.halfW = V.halfH * cam.aspect;
+  V.sf = M.mob ? clamp(V.halfW / 4.2, .3, .55) : clamp(V.halfW / 5.6, .55, 1);
+}
+
+/* ---------- Physik: Marken ---------- */
+const BRANDS = [['Optimum Nutrition', 'k'], ['Scitec Nutrition', 'r'], ['BioTech USA', 'w'], ['Weider', 'k'], ['SRS Muscle', 'o'], ['Sinob', 'r'], ['Big Zone', 'w'], ['Nutrend', 'k'], ['Olimp', 'o'], ['Nano Supps', 'r'],
+  ['Universal', 'w'], ['Body Attack', 'k'], ['Best Body', 'o'], ['Now Foods', 'w'], ['Blender Bottle', 'r'], ['Eiweissdealer24', 'r big'], ['40+ Marken', 'k big']];
+let phys = null, physOn = false;
+function initPhysics() {
+  if (!window.Matter || phys) return;
+  const {Engine, Bodies, Composite, Mouse, MouseConstraint, Body} = Matter;
+  const pit = $('#pit');
+  const engine = Engine.create({gravity: {y: 1.1}});
+  const W = pit.clientWidth, H = pit.clientHeight;
+  const walls = [Bodies.rectangle(W / 2, H + 40, W * 3, 80, {isStatic: true}), Bodies.rectangle(-40, H / 2, 80, H * 4, {isStatic: true}), Bodies.rectangle(W + 40, H / 2, 80, H * 4, {isStatic: true})];
+  Composite.add(engine.world, walls);
+  const items = [];
+  BRANDS.forEach(([name, cls], i) => {
+    const el = document.createElement('div'); el.className = 'pill ' + cls; el.textContent = name; pit.appendChild(el);
+    const w = el.offsetWidth, h = el.offsetHeight;
+    setTimeout(() => {
+      const b = Bodies.rectangle(clamp(W * (.15 + Math.random() * .7), w / 2 + 10, W - w / 2 - 10), -h - Math.random() * 200, w, h,
+        {chamfer: {radius: h / 2 - 1}, restitution: .35, friction: .2, density: .002, angle: (Math.random() - .5) * .8});
+      Body.setAngularVelocity(b, (Math.random() - .5) * .08);
+      Composite.add(engine.world, b); items.push({el, b, w, h}); el.style.visibility = 'visible';
+    }, 120 + i * 140);
+  });
+  if (matchMedia('(pointer:fine)').matches) {
+    const mouseP = Mouse.create(pit);
+    mouseP.element.removeEventListener('mousewheel', mouseP.mousewheel);
+    mouseP.element.removeEventListener('DOMMouseScroll', mouseP.mousewheel);
+    Composite.add(engine.world, MouseConstraint.create(engine, {mouse: mouseP, constraint: {stiffness: .2, render: {visible: false}}}));
+  }
+  phys = {engine, items, step() {
+    Engine.update(engine, 1000 / 60);
+    for (const it of items) { const {x, y} = it.b.position; it.el.style.transform = `translate(${x - it.w / 2}px,${y - it.h / 2}px) rotate(${it.b.angle}rad)`; }
+  }};
+}
+new IntersectionObserver(es => es.forEach(e => { physOn = e.isIntersecting; if (physOn) initPhysics(); }), {threshold: .25}).observe($('#pit'));
+
+/* ---------- Haupt-Loop ---------- */
+let activeCh = -1, mqX1 = 0, mqX2 = 0, last = performance.now(), firstFrames = 0;
+const tmp = {prev: new THREE.Vector3(), next: new THREE.Vector3(), light: new THREE.Vector3(), a: new THREE.Vector3(), b: new THREE.Vector3()};
+
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  lenis && lenis.raf(now);
+  const t = now / 1000, sy = scrollY, vh = M.vh;
+  mouse.x += (mouse.tx - mouse.x) * .05; mouse.y += (mouse.ty - mouse.y) * .05;
+
+  /* Preloader-Zähler */
+  if (!ready) {
+    shown += (target - shown) * .08 + .15; shown = Math.min(shown, target);
+    pctEl.textContent = Math.round(shown) + ' %';
+    if (shown >= 99.5) finish();
+  }
+  const intro = ready ? (now - readyAt) / 1000 : 0;
+
+  /* Fortschritte */
+  const heroP = clamp(sy / M.heroH);
+  const sp = clamp((sy - M.showTop) / (M.showEnd - M.showTop));
+  const half = .055;
+  let prevI = Math.min(N - 1, Math.floor(sp * N)), nextI = prevI, wipe = -1;
+  for (let i = 1; i < N; i++) { const c = i / N; if (Math.abs(sp - c) < half) { prevI = i - 1; nextI = i; wipe = (sp - (c - half)) / (2 * half); } }
+
+  /* Kapitel-Text */
+  const ch = sy < M.showTop - vh * .35 ? -1 : Math.min(N - 1, Math.floor(sp * N + 1e-6));
+  if (ch !== activeCh) {
+    activeCh = ch;
+    chaps.forEach((c, i) => { c.classList.toggle('on', i === ch); c.classList.toggle('past', ch > -1 && i < ch); });
+    if (ch > -1) { $('#pn').textContent = '0' + (ch + 1); $('#pg').textContent = CH[ch].eye; $('#pb').style.width = ((ch + 1) / N * 100) + '%'; }
+  }
+
+  /* Hero-Wortmarke */
+  const wm = $('#wm');
+  if (sy < M.heroH * 1.2) { wm.style.transform = `translateY(${sy * .35}px) scale(${1 - heroP * .08})`; wm.style.opacity = 1 - heroP * 1.4; wm.style.filter = `blur(${heroP * 8}px)`; }
+
+  /* Coaching-Panel */
+  if (sy > M.coachTop - vh && sy < M.coachTop + vh * 2.5) {
+    const p = easeOut(clamp((sy - M.coachTop + vh * .25) / (vh * 1.05)));
+    const cp = $('#cpanel');
+    cp.style.setProperty('--it', (lerp(M.mob ? 9 : 13, 0, p)) + 'vh');
+    cp.style.setProperty('--is', (lerp(M.mob ? 5 : 17, 0, p)) + 'vw');
+    cp.style.setProperty('--r', lerp(32, 0, p) + 'px');
+    $('#cin').style.transform = `translateY(${(1 - p) * 70}px) scale(${.9 + .1 * p})`;
+    $('#cbg').style.transform = `translate(${-(sy - M.coachTop) * .35}px,-50%)`;
+    cp.classList.toggle('full', p > .82);
+  }
+
+  /* Header-Farbe */
+  const hdY = 34; let theme = 'light';
+  for (const s of M.secs) { const r = s.el.getBoundingClientRect(); if (r.top <= hdY && r.bottom > hdY) { theme = s.theme; break; } }
+  if (sy > M.storyTop + vh * .2 && sy < M.coachTop - vh * .3) theme = 'dark';
+  $('.hd').dataset.theme = theme;
+
+  /* Laufschriften */
+  const vel = lenis ? lenis.velocity : 0;
+  if (sy > M.brandsTop) {
+    const tr1 = $('#mq1'), tr2 = $('#mq2');
+    mqX1 = (mqX1 + (40 + Math.abs(vel) * 25) * dt) % (tr1.scrollWidth / 4);
+    mqX2 = (mqX2 + (30 + Math.abs(vel) * 10) * dt) % (tr2.scrollWidth / 10);
+    tr1.style.transform = `translateX(${-mqX1}px)`; tr2.style.transform = `translateX(${-mqX2}px)`;
+  }
+  if (physOn && phys) phys.step();
+
+  if (!gl) return;
+
+  /* Hintergrund-Zustand */
+  const U = bgMat.uniforms; U.uTime.value = t;
+  if (sy < M.showTop) {
+    tmp.a.copy(C_RED); U.uPrev.value.copy(C_RED); U.uNext.value.copy(COL[0]); U.uWipe.value = -1;
+    U.uLight.value.copy(C_DARK).lerp(C_PAPER, easeIO(heroP));
+    U.uSplit.value = lerp(.36, .6, easeIO(heroP));
+    U.uPrev.value.lerp(COL[0], heroP);
+  } else if (sy < M.storyTop - vh * .2) {
+    U.uPrev.value.copy(COL[prevI]); U.uNext.value.copy(COL[nextI]);
+    U.uWipe.value = wipe < 0 ? -1 : lerp(-.15, 1.15, wipe);
+    U.uLight.value.copy(C_PAPER); U.uSplit.value = .6;
+  } else {
+    const k = easeIO(clamp((sy - (M.storyTop - vh * .2)) / (vh * .9)));
+    U.uPrev.value.copy(COL[N - 1]).lerp(C_RED, k); U.uNext.value.copy(U.uPrev.value); U.uWipe.value = -1;
+    U.uLight.value.copy(C_PAPER);
+    const k2 = clamp((sy - M.coachTop) / vh);
+    U.uSplit.value = lerp(.6, .93, k) + k2 * .5;
+  }
+  BR.render(bgScene, bgCam);
+
+  /* Akzentlicht */
+  rim.color.setRGB(U.uNext.value.x, U.uNext.value.y, U.uNext.value.z).convertSRGBToLinear();
+
+  /* Objekte */
+  const L = M.mob ? 'm' : 'd', H0 = HERO[L], S0 = SHOW[L];
+  const pop = d => ready ? easeBack(clamp((intro - d) / .9)) : 0;
+  const bobY = ph => Math.sin(t * .9 + ph) * .018, mx = mouse.x * .03, my = -mouse.y * .03;
+  const hp = easeIO(heroP);
+
+  // Hauptdose: Hero → Showcase → raus
+  {
+    const a = H0.tubA, s = S0.tub;
+    let x = lerp(a[0], s[0], hp), y = lerp(a[1], s[1], hp), sc = lerp(a[2], s[2], hp) * pop(.15);
+    let rx = lerp(a[3], .1, hp), rz = lerp(a[5], 0, hp);
+    let ry = lerp(a[4] + t * .35, Math.sin(t * .5) * .35, hp);
+    if (wipe >= 0) ry += easeIO(wipe) * Math.PI * 2;
+    setTubLabel(O.tubA.g, wipe >= 0 ? (wipe < .5 ? prevI : nextI) : (sy < M.showTop ? 0 : prevI));
+    if (sy > M.showEnd) y += (sy - M.showEnd) / (vh / 2);
+    place(O.tubA, x + mx, y + bobY(0) + my, sc, rx, ry, rz);
+  }
+  // Hero-Nebendarsteller
+  [['tubB', .3], ['tubC', .45], ['scoop', .6]].forEach(([k, d], i) => {
+    const a = H0[k], e = EXIT[k], q = easeIn(heroP);
+    const x = lerp(a[0], e[0], q), y = lerp(a[1], e[1], q);
+    place(O[k], x + mx * (1 + i * .5), y + bobY(i + 1) + my, a[2] * pop(d), a[3] + q * 2 + Math.sin(t * .6 + i) * .08, a[4] + t * .3 * (i % 2 ? -1 : 1), a[5] + q * 1.5);
+  });
+  // Begleiter der Kapitel (0 = Hantel aus dem Hero)
+  O.comps.forEach((o, j) => {
+    const r = S0.comp;
+    let x, y, s = r[2], rx = .3, ry = t * .4 + j, rz = -.2;
+    const enter = j === 0 ? 1 : clamp((sp - (j / N - half)) / (2 * half));
+    const exit = j === N - 1 ? 0 : clamp((sp - ((j + 1) / N - half)) / (2 * half));
+    if (j === 0 && sy < M.showTop) {
+      const a = H0.dumb; x = lerp(a[0], r[0], hp); y = lerp(a[1], r[1], hp); s = lerp(a[2], r[2], hp) * pop(.75);
+      rx = lerp(a[3], .3, hp); rz = lerp(a[5], -.2, hp);
+    } else if (sy < M.showTop || enter <= 0 || exit >= 1) { o.g.visible = false; return; }
+    else {
+      const ee = easeOut(enter), xe = easeIn(exit);
+      x = lerp(1.5, r[0], ee); y = lerp(-1.4, r[1], ee); rz += (1 - ee) * 2;
+      x = lerp(x, -1.6, xe); y = lerp(y, 1.3, xe); rx += xe * 2.5;
+    }
+    if (j === N - 1 && sy > M.showEnd) y += (sy - M.showEnd) / (vh / 2);
+    if (j === 1) ry = Math.sin(t * .7) * .5;
+    place(o, x + mx * 1.6, y + bobY(j + 4) + my, s, rx, ry, rz, .8);
+  });
+  // Story: schwebende Objekte mit Parallax
+  FLOAT.forEach(([k, f, fx, kSpeed, s, rs], i) => {
+    const o = O[k], anchor = M.storyTop + f * M.storyH;
+    const y = -(anchor - vh / 2 - sy) * kSpeed / (vh / 2);
+    if (Math.abs(y) > 2.2) { o.g.visible = false; return; }
+    const x = M.mob ? fx * 1.3 : fx;
+    place(o, x + mx * 1.3, y, s * (M.mob ? .7 : 1), .4 + sy * .0009 * rs, sy * .0012 * rs + i, .3 * Math.sin(i) + sy * .0004 * rs, -.5);
+  });
+
+  R.render(scene, cam);
+  if (!ready && firstFrames++ === 2) target = 100;
+}
+
+/* ---------- Start ---------- */
+async function boot() {
+  measure();
+  target = 35;
+  try { await Promise.race([Promise.all([document.fonts.load('italic 800 120px "Barlow Condensed"'), document.fonts.load('600 24px Barlow')]), new Promise(r => setTimeout(r, 3000))]); } catch (e) {}
+  target = 65;
+  if (gl) {
+    CH.forEach(c => labels.push(makeLabel(c)));
+    const add = (k, g) => { O[k] = {g}; scene.add(g); return O[k]; };
+    add('tubA', tub(0)); add('tubB', tub(1)); add('tubC', tub(2)); add('scoop', scoop());
+    const dumb = add('dumb', dumbbell());
+    O.comps = [dumb, add('kettle', kettlebell()), add('shaker', shaker('#2b3bff')), add('scoopG', scoop('#f4efe3'))];
+    add('f1', tub(3)); add('f2', kettlebell()); add('f3', shaker('#e30613')); add('f4', tub(1)); add('f5', scoop('#f4efe3')); add('f6', dumbbell());
+    R.compile(scene, cam);
+  }
+  target = 88;
+  resize();
+  requestAnimationFrame(frame);
+}
+addEventListener('resize', () => { clearTimeout(resize.t); resize.t = setTimeout(resize, 120); });
+addEventListener('load', measure);
+boot();
+})();
+</script>
+</body>
+</html>
