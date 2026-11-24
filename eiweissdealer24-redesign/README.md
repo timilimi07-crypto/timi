@@ -43,3 +43,12 @@ Hinweis: Produktnamen der Eigenmarke stammen vom Shop-Banner. Beschreibungen sin
 - Team-Fotos, Blogthemen und „Im Laden abholen“ sind Vorschläge bzw. Platzhalter.
 - Suche, Konto, Checkout und Formulare sind nur angedeutet.
 - `screenshots/` enthält Vorher-Nachher-Bilder für die Präsentation.
+
+## Auf Netlify veröffentlichen
+
+`python3 build_netlify.py` baut den Ordner `netlify/` und die Datei `../eiweissdealer24-netlify.zip`.
+Startseite ist die Erlebnis-Seite (`index.html`), der Shop-Prototyp liegt unter `shop.html`.
+Die Seite ist für Suchmaschinen gesperrt (`robots.txt`, `X-Robots-Tag`) und als unverbindliches Konzept gekennzeichnet.
+
+- **Schnell (Drag & Drop):** Bei Netlify einloggen → *Add new site* → *Deploy manually* → die ZIP-Datei (oder den Ordner `netlify/`) hineinziehen.
+- **Über GitHub (automatische Updates):** *Add new site* → *Import an existing project* → dieses Repo → Branch wählen → *Base directory* `eiweissdealer24-redesign/netlify`, Build command leer lassen.

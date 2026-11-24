@@ -1,0 +1,1094 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eiweissdealer24 – Redesign-Prototyp</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0b; --s1:#131315; --s2:#1b1b1f; --s3:#25252a; --line:#2c2c32;
+  --tx:#f5f5f4; --mu:#a6a6ad; --mu2:#75757d;
+  --red:#e30613; --red2:#ff2b38; --redglow:rgba(227,6,19,.35);
+  --paper:#eeebe5; --paper2:#e2ded6; --ink:#121212;
+  --ok:#22c55e; --r:14px; --r2:22px;
+  --hd:'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --bd:'Barlow', system-ui, -apple-system, sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--bd);font-size:16px;line-height:1.5;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+img,svg{display:block}
+:focus-visible{outline:2px solid var(--red2);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px}
+@media(min-width:768px){.wrap{padding:0 28px}}
+.h{font-family:var(--hd);font-weight:800;text-transform:uppercase;font-style:italic;line-height:.92;letter-spacing:.005em;margin:0}
+.eyebrow{font-family:var(--hd);font-weight:700;text-transform:uppercase;letter-spacing:.14em;font-size:13px;color:var(--red2);display:flex;align-items:center;gap:10px;margin:0 0 14px}
+.eyebrow::before{content:"";width:28px;height:3px;background:var(--red);transform:skewX(-20deg)}
+.muted{color:var(--mu)}
+:where([hidden]){display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 26px;border-radius:999px;font-family:var(--hd);font-weight:800;font-size:18px;text-transform:uppercase;letter-spacing:.04em;transition:transform .15s, background .15s, box-shadow .15s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 10px 30px -10px var(--redglow)}
+.btn-red:hover{background:var(--red2)}
+.btn-ghost{border:1.5px solid #ffffff38;color:#fff}
+.btn-ghost:hover{border-color:#fff;background:#ffffff0d}
+.btn-white{background:#fff;color:var(--ink)}
+.btn-sm{height:42px;padding:0 18px;font-size:15px}
+.btn svg{width:20px;height:20px}
+
+/* Top bar */
+.topbar{background:var(--red);color:#fff;font-size:13px;font-weight:600}
+.topbar .wrap{display:flex;justify-content:center;gap:28px;height:34px;align-items:center;overflow:hidden;white-space:nowrap}
+.topbar span{display:flex;align-items:center;gap:7px}
+.topbar svg{width:15px;height:15px}
+.topbar .tb-opt{display:none}
+@media(min-width:900px){.topbar .wrap{justify-content:space-between}.topbar .tb-opt{display:flex}}
+
+/* Header */
+header.site{position:sticky;top:0;z-index:50;background:rgba(10,10,11,.86);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--line)}
+.hrow{display:flex;align-items:center;gap:12px;height:64px}
+@media(min-width:1024px){.hrow{height:76px;gap:28px}}
+.logo{display:flex;flex-direction:column;align-items:flex-start;line-height:1;gap:1px;flex-shrink:0}
+.logo svg{width:92px;height:15px;fill:#fff;margin-left:2px}
+.logo span{font-family:var(--hd);font-weight:800;font-style:italic;font-size:22px;letter-spacing:.01em;text-transform:uppercase}
+.logo b{color:var(--red2)}
+@media(min-width:1024px){.logo span{font-size:27px}.logo svg{width:116px;height:19px}}
+.nav{display:none}
+@media(min-width:1024px){.nav{display:flex;gap:4px;height:100%;align-items:stretch}}
+.nav>div{position:relative;display:flex}
+.nav a.ni,.nav button.ni{display:flex;align-items:center;gap:6px;padding:0 14px;font-family:var(--hd);font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:.04em;color:#dcdcdc;position:relative;white-space:nowrap}
+@media(max-width:1279px){.nav a.ni,.nav button.ni{padding:0 10px;font-size:17px}.nav .ni.on::after{left:10px;right:10px}}
+.nav .ni:hover,.nav .ni.on{color:#fff}
+.nav .ni.on::after{content:"";position:absolute;left:14px;right:14px;bottom:-1px;height:3px;background:var(--red);transform:skewX(-20deg)}
+.nav .ni svg{width:14px;height:14px;transition:transform .2s}
+.nav .ni.hot{color:var(--red2)}
+.hspace{flex:1}
+.search{display:none;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--line);border-radius:999px;height:44px;padding:0 16px;width:260px;color:var(--mu)}
+.search input{background:none;border:0;outline:0;color:var(--tx);font:inherit;width:100%;font-size:15px}
+.search svg{width:18px;height:18px;flex-shrink:0}
+@media(min-width:1180px){.search{display:flex}}
+.ib{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;position:relative;flex-shrink:0}
+.ib:hover{background:var(--s2)}
+.ib svg{width:22px;height:22px}
+.ib .badge{position:absolute;top:3px;right:1px;background:var(--red);color:#fff;font-size:11px;font-weight:700;min-width:19px;height:19px;border-radius:10px;display:grid;place-items:center;padding:0 5px;border:2px solid var(--bg)}
+.only-m{display:grid}
+@media(min-width:1024px){.only-m{display:none}}
+.only-d{display:none}
+@media(min-width:1024px){.only-d{display:grid}}
+@media(min-width:1180px){.search-ib{display:none}}
+
+/* Mega menu */
+.mega{position:fixed;left:0;right:0;top:110px;background:var(--s1);border-bottom:1px solid var(--line);box-shadow:0 30px 60px -20px #000;opacity:0;visibility:hidden;transform:translateY(-6px);transition:.18s;z-index:49}
+.mega.open{opacity:1;visibility:visible;transform:none}
+.mega .wrap{display:grid;grid-template-columns:repeat(4,1fr) 1.25fr;gap:32px;padding-top:34px;padding-bottom:38px}
+.mega h4{font-family:var(--hd);font-weight:800;text-transform:uppercase;font-size:17px;letter-spacing:.06em;margin:0 0 12px;color:#fff;display:flex;align-items:center;gap:8px}
+.mega h4 i{width:8px;height:8px;background:var(--red);transform:skewX(-20deg);display:block}
+.mega ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.mega li a{color:var(--mu);font-size:15px}
+.mega li a:hover{color:#fff}
+.mega .promo{background:linear-gradient(135deg,#2a0306,#110102 70%);border:1px solid #4a0a0f;border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:12px}
+.mega .promo .h{font-size:30px}
+
+/* Drawer (mobile nav + cart + filter) */
+.scrim{position:fixed;inset:0;background:#000a;opacity:0;visibility:hidden;transition:.25s;z-index:80}
+.scrim.open{opacity:1;visibility:visible}
+.drawer{position:fixed;top:0;bottom:0;width:min(420px,92vw);background:var(--s1);z-index:90;transition:transform .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+.drawer.left{left:0;transform:translateX(-102%)}
+.drawer.right{right:0;transform:translateX(102%)}
+.drawer.open{transform:none}
+.dhead{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 14px 20px;border-bottom:1px solid var(--line);flex-shrink:0}
+.dhead .h{font-size:28px}
+.dbody{flex:1;overflow-y:auto;padding:8px 20px 24px}
+.dfoot{border-top:1px solid var(--line);padding:16px 20px 20px;flex-shrink:0}
+.acc{border-bottom:1px solid var(--line)}
+.acc>button,.acc>a{display:flex;align-items:center;justify-content:space-between;width:100%;padding:17px 0;font-family:var(--hd);font-weight:800;font-size:22px;text-transform:uppercase;font-style:italic;text-align:left}
+.acc>button svg{width:18px;height:18px;transition:transform .2s}
+.acc.open>button svg{transform:rotate(180deg)}
+.acc .sub{display:none;padding:0 0 16px;gap:2px}
+.acc.open .sub{display:grid}
+.acc .sub a{padding:9px 0 9px 14px;color:var(--mu);border-left:2px solid var(--line)}
+.acc .sub a:hover{color:#fff;border-color:var(--red)}
+.mcontact{margin-top:22px;background:var(--s2);border-radius:var(--r);padding:18px;display:grid;gap:10px;font-size:14px;color:var(--mu)}
+.mcontact div{display:flex;gap:10px;align-items:center}
+.mcontact svg{width:18px;height:18px;color:var(--red2);flex-shrink:0}
+
+/* Bottom nav (mobile) */
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(14,14,16,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:env(safe-area-inset-bottom)}
+.bnav a,.bnav button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 8px;font-size:11px;font-weight:600;color:var(--mu2);position:relative}
+.bnav svg{width:23px;height:23px}
+.bnav .on{color:#fff}
+.bnav .on svg{color:var(--red2)}
+.bnav .badge{position:absolute;top:4px;left:calc(50% + 6px);background:var(--red);color:#fff;font-size:10px;font-weight:700;min-width:17px;height:17px;border-radius:9px;display:grid;place-items:center;padding:0 4px}
+body{padding-bottom:64px}
+@media(min-width:1024px){.bnav{display:none}body{padding-bottom:0}}
+body.pdp .bnav{display:none}
+
+/* Sections */
+section{position:relative}
+.sec{padding:64px 0}
+@media(min-width:1024px){.sec{padding:104px 0}}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:30px}
+.sec-head .h{font-size:clamp(38px,6vw,64px)}
+.link-more{display:inline-flex;align-items:center;gap:8px;font-family:var(--hd);font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#fff;white-space:nowrap;font-size:16px}
+.link-more svg{width:18px;height:18px;color:var(--red2);transition:transform .2s}
+.link-more:hover svg{transform:translateX(4px)}
+
+/* Hero */
+.hero{overflow:hidden;background:radial-gradient(ellipse 70% 80% at 78% 55%,#3a0408 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 10% 0%,#1a1a1d,transparent 70%),var(--bg)}
+.hero::before{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(115deg,transparent 0 46px,#ffffff05 46px 48px);pointer-events:none}
+.hero .wrap{display:grid;gap:12px;padding-top:44px;padding-bottom:40px;position:relative}
+@media(min-width:960px){.hero .wrap{grid-template-columns:1.1fr 1fr;align-items:center;padding-top:72px;padding-bottom:84px;gap:40px}}
+.hero .h{font-size:clamp(60px,12.5vw,132px)}
+.hero .h em{color:var(--red2);font-style:italic;display:block}
+.hero p.lead{font-size:clamp(17px,2vw,20px);color:#d4d4d8;max-width:520px;margin:22px 0 30px}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap}
+.hero .ctas .btn{flex:1 1 200px}
+@media(min-width:600px){.hero .ctas .btn{flex:0 0 auto}}
+.hero-art{position:relative;height:340px;margin:10px -16px 0}
+@media(min-width:960px){.hero-art{height:520px;margin:0}}
+.hero-art .t{position:absolute;filter:drop-shadow(0 30px 40px #000c)}
+.hero-art .t1{width:44%;left:28%;top:4%;z-index:3}
+.hero-art .t2{width:34%;left:4%;top:24%;z-index:2;transform:rotate(-8deg)}
+.hero-art .t3{width:34%;right:4%;top:22%;z-index:2;transform:rotate(7deg)}
+.hero-art .glow{position:absolute;left:50%;top:55%;width:70%;aspect-ratio:1;transform:translate(-50%,-50%);background:radial-gradient(circle,var(--redglow),transparent 65%);filter:blur(10px)}
+.hero-art .seal{position:absolute;right:6%;bottom:4%;z-index:4;width:112px;height:112px;border-radius:50%;background:var(--red);display:grid;place-items:center;text-align:center;transform:rotate(-12deg);box-shadow:0 14px 30px -8px #000}
+.hero-art .seal span{font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;line-height:.9;font-size:16px}
+.hero-art .seal b{display:block;font-size:34px}
+@media(min-width:960px){.hero-art .seal{width:140px;height:140px}.hero-art .seal b{font-size:44px}}
+.stats{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--s1)}
+.stats .wrap{display:grid;grid-template-columns:repeat(2,1fr)}
+@media(min-width:900px){.stats .wrap{grid-template-columns:repeat(4,1fr)}}
+.stat{padding:20px 0 20px 16px;border-left:1px solid var(--line)}
+.stat:nth-child(odd){border-left:0;padding-left:0}
+@media(min-width:900px){.stat{padding:26px 0 26px 26px}.stat:nth-child(odd){border-left:1px solid var(--line);padding-left:26px}.stat:first-child{border-left:0;padding-left:0}}
+.stat b{display:block;font-family:var(--hd);font-weight:800;font-style:italic;font-size:clamp(34px,4vw,46px);line-height:1}
+.stat b i{color:var(--red2);font-style:italic}
+.stat span{color:var(--mu);font-size:14px}
+
+/* Goals */
+.goals{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:900px){.goals{grid-template-columns:repeat(5,1fr);gap:14px}}
+.goal{position:relative;border-radius:var(--r);background:var(--s1);border:1px solid var(--line);padding:18px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;transition:.2s}
+.goal:hover{border-color:var(--red);transform:translateY(-3px)}
+.goal .num{font-family:var(--hd);font-weight:800;font-style:italic;font-size:15px;color:var(--mu2)}
+.goal .h{font-size:28px;position:relative;z-index:1}
+@media(min-width:900px){.goal{min-height:210px;padding:22px}.goal .h{font-size:32px}}
+.goal small{display:block;color:var(--mu);font-size:13px;margin-top:6px;position:relative;z-index:1}
+.goal .bgicon{position:absolute;right:-14px;top:-10px;width:110px;height:110px;color:#ffffff08}
+.goal:first-child{grid-column:span 2;background:linear-gradient(135deg,var(--red),#8d040c)}
+.goal:first-child .num,.goal:first-child small{color:#ffd6d8}
+.goal:first-child .bgicon{color:#ffffff1c}
+@media(min-width:900px){.goal:first-child{grid-column:auto}}
+
+/* Category tiles */
+.cats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:900px){.cats{grid-template-columns:repeat(4,1fr);gap:14px}}
+.cat{border-radius:var(--r);background:var(--paper);color:var(--ink);overflow:hidden;display:flex;flex-direction:column;transition:.2s}
+.cat:hover{transform:translateY(-3px)}
+.cat .art{height:130px;display:grid;place-items:center;background:linear-gradient(180deg,var(--paper),var(--paper2))}
+.cat .art svg{height:110px;width:auto;filter:drop-shadow(0 12px 12px #0003)}
+@media(min-width:900px){.cat .art{height:180px}.cat .art svg{height:150px}}
+.cat .lbl{padding:12px 14px 14px;background:#fff;display:flex;justify-content:space-between;align-items:center}
+.cat .lbl .h{font-size:21px}
+.cat .lbl small{color:#666;font-size:12px;display:block}
+.cat .lbl svg{width:18px;height:18px;color:var(--red)}
+
+/* Product cards */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr);gap:14px}}
+@media(min-width:1180px){.grid.g4{grid-template-columns:repeat(4,1fr)}}
+.rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(178px,46%);gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:0 16px 8px;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.rail>*{scroll-snap-align:start}
+@media(min-width:700px){.rail{grid-auto-columns:minmax(220px,30%)}}
+@media(min-width:1180px){.rail{grid-auto-flow:row;grid-template-columns:repeat(4,1fr);overflow:visible;margin:0;padding:0;gap:14px}}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;transition:border-color .2s,transform .2s;position:relative}
+.card:hover{border-color:#45454d;transform:translateY(-2px)}
+.card .img{background:radial-gradient(circle at 50% 40%,#fff,var(--paper) 70%);aspect-ratio:1/1;display:grid;place-items:center;position:relative}
+.card .img svg{width:66%;height:auto;filter:drop-shadow(0 14px 14px #0003);transition:transform .3s}
+.card:hover .img svg{transform:scale(1.04) rotate(-1.5deg)}
+.tag{position:absolute;z-index:2;top:10px;left:10px;font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:13px;letter-spacing:.04em;padding:3px 9px;border-radius:6px;background:var(--ink);color:#fff}
+.tag.sale{background:var(--red)}
+.card .body{padding:12px 12px 14px;display:flex;flex-direction:column;gap:2px;flex:1}
+@media(min-width:700px){.card .body{padding:14px 16px 16px}}
+.card .brand{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--mu2)}
+.card .name{font-weight:600;font-size:15px;line-height:1.3;min-height:2.6em}
+.card .meta{font-size:12px;color:var(--mu2)}
+.card .buy{display:flex;align-items:flex-end;justify-content:space-between;margin-top:10px;gap:8px}
+.price{font-family:var(--hd);font-weight:800;font-size:24px;line-height:1}
+.price small{font-family:var(--bd);font-weight:500;font-size:12px;color:var(--mu);margin-right:3px}
+.price s{display:block;font-family:var(--bd);font-size:12px;font-weight:500;color:var(--mu2);margin-bottom:3px}
+.price.red{color:var(--red2)}
+.add{width:42px;height:42px;border-radius:50%;background:var(--red);display:grid;place-items:center;flex-shrink:0;transition:.15s}
+.add:hover{background:var(--red2);transform:scale(1.06)}
+.add svg{width:20px;height:20px}
+
+/* Coaching band */
+.coach{background:var(--paper);color:var(--ink);overflow:hidden}
+.coach .eyebrow{color:var(--red)}
+.coach .top{display:grid;gap:24px;margin-bottom:34px}
+@media(min-width:960px){.coach .top{grid-template-columns:1.1fr .9fr;align-items:end;gap:60px}}
+.coach .h.big{font-size:clamp(46px,8vw,98px)}
+.coach .h.big em{color:var(--red)}
+.coach .top p{font-size:18px;color:#3d3d3d;margin:0 0 22px}
+.svc{display:grid;gap:10px}
+@media(min-width:700px){.svc{grid-template-columns:repeat(2,1fr);gap:14px}}
+@media(min-width:1100px){.svc{grid-template-columns:repeat(4,1fr)}}
+.svc a{background:#fff;border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:10px;border:1px solid #0000000f;transition:.2s;min-height:200px}
+.svc a:hover{transform:translateY(-3px);box-shadow:0 20px 40px -24px #0006}
+.svc .ic{width:48px;height:48px;border-radius:12px;background:var(--ink);color:#fff;display:grid;place-items:center}
+.svc .ic svg{width:24px;height:24px}
+.svc .h{font-size:27px;margin-top:6px}
+.svc p{margin:0;color:#555;font-size:15px;flex:1}
+.svc .go{font-family:var(--hd);font-weight:800;text-transform:uppercase;font-size:15px;letter-spacing:.06em;color:var(--red);display:flex;gap:6px;align-items:center}
+.svc .go svg{width:16px;height:16px}
+.quote{margin-top:14px;background:var(--ink);color:#fff;border-radius:var(--r2);padding:28px 24px;display:grid;gap:18px;position:relative;overflow:hidden}
+@media(min-width:900px){.quote{grid-template-columns:auto 1fr auto;align-items:center;padding:36px 40px;gap:36px}}
+.quote .qm{font-family:var(--hd);font-weight:800;font-size:120px;line-height:.6;color:var(--red);height:46px}
+.quote blockquote{margin:0;font-size:clamp(18px,2.2vw,23px);line-height:1.45;font-weight:500}
+.quote cite{display:block;margin-top:10px;font-style:normal;font-size:14px;color:var(--mu)}
+
+/* Shop + Team */
+.store{display:grid;gap:14px}
+@media(min-width:960px){.store{grid-template-columns:1.2fr 1fr}}
+.store-card{border-radius:var(--r2);background:var(--s1);border:1px solid var(--line);padding:26px;overflow:hidden;position:relative}
+@media(min-width:900px){.store-card{padding:36px}}
+.store-card .h{font-size:clamp(40px,5vw,60px)}
+.team{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:26px}
+.mate{text-align:left}
+.mate .av{aspect-ratio:4/5;border-radius:12px;background:linear-gradient(160deg,#2a2a30,#141417);display:grid;place-items:center;font-family:var(--hd);font-weight:800;font-style:italic;font-size:42px;color:#ffffff30;position:relative;overflow:hidden}
+.mate .av::after{content:"Foto";position:absolute;bottom:8px;right:10px;font-size:11px;font-family:var(--bd);font-style:normal;font-weight:600;color:#ffffff40;letter-spacing:.08em;text-transform:uppercase}
+.mate b{display:block;margin-top:10px;font-family:var(--hd);font-size:20px;text-transform:uppercase;font-style:italic}
+.mate span{font-size:13px;color:var(--mu)}
+.hours{display:grid;gap:0;margin:20px 0 24px}
+.hours div{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px}
+.hours div b{font-weight:600}
+.open-now{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ok);background:#22c55e14;border:1px solid #22c55e40;padding:5px 12px;border-radius:99px}
+.open-now i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px #22c55e30}
+.open-now.closed{color:var(--mu);background:var(--s2);border-color:var(--line)}
+.open-now.closed i{background:var(--mu2);box-shadow:none}
+.addr{display:flex;gap:12px;align-items:flex-start;color:var(--mu);font-size:15px;margin-bottom:8px}
+.addr svg{width:20px;height:20px;color:var(--red2);flex-shrink:0;margin-top:2px}
+.perks{display:grid;gap:10px;margin-top:14px}
+@media(min-width:700px){.perks{grid-template-columns:repeat(3,1fr)}}
+.perk{border-radius:var(--r);border:1px dashed #44444c;padding:18px;display:flex;gap:14px;align-items:flex-start}
+.perk svg{width:26px;height:26px;color:var(--red2);flex-shrink:0}
+.perk b{display:block;font-size:15px}
+.perk span{font-size:13px;color:var(--mu)}
+
+/* Brands */
+.brands{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;padding:26px 0;background:var(--s1)}
+.marquee{display:flex;gap:48px;width:max-content;animation:mq 50s linear infinite}
+.marquee span{font-family:var(--hd);font-weight:800;font-style:italic;text-transform:uppercase;font-size:28px;color:#ffffff38;white-space:nowrap}
+.marquee span:nth-child(3n){color:#ffffff60}
+@keyframes mq{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.marquee{animation:none}}
+
+/* Knowledge */
+.know{display:grid;gap:10px}
+@media(min-width:900px){.know{grid-template-columns:repeat(3,1fr);gap:14px}}
+.kcard{border-radius:var(--r);overflow:hidden;background:var(--s1);border:1px solid var(--line);display:flex;flex-direction:column}
+.kcard .kimg{height:150px;background:linear-gradient(135deg,#26262b,#121214);position:relative;overflow:hidden}
+.kcard .kimg span{position:absolute;left:18px;bottom:14px;font-family:var(--hd);font-weight:800;font-style:italic;font-size:64px;line-height:1;color:#ffffff12;text-transform:uppercase}
+.kcard .kimg i{position:absolute;top:14px;left:14px;font-style:normal;font-size:12px;font-weight:700;background:#fff;color:var(--ink);padding:3px 9px;border-radius:6px;text-transform:uppercase;letter-spacing:.06em}
+.kcard .kb{padding:18px 18px 20px}
+.kcard .kb b{font-size:18px;line-height:1.3;display:block}
+.kcard .kb span{color:var(--mu);font-size:14px}
+
+/* Footer */
+footer{background:#060607;border-top:1px solid var(--line);padding:56px 0 28px;font-size:14px;color:var(--mu)}
+.fgrid{display:grid;gap:30px}
+@media(min-width:900px){.fgrid{grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px}}
+footer h5{font-family:var(--hd);font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:16px;color:#fff;margin:0 0 14px}
+footer ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+footer a:hover{color:#fff}
+.pay{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.pay span{border:1px solid var(--line);border-radius:6px;padding:5px 10px;font-size:12px;font-weight:700;color:#cfcfd3;background:var(--s1)}
+.fbot{border-top:1px solid var(--line);margin-top:40px;padding-top:20px;display:flex;flex-wrap:wrap;gap:10px 22px;justify-content:space-between;font-size:12px;color:var(--mu2)}
+.news{display:flex;gap:8px;margin-top:14px}
+.news input{flex:1;min-width:0;height:46px;border-radius:999px;border:1px solid var(--line);background:var(--s1);color:#fff;padding:0 18px;font:inherit;font-size:14px}
+
+/* Page header (sub pages) */
+.crumbs{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--mu2);padding:18px 0 0;flex-wrap:wrap}
+.crumbs a:hover{color:#fff}
+.crumbs svg{width:12px;height:12px}
+.phead{padding:18px 0 22px}
+.phead .h{font-size:clamp(50px,9vw,96px)}
+.phead p{color:var(--mu);margin:10px 0 0;max-width:640px}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px 4px}
+.chips::-webkit-scrollbar{display:none}
+@media(min-width:768px){.chips{flex-wrap:wrap;margin:0;padding:0}}
+.chip{height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--s1);font-size:14px;font-weight:600;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;color:#d4d4d8;transition:.15s}
+.chip:hover{border-color:#55555d}
+.chip.on{background:#fff;color:var(--ink);border-color:#fff}
+
+/* Category layout */
+.plp{display:grid;gap:24px;padding-bottom:60px;padding-top:8px}
+@media(min-width:1024px){.plp{padding-top:24px}}
+@media(min-width:1024px){.plp{grid-template-columns:250px 1fr;gap:34px}}
+.toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;margin:20px 0 16px;flex-wrap:wrap}
+.toolbar .count{color:var(--mu);font-size:14px}
+.toolbar .tools{display:flex;gap:8px}
+.sel{height:42px;border-radius:999px;border:1px solid var(--line);background:var(--s1);color:#fff;padding:0 36px 0 16px;font:inherit;font-size:14px;font-weight:600;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a6a6ad' stroke-width='3'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.fbtn{height:42px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--s1);font-size:14px;font-weight:600;display:inline-flex;gap:8px;align-items:center}
+.fbtn svg{width:16px;height:16px}
+@media(min-width:1024px){.fbtn{display:none}}
+.side{display:none}
+@media(min-width:1024px){.side{display:block;position:sticky;top:96px;align-self:start}}
+.fgroup{border-bottom:1px solid var(--line);padding:16px 0}
+.fgroup h6{font-family:var(--hd);font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:15px;margin:0 0 12px}
+.cb{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:14px;color:#d4d4d8;cursor:pointer}
+.cb input{appearance:none;-webkit-appearance:none;width:20px;height:20px;border-radius:6px;border:1.5px solid #55555d;display:grid;place-items:center;margin:0;flex-shrink:0;cursor:pointer}
+.cb input:checked{background:var(--red);border-color:var(--red)}
+.cb input:checked::after{content:"";width:10px;height:6px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+.cb em{margin-left:auto;font-style:normal;color:var(--mu2);font-size:12px}
+.tg{display:flex;justify-content:space-between;align-items:center;font-size:14px;cursor:pointer}
+.tg input{appearance:none;-webkit-appearance:none;width:44px;height:26px;border-radius:99px;background:#3a3a40;position:relative;margin:0;cursor:pointer;transition:.2s}
+.tg input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+.tg input:checked{background:var(--red)}
+.tg input:checked::after{left:21px}
+.range{width:100%;accent-color:var(--red)}
+.advice{grid-column:1/-1;border-radius:var(--r);background:linear-gradient(110deg,var(--red),#7d030a);padding:22px;display:grid;gap:14px;align-items:center}
+@media(min-width:700px){.advice{grid-template-columns:1fr auto;padding:26px 30px}}
+.advice .h{font-size:30px}
+.advice p{margin:6px 0 0;color:#ffd9db;font-size:15px}
+.advice .row{display:flex;gap:8px;flex-wrap:wrap}
+.empty{grid-column:1/-1;padding:40px;text-align:center;color:var(--mu);border:1px dashed var(--line);border-radius:var(--r)}
+
+/* PDP */
+.pdp-grid{display:grid;gap:22px;padding:10px 0 50px}
+@media(min-width:960px){.pdp-grid{grid-template-columns:1.1fr 1fr;gap:56px;padding:20px 0 80px}}
+.gal{display:grid;gap:10px;align-self:start}
+@media(min-width:960px){.gal{position:sticky;top:100px}}
+.gal .main{border-radius:var(--r2);background:radial-gradient(circle at 50% 40%,#fff,var(--paper) 72%);aspect-ratio:1/1;display:grid;place-items:center;position:relative}
+.gal .main svg{width:58%;filter:drop-shadow(0 28px 26px #0004)}
+.thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.thumbs button{border-radius:12px;background:var(--paper);aspect-ratio:1;display:grid;place-items:center;border:2px solid transparent}
+.thumbs button.on{border-color:var(--red)}
+.thumbs svg{width:60%}
+.thumbs .nf{font-family:var(--hd);font-weight:800;color:var(--ink);font-size:13px;text-transform:uppercase;line-height:1.1;text-align:center}
+.pinfo .brand{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red2)}
+.pinfo .h{font-size:clamp(46px,6vw,72px);margin:6px 0 14px}
+.hl{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.hl span{font-size:13px;font-weight:600;border-radius:8px;background:var(--s2);border:1px solid var(--line);padding:6px 11px;display:flex;gap:7px;align-items:center}
+.hl svg{width:15px;height:15px;color:var(--ok)}
+.pprice{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.pprice .price{font-size:48px}
+.pprice small{color:var(--mu);font-size:13px}
+.opt{margin-top:24px}
+.opt-l{display:flex;justify-content:space-between;font-size:14px;margin-bottom:10px}
+.opt-l b{font-weight:700}
+.opt-l span{color:var(--mu)}
+.swatches{display:flex;flex-wrap:wrap;gap:8px}
+.sw{height:44px;padding:0 15px;border-radius:12px;border:1.5px solid var(--line);background:var(--s1);font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:8px;transition:.15s}
+.sw i{width:14px;height:14px;border-radius:50%;display:block;border:1px solid #ffffff30}
+.sw:hover{border-color:#66666e}
+.sw.on{border-color:var(--red2);background:#e306131a}
+.qrow{display:flex;gap:10px;margin-top:26px}
+.qty{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:999px;height:56px;flex-shrink:0}
+.qty button{width:46px;height:100%;display:grid;place-items:center}
+.qty button svg{width:18px;height:18px}
+.qty span{width:28px;text-align:center;font-weight:700;font-size:17px}
+.qrow .btn{flex:1;height:56px}
+.deliv{display:grid;gap:8px;margin-top:16px}
+.dopt{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;font-size:14px}
+.dopt input{accent-color:var(--red);width:18px;height:18px;margin:0}
+.dopt b{display:block;font-size:15px}
+.dopt span{color:var(--mu);font-size:13px}
+.dopt em{margin-left:auto;font-style:normal;font-weight:700;color:var(--ok);font-size:13px;white-space:nowrap}
+.dopt:has(input:checked){border-color:#ffffff70;background:var(--s1)}
+.ask{display:flex;gap:14px;align-items:center;margin-top:18px;padding:16px;border-radius:12px;background:var(--s1);border:1px solid var(--line)}
+.ask .av{width:46px;height:46px;border-radius:50%;background:var(--red);display:grid;place-items:center;font-family:var(--hd);font-weight:800;font-style:italic;font-size:20px;flex-shrink:0}
+.ask b{display:block;font-size:15px}
+.ask span{font-size:13px;color:var(--mu)}
+.ask a{margin-left:auto;color:var(--red2);font-weight:700;font-size:14px;white-space:nowrap}
+.pacc{margin-top:26px;border-top:1px solid var(--line)}
+.pacc details{border-bottom:1px solid var(--line)}
+.pacc summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:18px 0;cursor:pointer;font-family:var(--hd);font-weight:800;text-transform:uppercase;font-size:21px;letter-spacing:.02em}
+.pacc summary::-webkit-details-marker{display:none}
+.pacc summary svg{width:18px;height:18px;transition:transform .2s}
+.pacc details[open] summary svg{transform:rotate(45deg)}
+.pacc .in{padding:0 0 20px;color:#cfcfd3;font-size:15px}
+.pacc .in p{margin:0 0 12px}
+.nt{width:100%;border-collapse:collapse;font-size:14px}
+.nt th,.nt td{text-align:left;padding:9px 0;border-bottom:1px solid var(--line)}
+.nt th{color:var(--mu);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.nt td:not(:first-child),.nt th:not(:first-child){text-align:right}
+.nt .s td:first-child{padding-left:14px;color:var(--mu)}
+.satc{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(14,14,16,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:12px;transform:translateY(110%);transition:transform .25s}
+.satc.show{transform:none}
+.satc .price{font-size:26px}
+.satc small{display:block;color:var(--mu);font-size:12px;font-family:var(--bd);font-weight:500}
+.satc .btn{flex:1;height:50px}
+@media(min-width:1024px){.satc{display:none}}
+
+/* Coaching page */
+.chero{background:radial-gradient(ellipse 60% 70% at 85% 30%,#3a0408,transparent 60%),var(--bg);overflow:hidden}
+.chero .wrap{padding-top:30px;padding-bottom:56px;display:grid;gap:30px}
+@media(min-width:960px){.chero .wrap{grid-template-columns:1.2fr .8fr;align-items:center;padding-top:50px;padding-bottom:90px}}
+.chero .h{font-size:clamp(56px,10vw,118px)}
+.chero .h em{color:var(--red2)}
+.chero p{font-size:18px;color:#d4d4d8;max-width:560px;margin:22px 0 28px}
+.chero p.eyebrow{color:var(--red2);font-size:13px;margin:0 0 14px}
+.for{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.for span{font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--s1);border-radius:99px;padding:8px 14px}
+.chan{background:var(--s1);border:1px solid var(--line);border-radius:var(--r2);padding:24px}
+.chan h3{margin:0 0 4px;font-family:var(--hd);font-weight:800;text-transform:uppercase;font-style:italic;font-size:30px}
+.chan p{margin:0 0 16px;font-size:15px;color:var(--mu)}
+.chan .ways{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.chan .ways a{display:flex;gap:10px;align-items:center;padding:14px;border-radius:12px;background:var(--s2);font-weight:600;font-size:14px}
+.chan .ways svg{width:20px;height:20px;color:var(--red2)}
+.steps{display:grid;gap:10px;counter-reset:s}
+@media(min-width:900px){.steps{grid-template-columns:repeat(3,1fr);gap:14px}}
+.step{border-radius:var(--r);border:1px solid var(--line);background:var(--s1);padding:26px;position:relative;overflow:hidden}
+.step::before{counter-increment:s;content:"0" counter(s);font-family:var(--hd);font-weight:800;font-style:italic;font-size:96px;line-height:.8;color:var(--red);opacity:.9;display:block;margin-bottom:18px}
+.step .h{font-size:30px;margin-bottom:8px}
+.step p{margin:0;color:var(--mu);font-size:15px}
+.stage{border-radius:var(--r2);overflow:hidden;background:linear-gradient(120deg,#160203,#3a0408 60%,#e30613);padding:34px 24px;display:grid;gap:22px;position:relative}
+@media(min-width:900px){.stage{grid-template-columns:1.3fr 1fr;padding:56px;align-items:center}}
+.stage .h{font-size:clamp(44px,6vw,76px)}
+.stage p{color:#ffd9db;font-size:17px;margin:14px 0 0}
+.stage .nums{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stage .nums div{background:#00000040;border:1px solid #ffffff20;border-radius:12px;padding:18px}
+.stage .nums b{display:block;font-family:var(--hd);font-weight:800;font-style:italic;font-size:42px;line-height:1}
+.stage .nums span{font-size:13px;color:#ffd9db}
+.form{display:grid;gap:12px;background:var(--s1);border:1px solid var(--line);border-radius:var(--r2);padding:24px}
+@media(min-width:900px){.form{padding:36px;grid-template-columns:1fr 1fr;gap:14px}}
+.form .full{grid-column:1/-1}
+.form label{display:grid;gap:6px;font-size:13px;font-weight:600;color:var(--mu)}
+.form input,.form select,.form textarea{height:50px;border-radius:12px;border:1px solid var(--line);background:var(--s2);color:#fff;padding:0 14px;font:inherit;font-size:15px;width:100%}
+.form textarea{height:110px;padding:12px 14px;resize:vertical}
+.form .goalpick{display:flex;flex-wrap:wrap;gap:8px}
+
+/* Cart drawer */
+.ci{display:grid;grid-template-columns:72px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+.ci .ti{width:72px;height:72px;border-radius:10px;background:var(--paper);display:grid;place-items:center}
+.ci .ti svg{width:72%}
+.ci b{display:block;font-size:14px;line-height:1.3}
+.ci .v{font-size:12px;color:var(--mu)}
+.ci .r{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.ci .qty{height:36px}
+.ci .qty button{width:34px}
+.ci .qty span{width:22px;font-size:14px}
+.ci .price{font-size:19px}
+.prog{background:var(--s2);border-radius:12px;padding:14px;margin:14px 0 4px;font-size:13px}
+.prog .bar{height:6px;border-radius:9px;background:#33333a;margin-top:10px;overflow:hidden}
+.prog .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--red2));border-radius:9px;transition:width .4s}
+.prog b{color:#fff}
+.sum{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.sum .price{font-size:30px}
+.cempty{text-align:center;padding:50px 10px;color:var(--mu)}
+.cempty svg{width:56px;height:56px;margin:0 auto 14px;color:#3a3a40}
+
+/* Toast, cookie, concept badge */
+.toast{position:fixed;left:50%;bottom:84px;transform:translate(-50%,30px);background:#fff;color:var(--ink);padding:13px 18px;border-radius:12px;font-weight:600;font-size:14px;box-shadow:0 20px 40px -10px #000;opacity:0;visibility:hidden;transition:.25s;z-index:120;display:flex;gap:10px;align-items:center;max-width:calc(100vw - 32px)}
+.toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.toast svg{width:20px;height:20px;color:var(--ok);flex-shrink:0}
+@media(min-width:1024px){.toast{bottom:28px}}
+.cookie{position:fixed;left:12px;right:12px;bottom:76px;z-index:70;background:var(--s2);border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:center;font-size:13px;color:var(--mu);box-shadow:0 20px 50px -10px #000}
+.cookie p{margin:0;flex:1}
+.cookie .btn{height:38px;font-size:14px;padding:0 16px}
+@media(min-width:1024px){.cookie{left:auto;right:24px;bottom:24px;width:440px}}
+.concept{position:fixed;left:12px;top:auto;bottom:76px;z-index:65;background:#ffffff;color:var(--ink);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:8px;box-shadow:0 8px 20px -6px #000;display:none}
+@media(min-width:1024px){.concept{display:block;bottom:24px;left:24px}}
+.view{animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<!-- Icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 8h14l-1 13H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2" stroke-linecap="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19.3L4 20Z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+  <symbol id="i-insta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20h-5v-6H9v6H4v-9.5Z"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></symbol>
+  <symbol id="i-plan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3" stroke-linecap="round"/></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/></symbol>
+  <symbol id="i-gauge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 17a8 8 0 1 1 16 0"/><path d="m12 17 4-5"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8" stroke-linecap="round"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18M12 9v11M12 9c-2-4-6-4-6-1.5S10 9 12 9c2 0 6-.5 6-3S14 5 12 9Z"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4" stroke-linecap="round"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 9 5.5 4h13L20 9M4 9v11h16V9M4 9h16"/><path d="M10 20v-6h4v6"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s5 4.5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-4 1.5-4S9 11 11 11c0-4 1-9 1-9Z"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11Z"/></symbol>
+  <symbol id="i-glove" viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h7a5 5 0 0 1 5 5v4a4 4 0 0 1-3 3.9V21H8v-5L5 12V5a2 2 0 0 1 2-2Z"/></symbol>
+</svg>
+
+<div class="topbar">
+  <div class="wrap">
+    <span class="tb-opt"><svg><use href="#i-pin"/></svg>Laden in Rostock · Doberaner Str. 110–112</span>
+    <span><svg><use href="#i-gift"/></svg>Überraschung ab 100 € Einkaufswert</span>
+    <span class="tb-opt"><svg><use href="#i-phone"/></svg>Beratung: 0381 – 203 38 71</span>
+  </div>
+</div>
+
+<header class="site">
+  <div class="wrap hrow">
+    <button class="ib only-m" data-open="nav" aria-label="Menü öffnen"><svg><use href="#i-menu"/></svg></button>
+    <a href="#/" class="logo" aria-label="Eiweissdealer24 Startseite">
+      <svg viewBox="0 0 120 20" aria-hidden="true"><path d="M0 20V14h8v-4h6v4h6V8l3-6 3 6v6h8v-3h8v3h6V6h2V3h2v3h2v8h8V9h8v5h6v-4l4-10 4 10v4h8v-2h8V7h4v7h8v-3h8v9z"/></svg>
+      <span>Eiweissdealer<b>24</b></span>
+    </a>
+    <nav class="nav" aria-label="Hauptnavigation">
+      <div><button class="ni" data-mega aria-expanded="false" data-route="shop">Shop <svg><use href="#i-down"/></svg></button></div>
+      <div><a class="ni" href="#/" data-scroll="ziele">Nach Ziel</a></div>
+      <div><a class="ni" href="#/coaching" data-route="coaching">Coaching</a></div>
+      <div><a class="ni" href="#/shop">Fightwear</a></div>
+      <div><a class="ni" href="#/laden" data-route="laden">Laden &amp; Team</a></div>
+      <div><a class="ni hot" href="#/shop">Sale %</a></div>
+    </nav>
+    <div class="hspace"></div>
+    <label class="search"><svg><use href="#i-search"/></svg><input type="search" placeholder="Protein, Kreatin, Marke …" aria-label="Suche"></label>
+    <button class="ib search-ib" aria-label="Suche" data-toast="Suche: im Prototyp nur als Feld angedeutet"><svg><use href="#i-search"/></svg></button>
+    <button class="ib only-d" aria-label="Mein Konto" data-toast="Kundenkonto: nicht Teil des Prototyps"><svg><use href="#i-user"/></svg></button>
+    <button class="ib" data-open="cart" aria-label="Warenkorb"><svg><use href="#i-bag"/></svg><span class="badge" data-count hidden>0</span></button>
+  </div>
+</header>
+
+<div class="mega" id="mega">
+  <div class="wrap">
+    <div><h4><i></i>Protein</h4><ul><li><a href="#/shop">Wheyprotein</a></li><li><a href="#/shop">Wheyisolat</a></li><li><a href="#/shop">Clear Isolat</a></li><li><a href="#/shop">Mehrkomponenten</a></li><li><a href="#/shop">Casein</a></li><li><a href="#/shop">Pflanzliches Protein</a></li><li><a href="#/shop">Pancakes &amp; Pudding</a></li></ul></div>
+    <div><h4><i></i>Kraft &amp; Leistung</h4><ul><li><a href="#/shop">Kreatin</a></li><li><a href="#/shop">Trainingsbooster</a></li><li><a href="#/shop">EAA &amp; BCAA</a></li><li><a href="#/shop">Weight Gainer</a></li><li><a href="#/shop">Testo Booster</a></li><li><a href="#/shop">Kohlenhydrate</a></li></ul></div>
+    <div><h4><i></i>Gesundheit</h4><ul><li><a href="#/shop">Vitamine &amp; Mineralien</a></li><li><a href="#/shop">Omega 3</a></li><li><a href="#/shop">Gelenke &amp; Sehnen</a></li><li><a href="#/shop">Antioxidantien</a></li><li><a href="#/shop">Mineralgetränke</a></li></ul></div>
+    <div><h4><i></i>Diät &amp; Snacks</h4><ul><li><a href="#/shop">Burner</a></li><li><a href="#/shop">Low Carb Soßen &amp; Drops</a></li><li><a href="#/shop">Riegel &amp; Drinks</a></li><li><a href="#/shop">Schokocreme</a></li><li><a href="#/shop">Zubehör &amp; Shaker</a></li></ul></div>
+    <div class="promo">
+      <span class="eyebrow" style="margin:0">Nicht sicher?</span>
+      <div class="h">Wir beraten dich persönlich</div>
+      <p class="muted" style="margin:0;font-size:14px">Im Laden, per WhatsApp oder Telefon. Seit 2007.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+        <a class="btn btn-red btn-sm" href="#/coaching">Zum Coaching</a>
+        <a class="btn btn-ghost btn-sm" href="#/shop">Sale &amp; MHD</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main id="app"></main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <a href="index.html" class="logo" style="margin-bottom:16px">
+          <svg viewBox="0 0 120 20" aria-hidden="true"><path d="M0 20V14h8v-4h6v4h6V8l3-6 3 6v6h8v-3h8v3h6V6h2V3h2v3h2v8h8V9h8v5h6v-4l4-10 4 10v4h8v-2h8V7h4v7h8v-3h8v9z"/></svg>
+          <span>Eiweissdealer<b>24</b></span>
+        </a>
+        <p style="margin:0 0 4px;max-width:340px">Fitness- und Diätshop Rostock. Supplements, Ernährungs- und Trainingscoaching seit 2007.</p>
+        <p style="margin:0">Newsletter: Angebote &amp; neue Geschmäcker zuerst.</p>
+        <form class="news" onsubmit="event.preventDefault();toast('Danke! (Prototyp, Newsletter nicht verbunden)')"><input type="email" placeholder="Deine E-Mail" aria-label="E-Mail"><button class="btn btn-red btn-sm">Los</button></form>
+      </div>
+      <div><h5>Shop</h5><ul><li><a href="#/shop">Protein</a></li><li><a href="#/shop">Kraft &amp; Leistung</a></li><li><a href="#/shop">Gesundheit</a></li><li><a href="#/shop">Diät &amp; Snacks</a></li><li><a href="#/shop">Fightwear</a></li><li><a href="#/shop">Sale &amp; MHD-Ware</a></li></ul></div>
+      <div><h5>Service</h5><ul><li><a href="#/coaching">Ernährungscoaching</a></li><li><a href="#/laden">Laden &amp; Team</a></li><li><a>Versand &amp; Zahlung</a></li><li><a>Rückgabe</a></li><li><a>Kontakt</a></li></ul></div>
+      <div><h5>Laden Rostock</h5><ul><li>Doberaner Straße 110–112<br>18057 Rostock</li><li>Mo–Fr 10–19 Uhr<br>Sa 10–15 Uhr</li><li>0381 – 203 38 71</li><li>info@eiweissdealer24.de</li></ul>
+        <div class="pay"><span>PayPal</span><span>Sofort</span><span>Vorkasse</span><span>DHL</span></div></div>
+    </div>
+    <div class="fbot"><span>* Alle Preise inkl. MwSt. zzgl. Versand. Preise &amp; Produktdaten Stand Nov. 2026.</span><span>Impressum · Datenschutz · AGB · Widerruf · Cookie-Einstellungen</span><span style="flex-basis:100%">Unverbindliches Redesign-Konzept – keine offizielle Website von Eiweissdealer24. Formulare, Warenkorb und Kasse sind nicht funktionsfähig.</span></div>
+  </div>
+</footer>
+
+<nav class="bnav" aria-label="Schnellnavigation">
+  <a href="#/" data-b="home"><svg><use href="#i-home"/></svg>Start</a>
+  <a href="#/shop" data-b="shop"><svg><use href="#i-grid"/></svg>Shop</a>
+  <a href="#/coaching" data-b="coaching"><svg><use href="#i-plan"/></svg>Coaching</a>
+  <button data-open="cart"><svg><use href="#i-bag"/></svg>Warenkorb<span class="badge" data-count hidden>0</span></button>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+
+<aside class="drawer left" id="d-nav" aria-label="Menü">
+  <div class="dhead"><a href="#/" class="logo"><svg viewBox="0 0 120 20"><path d="M0 20V14h8v-4h6v4h6V8l3-6 3 6v6h8v-3h8v3h6V6h2V3h2v3h2v8h8V9h8v5h6v-4l4-10 4 10v4h8v-2h8V7h4v7h8v-3h8v9z"/></svg><span>Eiweissdealer<b>24</b></span></a><button class="ib" data-close aria-label="Schließen"><svg><use href="#i-x"/></svg></button></div>
+  <div class="dbody">
+    <div class="acc"><button>Protein<svg><use href="#i-down"/></svg></button><div class="sub"><a href="#/shop">Wheyprotein</a><a href="#/shop">Wheyisolat</a><a href="#/shop">Clear Isolat</a><a href="#/shop">Mehrkomponenten</a><a href="#/shop">Casein</a><a href="#/shop">Pflanzliches Protein</a></div></div>
+    <div class="acc"><button>Kraft &amp; Leistung<svg><use href="#i-down"/></svg></button><div class="sub"><a href="#/shop">Kreatin</a><a href="#/shop">Trainingsbooster</a><a href="#/shop">EAA &amp; BCAA</a><a href="#/shop">Weight Gainer</a></div></div>
+    <div class="acc"><button>Gesundheit<svg><use href="#i-down"/></svg></button><div class="sub"><a href="#/shop">Vitamine &amp; Mineralien</a><a href="#/shop">Omega 3</a><a href="#/shop">Gelenke &amp; Sehnen</a></div></div>
+    <div class="acc"><button>Diät &amp; Snacks<svg><use href="#i-down"/></svg></button><div class="sub"><a href="#/shop">Burner</a><a href="#/shop">Low Carb Soßen &amp; Drops</a><a href="#/shop">Riegel &amp; Drinks</a></div></div>
+    <div class="acc"><a href="#/shop">Fightwear</a></div>
+    <div class="acc"><a href="#/coaching">Coaching</a></div>
+    <div class="acc"><a href="#/laden">Laden &amp; Team</a></div>
+    <div class="acc"><a href="#/shop" style="color:var(--red2)">Sale %</a></div>
+    <div class="mcontact">
+      <div><svg><use href="#i-clock"/></svg>Mo–Fr 10–19 · Sa 10–15 Uhr</div>
+      <div><svg><use href="#i-phone"/></svg>0381 – 203 38 71</div>
+      <div><svg><use href="#i-pin"/></svg>Doberaner Str. 110–112, Rostock</div>
+    </div>
+  </div>
+</aside>
+
+<aside class="drawer right" id="d-cart" aria-label="Warenkorb">
+  <div class="dhead"><div class="h">Warenkorb</div><button class="ib" data-close aria-label="Schließen"><svg><use href="#i-x"/></svg></button></div>
+  <div class="dbody" id="cart-body"></div>
+  <div class="dfoot" id="cart-foot"></div>
+</aside>
+
+<aside class="drawer left" id="d-filter" aria-label="Filter">
+  <div class="dhead"><div class="h">Filter</div><button class="ib" data-close aria-label="Schließen"><svg><use href="#i-x"/></svg></button></div>
+  <div class="dbody" id="filter-m"></div>
+  <div class="dfoot"><button class="btn btn-red" style="width:100%" data-close id="filter-apply">Produkte anzeigen</button></div>
+</aside>
+
+<div class="cookie" id="cookie"><p>Cookies für Komfort &amp; Statistik erlauben?</p><button class="btn btn-ghost" data-cookie>Nur nötige</button><button class="btn btn-white" data-cookie>OK</button></div>
+<div class="concept">Redesign-Konzept · Prototyp</div>
+<div class="toast" id="toast"><svg><use href="#i-check"/></svg><span></span></div>
+
+<script>
+/* ---------- Data (aus dem aktuellen Shop, Stand Nov. 2026) ---------- */
+const P = [
+  {id:'srs',    brand:'SRS Muscle',       name:'Supreme Whey',                     label:'SUPREME', sub:'WHEY',     size:'900 g',  price:44.90, from:true, unit:'49,89 € / kg', c:'#1e3a8a', body:'#111', tag:'Topseller', pop:1},
+  {id:'nutrend',brand:'Nutrend',          name:'Whey Core',                        label:'WHEY',    sub:'CORE',     size:'900 g',  price:29.90, old:34.90, from:true, unit:'33,22 € / kg', c:'#ea580c', body:'#f4f4f4', pop:2},
+  {id:'bigzone',brand:'Big Zone',         name:'Battle Whey',                      label:'BATTLE',  sub:'WHEY',     size:'1 kg',   price:44.90, unit:'44,90 € / kg', c:'#16a34a', body:'#111', pop:4},
+  {id:'scitec', brand:'Scitec Nutrition', name:'100 % Whey Protein Professional',  label:'100%',    sub:'WHEY PRO', size:'500 g',  price:22.90, from:true, unit:'45,80 € / kg', c:'#c8102e', body:'#f4f4f4', pop:3},
+  {id:'sinob',  brand:'Sinob',            name:'Honest Whey +',                    label:'HONEST',  sub:'WHEY +',   size:'820 g',  price:37.90, unit:'46,22 € / kg', c:'#0f766e', body:'#f4f4f4', pop:5},
+  {id:'kitchen',brand:'Sinob',            name:'Kitchen Protein',                  label:'KITCHEN', sub:'PROTEIN',  size:'450 g',  price:19.90, unit:'44,22 € / kg', c:'#ca8a04', body:'#f4f4f4', tag:'Zum Backen', pop:8},
+  {id:'weider', brand:'Weider',           name:'Whey Coffee',                      label:'WHEY',    sub:'COFFEE',   size:'908 g',  price:39.90, old:58.99, unit:'43,94 € / kg', c:'#7c4a2d', body:'#111', pop:6},
+  {id:'badass', brand:'BAD ASS®',         name:'Whey',                             label:'BAD ASS', sub:'WHEY',     size:'2 kg',   price:59.90, unit:'29,95 € / kg', c:'#18181b', body:'#e5e5e5', tag:'Bester kg-Preis', pop:7},
+  {id:'biotech',brand:'BioTech USA',      name:'Whey Shake',                       label:'WHEY',    sub:'SHAKE',    size:'1 kg',   price:32.90, unit:'32,90 € / kg', c:'#1d4ed8', body:'#f4f4f4', pop:9},
+  {id:'nano',   brand:'Nano Supps',       name:'Whey Protein',                     label:'NANO',    sub:'WHEY',     size:'1 kg',   price:39.90, unit:'39,90 € / kg', c:'#7c3aed', body:'#111', pop:10},
+  {id:'allstars',brand:'All Stars',       name:'Protein Coffee',                   label:'PROTEIN', sub:'COFFEE',   size:'600 g',  price:32.90, unit:'54,83 € / kg', c:'#92400e', body:'#f4f4f4', pop:11},
+  {id:'bcoffee',brand:'BioTech USA',      name:'Protein Coffee',                   label:'PROTEIN', sub:'COFFEE',   size:'450 g',  price:29.90, unit:'66,44 € / kg', c:'#44291b', body:'#111', pop:12},
+];
+const byId = id => P.find(p=>p.id===id);
+const BRANDS = ['Optimum Nutrition','Scitec Nutrition','BioTech USA','Weider','SRS Muscle','Sinob','Big Zone','Nutrend','Olimp','Nano Supps','Universal Nutrition','Body Attack','Best Body','Now Foods','Blender Bottle','Eiweissdealer24 Eigenmarke'];
+const FLAV = [['Cookies & Cream','#d6d3d1'],['Vanille','#fde68a'],['Schokolade','#78350f'],['Banane','#facc15'],['Kirsche-Joghurt','#e11d48'],['Double Chocolate','#3f2212'],['Erdbeere Joghurt','#f472b6'],['Kaffee (ohne Koffein)','#a16207']];
+
+/* ---------- Helpers ---------- */
+const $ = (s,el=document)=>el.querySelector(s);
+const $$ = (s,el=document)=>[...el.querySelectorAll(s)];
+const eur = n => n.toFixed(2).replace('.',',')+' €';
+const ic = (n,cls='') => `<svg class="${cls}"><use href="#i-${n}"/></svg>`;
+function tub(p,flav){
+  const lid = p.body==='#111'||p.body==='#18181b' ? '#2a2a2a' : '#1a1a1a';
+  const band = flav ? flav : p.c;
+  const tx = '#fff';
+  return `<svg viewBox="0 0 160 196" aria-hidden="true">
+    <rect x="30" y="10" width="100" height="30" rx="7" fill="${lid}"/>
+    <rect x="30" y="34" width="100" height="6" fill="#000" opacity=".35"/>
+    <path d="M24 44h112l-3 132a12 12 0 0 1-12 12H39a12 12 0 0 1-12-12L24 44Z" fill="${p.body}"/>
+    <path d="M25 70h110l-1.4 76H26.4L25 70Z" fill="${p.c}"/>
+    <path d="M26 132h108l-.4 14H26.4L26 132Z" fill="${band}" opacity="${flav?1:.0}"/>
+    <text x="80" y="88" text-anchor="middle" fill="${tx}" opacity=".8" font-family="Barlow, sans-serif" font-weight="700" font-size="9" letter-spacing="1.6">${p.brand.toUpperCase().slice(0,18)}</text>
+    <text x="80" y="111" text-anchor="middle" fill="${tx}" font-family="Barlow Condensed, sans-serif" font-style="italic" font-weight="800" font-size="${p.label.length>6?21:24}">${p.label}</text>
+    <text x="80" y="127" text-anchor="middle" fill="${tx}" font-family="Barlow Condensed, sans-serif" font-style="italic" font-weight="700" font-size="14" letter-spacing="1">${p.sub}</text>
+    <text x="80" y="168" text-anchor="middle" fill="${p.body==='#f4f4f4'||p.body==='#e5e5e5'?'#555':'#999'}" font-family="Barlow, sans-serif" font-weight="600" font-size="9">${p.size}</text>
+    <rect x="33" y="48" width="7" height="128" rx="3.5" fill="#fff" opacity=".12"/>
+  </svg>`;
+}
+function card(p){
+  const tag = p.old ? `<span class="tag sale">−${Math.round((1-p.price/p.old)*100)} %</span>` : (p.tag?`<span class="tag">${p.tag}</span>`:'');
+  return `<article class="card">
+    <a href="#/produkt/${p.id}" class="img" aria-label="${p.brand} ${p.name}">${tag}${tub(p)}</a>
+    <div class="body">
+      <span class="brand">${p.brand}</span>
+      <a href="#/produkt/${p.id}" class="name">${p.name}</a>
+      <span class="meta">${p.size} · ${p.unit}</span>
+      <div class="buy">
+        <div class="price ${p.old?'red':''}">${p.old?`<s>${eur(p.old)}</s>`:''}${p.from?'<small>ab</small>':''}${eur(p.price)}</div>
+        <button class="add" data-add="${p.id}" aria-label="${p.name} in den Warenkorb">${ic('plus')}</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+/* ---------- Views ---------- */
+const V = {};
+V.home = () => `
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Dein Eiweissdealer in Rostock · seit 2007</p>
+      <h1 class="h">Stärker werden.<em>Mit Plan.</em></h1>
+      <p class="lead">Über 40 Top-Marken, ehrliche Beratung und Ernährungscoaching von Leuten, die selbst auf der Bühne stehen.</p>
+      <div class="ctas">
+        <a href="#/shop" class="btn btn-red">Zum Shop ${ic('arrow')}</a>
+        <a href="#/coaching" class="btn btn-ghost">Coaching anfragen</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="glow"></div>
+      <div class="t t2">${tub(byId('nutrend'))}</div>
+      <div class="t t3">${tub(byId('scitec'))}</div>
+      <div class="t t1">${tub(byId('srs'))}</div>
+      <div class="seal"><span>Seit<b>2007</b>Rostock</span></div>
+    </div>
+  </div>
+</section>
+<div class="stats"><div class="wrap">
+  <div class="stat"><b>40<i>+</i></b><span>Marken im Sortiment</span></div>
+  <div class="stat"><b>120<i>m²</i></b><span>Laden in Rostock</span></div>
+  <div class="stat"><b>2016</b><span>Seitdem selbst im Bodybuilding auf der Bühne</span></div>
+  <div class="stat"><b>1:1</b><span>Beratung im Laden, per WhatsApp &amp; Telefon</span></div>
+</div></div>
+
+<section class="sec" id="ziele"><div class="wrap">
+  <div class="sec-head"><div><p class="eyebrow">Finde schneller, was du brauchst</p><h2 class="h">Was ist dein Ziel?</h2></div></div>
+  <div class="goals">
+    <a href="#/shop" class="goal"><span class="num">01</span>${ic('dumbbell','bgicon')}<div><div class="h">Muskelaufbau</div><small>Protein · Kreatin · Gainer</small></div></a>
+    <a href="#/shop" class="goal"><span class="num">02</span>${ic('flame','bgicon')}<div><div class="h">Definition</div><small>Burner · Clear Isolat · Low Carb</small></div></a>
+    <a href="#/shop" class="goal"><span class="num">03</span>${ic('bolt','bgicon')}<div><div class="h">Pump &amp; Power</div><small>Booster · EAA · Kreatin</small></div></a>
+    <a href="#/shop" class="goal"><span class="num">04</span>${ic('heart','bgicon')}<div><div class="h">Gesundheit</div><small>Vitamine · Omega 3 · Gelenke</small></div></a>
+    <a href="#/shop" class="goal"><span class="num">05</span>${ic('glove','bgicon')}<div><div class="h">Kampfsport</div><small>Handschuhe · Bandagen · Shorts</small></div></a>
+  </div>
+</div></section>
+
+<section class="sec" style="padding-top:0"><div class="wrap">
+  <div class="sec-head"><div><p class="eyebrow">Die Topseller</p><h2 class="h">Whey, das läuft</h2></div><a href="#/shop" class="link-more">Alle Proteine ${ic('arrow')}</a></div>
+  <div class="rail">${['srs','nutrend','weider','badass'].map(id=>card(byId(id))).join('')}</div>
+</div></section>
+
+<section class="coach sec"><div class="wrap">
+  <div class="top">
+    <div><p class="eyebrow">Ernährungs- &amp; Trainingscoaching</p><h2 class="h big">Kein Plan?<br><em>Wir schreiben dir einen.</em></h2></div>
+    <div><p>Individuell für deinen Alltag – ob Schichtarbeit, vegan, Leistungssport oder einfach gesünder leben. Und keine Sorge: Du isst nicht jeden Tag nur Reis und Hühnchen.</p>
+      <a href="#/coaching" class="btn btn-red">Coaching entdecken ${ic('arrow')}</a></div>
+  </div>
+  <div class="svc">
+    <a href="#/coaching"><span class="ic">${ic('plan')}</span><div class="h">Ernährungs- &amp; Trainingsplan</div><p>Dein Plan nach Maß – inklusive sinnvollem Einsatz von Supplements.</p><span class="go">Mehr ${ic('arrow')}</span></a>
+    <a href="#/coaching"><span class="ic">${ic('dumbbell')}</span><div class="h">Personal- &amp; Posingtraining</div><p>Technik, Training und Posing – persönlich mit uns in Rostock.</p><span class="go">Mehr ${ic('arrow')}</span></a>
+    <a href="#/coaching"><span class="ic">${ic('gauge')}</span><div class="h">Fettmessung</div><p>Wissen statt raten: Miss deinen Fortschritt regelmäßig bei uns im Laden.</p><span class="go">Mehr ${ic('arrow')}</span></a>
+    <a href="#/coaching"><span class="ic">${ic('trophy')}</span><div class="h">Wettkampf&shy;vorbereitung</div><p>Seit 2016 bringen wir Athletinnen und Athleten auf die Bühne.</p><span class="go">Mehr ${ic('arrow')}</span></a>
+  </div>
+  <div class="quote"><div class="qm">“</div><blockquote>Anfangs war es echt schwer, aber mit jedem Tag wurde es leichter. Jetzt fühle ich mich viel besser, bin viel fitter und voller Energie.<cite>— Feedback zu unseren Ernährungsplänen</cite></blockquote><a href="#/coaching" class="btn btn-white btn-sm">Erstgespräch anfragen</a></div>
+</div></section>
+
+<section class="sec"><div class="wrap">
+  <div class="sec-head"><div><p class="eyebrow">Sortiment</p><h2 class="h">Alles fürs Training</h2></div><a href="#/shop" class="link-more">Zum Shop ${ic('arrow')}</a></div>
+  <div class="cats">
+    <a href="#/shop" class="cat"><div class="art">${tub(byId('srs'))}</div><div class="lbl"><div><div class="h">Protein</div><small>Whey · Isolat · Casein</small></div>${ic('arrow')}</div></a>
+    <a href="#/shop" class="cat"><div class="art">${tub({brand:'Eiweissdealer24',label:'KREATIN',sub:'HCL PULVER',size:'300 g',c:'#e30613',body:'#111'})}</div><div class="lbl"><div><div class="h">Kreatin</div><small>Mono · HCL · Komplex</small></div>${ic('arrow')}</div></a>
+    <a href="#/shop" class="cat"><div class="art">${tub({brand:'Eiweissdealer24',label:'EAA',sub:'PULVER',size:'500 g',c:'#f97316',body:'#f4f4f4'})}</div><div class="lbl"><div><div class="h">Aminos</div><small>EAA · BCAA · Glutamin</small></div>${ic('arrow')}</div></a>
+    <a href="#/shop" class="cat"><div class="art">${tub({brand:'Booster',label:'PUMP',sub:'PRE-WORKOUT',size:'400 g',c:'#7c3aed',body:'#111'})}</div><div class="lbl"><div><div class="h">Booster</div><small>Mit &amp; ohne Koffein</small></div>${ic('arrow')}</div></a>
+  </div>
+</div></section>
+
+<div class="brands" aria-label="Marken"><div class="marquee">${[...BRANDS,...BRANDS].map(b=>`<span>${b}</span>`).join('')}</div></div>
+
+${storeBlock()}
+
+<section class="sec" style="padding-top:0"><div class="wrap">
+  <div class="sec-head"><div><p class="eyebrow">Wissen &amp; Rezepte</p><h2 class="h">Aus dem Blog</h2></div><a class="link-more">Alle Beiträge ${ic('arrow')}</a></div>
+  <div class="know">
+    <a class="kcard"><div class="kimg"><i>Ratgeber</i><span>Whey</span></div><div class="kb"><b>Whey, Isolat oder Clear – welches Protein passt zu mir?</b><span>Beispielthema · 4 Min.</span></div></a>
+    <a class="kcard"><div class="kimg"><i>Rezept</i><span>Pancakes</span></div><div class="kb"><b>Protein-Pancakes mit Kitchen Protein</b><span>Beispielthema · 10 Min.</span></div></a>
+    <a class="kcard"><div class="kimg"><i>Ratgeber</i><span>Kreatin</span></div><div class="kb"><b>Kreatin Monohydrat vs. HCL – was ist der Unterschied?</b><span>Beispielthema · 5 Min.</span></div></a>
+  </div>
+</div></section>`;
+
+function storeBlock(){
+  const st = openState();
+  return `<section class="sec" id="laden"><div class="wrap">
+  <div class="store">
+    <div class="store-card">
+      <p class="eyebrow">Das Team hinter dem Shop</p>
+      <h2 class="h">Manu, Franzi &amp; Mario</h2>
+      <p class="muted" style="margin:14px 0 0;max-width:520px">Wir führen den Fitness- und Diätshop Rostock seit 2007 – und stehen seit 2016 selbst im Bodybuilding auf der Bühne. Wir empfehlen nur, was wir selbst verstehen.</p>
+      <div class="team">
+        <div class="mate"><div class="av">M</div><b>Manu</b><span>Manuela Willms</span></div>
+        <div class="mate"><div class="av">F</div><b>Franzi</b><span>Franziska Plötz</span></div>
+        <div class="mate"><div class="av">M</div><b>Mario</b><span>Mario Plötz</span></div>
+      </div>
+    </div>
+    <div class="store-card">
+      <span class="open-now ${st.open?'':'closed'}"><i></i>${st.text}</span>
+      <h3 class="h" style="font-size:44px;margin-top:14px">Komm vorbei</h3>
+      <div class="hours">
+        <div><span>Montag – Freitag</span><b>10 – 19 Uhr</b></div>
+        <div><span>Samstag</span><b>10 – 15 Uhr</b></div>
+        <div><span>Sonntag</span><b class="muted">geschlossen</b></div>
+      </div>
+      <div class="addr">${ic('pin')}<span>Doberaner Straße 110–112<br>18057 Rostock</span></div>
+      <div class="addr">${ic('phone')}<span>0381 – 203 38 71</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px">
+        <a class="btn btn-red btn-sm" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Doberaner+Stra%C3%9Fe+110+18057+Rostock">Route planen</a>
+        <a class="btn btn-ghost btn-sm" href="tel:+493812033871">Anrufen</a>
+      </div>
+    </div>
+  </div>
+  <div class="perks">
+    <div class="perk">${ic('gift')}<div><b>Überraschung ab 100 €</b><span>Im Laden und online (außer reduzierte Ware)</span></div></div>
+    <div class="perk">${ic('card')}<div><b>Treuekarte</b><span>10 % Rabatt beim 9. Einkauf im Laden</span></div></div>
+    <div class="perk">${ic('chat')}<div><b>Fragen? Einfach schreiben</b><span>WhatsApp, Instagram, Telefon oder vor Ort</span></div></div>
+  </div>
+</div></section>`;
+}
+function openState(){
+  const d=new Date(), day=d.getDay(), h=d.getHours()+d.getMinutes()/60;
+  if(day>=1&&day<=5&&h>=10&&h<19) return {open:true,text:'Jetzt geöffnet · bis 19 Uhr'};
+  if(day===6&&h>=10&&h<15) return {open:true,text:'Jetzt geöffnet · bis 15 Uhr'};
+  return {open:false,text:'Gerade geschlossen'};
+}
+
+/* Category */
+const F = {brands:new Set(), sort:'pop', sale:false, max:60};
+V.shop = () => `
+<div class="wrap">
+  <div class="crumbs"><a href="#/">Start</a>${ic('right')}<a href="#/shop">Shop</a>${ic('right')}<a href="#/shop">Protein</a>${ic('right')}<span style="color:#fff">Wheyprotein</span></div>
+  <div class="phead"><h1 class="h">Wheyprotein</h1><p>Der Klassiker für Muskelaufbau und Regeneration: schnell verfügbar, vielseitig und in vielen Geschmäckern. Unsicher? Wir beraten dich gern.</p></div>
+  <div class="chips">${['Wheyprotein','Wheyisolat','Clear Isolat','Mehrkomponenten','Casein','Pflanzlich','Hydrolysat','Pancakes & Pudding'].map((c,i)=>`<a class="chip ${i?'':'on'}" href="#/shop">${c}</a>`).join('')}</div>
+  <div class="plp">
+    <aside class="side" id="filter-d">${filters()}</aside>
+    <div>
+      <div class="toolbar">
+        <span class="count" id="count"></span>
+        <div class="tools">
+          <button class="fbtn" data-open="filter">${ic('filter')}Filter</button>
+          <select class="sel" id="sort" aria-label="Sortierung">
+            <option value="pop">Beliebtheit</option><option value="asc">Preis aufsteigend</option><option value="desc">Preis absteigend</option><option value="kg">Preis pro kg</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid" id="plp-grid"></div>
+    </div>
+  </div>
+</div>`;
+function filters(){
+  const brands=[...new Set(P.map(p=>p.brand))].sort();
+  return `<div class="fgroup" style="padding-top:0"><label class="tg">Nur Angebote<input type="checkbox" data-f="sale" ${F.sale?'checked':''}></label></div>
+  <div class="fgroup"><h6>Marke</h6>${brands.map(b=>`<label class="cb"><input type="checkbox" data-f="brand" value="${b}" ${F.brands.has(b)?'checked':''}>${b}<em>${P.filter(p=>p.brand===b).length}</em></label>`).join('')}</div>
+  <div class="fgroup"><h6>Preis bis <span data-maxlbl>${F.max} €</span></h6><input class="range" type="range" min="20" max="60" step="5" value="${F.max}" data-f="max" aria-label="Maximalpreis"></div>
+  <div class="fgroup"><h6>Geschmack</h6>${['Schokolade','Vanille','Cookies & Cream','Erdbeere','Kaffee'].map(g=>`<label class="cb"><input type="checkbox" data-f="noop">${g}</label>`).join('')}</div>`;
+}
+function renderGrid(){
+  const g=$('#plp-grid'); if(!g) return;
+  let list=P.filter(p=>(!F.brands.size||F.brands.has(p.brand))&&(!F.sale||p.old)&&p.price<=F.max);
+  const kg=p=>parseFloat(p.unit.replace(',','.'));
+  list.sort(F.sort==='asc'?(a,b)=>a.price-b.price:F.sort==='desc'?(a,b)=>b.price-a.price:F.sort==='kg'?(a,b)=>kg(a)-kg(b):(a,b)=>a.pop-b.pop);
+  const cards=list.map(card);
+  if(cards.length>4) cards.splice(4,0,`<div class="advice"><div><div class="h">Welches Whey passt zu dir?</div><p>Verträglichkeit, Geschmack, Preis pro Portion – wir helfen dir in 2 Minuten.</p></div><div class="row"><a class="btn btn-white btn-sm" href="#/coaching">${ic('chat')}WhatsApp</a><a class="btn btn-ghost btn-sm" href="tel:+493812033871">Anrufen</a></div></div>`);
+  g.innerHTML=cards.join('')||`<div class="empty">Keine Produkte für diese Filter. <button style="color:var(--red2);font-weight:700" data-reset>Filter zurücksetzen</button></div>`;
+  $('#count').textContent=`${list.length} Produkte`;
+}
+
+/* Product */
+const PD = {flav:0,size:0,qty:1,img:0};
+V.produkt = (id) => {
+  const p=byId(id)||byId('srs'); PD.id=p.id;
+  const isSRS=p.id==='srs';
+  const sizes=isSRS?['900 g','1,9 kg']:[p.size];
+  const others=P.filter(x=>x.id!==p.id).slice(0,4);
+  return `
+<div class="wrap">
+  <div class="crumbs"><a href="#/">Start</a>${ic('right')}<a href="#/shop">Protein</a>${ic('right')}<a href="#/shop">Wheyprotein</a>${ic('right')}<span style="color:#fff">${p.name}</span></div>
+  <div class="pdp-grid">
+    <div class="gal">
+      <div class="main" id="gal-main">${p.old?`<span class="tag sale">−${Math.round((1-p.price/p.old)*100)} %</span>`:p.tag?`<span class="tag">${p.tag}</span>`:''}${tub(p,FLAV[PD.flav][1])}</div>
+      <div class="thumbs">
+        <button class="on">${tub(p)}</button>
+        <button><span class="nf">Nähr&shy;werte</span></button>
+        <button><span class="nf">Mess&shy;löffel</span></button>
+        <button><span class="nf">Shake</span></button>
+      </div>
+    </div>
+    <div class="pinfo">
+      <div class="brand">${p.brand}</div>
+      <h1 class="h">${p.name}</h1>
+      ${isSRS?`<div class="hl"><span>${ic('check')}76 g Eiweiß / 100 g</span><span>${ic('check')}Mit Lactase</span><span>${ic('check')}22 g BCAA / 100 g</span><span>${ic('check')}Rohstoffe aus Deutschland</span></div>`:'<div class="hl"><span>'+ic('check')+'Im Laden Rostock vorrätig</span></div>'}
+      <div class="pprice"><div class="price ${p.old?'red':''}">${p.from?'<small>ab</small>':''}${eur(p.price)}</div>${p.old?`<s class="muted">${eur(p.old)}</s>`:''}<small>${p.size} · ${p.unit} · inkl. MwSt. zzgl. Versand</small></div>
+      <div class="opt"><div class="opt-l"><b>Geschmack</b><span id="flav-l">${FLAV[PD.flav][0]}</span></div>
+        <div class="swatches">${FLAV.map((f,i)=>`<button class="sw ${i===PD.flav?'on':''}" data-flav="${i}"><i style="background:${f[1]}"></i>${f[0]}</button>`).join('')}</div></div>
+      <div class="opt"><div class="opt-l"><b>Größe</b><span id="size-l">${sizes[PD.size]||sizes[0]}</span></div>
+        <div class="swatches">${sizes.map((s,i)=>`<button class="sw ${i===PD.size?'on':''}" data-size="${i}">${s}</button>`).join('')}</div></div>
+      <div class="qrow" id="atc-row">
+        <div class="qty"><button data-q="-1" aria-label="Weniger">${ic('minus')}</button><span id="qv">${PD.qty}</span><button data-q="1" aria-label="Mehr">${ic('plus')}</button></div>
+        <button class="btn btn-red" data-add="${p.id}" data-pdp>In den Warenkorb</button>
+      </div>
+      <div class="deliv">
+        <label class="dopt"><input type="radio" name="dl" checked><div><b>Versand mit DHL</b><span>PayPal, Sofort oder Vorkasse</span></div></label>
+        <label class="dopt"><input type="radio" name="dl"><div><b>Im Laden abholen</b><span>Doberaner Str. 110–112, Rostock</span></div><em>Vorschlag</em></label>
+      </div>
+      <div class="ask"><div class="av">F</div><div><b>Fragen zu Geschmack oder Verträglichkeit?</b><span>Unser Team antwortet meist noch am selben Tag.</span></div><a href="#/coaching">Frag uns</a></div>
+      <div class="pacc">
+        <details open><summary>Beschreibung${ic('plus')}</summary><div class="in">${isSRS?`<p>Supreme Whey von SRS Muscle ist ein biologisch hochwertiges Wheyprotein, zusätzlich mit Lactase, Mineralstoffen und Vitaminen. Mit 22 g BCAA im Verhältnis 2:1:1 und 16 g Glutamin auf 100 g Pulver.</p><p>Geschmacklich nicht so süß und aufdringlich – eher natürlich. Dank Lactase, niedrig dosierter Süßstoffe und natürlicher Aromen sehr gut verträglich. Alle Rohstoffe kommen aus Deutschland.</p>`:`<p>Produktbeschreibung aus dem bestehenden Shop wird hier übernommen.</p>`}</div></details>
+        <details><summary>Nährwerte${isSRS?' (Vanille)':''}${ic('plus')}</summary><div class="in">${isSRS?`<table class="nt"><tr><th></th><th>100 g</th><th>Portion 50 g</th></tr>
+          <tr><td>Energie</td><td>388 kcal</td><td>194 kcal</td></tr>
+          <tr><td>Fett</td><td>6,1 g</td><td>3 g</td></tr><tr class="s"><td>davon gesättigt</td><td>2,4 g</td><td>1,2 g</td></tr>
+          <tr><td>Kohlenhydrate</td><td>5,9 g</td><td>3 g</td></tr><tr class="s"><td>davon Zucker</td><td>5,4 g</td><td>2,7 g</td></tr>
+          <tr><td><b>Eiweiß</b></td><td><b>76 g</b></td><td><b>38 g</b></td></tr>
+          <tr><td>Salz</td><td>0,58 g</td><td>0,29 g</td></tr></table>`:'<p>Nährwerttabelle aus dem bestehenden Shop.</p>'}</div></details>
+        <details><summary>Einnahme${ic('plus')}</summary><div class="in">${isSRS?`<p>50 g Pulver (4 gestrichene Messlöffel) mit 250 ml kaltem Wasser mischen. An Trainingstagen nach dem Training und morgens nach dem Aufstehen, an trainingsfreien Tagen morgens und nachmittags.</p><p>Tipp: Ein paar Minuten warten, damit die Lactase die Lactose aufspalten kann.</p>`:'<p>Verzehrempfehlung des Herstellers.</p>'}</div></details>
+      </div>
+    </div>
+  </div>
+  <section style="padding-bottom:70px">
+    <div class="sec-head"><div><p class="eyebrow">Andere Kunden kauften auch</p><h2 class="h" style="font-size:clamp(36px,5vw,54px)">Passt dazu</h2></div></div>
+    <div class="rail">${others.map(card).join('')}</div>
+  </section>
+</div>
+<div class="satc" id="satc"><div><div class="price">${eur(p.price)}</div><small id="satc-v">${FLAV[PD.flav][0]} · ${sizes[PD.size]||sizes[0]}</small></div><button class="btn btn-red" data-add="${p.id}" data-pdp>In den Warenkorb</button></div>`;
+};
+
+/* Coaching */
+V.coaching = () => `
+<section class="chero"><div class="wrap">
+  <div>
+    <div class="crumbs" style="padding:0 0 18px"><a href="#/">Start</a>${ic('right')}<span style="color:#fff">Coaching</span></div>
+    <p class="eyebrow">Ernährungs- &amp; Trainingscoaching Rostock</p>
+    <h1 class="h">Dein Plan.<br>Dein Körper.<br><em>Unsere Erfahrung.</em></h1>
+    <p>Wir passen deine Ernährung an deinen Alltag an – nicht umgekehrt. Mit individuellem Ernährungs- und Trainingsplan, auf Wunsch mit Personal Training. Und wir bleiben dein Ansprechpartner.</p>
+    <div class="ctas" style="display:flex;gap:12px;flex-wrap:wrap"><a href="#anfrage" class="btn btn-red" data-scroll="anfrage">Erstgespräch anfragen ${ic('arrow')}</a><a href="tel:+493812033871" class="btn btn-ghost">${ic('phone')}Anrufen</a></div>
+    <div class="for"><span>Schichtarbeit</span><span>Leistungssport</span><span>Vegan &amp; vegetarisch</span><span>Vorerkrankungen</span><span>Gesünder leben</span></div>
+  </div>
+  <div class="chan">
+    <h3>Immer erreichbar</h3>
+    <p>Keine Frage ist schlimmer als eine ungestellte. Du bekommst schnell eine Antwort.</p>
+    <div class="ways">
+      <a>${ic('chat')}WhatsApp</a><a>${ic('insta')}Instagram</a><a href="tel:+493812033871">${ic('phone')}Telefon</a><a>${ic('mail')}E-Mail</a>
+    </div>
+  </div>
+</div></section>
+
+<section class="coach sec"><div class="wrap">
+  <div class="top"><div><p class="eyebrow">Leistungen</p><h2 class="h big" style="font-size:clamp(44px,7vw,80px)">Was wir für<br><em>dich tun</em></h2></div><div><p>Jedes Angebot ist einzeln buchbar oder als Paket kombinierbar. Preise auf Anfrage – wir stimmen alles im Erstgespräch auf dich ab.</p></div></div>
+  <div class="svc">
+    <a href="#anfrage" data-scroll="anfrage"><span class="ic">${ic('plan')}</span><div class="h">Ernährungs- &amp; Trainingsplan</div><p>Ganzheitlich, ohne Hungern. Inklusive Beratung zu sinnvollen Supplements.</p><span class="go">Anfragen ${ic('arrow')}</span></a>
+    <a href="#anfrage" data-scroll="anfrage"><span class="ic">${ic('dumbbell')}</span><div class="h">Personal- &amp; Posingtraining</div><p>Saubere Technik und Bühnenpräsenz – 1:1 mit uns.</p><span class="go">Anfragen ${ic('arrow')}</span></a>
+    <a href="#anfrage" data-scroll="anfrage"><span class="ic">${ic('gauge')}</span><div class="h">Fettmessung</div><p>Fortschritt sichtbar machen, Plan gezielt anpassen.</p><span class="go">Anfragen ${ic('arrow')}</span></a>
+    <a href="#anfrage" data-scroll="anfrage"><span class="ic">${ic('trophy')}</span><div class="h">Wettkampf&shy;vorbereitung</div><p>Wenige Athleten pro Saison – Qualität vor Quantität.</p><span class="go">Anfragen ${ic('arrow')}</span></a>
+  </div>
+</div></section>
+
+<section class="sec"><div class="wrap">
+  <div class="sec-head"><div><p class="eyebrow">So läuft’s ab</p><h2 class="h">In 3 Schritten</h2></div></div>
+  <div class="steps">
+    <div class="step"><div class="h">Anfrage &amp; Gespräch</div><p>Du erzählst uns von deinem Ziel, deinem Alltag und deinen Vorlieben – im Laden, am Telefon oder per Nachricht.</p></div>
+    <div class="step"><div class="h">Dein Plan</div><p>Wir erstellen deinen individuellen Ernährungs- und/oder Trainingsplan. Abwechslungsreich, alltagstauglich, ohne Hungern.</p></div>
+    <div class="step"><div class="h">Wir bleiben dran</div><p>Auch nach dem Plan sind wir für dich da – mit Rat, Fettmessung und Anpassungen, wenn es mal hakt.</p></div>
+  </div>
+</div></section>
+
+<section style="padding-bottom:64px"><div class="wrap">
+  <div class="stage">
+    <div><p class="eyebrow" style="color:#fff">Bodybuilding</p><h2 class="h">Seit 2016 auf der Bühne</h2><p>Wir treten selbst erfolgreich bei Wettkämpfen an und haben viele Athletinnen und Athleten auf die Bühne vorbereitet. Pro Meisterschaftssaison betreuen wir bewusst nur wenige.</p><a class="btn btn-white btn-sm" style="margin-top:22px">Unsere Athleten ansehen</a></div>
+    <div class="nums"><div><b>2016</b><span>erster eigener Wettkampf</span></div><div><b>2007</b><span>Laden &amp; Beratung seit</span></div><div><b>1:1</b><span>persönliche Betreuung</span></div><div><b>Klein</b><span>Athletenzahl pro Saison</span></div></div>
+  </div>
+</div></section>
+
+<section class="sec" id="anfrage" style="padding-top:20px"><div class="wrap" style="max-width:980px">
+  <div class="sec-head"><div><p class="eyebrow">Unverbindlich</p><h2 class="h">Erstgespräch anfragen</h2></div></div>
+  <form class="form" onsubmit="event.preventDefault();toast('Danke! Wir melden uns. (Prototyp, Formular nicht verbunden)')">
+    <label>Name<input required placeholder="Vor- und Nachname"></label>
+    <label>Telefon oder E-Mail<input required placeholder="So erreichen wir dich"></label>
+    <div class="full"><label style="margin-bottom:8px">Dein Ziel</label><div class="goalpick">${['Abnehmen','Muskelaufbau','Gesünder essen','Wettkampf','Etwas anderes'].map((g,i)=>`<button type="button" class="chip ${i===1?'on':''}" data-pick>${g}</button>`).join('')}</div></div>
+    <label>Was interessiert dich?<select><option>Ernährungsplan</option><option>Trainingsplan</option><option>Ernährungs- &amp; Trainingsplan</option><option>Personal-/Posingtraining</option><option>Fettmessung</option><option>Wettkampfvorbereitung</option></select></label>
+    <label>Wie sollen wir uns melden?<select><option>WhatsApp</option><option>Anruf</option><option>E-Mail</option></select></label>
+    <label class="full">Nachricht (optional)<textarea placeholder="Erzähl uns kurz von dir: Alltag, Training, Ernährung …"></textarea></label>
+    <div class="full" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="btn btn-red">Anfrage senden ${ic('arrow')}</button><span class="muted" style="font-size:13px">Wir antworten meist innerhalb von 24 Stunden.</span></div>
+  </form>
+</div></section>`;
+
+V.laden = () => `<div class="wrap"><div class="crumbs"><a href="#/">Start</a>${ic('right')}<span style="color:#fff">Laden &amp; Team</span></div><div class="phead"><h1 class="h">Laden &amp; Team</h1><p>120 m² voller Supplements, Fightwear und Zubehör – mitten in Rostock. Komm vorbei, probier dich durch und lass dich beraten.</p></div></div>${storeBlock()}`;
+
+/* ---------- Cart ---------- */
+const cart=[];
+function addToCart(id,qty=1,variant){
+  const p=byId(id); const key=id+'|'+(variant||'');
+  const it=cart.find(i=>i.key===key);
+  it?it.qty+=qty:cart.push({key,id,qty,variant:variant||p.size});
+  renderCart(); toast(`${p.brand} ${p.name} im Warenkorb`);
+  $$('[data-count]').forEach(b=>{b.animate([{transform:'scale(1.5)'},{transform:'scale(1)'}],{duration:300})});
+}
+function renderCart(){
+  const n=cart.reduce((s,i)=>s+i.qty,0), sum=cart.reduce((s,i)=>s+i.qty*byId(i.id).price,0);
+  $$('[data-count]').forEach(b=>{b.textContent=n;b.hidden=!n});
+  const body=$('#cart-body'), foot=$('#cart-foot');
+  if(!n){body.innerHTML=`<div class="cempty">${ic('bag')}<p>Dein Warenkorb ist noch leer.</p><a href="#/shop" class="btn btn-red btn-sm" data-closeall>Jetzt stöbern</a></div>`;foot.innerHTML='';return}
+  const rest=Math.max(0,100-sum), pct=Math.min(100,sum);
+  body.innerHTML=`<div class="prog">${rest?`Noch <b>${eur(rest)}</b> bis zu deiner <b>Überraschung</b>`:`<b>Glückwunsch!</b> Deine Überraschung ist dabei`}<div class="bar"><i style="width:${pct}%"></i></div></div>`+
+    cart.map((i,ix)=>{const p=byId(i.id);return `<div class="ci"><div class="ti">${tub(p)}</div><div><b>${p.brand} ${p.name}</b><span class="v">${i.variant}</span><div class="r"><div class="qty"><button data-cq="${ix}|-1" aria-label="Weniger">${ic('minus')}</button><span>${i.qty}</span><button data-cq="${ix}|1" aria-label="Mehr">${ic('plus')}</button></div><div class="price">${eur(p.price*i.qty)}</div></div></div></div>`}).join('');
+  foot.innerHTML=`<div class="sum"><span>Zwischensumme</span><div class="price">${eur(sum)}</div></div><p class="muted" style="font-size:12px;margin:0 0 14px">inkl. MwSt. zzgl. Versand</p><button class="btn btn-red" style="width:100%" data-toast="Checkout: nicht Teil des Prototyps">Zur Kasse ${ic('arrow')}</button>`;
+}
+
+/* ---------- UI plumbing ---------- */
+let tt; function toast(msg){const t=$('#toast');$('span',t).textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2400)}
+function openD(name){closeAll();$('#d-'+name).classList.add('open');$('#scrim').classList.add('open');document.body.style.overflow='hidden';if(name==='filter')$('#filter-m').innerHTML=filters()}
+function closeAll(){$$('.drawer').forEach(d=>d.classList.remove('open'));$('#scrim').classList.remove('open');document.body.style.overflow='';closeMega()}
+const mega=$('#mega');let mt;
+function openMega(){clearTimeout(mt);mega.style.top=$('header.site').getBoundingClientRect().bottom+'px';mega.classList.add('open');$('[data-mega]').setAttribute('aria-expanded','true')}
+function closeMega(){mega.classList.remove('open');$('[data-mega]')?.setAttribute('aria-expanded','false')}
+$('[data-mega]').addEventListener('mouseenter',openMega);
+$('[data-mega]').addEventListener('click',()=>mega.classList.contains('open')?closeMega():openMega());
+$('[data-mega]').parentElement.addEventListener('mouseleave',()=>{mt=setTimeout(closeMega,180)});
+mega.addEventListener('mouseenter',()=>clearTimeout(mt));
+mega.addEventListener('mouseleave',()=>{mt=setTimeout(closeMega,180)});
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,a,[data-close]'); if(!t) return;
+  if(t.dataset.open){e.preventDefault();openD(t.dataset.open);return}
+  if(t.hasAttribute('data-close')||t.hasAttribute('data-closeall')){closeAll();if(t.tagName==='BUTTON')return}
+  if(t.dataset.add){e.preventDefault();const pdp=t.hasAttribute('data-pdp');addToCart(t.dataset.add,pdp?PD.qty:1,pdp?FLAV[PD.flav][0]+' · '+$('#size-l').textContent:null);return}
+  if(t.dataset.cq){const[ix,d]=t.dataset.cq.split('|').map(Number);cart[ix].qty+=d;if(cart[ix].qty<1)cart.splice(ix,1);renderCart();return}
+  if(t.dataset.toast){toast(t.dataset.toast);return}
+  if(t.dataset.flav){PD.flav=+t.dataset.flav;$$('[data-flav]').forEach(b=>b.classList.toggle('on',b===t));$('#flav-l').textContent=FLAV[PD.flav][0];const p=byId(PD.id);const tag=$('#gal-main .tag');$('#gal-main').innerHTML=(tag?tag.outerHTML:'')+tub(p,FLAV[PD.flav][1]);$('#satc-v').textContent=FLAV[PD.flav][0]+' · '+$('#size-l').textContent;return}
+  if(t.dataset.size){PD.size=+t.dataset.size;$$('[data-size]').forEach(b=>b.classList.toggle('on',b===t));$('#size-l').textContent=t.textContent;$('#satc-v').textContent=FLAV[PD.flav][0]+' · '+t.textContent;return}
+  if(t.dataset.q){PD.qty=Math.max(1,PD.qty+ +t.dataset.q);$('#qv').textContent=PD.qty;return}
+  if(t.closest('.thumbs')){$$('.thumbs button').forEach(b=>b.classList.toggle('on',b===t));return}
+  if(t.closest('.acc')&&t.tagName==='BUTTON'){t.parentElement.classList.toggle('open');return}
+  if(t.hasAttribute('data-pick')){$$('[data-pick]').forEach(b=>b.classList.toggle('on',b===t));return}
+  if(t.hasAttribute('data-reset')){F.brands.clear();F.sale=false;F.max=60;$('#filter-d').innerHTML=filters();renderGrid();return}
+  if(t.hasAttribute('data-cookie')){$('#cookie').remove();return}
+  if(t.dataset.scroll){const id=t.dataset.scroll,href=t.getAttribute('href')||'',go=()=>document.getElementById(id)?.scrollIntoView({behavior:'smooth'});const here=href==='#'+id||href===location.hash||(href==='#/'&&['','#','#/'].includes(location.hash));if(here){e.preventDefault();go()}else setTimeout(go,150);closeAll();return}
+  if(t.tagName==='A'&&t.getAttribute('href')?.startsWith('#/')) closeAll();
+});
+$('#scrim').addEventListener('click',closeAll);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
+document.addEventListener('change',e=>{
+  const el=e.target;
+  if(el.id==='sort'){F.sort=el.value;renderGrid();return}
+  const f=el.dataset.f; if(!f) return;
+  if(f==='brand') el.checked?F.brands.add(el.value):F.brands.delete(el.value);
+  if(f==='sale') F.sale=el.checked;
+  if(f==='max') F.max=+el.value;
+  $$('[data-f="'+f+'"]').forEach(x=>{if(x!==el&&x.value===el.value){x.checked=el.checked;if(f==='max')x.value=el.value}});
+  renderGrid();
+});
+document.addEventListener('input',e=>{if(e.target.dataset.f==='max'){$$('[data-maxlbl]').forEach(l=>l.textContent=e.target.value+' €')}});
+
+/* ---------- Router ---------- */
+let satcObs;
+function route(){
+  const [,r='',arg]=location.hash.split('/');
+  const name=({'':'home',shop:'shop',produkt:'produkt',coaching:'coaching',laden:'laden'})[r]||'home';
+  const app=$('#app');
+  app.innerHTML=`<div class="view">${V[name](arg)}</div>`;
+  document.body.classList.toggle('pdp',name==='produkt');
+  $$('.nav .ni').forEach(a=>a.classList.toggle('on',a.dataset.route===name||(name==='produkt'&&a.dataset.route==='shop')));
+  $$('.bnav [data-b]').forEach(a=>a.classList.toggle('on',a.dataset.b===(name==='produkt'?'shop':name==='laden'?'home':name)));
+  if(name==='shop'){$('#sort').value=F.sort;renderGrid()}
+  if(name==='produkt'){
+    satcObs?.disconnect();
+    satcObs=new IntersectionObserver(([en])=>$('#satc')?.classList.toggle('show',!en.isIntersecting&&en.boundingClientRect.top<0));
+    satcObs.observe($('#atc-row'));
+  }
+  closeAll();
+  window.scrollTo({top:0,behavior:'instant'});
+}
+window.addEventListener('hashchange',route);
+route(); renderCart();
+</script>
+</body>
+</html>
