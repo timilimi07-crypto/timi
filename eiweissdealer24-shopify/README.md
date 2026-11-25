@@ -21,7 +21,7 @@ Die Bibliotheken kommen vom CDN: Three.js r149 (jsDelivr) und Matter.js 0.19 (cd
 
 ## Produkte importieren
 
-`produkte-import.csv`: 471 Produkte, 1239 Varianten, mit Bildern, Beschreibungen, Tags und Typ, erzeugt aus dem Sortiment von eiweissdealer24.de (Stand Nov. 2026).
+`produkte-import.csv`: 472 Produkte, mit Bildern, Beschreibungen, Tags und Typ, erzeugt aus dem Sortiment von eiweissdealer24.de (Stand Nov. 2026).
 
 1. Test-Store in dein Shopify-Konto übernehmen (Link „speichern“ aus dem Chat)
 2. Shopify-Admin → **Produkte** → **Importieren** → `produkte-import.csv` wählen → **Importieren**
