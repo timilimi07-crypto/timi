@@ -269,7 +269,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
   &lt;a class=&quot;ed24-ring&quot; href=&quot;#ed24-showcase&quot; aria-label=&quot;{{ section.settings.scroll_label | escape }}&quot;&gt;
     &lt;svg class=&quot;ed24-ring__text&quot; viewBox=&quot;0 0 100 100&quot; aria-hidden=&quot;true&quot;&gt;
       &lt;defs&gt;&lt;path id=&quot;ed24-circ-{{ section.id }}&quot; d=&quot;M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0&quot;/&gt;&lt;/defs&gt;
-      &lt;text&gt;&lt;textPath href=&quot;#ed24-circ-{{ section.id }}&quot;&gt;{{ section.settings.scroll_text | escape }}&lt;/textPath&gt;&lt;/text&gt;
+      &lt;text&gt;&lt;textPath href=&quot;#ed24-circ-{{ section.id }}&quot; textLength=&quot;238&quot; lengthAdjust=&quot;spacing&quot;&gt;{{ section.settings.scroll_text | escape }}&lt;/textPath&gt;&lt;/text&gt;
     &lt;/svg&gt;
     &lt;span class=&quot;ed24-ring__arrow&quot; aria-hidden=&quot;true&quot;&gt;
       &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.4&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 4v16m-6-6 6 6 6-6&quot;/&gt;&lt;/svg&gt;
@@ -783,7 +783,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
     { &quot;type&quot;: &quot;inline_richtext&quot;, &quot;id&quot;: &quot;line_2&quot;, &quot;label&quot;: &quot;Zeile 2&quot;, &quot;info&quot;: &quot;Fett gesetzter Text erscheint als Umriss.&quot;, &quot;default&quot;: &quot;Dealer&lt;strong&gt;24&lt;/strong&gt;&quot; },
     { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;meta_left&quot;, &quot;label&quot;: &quot;Text unten links&quot;, &quot;default&quot;: &quot;Supplements, Ernährungs- &amp; Trainingscoaching&quot; },
     { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;meta_right&quot;, &quot;label&quot;: &quot;Text unten rechts&quot;, &quot;default&quot;: &quot;Rostock · Doberaner Str. 110–112 · seit 2007&quot; },
-    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;scroll_text&quot;, &quot;label&quot;: &quot;Text im Scroll-Kreis&quot;, &quot;default&quot;: &quot;Scroll · Stärker werden · Scroll · Seit 2007 ·&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;scroll_text&quot;, &quot;label&quot;: &quot;Text im Scroll-Kreis&quot;, &quot;info&quot;: &quot;Kurz halten (rund 25 Zeichen), dann passt der Text genau einmal um den Kreis.&quot;, &quot;default&quot;: &quot;Scroll · Stärker werden · 24 ·&quot; },
     { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;scroll_label&quot;, &quot;label&quot;: &quot;Beschriftung Scroll-Kreis (Screenreader)&quot;, &quot;default&quot;: &quot;Weiter zum Produkt-Showcase&quot; },
     { &quot;type&quot;: &quot;header&quot;, &quot;content&quot;: &quot;Effekte &amp; Farben&quot; },
     { &quot;type&quot;: &quot;checkbox&quot;, &quot;id&quot;: &quot;show_3d&quot;, &quot;label&quot;: &quot;3D-Effekte und Farbverlauf anzeigen&quot;, &quot;default&quot;: true },

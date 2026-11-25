@@ -4,6 +4,25 @@ Das Redesign als 9 Shopify-Abschnitte (Online Store 2.0) zum Einfügen in ein be
 
 **Schritt-für-Schritt:** `anleitung.html` im Browser öffnen. Sie enthält alle Abschnitte mit Kopieren-Knopf, die Reihenfolge auf der Startseite, Farben, Kollektionen und eine Checkliste.
 
+## Stand in „Mein Shop“ (1m2xbk-0k)
+
+Bereits eingerichtet (Nov. 2026):
+
+- Theme **„Eiweissdealer24 Redesign“** (unveröffentlichte Kopie von Horizon). Das live geschaltete Theme mit der „ABI Shop 2027“-Seite ist unverändert.
+  - 9 ED24-Abschnitte, byte-gleich mit `sections/` (MD5 geprüft)
+  - Startseite in der richtigen Reihenfolge; Showcase-Kapitel mit den 4 Eigenmarke-Produkten verknüpft
+  - Ziele-Kacheln mit Kollektionen verknüpft, Coaching-Button auf `/collections/coaching`
+  - Topbar und Logo (`eiweissdealer24-logo.png`, liegt unter Inhalte → Dateien), dunkles Farbschema mit Rot
+  - Menü „Eiweissdealer24 Hauptmenü“ (`ed24-hauptmenue`); das bestehende Hauptmenü ist unverändert
+- 15 automatische Kollektionen (siehe Tabelle unten), im Onlineshop sichtbar
+- Passwortschutz des Shops ist an
+
+Noch offen:
+
+- `produkte-import.csv` über Produkte → Importieren hochladen. Die Schnittstelle erlaubt keinen Sammel-Import.
+- Fightwear nur zur Abholung: Abholung vor Ort und ein Versandprofil ohne Tarife einrichten.
+- Theme veröffentlichen erst nach Absprache. Bis dahin über Onlineshop → Themes → Vorschau zeigen.
+
 ## Abschnitte (`sections/`)
 
 | Datei | Name im Theme-Editor | Effekt |

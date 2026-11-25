@@ -35,7 +35,7 @@
   <a class="ed24-ring" href="#ed24-showcase" aria-label="{{ section.settings.scroll_label | escape }}">
     <svg class="ed24-ring__text" viewBox="0 0 100 100" aria-hidden="true">
       <defs><path id="ed24-circ-{{ section.id }}" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>
-      <text><textPath href="#ed24-circ-{{ section.id }}">{{ section.settings.scroll_text | escape }}</textPath></text>
+      <text><textPath href="#ed24-circ-{{ section.id }}" textLength="238" lengthAdjust="spacing">{{ section.settings.scroll_text | escape }}</textPath></text>
     </svg>
     <span class="ed24-ring__arrow" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16m-6-6 6 6 6-6"/></svg>
@@ -549,7 +549,7 @@
     { "type": "inline_richtext", "id": "line_2", "label": "Zeile 2", "info": "Fett gesetzter Text erscheint als Umriss.", "default": "Dealer<strong>24</strong>" },
     { "type": "text", "id": "meta_left", "label": "Text unten links", "default": "Supplements, Ernährungs- & Trainingscoaching" },
     { "type": "text", "id": "meta_right", "label": "Text unten rechts", "default": "Rostock · Doberaner Str. 110–112 · seit 2007" },
-    { "type": "text", "id": "scroll_text", "label": "Text im Scroll-Kreis", "default": "Scroll · Stärker werden · Scroll · Seit 2007 ·" },
+    { "type": "text", "id": "scroll_text", "label": "Text im Scroll-Kreis", "info": "Kurz halten (rund 25 Zeichen), dann passt der Text genau einmal um den Kreis.", "default": "Scroll · Stärker werden · 24 ·" },
     { "type": "text", "id": "scroll_label", "label": "Beschriftung Scroll-Kreis (Screenreader)", "default": "Weiter zum Produkt-Showcase" },
     { "type": "header", "content": "Effekte & Farben" },
     { "type": "checkbox", "id": "show_3d", "label": "3D-Effekte und Farbverlauf anzeigen", "default": true },
