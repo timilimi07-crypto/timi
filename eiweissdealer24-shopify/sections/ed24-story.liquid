@@ -1,0 +1,142 @@
+{%- comment -%}
+  ED24 Story – Eiweissdealer24
+  Stempel-Schrift über dem hellen Farbverlauf; 3D-Objekte aus „ED24 Hero 3D“ schweben vorbei.
+  Unter „ED24 Produkt-Showcase“ platzieren.
+{%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
+
+<div class="ed24-story" data-ed24-story style="--ed24-accent: {{ section.settings.accent }};">
+  <ed24-story class="ed24-story__grid">
+    {%- if section.settings.small_title != blank or section.settings.small_text != blank -%}
+      <p class="ed24-story__small ed24-rv">
+        <strong>{{ section.settings.small_title | escape }}</strong>
+        {{ section.settings.small_text | escape }}
+      </p>
+    {%- endif -%}
+    {%- if section.settings.stamp_1 != blank -%}<h2 class="ed24-story__stamp ed24-story__stamp--end ed24-rv">{{ section.settings.stamp_1 | escape }}</h2>{%- endif -%}
+    {%- if section.settings.text_1 != blank -%}<p class="ed24-story__para ed24-story__para--end ed24-rv">{{ section.settings.text_1 | escape }}</p>{%- endif -%}
+    {%- if section.settings.stamp_2 != blank -%}<h2 class="ed24-story__stamp ed24-story__stamp--start ed24-rv">{{ section.settings.stamp_2 | escape }}</h2>{%- endif -%}
+    {%- if section.settings.text_2 != blank -%}<p class="ed24-story__para ed24-story__para--start ed24-rv">{{ section.settings.text_2 | escape }}</p>{%- endif -%}
+    {%- if section.blocks.size > 0 -%}
+      <div class="ed24-story__facts ed24-rv">
+        {%- for block in section.blocks -%}
+          <p class="ed24-story__fact" {{ block.shopify_attributes }}>
+            <strong>{{ block.settings.value | escape }}</strong>
+            <span>{{ block.settings.label | escape }}</span>
+          </p>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </ed24-story>
+</div>
+
+{% stylesheet %}
+  .ed24-story{position:relative;padding:22vh clamp(16px,4vw,64px) 30vh;color:#111}
+  .ed24-story__grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px;row-gap:12vh}
+  .ed24-story .ed24-rv{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(.2,.8,.2,1),transform 1s cubic-bezier(.2,.8,.2,1)}
+  .ed24-story .ed24-rv.is-in{opacity:1;transform:none}
+  .ed24-story .ed24-story__small{grid-column:1/4;margin:0;font-family:'Barlow',sans-serif;font-size:14px;line-height:1.55;font-weight:500;color:#111}
+  .ed24-story .ed24-story__small strong{display:block;margin-bottom:8px;font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--ed24-accent,#e30613)}
+  .ed24-story .ed24-story__stamp{margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(66px,11.5vw,210px);line-height:.84;letter-spacing:.005em;color:var(--ed24-accent,#e30613);-webkit-mask-image:var(--ed24-grain);mask-image:var(--ed24-grain);-webkit-mask-size:150px;mask-size:150px}
+  .ed24-story .ed24-story__stamp--end{grid-column:4/13}
+  .ed24-story .ed24-story__stamp--start{grid-column:1/11}
+  .ed24-story .ed24-story__para{margin:0;font-family:'Barlow',sans-serif;font-size:16px;line-height:1.6;color:#2a2a2c}
+  .ed24-story .ed24-story__para--end{grid-column:8/12}
+  .ed24-story .ed24-story__para--start{grid-column:2/6}
+  .ed24-story .ed24-story__facts{grid-column:1/13;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:2px solid #111}
+  .ed24-story .ed24-story__fact{margin:0;padding:18px 18px 0 0;font-family:'Barlow',sans-serif;font-size:14px;color:#6b6b70}
+  .ed24-story .ed24-story__fact strong{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;font-size:clamp(44px,5vw,80px);line-height:1;color:#111}
+  html.ed24-nogl .ed24-story{background:#efece6}
+  @media (max-width:749px){
+    .ed24-story__grid{row-gap:8vh}
+    .ed24-story .ed24-story__small,.ed24-story .ed24-story__stamp--end,.ed24-story .ed24-story__stamp--start,.ed24-story .ed24-story__para--end,.ed24-story .ed24-story__para--start{grid-column:1/13}
+    .ed24-story .ed24-story__facts{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:18px}
+  }
+  @media (prefers-reduced-motion:reduce){.ed24-story .ed24-rv{opacity:1;transform:none;transition:none}}
+{% endstylesheet %}
+
+{% javascript %}
+  // Story: blendet Inhalte beim Scrollen ein und erzeugt die Stempel-Struktur der großen Überschriften.
+  class Ed24Story extends HTMLElement {
+    connectedCallback() {
+      var self = this;
+      try {
+        var c = document.createElement('canvas');
+        c.width = c.height = 150;
+        var x = c.getContext('2d');
+        x.fillStyle = '#000';
+        x.fillRect(0, 0, 150, 150);
+        x.globalCompositeOperation = 'destination-out';
+        for (var i = 0; i < 520; i++) {
+          x.globalAlpha = 0.35 + Math.random() * 0.65;
+          x.beginPath();
+          x.arc(Math.random() * 150, Math.random() * 150, Math.random() * 1.6 + 0.3, 0, 7);
+          x.fill();
+        }
+        this.style.setProperty('--ed24-grain', 'url(' + c.toDataURL() + ')');
+      } catch (e) {
+        // Ohne Canvas bleiben die Überschriften einfach vollflächig.
+      }
+      var items = this.querySelectorAll('.ed24-rv');
+      if (!('IntersectionObserver' in window)) {
+        items.forEach(function (el) { el.classList.add('is-in'); });
+        return;
+      }
+      this.observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('is-in');
+          self.observer.unobserve(e.target);
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+      items.forEach(function (el) { self.observer.observe(el); });
+    }
+
+    disconnectedCallback() {
+      if (this.observer) this.observer.disconnect();
+    }
+  }
+  if (!customElements.get('ed24-story')) customElements.define('ed24-story', Ed24Story);
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "ED24 Story",
+  "tag": "section",
+  "class": "ed24-section",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "paragraph", "content": "Unter „ED24 Produkt-Showcase“ platzieren." },
+    { "type": "text", "id": "small_title", "label": "Kleine Überschrift", "default": "Wo kommt dein Eiweiß her?" },
+    { "type": "textarea", "id": "small_text", "label": "Kleiner Text", "default": "Aus einem 120-m²-Laden in der Doberaner Straße. Von Leuten, die wissen, wie sich der letzte Satz anfühlt." },
+    { "type": "text", "id": "stamp_1", "label": "Große Überschrift 1", "default": "Seit 2007 in Rostock." },
+    { "type": "textarea", "id": "text_1", "label": "Text 1", "default": "Manu, Franzi und Mario führen den Fitness- und Diätshop Rostock seit 2007. Über 40 Marken, eine eigene Eiweissdealer-Marke und eine Beratung, die sich Zeit nimmt." },
+    { "type": "text", "id": "stamp_2", "label": "Große Überschrift 2", "default": "Seit 2016 auf der Bühne." },
+    { "type": "textarea", "id": "text_2", "label": "Text 2", "default": "Wir treten selbst bei Bodybuilding-Wettkämpfen an und haben viele Athletinnen und Athleten auf die Bühne vorbereitet. Und keine Sorge: Mit unseren Plänen isst du nicht jeden Tag nur Reis und Hühnchen." },
+    { "type": "color", "id": "accent", "label": "Markenfarbe", "default": "#e30613" }
+  ],
+  "blocks": [
+    {
+      "type": "fact",
+      "name": "Kennzahl",
+      "settings": [
+        { "type": "text", "id": "value", "label": "Zahl", "default": "2007" },
+        { "type": "text", "id": "label", "label": "Beschreibung", "default": "Laden in Rostock" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "ED24 Story",
+      "blocks": [
+        { "type": "fact", "settings": { "value": "2007", "label": "Laden in Rostock" } },
+        { "type": "fact", "settings": { "value": "40+", "label": "Marken im Sortiment" } },
+        { "type": "fact", "settings": { "value": "120 m²", "label": "zum Stöbern & Probieren" } },
+        { "type": "fact", "settings": { "value": "10 %", "label": "beim 9. Einkauf mit Treuekarte" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

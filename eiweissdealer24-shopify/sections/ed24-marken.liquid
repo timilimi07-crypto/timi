@@ -1,0 +1,163 @@
+{%- comment -%}
+  ED24 Marken (Physik) – Eiweissdealer24
+  Alle Marken (Hersteller) des Shops fallen als Pillen in eine Box und lassen sich mit der Maus werfen.
+  Die Marken kommen automatisch aus den Produkten.
+{%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
+
+<div class="ed24-brands" style="background-color: {{ section.settings.background }}; --ed24-accent: {{ section.settings.accent }};">
+  <div class="ed24-brands__head">
+    <h2 class="ed24-brands__title">
+      {{- section.settings.title_1 | escape -}}
+      {%- if section.settings.title_2 != blank -%}<br><em>{{ section.settings.title_2 | escape }}</em>{%- endif -%}
+    </h2>
+    {%- if section.settings.text != blank -%}<p class="ed24-brands__lead">{{ section.settings.text | escape }}</p>{%- endif -%}
+  </div>
+  <ed24-pit class="ed24-pit" aria-hidden="true">
+    {%- if section.settings.hint != blank -%}<span class="ed24-pit__hint">{{ section.settings.hint | escape }}</span>{%- endif -%}
+    {%- for vendor in shop.vendors limit: section.settings.limit -%}
+      <span class="ed24-pill" data-pill>{{ vendor | escape }}</span>
+    {%- else -%}
+      {%- if request.design_mode -%}<span class="ed24-pit__empty">Die Marken erscheinen hier automatisch, sobald Produkte importiert sind.</span>{%- endif -%}
+    {%- endfor -%}
+  </ed24-pit>
+  {%- if shop.vendors.size > 0 -%}
+    <ul class="ed24-visually-hidden">
+      {%- for vendor in shop.vendors limit: section.settings.limit -%}
+        <li>{{ vendor | link_to_vendor }}</li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .ed24-brands{position:relative;padding:16vh clamp(16px,4vw,64px) 10vh;color:#111}
+  .ed24-brands__head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:28px}
+  .ed24-brands .ed24-brands__title{margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(52px,8vw,130px);line-height:.86;letter-spacing:.005em;color:#111}
+  .ed24-brands .ed24-brands__title em{font-style:italic;color:var(--ed24-accent,#e30613)}
+  .ed24-brands .ed24-brands__lead{margin:0;max-width:340px;font-family:'Barlow',sans-serif;font-size:16px;line-height:1.5;color:#3a3a3d}
+  .ed24-pit{position:relative;display:block;height:min(72vh,640px);border-radius:28px;background:rgba(255,255,255,.65);border:1px solid rgba(0,0,0,.05);overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+  .ed24-pit__hint{position:absolute;left:50%;top:22px;transform:translateX(-50%);font-family:'Barlow',sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(0,0,0,.4);white-space:nowrap}
+  .ed24-pit__empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font-family:'Barlow',sans-serif;color:#6b6b70}
+  .ed24-pill{position:absolute;left:0;top:0;padding:.42em .9em .38em;border-radius:999px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(20px,2.5vw,36px);line-height:1;white-space:nowrap;will-change:transform;cursor:grab;visibility:hidden;background:var(--ed24-accent,#e30613);color:#fff}
+  .ed24-pill:active{cursor:grabbing}
+  .ed24-pill.is-live{visibility:visible}
+  .ed24-pill:nth-of-type(4n+2){background:#111;color:#fff}
+  .ed24-pill:nth-of-type(4n+3){background:#fff;color:#111;box-shadow:inset 0 0 0 2px #111}
+  .ed24-pill:nth-of-type(4n){background:transparent;color:var(--ed24-accent,#e30613);box-shadow:inset 0 0 0 2px var(--ed24-accent,#e30613)}
+  .ed24-pit.is-static{display:flex;flex-wrap:wrap;gap:10px;align-content:center;justify-content:center;padding:56px 24px 24px}
+  .ed24-pit.is-static .ed24-pill{position:static;visibility:visible;transform:none !important}
+  .ed24-visually-hidden{position:absolute !important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  @media (pointer:coarse){.ed24-pill{cursor:default}}
+{% endstylesheet %}
+
+{% javascript %}
+  // Marken-Box: die Hersteller fallen mit Physik (Matter.js) hinein; mit der Maus lassen sie sich werfen.
+  var MATTER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js';
+  var matterPromise = null;
+  function ed24LoadMatter() {
+    if (window.Matter) return Promise.resolve();
+    if (!matterPromise) {
+      matterPromise = new Promise(function (res, rej) {
+        var s = document.createElement('script');
+        s.src = MATTER_URL;
+        s.async = true;
+        s.onload = res;
+        s.onerror = function () { matterPromise = null; rej(new Error('matter')); };
+        document.head.appendChild(s);
+      });
+    }
+    return matterPromise;
+  }
+  class Ed24Pit extends HTMLElement {
+    connectedCallback() {
+      var self = this;
+      this.pills = Array.prototype.slice.call(this.querySelectorAll('[data-pill]'));
+      this.timers = [];
+      if (!this.pills.length) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        this.classList.add('is-static');
+        return;
+      }
+      this.observer = new IntersectionObserver(function (entries) {
+        self.visible = entries[0].isIntersecting;
+        if (self.visible && !self.started) {
+          self.started = true;
+          ed24LoadMatter().then(function () { self.start(); }).catch(function () { self.classList.add('is-static'); });
+        }
+      }, { threshold: 0.25 });
+      this.observer.observe(this);
+    }
+
+    disconnectedCallback() {
+      if (this.observer) this.observer.disconnect();
+      cancelAnimationFrame(this.raf);
+      this.timers.forEach(clearTimeout);
+      if (this.engine && window.Matter) window.Matter.Engine.clear(this.engine);
+    }
+
+    start() {
+      if (!this.isConnected) return;
+      var self = this, M = window.Matter;
+      var W = this.clientWidth, H = this.clientHeight;
+      var engine = (this.engine = M.Engine.create({ gravity: { y: 1.1 }, enableSleeping: true }));
+      M.Composite.add(engine.world, [
+        M.Bodies.rectangle(W / 2, H + 40, W * 3, 80, { isStatic: true }),
+        M.Bodies.rectangle(-40, H / 2, 80, H * 4, { isStatic: true }),
+        M.Bodies.rectangle(W + 40, H / 2, 80, H * 4, { isStatic: true })
+      ]);
+      var items = [];
+      this.pills.forEach(function (el, i) {
+        var w = el.offsetWidth, h = el.offsetHeight;
+        self.timers.push(setTimeout(function () {
+          var x = Math.min(W - w / 2 - 10, Math.max(w / 2 + 10, W * (0.15 + Math.random() * 0.7)));
+          var b = M.Bodies.rectangle(x, -h - Math.random() * 200, w, h, { chamfer: { radius: h / 2 - 1 }, restitution: 0.35, friction: 0.2, density: 0.002, angle: (Math.random() - 0.5) * 0.8 });
+          M.Body.setAngularVelocity(b, (Math.random() - 0.5) * 0.08);
+          M.Composite.add(engine.world, b);
+          items.push({ el: el, b: b, w: w, h: h });
+          el.classList.add('is-live');
+        }, 120 + i * 140));
+      });
+      if (window.matchMedia('(pointer: fine)').matches) {
+        var mouse = M.Mouse.create(this);
+        mouse.element.removeEventListener('mousewheel', mouse.mousewheel);
+        mouse.element.removeEventListener('DOMMouseScroll', mouse.mousewheel);
+        mouse.element.removeEventListener('wheel', mouse.mousewheel);
+        M.Composite.add(engine.world, M.MouseConstraint.create(engine, { mouse: mouse, constraint: { stiffness: 0.2, render: { visible: false } } }));
+      }
+      var loop = function () {
+        self.raf = requestAnimationFrame(loop);
+        if (!self.visible) return;
+        M.Engine.update(engine, 1000 / 60);
+        for (var i = 0; i < items.length; i++) {
+          var it = items[i];
+          if (it.b.isSleeping && it.drawn) continue;
+          it.drawn = true;
+          it.el.style.transform = 'translate3d(' + (it.b.position.x - it.w / 2) + 'px,' + (it.b.position.y - it.h / 2) + 'px,0) rotate(' + it.b.angle + 'rad)';
+        }
+      };
+      this.raf = requestAnimationFrame(loop);
+    }
+  }
+  if (!customElements.get('ed24-pit')) customElements.define('ed24-pit', Ed24Pit);
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "ED24 Marken (Physik)",
+  "tag": "section",
+  "class": "ed24-section",
+  "settings": [
+    { "type": "text", "id": "title_1", "label": "Titel Zeile 1", "default": "40+ Marken." },
+    { "type": "text", "id": "title_2", "label": "Titel Zeile 2 (rot)", "default": "Ein Laden." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Von Optimum Nutrition bis zur eigenen Eiweissdealer-Marke. Schnapp dir eine Marke und wirf sie durch die Gegend." },
+    { "type": "text", "id": "hint", "label": "Hinweis in der Box", "default": "Ziehen & werfen" },
+    { "type": "range", "id": "limit", "label": "Anzahl Marken", "min": 6, "max": 60, "step": 1, "default": 24 },
+    { "type": "color", "id": "background", "label": "Hintergrund", "default": "#efece6" },
+    { "type": "color", "id": "accent", "label": "Markenfarbe", "default": "#e30613" }
+  ],
+  "presets": [{ "name": "ED24 Marken (Physik)" }]
+}
+{% endschema %}

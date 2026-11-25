@@ -1,0 +1,76 @@
+{%- comment -%}
+  ED24 Topbar – Eiweissdealer24
+  Rote Infoleiste ganz oben (Laden, Überraschung ab 100 €, Beratung) und die Markenschriften für den ganzen Shop.
+  In die Kopfzeile (Header-Bereich) einfügen, damit sie auf jeder Seite erscheint.
+{%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
+
+{%- liquid
+  assign s = section.settings
+  assign phone_link = s.phone | remove: ' ' | remove: '–' | remove: '-' | remove: '/' | remove: '(' | remove: ')'
+-%}
+{%- if s.brand_fonts -%}
+  <style>
+    h1, h2, .h0, .h1, .h2 {
+      font-family: 'Barlow Condensed', sans-serif !important;
+      font-weight: 800 !important;
+      font-style: italic;
+      text-transform: uppercase;
+      letter-spacing: .005em;
+    }
+  </style>
+{%- endif -%}
+<div class="ed24-topbar" style="background-color: {{ s.accent }};">
+  <div class="ed24-topbar__inner">
+    {%- if s.left != blank -%}
+      <a class="ed24-topbar__item ed24-topbar__item--side" href="{{ s.left_link | default: routes.root_url }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        {{- s.left | escape -}}
+      </a>
+    {%- endif -%}
+    {%- if s.center != blank -%}
+      <span class="ed24-topbar__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18M12 9v11M12 9c-2-4-6-4-6-1.5S10 9 12 9c2 0 6-.5 6-3S14 5 12 9Z"/></svg>
+        {{- s.center | escape -}}
+      </span>
+    {%- endif -%}
+    {%- if s.right != blank -%}
+      <a class="ed24-topbar__item ed24-topbar__item--side" href="tel:{{ phone_link }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg>
+        {{- s.right | escape -}}
+      </a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .ed24-topbar{color:#fff;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;line-height:1.2}
+  .ed24-topbar__inner{max-width:1280px;margin:0 auto;padding:0 clamp(16px,3vw,28px);min-height:34px;display:flex;align-items:center;justify-content:center;gap:28px;white-space:nowrap;overflow:hidden}
+  .ed24-topbar .ed24-topbar__item{display:inline-flex;align-items:center;gap:7px;color:#fff;text-decoration:none}
+  .ed24-topbar__item svg{width:15px;height:15px;flex-shrink:0}
+  .ed24-topbar .ed24-topbar__item--side{display:none}
+  @media (min-width:900px){
+    .ed24-topbar__inner{justify-content:space-between}
+    .ed24-topbar .ed24-topbar__item--side{display:inline-flex}
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "ED24 Topbar",
+  "tag": "section",
+  "class": "ed24-section",
+  "settings": [
+    { "type": "text", "id": "left", "label": "Text links", "default": "Laden in Rostock · Doberaner Str. 110–112" },
+    { "type": "url", "id": "left_link", "label": "Link links", "info": "Zum Beispiel eine Seite „Laden & Team“." },
+    { "type": "text", "id": "center", "label": "Text Mitte", "default": "Überraschung ab 100 € Einkaufswert" },
+    { "type": "text", "id": "right", "label": "Text rechts", "default": "Beratung: 0381 – 203 38 71" },
+    { "type": "text", "id": "phone", "label": "Telefonnummer (für den Link rechts)", "default": "0381 – 203 38 71" },
+    { "type": "color", "id": "accent", "label": "Farbe", "default": "#e30613" },
+    { "type": "checkbox", "id": "brand_fonts", "label": "Markenschrift für Überschriften im ganzen Shop", "info": "Große Überschriften werden kursiv, fett und in Großbuchstaben gesetzt (Barlow Condensed).", "default": true }
+  ],
+  "presets": [{ "name": "ED24 Topbar" }]
+}
+{% endschema %}

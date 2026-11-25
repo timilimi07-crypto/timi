@@ -1,0 +1,224 @@
+{%- comment -%}
+  ED24 Laden & Team – Eiweissdealer24
+  Team, Live-Öffnungsstatus, Öffnungszeiten, Adresse mit Route, Telefon und Vorteile (Treuekarte, Überraschung ab 100 €).
+{%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
+
+{%- liquid
+  assign s = section.settings
+  assign phone_link = s.phone | remove: ' ' | remove: '–' | remove: '-' | remove: '/' | remove: '(' | remove: ')'
+  assign address_query = s.address | newline_to_br | strip_html | url_encode
+  assign route_url = 'https://www.google.com/maps/search/?api=1&query=' | append: address_query
+  if s.map_link != blank
+    assign route_url = s.map_link
+  endif
+-%}
+<div class="ed24-store" style="background-color: {{ s.background }}; --ed24-accent: {{ s.accent }};">
+  <div class="ed24-store__wrap">
+    <div class="ed24-store__grid">
+      <div class="ed24-store__card">
+        {%- if s.eyebrow != blank -%}<p class="ed24-store__eye">{{ s.eyebrow | escape }}</p>{%- endif -%}
+        <h2 class="ed24-store__title">{{ s.title | escape }}</h2>
+        {%- if s.text != blank -%}<p class="ed24-store__text">{{ s.text | escape }}</p>{%- endif -%}
+        <div class="ed24-store__team">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'member' -%}
+              <div class="ed24-mate" {{ block.shopify_attributes }}>
+                <div class="ed24-mate__av">
+                  {%- if block.settings.image != blank -%}
+                    {{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', alt: block.settings.name, class: 'ed24-mate__img', widths: '200,400,600', sizes: '(min-width: 990px) 200px, 30vw' }}
+                  {%- else -%}
+                    <span>{{ block.settings.name | slice: 0 }}</span>
+                  {%- endif -%}
+                </div>
+                <strong>{{ block.settings.name | escape }}</strong>
+                <span>{{ block.settings.role | escape }}</span>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <div class="ed24-store__card">
+        <ed24-open
+          class="ed24-open"
+          data-wd-open="{{ s.wd_open }}"
+          data-wd-close="{{ s.wd_close }}"
+          data-sa-open="{{ s.sa_open }}"
+          data-sa-close="{{ s.sa_close }}"
+          data-open-text="{{ s.open_text | escape }}"
+          data-closed-text="{{ s.closed_text | escape }}"
+        ><i></i><span>{{ s.closed_text | escape }}</span></ed24-open>
+        <h3 class="ed24-store__title ed24-store__title--sm">{{ s.card_title | escape }}</h3>
+        <div class="ed24-store__hours">
+          {%- if s.hours_1_label != blank -%}<div><span>{{ s.hours_1_label | escape }}</span><b>{{ s.hours_1 | escape }}</b></div>{%- endif -%}
+          {%- if s.hours_2_label != blank -%}<div><span>{{ s.hours_2_label | escape }}</span><b>{{ s.hours_2 | escape }}</b></div>{%- endif -%}
+          {%- if s.hours_3_label != blank -%}<div><span>{{ s.hours_3_label | escape }}</span><b>{{ s.hours_3 | escape }}</b></div>{%- endif -%}
+        </div>
+        {%- if s.address != blank -%}
+          <p class="ed24-store__addr">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            <span>{{ s.address | escape | newline_to_br }}</span>
+          </p>
+        {%- endif -%}
+        {%- if s.phone != blank -%}
+          <p class="ed24-store__addr">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg>
+            <span>{{ s.phone | escape }}</span>
+          </p>
+        {%- endif -%}
+        <div class="ed24-store__acts">
+          {%- if s.address != blank -%}<a class="ed24-store__btn" href="{{ route_url }}" target="_blank" rel="noopener">{{ s.route_label | escape }}</a>{%- endif -%}
+          {%- if s.phone != blank -%}<a class="ed24-store__btn ed24-store__btn--line" href="tel:{{ phone_link }}">{{ s.call_label | escape }}</a>{%- endif -%}
+        </div>
+      </div>
+    </div>
+
+    <div class="ed24-store__perks">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'perk' -%}
+          <div class="ed24-perk" {{ block.shopify_attributes }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18M12 9v11M12 9c-2-4-6-4-6-1.5S10 9 12 9c2 0 6-.5 6-3S14 5 12 9Z"/></svg>
+            <div><strong>{{ block.settings.title | escape }}</strong><span>{{ block.settings.text | escape }}</span></div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .ed24-store{padding:clamp(56px,9vw,104px) 0;color:#f5f5f4}
+  .ed24-store__wrap{max-width:1280px;margin:0 auto;padding:0 clamp(16px,3vw,28px)}
+  .ed24-store__grid{display:grid;gap:14px}
+  .ed24-store__card{border-radius:22px;background:#131315;border:1px solid #2c2c32;padding:26px}
+  .ed24-store .ed24-store__eye{margin:0 0 14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-style:normal;text-transform:uppercase;letter-spacing:.14em;font-size:13px;color:var(--ed24-accent,#e30613)}
+  .ed24-store .ed24-store__title{margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(38px,5vw,56px);line-height:.92;letter-spacing:.005em;color:#f5f5f4}
+  .ed24-store .ed24-store__title--sm{margin-top:14px;font-size:44px}
+  .ed24-store .ed24-store__text{margin:14px 0 0;max-width:520px;font-family:'Barlow',sans-serif;font-size:16px;line-height:1.5;color:#a6a6ad}
+  .ed24-store__team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:24px}
+  .ed24-mate strong{display:block;margin-top:10px;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;font-style:italic;text-transform:uppercase;color:#f5f5f4}
+  .ed24-mate>span{font-family:'Barlow',sans-serif;font-size:13px;color:#a6a6ad}
+  .ed24-mate__av{aspect-ratio:4/5;border-radius:12px;overflow:hidden;background:linear-gradient(160deg,#2a2a30,#141417);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;font-size:42px;color:rgba(255,255,255,.2)}
+  .ed24-mate__img{width:100%;height:100%;object-fit:cover;display:block}
+  .ed24-open{display:inline-flex;align-items:center;gap:8px;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;color:#a6a6ad;background:#1b1b1f;border:1px solid #2c2c32;padding:5px 12px;border-radius:99px}
+  .ed24-open i{width:8px;height:8px;border-radius:50%;background:#75757d}
+  .ed24-open.is-open{color:#22c55e;background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25)}
+  .ed24-open.is-open i{background:#22c55e}
+  .ed24-store__hours{margin:18px 0 22px}
+  .ed24-store__hours div{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #2c2c32;font-family:'Barlow',sans-serif;font-size:15px}
+  .ed24-store__hours b{font-weight:600}
+  .ed24-store .ed24-store__addr{display:flex;gap:12px;align-items:flex-start;margin:0 0 8px;font-family:'Barlow',sans-serif;font-size:15px;color:#a6a6ad}
+  .ed24-store__addr svg{width:20px;height:20px;flex-shrink:0;margin-top:2px;color:var(--ed24-accent,#e30613)}
+  .ed24-store__acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .ed24-store .ed24-store__btn{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:var(--ed24-accent,#e30613);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.04em;text-decoration:none;border:1.5px solid transparent}
+  .ed24-store .ed24-store__btn--line{background:transparent;border-color:rgba(255,255,255,.35)}
+  .ed24-store__perks{display:grid;gap:10px;margin-top:14px}
+  .ed24-perk{display:flex;gap:14px;align-items:flex-start;padding:18px;border-radius:14px;border:1px dashed #44444c;font-family:'Barlow',sans-serif}
+  .ed24-perk svg{width:26px;height:26px;flex-shrink:0;color:var(--ed24-accent,#e30613)}
+  .ed24-perk strong{display:block;font-size:15px;color:#f5f5f4}
+  .ed24-perk span{font-size:13px;color:#a6a6ad}
+  @media (min-width:750px){.ed24-store__perks{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media (min-width:990px){.ed24-store__grid{grid-template-columns:1.2fr 1fr}.ed24-store__card{padding:34px}}
+{% endstylesheet %}
+
+{% javascript %}
+  // Live-Öffnungsstatus: vergleicht die aktuelle Uhrzeit mit den Öffnungszeiten aus den Einstellungen.
+  class Ed24Open extends HTMLElement {
+    connectedCallback() {
+      var self = this;
+      this.render();
+      this.timer = setInterval(function () { self.render(); }, 60000);
+    }
+
+    disconnectedCallback() {
+      clearInterval(this.timer);
+    }
+
+    render() {
+      var d = this.dataset, now = new Date(), day = now.getDay(), h = now.getHours() + now.getMinutes() / 60;
+      var wo = parseFloat(d.wdOpen), wc = parseFloat(d.wdClose), so = parseFloat(d.saOpen), sc = parseFloat(d.saClose);
+      var open = false, until = 0;
+      if (day >= 1 && day <= 5 && h >= wo && h < wc) { open = true; until = wc; }
+      if (day === 6 && h >= so && h < sc) { open = true; until = sc; }
+      this.classList.toggle('is-open', open);
+      var label = this.querySelector('span');
+      if (label) label.textContent = open ? String(d.openText || '').replace('[zeit]', String(until)) : d.closedText || '';
+    }
+  }
+  if (!customElements.get('ed24-open')) customElements.define('ed24-open', Ed24Open);
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "ED24 Laden & Team",
+  "tag": "section",
+  "class": "ed24-section",
+  "max_blocks": 9,
+  "settings": [
+    { "type": "header", "content": "Team" },
+    { "type": "text", "id": "eyebrow", "label": "Kleine Überschrift", "default": "Das Team hinter dem Shop" },
+    { "type": "text", "id": "title", "label": "Überschrift", "default": "Manu, Franzi & Mario" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Wir führen den Fitness- und Diätshop Rostock seit 2007 – und stehen seit 2016 selbst im Bodybuilding auf der Bühne." },
+    { "type": "header", "content": "Laden" },
+    { "type": "text", "id": "card_title", "label": "Überschrift Laden", "default": "Komm vorbei" },
+    { "type": "text", "id": "hours_1_label", "label": "Zeile 1: Tage", "default": "Montag – Freitag" },
+    { "type": "text", "id": "hours_1", "label": "Zeile 1: Zeiten", "default": "10 – 19 Uhr" },
+    { "type": "text", "id": "hours_2_label", "label": "Zeile 2: Tage", "default": "Samstag" },
+    { "type": "text", "id": "hours_2", "label": "Zeile 2: Zeiten", "default": "10 – 15 Uhr" },
+    { "type": "text", "id": "hours_3_label", "label": "Zeile 3: Tage", "default": "Sonntag" },
+    { "type": "text", "id": "hours_3", "label": "Zeile 3: Zeiten", "default": "geschlossen" },
+    { "type": "textarea", "id": "address", "label": "Adresse", "default": "Doberaner Straße 110–112\n18057 Rostock" },
+    { "type": "text", "id": "phone", "label": "Telefonnummer", "default": "0381 – 203 38 71" },
+    { "type": "url", "id": "map_link", "label": "Eigener Karten-Link", "info": "Leer lassen: Google Maps mit der Adresse wird automatisch verwendet." },
+    { "type": "text", "id": "route_label", "label": "Button Route", "default": "Route planen" },
+    { "type": "text", "id": "call_label", "label": "Button Anrufen", "default": "Anrufen" },
+    { "type": "header", "content": "Live-Öffnungsstatus" },
+    { "type": "range", "id": "wd_open", "label": "Mo–Fr öffnet um", "min": 0, "max": 24, "step": 1, "unit": "h", "default": 10 },
+    { "type": "range", "id": "wd_close", "label": "Mo–Fr schließt um", "min": 0, "max": 24, "step": 1, "unit": "h", "default": 19 },
+    { "type": "range", "id": "sa_open", "label": "Samstag öffnet um", "min": 0, "max": 24, "step": 1, "unit": "h", "default": 10 },
+    { "type": "range", "id": "sa_close", "label": "Samstag schließt um", "min": 0, "max": 24, "step": 1, "unit": "h", "default": 15 },
+    { "type": "text", "id": "open_text", "label": "Text „geöffnet“", "info": "[zeit] wird durch die Schließzeit ersetzt.", "default": "Jetzt geöffnet · bis [zeit] Uhr" },
+    { "type": "text", "id": "closed_text", "label": "Text „geschlossen“", "default": "Gerade geschlossen" },
+    { "type": "header", "content": "Farben" },
+    { "type": "color", "id": "background", "label": "Hintergrund", "default": "#0a0a0b" },
+    { "type": "color", "id": "accent", "label": "Markenfarbe", "default": "#e30613" }
+  ],
+  "blocks": [
+    {
+      "type": "member",
+      "name": "Teammitglied",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Manu" },
+        { "type": "text", "id": "role", "label": "Untertitel", "default": "Manuela Willms" },
+        { "type": "image_picker", "id": "image", "label": "Foto" }
+      ]
+    },
+    {
+      "type": "perk",
+      "name": "Vorteil",
+      "limit": 6,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titel", "default": "Überraschung ab 100 €" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Im Laden und online (außer reduzierte Ware)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "ED24 Laden & Team",
+      "blocks": [
+        { "type": "member", "settings": { "name": "Manu", "role": "Manuela Willms" } },
+        { "type": "member", "settings": { "name": "Franzi", "role": "Franziska Plötz" } },
+        { "type": "member", "settings": { "name": "Mario", "role": "Mario Plötz" } },
+        { "type": "perk", "settings": { "title": "Überraschung ab 100 €", "text": "Im Laden und online (außer reduzierte Ware)" } },
+        { "type": "perk", "settings": { "title": "Treuekarte", "text": "10 % Rabatt beim 9. Einkauf im Laden" } },
+        { "type": "perk", "settings": { "title": "Fragen? Einfach schreiben", "text": "WhatsApp, Instagram, Telefon oder vor Ort" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

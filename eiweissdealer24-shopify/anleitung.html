@@ -1,0 +1,2164 @@
+<title>ED24 Shopify-Einbau</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine ruhige Lese-Spalte mit nummerierten Arbeitsschritten; Code-Karten mit Kopier-Knopf. */
+:root{
+  --bg:#f6f4f1; --surface:#ffffff; --fg:#17151a; --muted:#5f5a63; --line:#e3ded8;
+  --accent:#d10512; --accent-fg:#ffffff; --ok:#14804a; --code-bg:#f1eee9;
+  --display:'Barlow Condensed','Arial Narrow',sans-serif; --body:'Barlow',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111013; --surface:#1a181c; --fg:#f3f1f4; --muted:#a8a2ad; --line:#2e2a31;
+  --accent:#ff3340; --accent-fg:#ffffff; --ok:#3ccf82; --code-bg:#151317; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111013; --surface:#1a181c; --fg:#f3f1f4; --muted:#a8a2ad; --line:#2e2a31;
+  --accent:#ff3340; --accent-fg:#ffffff; --ok:#3ccf82; --code-bg:#151317; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 80px}
+header.top{display:grid;gap:10px;margin-bottom:34px}
+.kicker{font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0}
+h1{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(44px,9vw,76px);line-height:.92;margin:0;text-wrap:balance}
+.lead{margin:0;color:var(--muted);max-width:62ch;font-size:17px}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.facts span{font-size:13px;font-weight:600;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+.progress{display:flex;align-items:center;gap:12px;margin-top:8px;font-size:14px;color:var(--muted)}
+.bar{flex:1;max-width:280px;height:6px;border-radius:6px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .3s}
+section.step{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;padding-block:28px;border-top:1px solid var(--line)}
+.step__no{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-style:italic;font-size:22px;background:var(--fg);color:var(--bg)}
+.step__body{min-width:0;display:grid;gap:12px}
+h2{font-family:var(--display);font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(28px,5vw,38px);line-height:1;margin:6px 0 0;text-wrap:balance}
+h2 .done{font-family:var(--body);font-style:normal;text-transform:none;font-size:14px;font-weight:600;margin-left:10px;vertical-align:middle}
+p{margin:0}
+ol,ul{margin:0;padding-left:22px;display:grid;gap:6px}
+.path{font-weight:600}
+.path b{color:var(--accent)}
+.note{padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line);font-size:15px}
+.note--warn{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.note strong{color:var(--accent)}
+code.inline{font-family:var(--mono);font-size:.88em;padding:1px 6px;border-radius:6px;background:var(--code-bg);border:1px solid var(--line);word-break:break-word}
+.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+tr:last-child td{border-bottom:0}
+td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.swatch{display:inline-block;width:14px;height:14px;border-radius:4px;border:1px solid var(--line);vertical-align:-2px;margin-right:6px}
+.file{border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden}
+.file+.file{margin-top:10px}
+.file__head{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;padding:14px 16px}
+.file__meta{min-width:0;flex:1 1 300px}
+.file__no{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted)}
+.file__name{font-family:var(--mono);font-size:17px;font-weight:500;margin:2px 0 2px}
+.file__desc{color:var(--muted);font-size:14px}
+.file__acts{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;font-size:15px;border-radius:999px;padding:10px 18px;border:1.5px solid var(--fg);background:transparent;color:var(--fg);cursor:pointer;min-height:44px}
+.btn--primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.btn:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn.is-copied{background:var(--ok);border-color:var(--ok)}
+.done{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer;user-select:none}
+.done input{width:20px;height:20px;accent-color:var(--ok)}
+.file__code{border-top:1px solid var(--line)}
+.file__code summary{cursor:pointer;padding:10px 16px;font-size:14px;color:var(--muted)}
+.file__code pre{margin:0;max-height:420px;overflow:auto;background:var(--code-bg);padding:14px 16px;font-family:var(--mono);font-size:12.5px;line-height:1.55;tab-size:2}
+.file__code code{white-space:pre}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--fg);color:var(--bg);font-weight:600;font-size:14px;padding:10px 16px;border-radius:12px;transition:opacity .2s,transform .2s;max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.order{counter-reset:o;list-style:none;padding:0;display:grid;gap:8px}
+.order li{counter-increment:o;display:flex;gap:12px;align-items:baseline;padding:10px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.order li::before{content:counter(o);font-family:var(--display);font-weight:800;font-style:italic;font-size:20px;color:var(--accent);min-width:20px}
+.order li em{color:var(--muted);font-style:normal;font-size:14px}
+@media (max-width:520px){section.step{grid-template-columns:minmax(0,1fr)}.step__no{width:38px;height:38px;font-size:19px}}
+@media (prefers-reduced-motion:reduce){.bar i,.toast{transition:none}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="kicker">Eiweissdealer24 · Shopify · „Mein Shop“</p>
+    <h1>Shopify-Einbau in 8 Schritten</h1>
+    <p class="lead">Alles, was du für den Termin am Freitag brauchst: 472 Produkte importieren, 9 Effekt-Abschnitte einfügen und die Startseite zusammenbauen. Rechne mit etwa einer Stunde.</p>
+    <p class="note note--warn"><strong>Im Browser arbeiten, nicht in der Shopify-App.</strong> Den Code-Editor gibt es nur auf admin.shopify.com. Auf dem iPad also in Safari öffnen, am PC in Chrome oder Edge.</p>
+    <div class="facts"><span>472 Produkte</span><span>1.249 Varianten</span><span>9 Abschnitte</span><span>ohne App, ohne Programmieren</span></div>
+    <div class="progress" aria-live="polite"><div class="bar"><i id="bar"></i></div><span id="progress-text">0 von 9 Abschnitten eingefügt</span></div>
+  </header>
+
+  <section class="step" id="schritt-1">
+    <div class="step__no">1</div>
+    <div class="step__body">
+      <h2>Produkte importieren</h2>
+      <p>Die Datei <code class="inline">produkte-import.csv</code> hat dir Claude im Chat geschickt. Speichere sie zuerst (iPad: Datei antippen → Teilen → <b>In Dateien sichern</b>).</p>
+      <ol>
+        <li><span class="path">admin.shopify.com → <b>Mein Shop</b> → Produkte → Importieren</span></li>
+        <li><span class="path">Datei hinzufügen</span> → <code class="inline">produkte-import.csv</code> auswählen</li>
+        <li><span class="path">Hochladen und Vorschau</span> → <span class="path">Produkte importieren</span></li>
+      </ol>
+      <p class="note">Shopify lädt dabei die Produktbilder und schickt dir eine E-Mail, wenn alles fertig ist (ein paar Minuten). Alle Sorten und Größen eines Produkts haben den „ab“-Preis aus dem Original-Shop, denn die Preise einzelner Größen stehen dort nicht. Für die Präsentation passt das. Bevor echte Bestellungen möglich sind, müssen die Preise größerer Packungen nachgetragen werden. Der Lagerbestand wird nicht verfolgt, also ist nichts „ausverkauft“.</p>
+    </div>
+  </section>
+
+  <section class="step" id="schritt-2">
+    <div class="step__no">2</div>
+    <div class="step__body">
+      <h2>Theme-Kopie anlegen</h2>
+      <p>Arbeite an einer Kopie, dann bleibt dein aktuelles Theme unverändert, bis alles fertig ist.</p>
+      <ol>
+        <li><span class="path">Onlineshop → Themes</span> → beim aktuellen Theme auf <b>…</b> → <span class="path">Duplizieren</span></li>
+        <li>Bei der Kopie auf <b>…</b> → <span class="path">Code bearbeiten</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="step" id="schritt-3">
+    <div class="step__no">3</div>
+    <div class="step__body">
+      <h2>9 Abschnitte einfügen</h2>
+      <p>Für jede Datei unten wiederholst du diese vier Handgriffe:</p>
+      <ol>
+        <li>Im Code-Editor links den Ordner <span class="path">sections</span> öffnen → <span class="path"><b>+</b> Neuen Abschnitt hinzufügen</span> (bzw. „Datei hinzufügen“)</li>
+        <li>Als Namen genau den Dateinamen eingeben, z. B. <code class="inline">ed24-hero</code>, ohne Endung. Fragt Shopify nach dem Typ, <b>Liquid</b> wählen → <span class="path">Fertig</span></li>
+        <li>Den vorgegebenen Inhalt komplett löschen (alles markieren → löschen), dann hier <b>Code kopieren</b> tippen und dort einfügen</li>
+        <li><span class="path">Speichern</span> → hier <b>Eingefügt</b> abhaken</li>
+      </ol>
+      <p class="note note--warn"><strong>Wichtig:</strong> Den Dateinamen exakt so schreiben wie hier angegeben, sonst finden sich die Abschnitte nicht gegenseitig. Eine Fehlermeldung beim Speichern heißt fast immer: Es wurde nicht der komplette Code eingefügt. Dann noch einmal alles löschen und neu einfügen.</p>
+      
+      <article class="file" id="f-ed24-topbar">
+        <div class="file__head">
+          <div class="file__meta">
+            <span class="file__no">1/9</span>
+            <h3 class="file__name">ed24-topbar</h3>
+            <p class="file__desc">Rote Infoleiste ganz oben + Markenschrift im ganzen Shop. Im Editor heißt der Abschnitt „ED24 Topbar“.</p>
+          </div>
+          <div class="file__acts">
+            <button class="btn btn--primary" type="button" data-copy="code-ed24-topbar">Code kopieren</button>
+            <label class="done"><input type="checkbox" id="done-ed24-topbar" data-done> Eingefügt</label>
+          </div>
+        </div>
+        <details class="file__code">
+          <summary>Code ansehen (77 Zeilen)</summary>
+          <pre><code id="code-ed24-topbar">{%- comment -%}
+  ED24 Topbar – Eiweissdealer24
+  Rote Infoleiste ganz oben (Laden, Überraschung ab 100 €, Beratung) und die Markenschriften für den ganzen Shop.
+  In die Kopfzeile (Header-Bereich) einfügen, damit sie auf jeder Seite erscheint.
+{%- endcomment -%}
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap&quot;&gt;
+
+{%- liquid
+  assign s = section.settings
+  assign phone_link = s.phone | remove: &#x27; &#x27; | remove: &#x27;–&#x27; | remove: &#x27;-&#x27; | remove: &#x27;/&#x27; | remove: &#x27;(&#x27; | remove: &#x27;)&#x27;
+-%}
+{%- if s.brand_fonts -%}
+  &lt;style&gt;
+    h1, h2, .h0, .h1, .h2 {
+      font-family: &#x27;Barlow Condensed&#x27;, sans-serif !important;
+      font-weight: 800 !important;
+      font-style: italic;
+      text-transform: uppercase;
+      letter-spacing: .005em;
+    }
+  &lt;/style&gt;
+{%- endif -%}
+&lt;div class=&quot;ed24-topbar&quot; style=&quot;background-color: {{ s.accent }};&quot;&gt;
+  &lt;div class=&quot;ed24-topbar__inner&quot;&gt;
+    {%- if s.left != blank -%}
+      &lt;a class=&quot;ed24-topbar__item ed24-topbar__item--side&quot; href=&quot;{{ s.left_link | default: routes.root_url }}&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linejoin=&quot;round&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12Z&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;9&quot; r=&quot;2.5&quot;/&gt;&lt;/svg&gt;
+        {{- s.left | escape -}}
+      &lt;/a&gt;
+    {%- endif -%}
+    {%- if s.center != blank -%}
+      &lt;span class=&quot;ed24-topbar__item&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linejoin=&quot;round&quot; aria-hidden=&quot;true&quot;&gt;&lt;rect x=&quot;4&quot; y=&quot;9&quot; width=&quot;16&quot; height=&quot;11&quot; rx=&quot;1.5&quot;/&gt;&lt;path d=&quot;M3 9h18M12 9v11M12 9c-2-4-6-4-6-1.5S10 9 12 9c2 0 6-.5 6-3S14 5 12 9Z&quot;/&gt;&lt;/svg&gt;
+        {{- s.center | escape -}}
+      &lt;/span&gt;
+    {%- endif -%}
+    {%- if s.right != blank -%}
+      &lt;a class=&quot;ed24-topbar__item ed24-topbar__item--side&quot; href=&quot;tel:{{ phone_link }}&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linejoin=&quot;round&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z&quot;/&gt;&lt;/svg&gt;
+        {{- s.right | escape -}}
+      &lt;/a&gt;
+    {%- endif -%}
+  &lt;/div&gt;
+&lt;/div&gt;
+
+{% stylesheet %}
+  .ed24-topbar{color:#fff;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:13px;font-weight:600;line-height:1.2}
+  .ed24-topbar__inner{max-width:1280px;margin:0 auto;padding:0 clamp(16px,3vw,28px);min-height:34px;display:flex;align-items:center;justify-content:center;gap:28px;white-space:nowrap;overflow:hidden}
+  .ed24-topbar .ed24-topbar__item{display:inline-flex;align-items:center;gap:7px;color:#fff;text-decoration:none}
+  .ed24-topbar__item svg{width:15px;height:15px;flex-shrink:0}
+  .ed24-topbar .ed24-topbar__item--side{display:none}
+  @media (min-width:900px){
+    .ed24-topbar__inner{justify-content:space-between}
+    .ed24-topbar .ed24-topbar__item--side{display:inline-flex}
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  &quot;name&quot;: &quot;ED24 Topbar&quot;,
+  &quot;tag&quot;: &quot;section&quot;,
+  &quot;class&quot;: &quot;ed24-section&quot;,
+  &quot;settings&quot;: [
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;left&quot;, &quot;label&quot;: &quot;Text links&quot;, &quot;default&quot;: &quot;Laden in Rostock · Doberaner Str. 110–112&quot; },
+    { &quot;type&quot;: &quot;url&quot;, &quot;id&quot;: &quot;left_link&quot;, &quot;label&quot;: &quot;Link links&quot;, &quot;info&quot;: &quot;Zum Beispiel eine Seite „Laden &amp; Team“.&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;center&quot;, &quot;label&quot;: &quot;Text Mitte&quot;, &quot;default&quot;: &quot;Überraschung ab 100 € Einkaufswert&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;right&quot;, &quot;label&quot;: &quot;Text rechts&quot;, &quot;default&quot;: &quot;Beratung: 0381 – 203 38 71&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;phone&quot;, &quot;label&quot;: &quot;Telefonnummer (für den Link rechts)&quot;, &quot;default&quot;: &quot;0381 – 203 38 71&quot; },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;accent&quot;, &quot;label&quot;: &quot;Farbe&quot;, &quot;default&quot;: &quot;#e30613&quot; },
+    { &quot;type&quot;: &quot;checkbox&quot;, &quot;id&quot;: &quot;brand_fonts&quot;, &quot;label&quot;: &quot;Markenschrift für Überschriften im ganzen Shop&quot;, &quot;info&quot;: &quot;Große Überschriften werden kursiv, fett und in Großbuchstaben gesetzt (Barlow Condensed).&quot;, &quot;default&quot;: true }
+  ],
+  &quot;presets&quot;: [{ &quot;name&quot;: &quot;ED24 Topbar&quot; }]
+}
+{% endschema %}
+</code></pre>
+        </details>
+      </article>
+      <article class="file" id="f-ed24-hero">
+        <div class="file__head">
+          <div class="file__meta">
+            <span class="file__no">2/9</span>
+            <h3 class="file__name">ed24-hero</h3>
+            <p class="file__desc">Schriftzug, Farbverlauf und 3D-Dosen. Steuert auch Showcase und Story. Im Editor heißt der Abschnitt „ED24 Hero 3D“.</p>
+          </div>
+          <div class="file__acts">
+            <button class="btn btn--primary" type="button" data-copy="code-ed24-hero">Code kopieren</button>
+            <label class="done"><input type="checkbox" id="done-ed24-hero" data-done> Eingefügt</label>
+          </div>
+        </div>
+        <details class="file__code">
+          <summary>Code ansehen (562 Zeilen)</summary>
+          <pre><code id="code-ed24-hero">{%- comment -%}
+  ED24 Hero 3D – Eiweissdealer24
+  Riesiger Schriftzug, fließender Farbverlauf (WebGL) und schwebende 3D-Dosen.
+  Dieser Abschnitt steuert auch die 3D-Effekte von „ED24 Produkt-Showcase“ und „ED24 Story“.
+  Reihenfolge auf der Startseite: Hero → Showcase → Story → Coaching-Panel.
+{%- endcomment -%}
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap&quot;&gt;
+
+&lt;div
+  class=&quot;ed24-hero&quot;
+  data-ed24-hero
+  data-color=&quot;{{ section.settings.accent }}&quot;
+  data-dark=&quot;{{ section.settings.dark }}&quot;
+  style=&quot;--ed24-accent: {{ section.settings.accent }}; --ed24-dark: {{ section.settings.dark }};&quot;
+&gt;
+  {%- if section.settings.show_3d -%}
+    &lt;ed24-stage class=&quot;ed24-stage&quot; aria-hidden=&quot;true&quot;&gt;
+      &lt;canvas class=&quot;ed24-stage__bg&quot; data-bg&gt;&lt;/canvas&gt;
+      &lt;canvas class=&quot;ed24-stage__fx&quot; data-fx&gt;&lt;/canvas&gt;
+    &lt;/ed24-stage&gt;
+  {%- endif -%}
+
+  &lt;h1 class=&quot;ed24-hero__inner&quot;&gt;
+    &lt;span class=&quot;ed24-hero__word&quot;&gt;{{ section.settings.line_1 }}&lt;/span&gt;
+    &lt;span class=&quot;ed24-hero__word&quot;&gt;{{ section.settings.line_2 }}&lt;/span&gt;
+  &lt;/h1&gt;
+
+  &lt;div class=&quot;ed24-hero__meta&quot;&gt;
+    &lt;p class=&quot;ed24-hero__metatext&quot;&gt;{{ section.settings.meta_left | escape }}&lt;/p&gt;
+    &lt;p class=&quot;ed24-hero__metatext ed24-hero__metatext--end&quot;&gt;{{ section.settings.meta_right | escape }}&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;a class=&quot;ed24-ring&quot; href=&quot;#ed24-showcase&quot; aria-label=&quot;{{ section.settings.scroll_label | escape }}&quot;&gt;
+    &lt;svg class=&quot;ed24-ring__text&quot; viewBox=&quot;0 0 100 100&quot; aria-hidden=&quot;true&quot;&gt;
+      &lt;defs&gt;&lt;path id=&quot;ed24-circ-{{ section.id }}&quot; d=&quot;M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0&quot;/&gt;&lt;/defs&gt;
+      &lt;text&gt;&lt;textPath href=&quot;#ed24-circ-{{ section.id }}&quot;&gt;{{ section.settings.scroll_text | escape }}&lt;/textPath&gt;&lt;/text&gt;
+    &lt;/svg&gt;
+    &lt;span class=&quot;ed24-ring__arrow&quot; aria-hidden=&quot;true&quot;&gt;
+      &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.4&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 4v16m-6-6 6 6 6-6&quot;/&gt;&lt;/svg&gt;
+    &lt;/span&gt;
+  &lt;/a&gt;
+&lt;/div&gt;
+
+{% stylesheet %}
+  .ed24-hero{position:relative;min-height:max(560px,92svh);display:flex;align-items:center;justify-content:center;overflow:clip;color:#fff;text-align:center;padding:48px 16px 150px;background:linear-gradient(180deg,var(--ed24-accent,#e30613) 0%,var(--ed24-dark,#120405) 88%)}
+  .ed24-stage{display:contents}
+  .ed24-stage__bg,.ed24-stage__fx{position:fixed;left:0;top:0;width:100vw;height:100vh;margin:0;display:block;pointer-events:none;visibility:hidden}
+  .ed24-stage__bg{z-index:0}
+  .ed24-stage__fx{z-index:2}
+  .ed24-hero__inner{position:relative;z-index:1;margin:0;display:flex;flex-direction:column;align-items:center;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(84px,18.5vw,330px);line-height:.8;letter-spacing:-.005em;color:#fff;will-change:transform,opacity}
+  .ed24-hero .ed24-hero__inner{font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;line-height:.8;color:#fff}
+  .ed24-hero__word{display:block;white-space:nowrap}
+  .ed24-hero__word strong,.ed24-hero__word b{color:transparent;-webkit-text-stroke:.03em #fff;font-weight:800}
+  .ed24-hero__word em{font-style:italic}
+  .ed24-hero__meta{position:absolute;z-index:1;left:0;right:0;bottom:0;padding:0 clamp(16px,3vw,36px) 26px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;text-align:start}
+  .ed24-hero__metatext{max-width:220px;margin:0;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:13px;font-weight:600;line-height:1.4;letter-spacing:.06em;text-transform:uppercase;color:#fff}
+  .ed24-hero__metatext--end{text-align:end}
+  .ed24-ring{position:absolute;z-index:1;left:50%;bottom:22px;width:96px;height:96px;margin-left:-48px;color:#fff;text-decoration:none}
+  .ed24-ring__text{display:block;width:100%;height:100%}
+  .ed24-ring text{font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-size:11.5px;letter-spacing:3.2px;fill:currentColor;text-transform:uppercase}
+  .ed24-ring__arrow{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+  .ed24-ring__arrow svg{width:22px;height:22px}
+  @media (prefers-reduced-motion:no-preference){
+    .ed24-hero__word{animation:ed24-rise 1s cubic-bezier(.2,.8,.2,1) both}
+    .ed24-hero__word+.ed24-hero__word{animation-delay:.08s}
+    .ed24-ring__text{animation:ed24-spin 12s linear infinite}
+    .ed24-ring__arrow svg{animation:ed24-bob 1.6s ease-in-out infinite}
+    @supports (animation-timeline:view()){
+      .ed24-hero__inner{animation:ed24-out linear both;animation-timeline:view();animation-range:exit 0% exit 100%}
+    }
+  }
+  @keyframes ed24-rise{from{opacity:0;transform:translateY(40%)}}
+  @keyframes ed24-out{to{opacity:0;transform:translateY(35%) scale(.92)}}
+  @keyframes ed24-spin{to{transform:rotate(360deg)}}
+  @keyframes ed24-bob{50%{transform:translateY(5px)}}
+  @media (max-width:749px){.ed24-hero__metatext{display:none}}
+{% endstylesheet %}
+
+{% javascript %}
+  // 3D-Bühne für die ED24-Startseite: Farbverlauf + 3D-Objekte, gesteuert über die Scroll-Position.
+  // Die Bühne wird nur im Bereich der ED24-Abschnitte gezeichnet und nie über Kopfzeile oder andere Abschnitte gelegt.
+  var THREE_URL = &#x27;https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js&#x27;;
+  var SKY = &#x27;M0 20V14h8v-4h6v4h6V8l3-6 3 6v6h8v-3h8v3h6V6h2V3h2v3h2v8h8V9h8v5h6v-4l4-10 4 10v4h8v-2h8V7h4v7h8v-3h8v9z&#x27;;
+  var clamp = function (v, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return Math.min(b, Math.max(a, v)); };
+  var lerp = function (a, b, t) { return a + (b - a) * t; };
+  var easeIO = function (t) { return t &lt; 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+  var easeOut = function (t) { return 1 - Math.pow(1 - t, 3); };
+  var easeIn = function (t) { return t * t * t; };
+  var easeBack = function (t) { return 1 + 2.70158 * Math.pow(t - 1, 3) + 1.70158 * Math.pow(t - 1, 2); };
+  var threePromise = null;
+  function loadThree() {
+    if (window.THREE) return Promise.resolve();
+    if (!threePromise) {
+      threePromise = new Promise(function (res, rej) {
+        var s = document.createElement(&#x27;script&#x27;);
+        s.src = THREE_URL;
+        s.async = true;
+        s.onload = res;
+        s.onerror = function () { threePromise = null; rej(new Error(&#x27;three&#x27;)); };
+        document.head.appendChild(s);
+      });
+    }
+    return threePromise;
+  }
+  function hex2v(T, h) {
+    var n = parseInt(String(h || &#x27;&#x27;).replace(&#x27;#&#x27;, &#x27;&#x27;).slice(0, 6), 16);
+    if (isNaN(n)) n = 0xe30613;
+    return new T.Vector3(((n &gt;&gt; 16) &amp; 255) / 255, ((n &gt;&gt; 8) &amp; 255) / 255, (n &amp; 255) / 255);
+  }
+  var HERO = {
+    d: { tubA: [0.52, -0.3, 0.86, 0.22, -0.45, -0.16], tubB: [-0.56, 0.4, 0.74, 0.32, 0.6, 0.42], tubC: [0.73, 0.5, 0.6, -0.2, -0.3, -0.55], dumb: [-0.6, -0.56, 0.74, 0.5, 0.3, 0.28], scoop: [0.08, 0.62, 0.62, 0.7, 0.8, -0.35] },
+    m: { tubA: [0.42, -0.68, 0.85, 0.22, -0.45, -0.16], tubB: [-0.55, 0.62, 0.7, 0.32, 0.6, 0.42], tubC: [0.64, 0.6, 0.56, -0.2, -0.3, -0.55], dumb: [-0.5, -0.8, 0.66, 0.5, 0.3, 0.28], scoop: [-0.62, 0.3, 0.5, 0.7, 0.8, -0.35] }
+  };
+  var SHOW = { d: { tub: [0.16, -0.06, 1.12], comp: [-0.14, -0.5, 0.82] }, m: { tub: [0, -0.04, 1.45], comp: [0.5, -0.34, 0.8] } };
+  var EXIT = { tubB: [-1.5, 1.5], tubC: [1.5, 1.5], scoop: [0.3, 1.7] };
+  var FLOAT = [[&#x27;f1&#x27;, 0.08, 0.7, 1.3, 0.8, 0.7], [&#x27;f2&#x27;, 0.2, -0.72, 0.85, 0.8, 0.6], [&#x27;f3&#x27;, 0.42, 0.74, 1.15, 0.75, 0.55], [&#x27;f4&#x27;, 0.55, -0.6, 1.4, 0.7, 0.5], [&#x27;f5&#x27;, 0.75, 0.62, 0.9, 0.7, 0.6], [&#x27;f6&#x27;, 0.9, -0.66, 1.25, 0.75, 0.55]];
+  var QUALITY = [{ fx: 1.5, bg: 0.4 }, { fx: 1.25, bg: 0.33 }, { fx: 1, bg: 0.28 }, { fx: 0.8, bg: 0.22 }];
+  var FRAG = [
+    &#x27;precision mediump float; varying vec2 vUv;&#x27;,
+    &#x27;uniform float uTime,uWipe,uSplit; uniform vec2 uRes; uniform vec3 uPrev,uNext,uLight;&#x27;,
+    &#x27;float h(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }&#x27;,
+    &#x27;float n(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f); return mix(mix(h(i),h(i+vec2(1,0)),f.x), mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x), f.y); }&#x27;,
+    &#x27;float fbm(vec2 p){ float v=0., a=.5; for(int i=0;i&lt;3;i++){ v+=a*n(p); p=p*2.03+vec2(1.7,9.2); a*=.5; } return v; }&#x27;,
+    &#x27;void main(){ vec2 uv=vUv; float asp=uRes.x/uRes.y; vec2 p=vec2(uv.x*asp,uv.y); float t=uTime*.07;&#x27;,
+    &#x27;float q=fbm(p*1.1+vec2(t,-t*.7)); float r=fbm(p*2.2+vec2(-t*.6,t*.4)+q*1.6);&#x27;,
+    &#x27;float wave=uv.y + .16*sin(p.x*1.9+uTime*.22+q*3.2) + .24*(r-.5);&#x27;,
+    &#x27;float edge=uv.y + .07*sin(p.x*4.+uTime*.9) + .08*(q-.5);&#x27;,
+    &#x27;float w=1.-smoothstep(uWipe-.07,uWipe+.07,edge);&#x27;,
+    &#x27;vec3 col=mix(uPrev,uNext,w); float k=smoothstep(uSplit-.3,uSplit+.3,wave);&#x27;,
+    &#x27;vec3 c=mix(uLight,col,k); float band=exp(-pow((wave-uSplit-.02)*7.,2.));&#x27;,
+    &#x27;c=mix(c, mix(c,vec3(1.),.35), band*.45*k); gl_FragColor=vec4(c,1.); }&#x27;
+  ].join(&#x27;\n&#x27;);
+
+  class Ed24Stage extends HTMLElement {
+    connectedCallback() {
+      var self = this;
+      this.ctrl = new AbortController();
+      this.bgC = this.querySelector(&#x27;[data-bg]&#x27;);
+      this.fxC = this.querySelector(&#x27;[data-fx]&#x27;);
+      var rebuild = function () {
+        clearTimeout(self.rbT);
+        self.rbT = setTimeout(function () {
+          if (!self.isConnected || !self.ready) return;
+          self.teardown();
+          self.setup();
+        }, 200);
+      };
+      [&#x27;shopify:section:load&#x27;, &#x27;shopify:section:unload&#x27;, &#x27;shopify:section:reorder&#x27;].forEach(function (e) {
+        document.addEventListener(e, rebuild, { signal: self.ctrl.signal });
+      });
+      loadThree()
+        .then(function () { return document.fonts &amp;&amp; document.fonts.ready ? document.fonts.ready : null; })
+        .then(function () { self.setup(); })
+        .catch(function () { self.fail(); });
+    }
+
+    disconnectedCallback() {
+      if (this.ctrl) this.ctrl.abort();
+      clearTimeout(this.rbT);
+      this.teardown();
+      if (this.portaled) {
+        if (this.bgC) this.bgC.remove();
+        if (this.fxC) this.fxC.remove();
+      }
+    }
+
+    fail() {
+      document.documentElement.classList.add(&#x27;ed24-nogl&#x27;);
+      this.hidden = true;
+    }
+
+    teardown() {
+      cancelAnimationFrame(this.raf);
+      this.raf = 0;
+      this.ready = false;
+      if (this.loopCtrl) this.loopCtrl.abort();
+      if (this.ro) this.ro.disconnect();
+      var disposeScene = function (scene) {
+        if (!scene) return;
+        scene.traverse(function (o) {
+          if (o.geometry) o.geometry.dispose();
+          if (o.material) {
+            (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) {
+              if (m.map) m.map.dispose();
+              m.dispose();
+            });
+          }
+        });
+      };
+      disposeScene(this.scene);
+      disposeScene(this.bgScene);
+      if (this.envTex) this.envTex.dispose();
+      if (this.R) this.R.dispose();
+      if (this.BR) this.BR.dispose();
+      this.R = this.BR = this.scene = this.bgScene = this.envTex = null;
+      [this.bgC, this.fxC].forEach(function (c) { if (c) c.style.visibility = &#x27;hidden&#x27;; });
+    }
+
+    setup() {
+      if (!this.isConnected || !window.THREE) return;
+      var T = window.THREE, self = this;
+      this.loopCtrl = new AbortController();
+      var opts = { signal: this.loopCtrl.signal, passive: true };
+      this.hero = this.closest(&#x27;[data-ed24-hero]&#x27;);
+      this.show = document.querySelector(&#x27;[data-ed24-showcase]&#x27;);
+      this.story = document.querySelector(&#x27;[data-ed24-story]&#x27;);
+      this.coach = document.querySelector(&#x27;[data-ed24-coach]&#x27;);
+      var hs = document.querySelectorAll(&#x27;.shopify-section-group-header-group&#x27;);
+      if (!hs.length) hs = document.querySelectorAll(&#x27;body &gt; header, .header-wrapper, sticky-header, header-component&#x27;);
+      this.headers = Array.prototype.slice.call(hs);
+      var brand = (this.hero &amp;&amp; this.hero.dataset.color) || &#x27;#e30613&#x27;;
+      var dark = (this.hero &amp;&amp; this.hero.dataset.dark) || &#x27;#120405&#x27;;
+      this.ch = this.show ? Array.prototype.slice.call(this.show.querySelectorAll(&#x27;[data-ed24-chapter]&#x27;)).map(function (el) {
+        return { col: el.dataset.color || brand, l1: (el.dataset.label1 || &#x27;&#x27;).toUpperCase(), l2: (el.dataset.label2 || &#x27;&#x27;).toUpperCase(), body: el.dataset.body === &#x27;light&#x27; ? &#x27;#f1f1f1&#x27; : &#x27;#121212&#x27; };
+      }) : [];
+      if (!this.ch.length) this.ch = [{ col: brand, l1: &#x27;PROTEIN&#x27;, l2: &#x27;&#x27;, body: &#x27;#121212&#x27; }];
+      try {
+        if (T.ColorManagement) T.ColorManagement.legacyMode = false;
+        this.R = new T.WebGLRenderer({ canvas: this.fxC, antialias: window.devicePixelRatio &lt; 1.5 &amp;&amp; window.innerWidth &gt;= 750, alpha: true, powerPreference: &#x27;high-performance&#x27; });
+        this.R.outputEncoding = T.sRGBEncoding;
+        this.R.toneMapping = T.ACESFilmicToneMapping;
+        this.R.toneMappingExposure = 1.05;
+        this.BR = new T.WebGLRenderer({ canvas: this.bgC, powerPreference: &#x27;high-performance&#x27; });
+      } catch (e) {
+        this.fail();
+        return;
+      }
+      this.COL = this.ch.map(function (c) { return hex2v(T, c.col); });
+      this.C_RED = hex2v(T, brand);
+      this.C_DARK = hex2v(T, dark);
+      this.C_PAPER = hex2v(T, &#x27;#efece6&#x27;);
+      this.bgScene = new T.Scene();
+      this.bgCam = new T.Camera();
+      this.bgMat = new T.ShaderMaterial({
+        uniforms: { uTime: { value: 0 }, uRes: { value: new T.Vector2(1, 1) }, uPrev: { value: this.C_RED.clone() }, uNext: { value: this.C_RED.clone() }, uLight: { value: this.C_DARK.clone() }, uWipe: { value: -1 }, uSplit: { value: 0.4 } },
+        vertexShader: &#x27;varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.,1.); }&#x27;,
+        fragmentShader: FRAG
+      });
+      this.bgScene.add(new T.Mesh(new T.PlaneGeometry(2, 2), this.bgMat));
+      this.scene = new T.Scene();
+      this.cam = new T.PerspectiveCamera(35, 1, 0.1, 100);
+      this.cam.position.set(0, 0, 10);
+      this.scene.add(new T.HemisphereLight(0xffffff, 0x3a3a3a, 0.9));
+      var key = new T.DirectionalLight(0xffffff, 2.4); key.position.set(4, 6, 8); this.scene.add(key);
+      this.rim = new T.DirectionalLight(0xe30613, 3.2); this.rim.position.set(-6, 3, -5); this.scene.add(this.rim);
+      var fill = new T.DirectionalLight(0xffffff, 0.6); fill.position.set(-5, -2, 6); this.scene.add(fill);
+      var pm = new T.PMREMGenerator(this.R);
+      var es = new T.Scene();
+      es.background = new T.Color(0x2a2a2a);
+      [[0xffffff, 0, 6, 5, 9, 3], [0xffffff, -7, 1, 2, 3, 7], [0xff3b30, 7, 1, -2, 3, 7], [0x888888, 0, -6, 0, 12, 12]].forEach(function (a) {
+        var m = new T.Mesh(new T.PlaneGeometry(a[4], a[5]), new T.MeshBasicMaterial({ color: a[0], side: T.DoubleSide }));
+        m.position.set(a[1], a[2], a[3]);
+        m.lookAt(0, 0, 0);
+        es.add(m);
+      });
+      this.envTex = pm.fromScene(es, 0.04).texture;
+      this.scene.environment = this.envTex;
+      pm.dispose();
+      this.labels = this.ch.map(function (c) { return self.makeLabel(T, c); });
+      this.buildObjects(T);
+      this.V = { halfW: 5, halfH: 3, sf: 1 };
+      this.QL = window.innerWidth &lt; 750 || (navigator.hardwareConcurrency || 8) &lt;= 4 ? 1 : 0;
+      this.mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+      window.addEventListener(&#x27;pointermove&#x27;, function (e) { self.mouse.tx = (e.clientX / window.innerWidth) * 2 - 1; self.mouse.ty = (e.clientY / window.innerHeight) * 2 - 1; }, opts);
+      window.addEventListener(&#x27;resize&#x27;, function () { clearTimeout(self.rt); self.rt = setTimeout(function () { if (self.ready) self.resize(); }, 120); }, opts);
+      window.addEventListener(&#x27;load&#x27;, function () { if (self.ready) self.measure(); }, opts);
+      this.ro = new ResizeObserver(function () { if (self.ready) self.measure(); });
+      this.ro.observe(document.body);
+      this.ready = true;
+      this.resize();
+      // Falls das Theme feste Positionierung verhindert (z. B. durch transform), die Leinwände direkt an &lt;body&gt; hängen.
+      var r0 = this.bgC.getBoundingClientRect();
+      if (Math.abs(r0.top) &gt; 1 || Math.abs(r0.left) &gt; 1) {
+        document.body.appendChild(this.bgC);
+        document.body.appendChild(this.fxC);
+        this.portaled = true;
+      }
+      this.readyAt = performance.now();
+      this.ema = 16;
+      this.qT = performance.now() + 1500;
+      this.last = performance.now();
+      this.lastVis = 1;
+      this.clipKey = &#x27;&#x27;;
+      var loop = function (now) { self.raf = requestAnimationFrame(loop); self.frame(now); };
+      this.raf = requestAnimationFrame(loop);
+    }
+
+    makeLabel(T, c) {
+      var W = 1536, H = 540, cv = document.createElement(&#x27;canvas&#x27;);
+      cv.width = W; cv.height = H;
+      var x = cv.getContext(&#x27;2d&#x27;), dark = c.body === &#x27;#121212&#x27;, fg = dark ? &#x27;#fff&#x27; : &#x27;#121212&#x27;, cx = W / 2, i;
+      x.fillStyle = c.body; x.fillRect(0, 0, W, H);
+      x.fillStyle = c.col; x.fillRect(0, 150, W, 280);
+      x.save(); x.globalAlpha = 0.09; x.fillStyle = &#x27;#fff&#x27;;
+      for (i = -300; i &lt; W; i += 54) { x.beginPath(); x.moveTo(i, 150); x.lineTo(i + 22, 150); x.lineTo(i + 122, 430); x.lineTo(i + 100, 430); x.fill(); }
+      x.restore();
+      x.save(); x.translate(cx - 120, 42); x.scale(2, 2); x.fillStyle = fg; x.fill(new Path2D(SKY)); x.restore();
+      x.textAlign = &#x27;center&#x27;; x.fillStyle = fg;
+      x.font = &#x27;italic 800 46px &quot;Barlow Condensed&quot;, sans-serif&#x27;; x.fillText(&#x27;EIWEISSDEALER24&#x27;, cx, 132);
+      var fit = function (txt, size, maxW) {
+        x.font = &#x27;italic 800 &#x27; + size + &#x27;px &quot;Barlow Condensed&quot;, sans-serif&#x27;;
+        var w = x.measureText(txt).width;
+        if (w &gt; maxW) x.font = &#x27;italic 800 &#x27; + (size * maxW) / w + &#x27;px &quot;Barlow Condensed&quot;, sans-serif&#x27;;
+      };
+      x.fillStyle = &#x27;#fff&#x27;;
+      fit(c.l1, 160, 500); x.fillText(c.l1, cx, 318);
+      fit(c.l2, 74, 420); x.fillText(c.l2, cx, 400);
+      x.fillStyle = dark ? &#x27;#bdbdbd&#x27; : &#x27;#555&#x27;; x.font = &#x27;600 24px Barlow, sans-serif&#x27;; x.fillText(&#x27;EIGENMARKE  ·  ROSTOCK  ·  SEIT 2007&#x27;, cx, 482);
+      x.font = &#x27;italic 800 230px &quot;Barlow Condensed&quot;, sans-serif&#x27;; x.fillStyle = &#x27;#ffffff22&#x27;;
+      x.fillText(&#x27;24&#x27;, 120, 400); x.fillText(&#x27;24&#x27;, W - 120, 400);
+      var tx = new T.CanvasTexture(cv);
+      tx.encoding = T.sRGBEncoding;
+      tx.anisotropy = this.R.capabilities.getMaxAnisotropy();
+      return tx;
+    }
+
+    buildObjects(T) {
+      var self = this;
+      var mat = function (c, r, m, extra) { return new T.MeshStandardMaterial(Object.assign({ color: c, roughness: r === undefined ? 0.5 : r, metalness: m || 0 }, extra || {})); };
+      var tub = function (i) {
+        i = i % self.ch.length;
+        var g = new T.Group();
+        var side = new T.MeshStandardMaterial({ map: self.labels[i], roughness: 0.38, envMapIntensity: 0.7 });
+        var cap = mat(self.ch[i].body, 0.5);
+        g.add(new T.Mesh(new T.CylinderGeometry(1, 1, 2.2, 56, 1, false, Math.PI, Math.PI * 2), [side, cap, cap]));
+        var lid = new T.Mesh(new T.CylinderGeometry(1.05, 1.05, 0.46, 48), mat(&#x27;#151515&#x27;, 0.55, 0.1)); lid.position.y = 1.33; g.add(lid);
+        var ring = new T.Mesh(new T.TorusGeometry(1.05, 0.035, 8, 48), mat(&#x27;#0a0a0a&#x27;, 0.6)); ring.rotation.x = Math.PI / 2; ring.position.y = 1.16; g.add(ring);
+        g.userData = { side: side, cap: cap, i: i };
+        return g;
+      };
+      var dumbbell = function () {
+        var g = new T.Group(), metal = mat(&#x27;#c9c9c9&#x27;, 0.22, 1), rub = mat(&#x27;#161616&#x27;, 0.75), red = mat(&#x27;#e30613&#x27;, 0.45);
+        var h = new T.Mesh(new T.CylinderGeometry(0.11, 0.11, 2.9, 24), metal); h.rotation.z = Math.PI / 2; g.add(h);
+        [-1, 1].forEach(function (s) {
+          [[0.82, 0.22, 0.98], [0.64, 0.2, 1.2]].forEach(function (a) { var p = new T.Mesh(new T.CylinderGeometry(a[0], a[0], a[1], 48), rub); p.rotation.z = Math.PI / 2; p.position.x = s * a[2]; g.add(p); });
+          var band = new T.Mesh(new T.CylinderGeometry(0.83, 0.83, 0.05, 48), red); band.rotation.z = Math.PI / 2; band.position.x = s * 0.86; g.add(band);
+          var col = new T.Mesh(new T.CylinderGeometry(0.19, 0.19, 0.14, 24), metal); col.rotation.z = Math.PI / 2; col.position.x = s * 0.8; g.add(col);
+        });
+        return g;
+      };
+      var kettlebell = function () {
+        var w = new T.Group(), g = new T.Group(), blk = mat(&#x27;#171717&#x27;, 0.55, 0.25), red = mat(&#x27;#e30613&#x27;, 0.45);
+        var b = new T.Mesh(new T.SphereGeometry(0.92, 40, 28), blk); b.scale.y = 0.93; g.add(b);
+        var h = new T.Mesh(new T.TorusGeometry(0.56, 0.14, 16, 40, Math.PI), blk); h.position.y = 0.72; g.add(h);
+        [-1, 1].forEach(function (s) { var l = new T.Mesh(new T.CylinderGeometry(0.14, 0.14, 0.3, 16), blk); l.position.set(s * 0.56, 0.66, 0); g.add(l); });
+        var st = new T.Mesh(new T.TorusGeometry(0.9, 0.045, 10, 56), red); st.rotation.x = Math.PI / 2; st.position.y = 0.12; g.add(st);
+        g.position.y = -0.1; w.add(g);
+        return w;
+      };
+      var shaker = function (liq) {
+        var g = new T.Group();
+        g.add(new T.Mesh(new T.CylinderGeometry(0.56, 0.48, 1.8, 40, 1, true), mat(&#x27;#e9edf2&#x27;, 0.15, 0, { transparent: true, opacity: 0.42, side: T.DoubleSide })));
+        var l = new T.Mesh(new T.CylinderGeometry(0.51, 0.46, 1.05, 40), mat(liq, 0.3, 0, { emissive: liq, emissiveIntensity: 0.12 })); l.position.y = -0.35; g.add(l);
+        var cap = new T.Mesh(new T.CylinderGeometry(0.6, 0.6, 0.44, 40), mat(&#x27;#e30613&#x27;, 0.4)); cap.position.y = 1.1; g.add(cap);
+        var sp = new T.Mesh(new T.CylinderGeometry(0.13, 0.18, 0.28, 20), mat(&#x27;#e30613&#x27;, 0.4)); sp.position.y = 1.45; g.add(sp);
+        return g;
+      };
+      var scoop = function (powder) {
+        var g = new T.Group(), w = mat(&#x27;#f6f6f6&#x27;, 0.35);
+        g.add(new T.Mesh(new T.CylinderGeometry(0.5, 0.42, 0.6, 40, 1, true), mat(&#x27;#f6f6f6&#x27;, 0.35, 0, { side: T.DoubleSide })));
+        var bt = new T.Mesh(new T.CircleGeometry(0.42, 40), w); bt.rotation.x = Math.PI / 2; bt.position.y = -0.3; g.add(bt);
+        var hd = new T.Mesh(new T.BoxGeometry(1.5, 0.09, 0.24), w); hd.position.set(1.15, 0.22, 0); hd.rotation.z = 0.22; g.add(hd);
+        if (powder) { var p = new T.Mesh(new T.SphereGeometry(0.5, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), mat(powder, 1)); p.scale.y = 0.55; p.position.y = 0.26; g.add(p); }
+        return g;
+      };
+      var O = (this.O = {});
+      var add = function (k, g) { O[k] = { g: g }; self.scene.add(g); return O[k]; };
+      add(&#x27;tubA&#x27;, tub(0)); add(&#x27;tubB&#x27;, tub(1)); add(&#x27;tubC&#x27;, tub(2)); add(&#x27;scoop&#x27;, scoop());
+      var kinds = [
+        function () { return add(&#x27;dumb&#x27;, dumbbell()); },
+        function () { return add(&#x27;c1&#x27;, kettlebell()); },
+        function () { return add(&#x27;c2&#x27;, shaker(self.ch[2 % self.ch.length].col)); },
+        function () { return add(&#x27;c3&#x27;, scoop(&#x27;#f4efe3&#x27;)); }
+      ];
+      O.comps = this.ch.map(function (c, j) { return j &lt; 4 ? kinds[j]() : add(&#x27;cx&#x27; + j, j % 2 ? kettlebell() : dumbbell()); });
+      add(&#x27;f1&#x27;, tub(3)); add(&#x27;f2&#x27;, kettlebell()); add(&#x27;f3&#x27;, shaker(&#x27;#e30613&#x27;)); add(&#x27;f4&#x27;, tub(1)); add(&#x27;f5&#x27;, scoop(&#x27;#f4efe3&#x27;)); add(&#x27;f6&#x27;, dumbbell());
+    }
+
+    setLabel(g, i) {
+      if (g.userData.i === i) return;
+      g.userData.i = i;
+      g.userData.side.map = this.labels[i];
+      g.userData.side.needsUpdate = true;
+      g.userData.cap.color.set(this.ch[i].body);
+    }
+
+    measure() {
+      var top = function (el) { return el ? el.getBoundingClientRect().top + window.scrollY : 0; };
+      var M = (this.M = this.M || {});
+      M.vh = window.innerHeight; M.mob = window.innerWidth &lt; 750;
+      M.heroTop = top(this.hero); M.heroH = this.hero ? this.hero.offsetHeight : M.vh;
+      M.showTop = this.show ? top(this.show) : M.heroTop + M.heroH;
+      M.showH = this.show ? this.show.offsetHeight : 0;
+      M.showEnd = M.showTop + Math.max(1, M.showH - M.vh);
+      M.storyTop = this.story ? top(this.story) : M.showTop + M.showH;
+      M.storyH = this.story ? this.story.offsetHeight : 0;
+      M.coachTop = this.coach ? top(this.coach) : M.storyTop + M.storyH;
+      M.regionEnd = this.coach ? M.coachTop + M.vh * 0.25 : (this.story ? M.storyTop + M.storyH : (this.show ? M.showTop + M.showH : M.heroTop + M.heroH));
+    }
+
+    applyQuality() {
+      var q = QUALITY[this.QL];
+      this.R.setPixelRatio(Math.min(window.devicePixelRatio || 1, q.fx));
+      this.BR.setPixelRatio(q.bg);
+      this.R.setSize(window.innerWidth, window.innerHeight, false);
+      this.BR.setSize(window.innerWidth, window.innerHeight, false);
+    }
+
+    resize() {
+      this.measure();
+      this.applyQuality();
+      this.bgMat.uniforms.uRes.value.set(window.innerWidth, window.innerHeight);
+      this.cam.aspect = window.innerWidth / window.innerHeight;
+      this.cam.updateProjectionMatrix();
+      var V = this.V;
+      V.halfH = Math.tan((this.cam.fov / 2) * (Math.PI / 180)) * this.cam.position.z;
+      V.halfW = V.halfH * this.cam.aspect;
+      V.sf = this.M.mob ? clamp(V.halfW / 4.2, 0.3, 0.55) : clamp(V.halfW / 5.6, 0.55, 1);
+      this.clipKey = &#x27;&#x27;;
+    }
+
+    place(o, x, y, s, rx, ry, rz, z) {
+      var g = o.g, vis = s &gt; 0.001 &amp;&amp; Math.abs(x) &lt; 2.2 &amp;&amp; Math.abs(y) &lt; 2.4;
+      g.visible = vis;
+      if (!vis) return;
+      this.visCount++;
+      g.position.set(x * this.V.halfW, y * this.V.halfH, z || 0);
+      g.scale.setScalar(s * this.V.sf);
+      g.rotation.set(rx, ry, rz);
+    }
+
+    clipRegion() {
+      // Sichtbarer Bereich: von der Oberkante des Hero bis zum Coaching-Panel, nie unter einer fixierten Kopfzeile.
+      var M = this.M, vh = M.vh, sy = window.scrollY;
+      var headerB = 0;
+      for (var i = 0; i &lt; this.headers.length; i++) {
+        var r = this.headers[i].getBoundingClientRect();
+        if (r.bottom &gt; headerB &amp;&amp; r.top &lt; vh * 0.5 &amp;&amp; r.height &lt; vh * 0.5) headerB = r.bottom;
+      }
+      var top = Math.max(0, M.heroTop - sy, headerB);
+      var bottom = Math.min(vh, M.regionEnd - sy);
+      if (bottom - top &lt; 1) return null;
+      return [Math.round(top), Math.round(vh - bottom)];
+    }
+
+    frame(now) {
+      var dt = Math.min(0.05, (now - this.last) / 1000);
+      this.last = now;
+      var M = this.M, vh = M.vh, N = this.ch.length, O = this.O, self = this;
+      var clip = this.clipRegion();
+      var key = clip ? clip[0] + &#x27;,&#x27; + clip[1] : &#x27;none&#x27;;
+      if (key !== this.clipKey) {
+        this.clipKey = key;
+        [this.bgC, this.fxC].forEach(function (c) {
+          c.style.visibility = clip ? &#x27;visible&#x27; : &#x27;hidden&#x27;;
+          if (clip) c.style.clipPath = &#x27;inset(&#x27; + clip[0] + &#x27;px 0 &#x27; + clip[1] + &#x27;px 0)&#x27;;
+        });
+      }
+      this.ema = this.ema * 0.95 + dt * 1000 * 0.05;
+      if (now - this.qT &gt; 1000) { if (this.ema &gt; 22 &amp;&amp; this.QL &lt; QUALITY.length - 1) { this.QL++; this.applyQuality(); } this.qT = now; }
+      if (!clip) return;
+
+      var t = now / 1000, scrollY = window.scrollY, sy = scrollY - M.heroTop;
+      var showTop = M.showTop - M.heroTop, showEnd = M.showEnd - M.heroTop, storyTop = M.storyTop - M.heroTop, coachTop = M.coachTop - M.heroTop;
+      var mo = this.mouse;
+      mo.x += (mo.tx - mo.x) * 0.05; mo.y += (mo.ty - mo.y) * 0.05;
+      var intro = (now - this.readyAt) / 1000;
+      var heroP = clamp(sy / Math.max(1, M.heroH));
+      var sp = clamp((sy - showTop) / Math.max(1, showEnd - showTop));
+      var half = 0.055, prevI = Math.min(N - 1, Math.floor(sp * N)), nextI = prevI, wipe = -1, i;
+      for (i = 1; i &lt; N; i++) { var c = i / N; if (Math.abs(sp - c) &lt; half) { prevI = i - 1; nextI = i; wipe = (sp - (c - half)) / (2 * half); } }
+
+      var U = this.bgMat.uniforms;
+      U.uTime.value = t;
+      if (sy &lt; showTop) {
+        U.uPrev.value.copy(this.C_RED).lerp(this.COL[0], heroP); U.uNext.value.copy(this.COL[0]); U.uWipe.value = -1;
+        U.uLight.value.copy(this.C_DARK).lerp(this.C_PAPER, easeIO(heroP));
+        U.uSplit.value = lerp(0.36, 0.6, easeIO(heroP));
+      } else if (sy &lt; storyTop - vh * 0.2) {
+        U.uPrev.value.copy(this.COL[prevI]); U.uNext.value.copy(this.COL[nextI]);
+        U.uWipe.value = wipe &lt; 0 ? -1 : lerp(-0.15, 1.15, wipe);
+        U.uLight.value.copy(this.C_PAPER); U.uSplit.value = 0.6;
+      } else {
+        var k = easeIO(clamp((sy - (storyTop - vh * 0.2)) / (vh * 0.9)));
+        U.uPrev.value.copy(this.COL[N - 1]).lerp(this.C_RED, k); U.uNext.value.copy(U.uPrev.value); U.uWipe.value = -1;
+        U.uLight.value.copy(this.C_PAPER);
+        U.uSplit.value = lerp(0.6, 0.93, k) + clamp((sy - coachTop) / vh) * 0.5;
+      }
+      this.BR.render(this.bgScene, this.bgCam);
+      this.rim.color.setRGB(U.uNext.value.x, U.uNext.value.y, U.uNext.value.z).convertSRGBToLinear();
+
+      this.visCount = 0;
+      var L = M.mob ? &#x27;m&#x27; : &#x27;d&#x27;, H0 = HERO[L], S0 = SHOW[L];
+      var pop = function (d) { return easeBack(clamp((intro - d) / 0.9)); };
+      var bob = function (ph) { return Math.sin(t * 0.9 + ph) * 0.018; };
+      var mx = mo.x * 0.03, my = -mo.y * 0.03, hp = easeIO(heroP);
+      (function () {
+        var a = H0.tubA, s = S0.tub;
+        var x = lerp(a[0], s[0], hp), y = lerp(a[1], s[1], hp);
+        var sc = lerp(a[2], s[2], hp) * pop(0.15);
+        var ry = lerp(a[4] + t * 0.35, Math.sin(t * 0.5) * 0.35, hp);
+        if (wipe &gt;= 0) ry += easeIO(wipe) * Math.PI * 2;
+        self.setLabel(O.tubA.g, wipe &gt;= 0 ? (wipe &lt; 0.5 ? prevI : nextI) : sy &lt; showTop ? 0 : prevI);
+        if (sy &gt; showEnd) y += (sy - showEnd) / (vh / 2);
+        self.place(O.tubA, x + mx, y + bob(0) + my, sc, lerp(a[3], 0.1, hp), ry, lerp(a[5], 0, hp));
+      })();
+      [[&#x27;tubB&#x27;, 0.3], [&#x27;tubC&#x27;, 0.45], [&#x27;scoop&#x27;, 0.6]].forEach(function (e2, j) {
+        var k2 = e2[0], a = H0[k2], ex = EXIT[k2], q = easeIn(heroP);
+        self.place(O[k2], lerp(a[0], ex[0], q) + mx * (1 + j * 0.5), lerp(a[1], ex[1], q) + bob(j + 1) + my, a[2] * pop(e2[1]), a[3] + q * 2, a[4] + t * 0.3 * (j % 2 ? -1 : 1), a[5] + q * 1.5);
+      });
+      O.comps.forEach(function (o, j) {
+        var r = S0.comp, x, y, s = r[2], rx = 0.3, ry = t * 0.4 + j, rz = -0.2;
+        var enter = j === 0 ? 1 : clamp((sp - (j / N - half)) / (2 * half));
+        var exit = j === N - 1 ? 0 : clamp((sp - ((j + 1) / N - half)) / (2 * half));
+        if (j === 0 &amp;&amp; sy &lt; showTop) {
+          var a = H0.dumb; x = lerp(a[0], r[0], hp); y = lerp(a[1], r[1], hp); s = lerp(a[2], r[2], hp) * pop(0.75); rx = lerp(a[3], 0.3, hp); rz = lerp(a[5], -0.2, hp);
+        } else if (sy &lt; showTop || enter &lt;= 0 || exit &gt;= 1) { o.g.visible = false; return; }
+        else {
+          var ee = easeOut(enter), xe = easeIn(exit);
+          x = lerp(1.5, r[0], ee); y = lerp(-1.4, r[1], ee); rz += (1 - ee) * 2;
+          x = lerp(x, -1.6, xe); y = lerp(y, 1.3, xe); rx += xe * 2.5;
+        }
+        if (j === N - 1 &amp;&amp; sy &gt; showEnd) y += (sy - showEnd) / (vh / 2);
+        self.place(o, x + mx * 1.6, y + bob(j + 4) + my, s, rx, ry, rz, 0.8);
+      });
+      FLOAT.forEach(function (f, j) {
+        var o = O[f[0]], anchor = M.storyTop + f[1] * M.storyH;
+        var y = (-(anchor - vh / 2 - scrollY) * f[3]) / (vh / 2);
+        if (!self.story || Math.abs(y) &gt; 2.2) { o.g.visible = false; return; }
+        self.place(o, (M.mob ? f[2] * 1.3 : f[2]) + mx * 1.3, y, f[4] * (M.mob ? 0.7 : 1), 0.4 + scrollY * 0.0009 * f[5], scrollY * 0.0012 * f[5] + j, 0.3 * Math.sin(j) + scrollY * 0.0004 * f[5], -0.5);
+      });
+      if (this.visCount || this.lastVis) this.R.render(this.scene, this.cam);
+      this.lastVis = this.visCount;
+    }
+  }
+  if (!customElements.get(&#x27;ed24-stage&#x27;)) customElements.define(&#x27;ed24-stage&#x27;, Ed24Stage);
+{% endjavascript %}
+
+{% schema %}
+{
+  &quot;name&quot;: &quot;ED24 Hero 3D&quot;,
+  &quot;tag&quot;: &quot;section&quot;,
+  &quot;class&quot;: &quot;ed24-section&quot;,
+  &quot;settings&quot;: [
+    { &quot;type&quot;: &quot;header&quot;, &quot;content&quot;: &quot;Schriftzug&quot; },
+    { &quot;type&quot;: &quot;inline_richtext&quot;, &quot;id&quot;: &quot;line_1&quot;, &quot;label&quot;: &quot;Zeile 1&quot;, &quot;default&quot;: &quot;Eiweiss&quot; },
+    { &quot;type&quot;: &quot;inline_richtext&quot;, &quot;id&quot;: &quot;line_2&quot;, &quot;label&quot;: &quot;Zeile 2&quot;, &quot;info&quot;: &quot;Fett gesetzter Text erscheint als Umriss.&quot;, &quot;default&quot;: &quot;Dealer&lt;strong&gt;24&lt;/strong&gt;&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;meta_left&quot;, &quot;label&quot;: &quot;Text unten links&quot;, &quot;default&quot;: &quot;Supplements, Ernährungs- &amp; Trainingscoaching&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;meta_right&quot;, &quot;label&quot;: &quot;Text unten rechts&quot;, &quot;default&quot;: &quot;Rostock · Doberaner Str. 110–112 · seit 2007&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;scroll_text&quot;, &quot;label&quot;: &quot;Text im Scroll-Kreis&quot;, &quot;default&quot;: &quot;Scroll · Stärker werden · Scroll · Seit 2007 ·&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;scroll_label&quot;, &quot;label&quot;: &quot;Beschriftung Scroll-Kreis (Screenreader)&quot;, &quot;default&quot;: &quot;Weiter zum Produkt-Showcase&quot; },
+    { &quot;type&quot;: &quot;header&quot;, &quot;content&quot;: &quot;Effekte &amp; Farben&quot; },
+    { &quot;type&quot;: &quot;checkbox&quot;, &quot;id&quot;: &quot;show_3d&quot;, &quot;label&quot;: &quot;3D-Effekte und Farbverlauf anzeigen&quot;, &quot;default&quot;: true },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;accent&quot;, &quot;label&quot;: &quot;Markenfarbe&quot;, &quot;default&quot;: &quot;#e30613&quot; },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;dark&quot;, &quot;label&quot;: &quot;Dunkle Farbe&quot;, &quot;default&quot;: &quot;#120405&quot; }
+  ],
+  &quot;presets&quot;: [{ &quot;name&quot;: &quot;ED24 Hero 3D&quot; }]
+}
+{% endschema %}
+</code></pre>
+        </details>
+      </article>
+      <article class="file" id="f-ed24-showcase">
+        <div class="file__head">
+          <div class="file__meta">
+            <span class="file__no">3/9</span>
+            <h3 class="file__name">ed24-showcase</h3>
+            <p class="file__desc">Fixierter Showcase mit 4 Kapiteln und Produkt-Picker. Im Editor heißt der Abschnitt „ED24 Produkt-Showcase“.</p>
+          </div>
+          <div class="file__acts">
+            <button class="btn btn--primary" type="button" data-copy="code-ed24-showcase">Code kopieren</button>
+            <label class="done"><input type="checkbox" id="done-ed24-showcase" data-done> Eingefügt</label>
+          </div>
+        </div>
+        <details class="file__code">
+          <summary>Code ansehen (202 Zeilen)</summary>
+          <pre><code id="code-ed24-showcase">{%- comment -%}
+  ED24 Produkt-Showcase – Eiweissdealer24
+  Fixierter Showcase: pro Kapitel dreht sich die 3D-Dose aus „ED24 Hero 3D“, wechselt Etikett und Hintergrundfarbe.
+  Direkt unter „ED24 Hero 3D“ platzieren. Je Kapitel ein Produkt auswählen, dann erscheinen Preis und Link automatisch.
+{%- endcomment -%}
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap&quot;&gt;
+
+{%- assign chapter_count = section.blocks.size -%}
+&lt;div
+  class=&quot;ed24-show&quot;
+  id=&quot;ed24-showcase&quot;
+  data-ed24-showcase
+  style=&quot;height: {{ chapter_count | plus: 1 | times: 100 }}svh;&quot;
+&gt;
+  &lt;ed24-showcase class=&quot;ed24-show__stage&quot;&gt;
+    {%- for block in section.blocks -%}
+      {%- assign p = block.settings.product -%}
+      &lt;article
+        class=&quot;ed24-chap{% if forloop.first %} is-first{% endif %}&quot;
+        data-ed24-chapter
+        data-block-id=&quot;{{ block.id }}&quot;
+        data-color=&quot;{{ block.settings.color }}&quot;
+        data-label1=&quot;{{ block.settings.label_1 | escape }}&quot;
+        data-label2=&quot;{{ block.settings.label_2 | escape }}&quot;
+        data-body=&quot;{{ block.settings.tub }}&quot;
+        style=&quot;--c: {{ block.settings.color }};&quot;
+        {{ block.shopify_attributes }}
+      &gt;
+        {%- if block.settings.eyebrow != blank -%}&lt;p class=&quot;ed24-chap__eye&quot;&gt;{{ block.settings.eyebrow | escape }}&lt;/p&gt;{%- endif -%}
+        &lt;h2 class=&quot;ed24-chap__t&quot;&gt;{{ block.settings.title_1 | escape }}&lt;/h2&gt;
+        {%- if block.settings.title_2 != blank -%}&lt;p class=&quot;ed24-chap__t ed24-chap__t--2&quot;&gt;{{ block.settings.title_2 | escape }}&lt;/p&gt;{%- endif -%}
+        {%- if block.settings.sub != blank -%}&lt;p class=&quot;ed24-chap__sub&quot;&gt;{{ block.settings.sub | escape }}&lt;/p&gt;{%- endif -%}
+        {%- if block.settings.tagline != blank -%}&lt;p class=&quot;ed24-chap__tag&quot;&gt;{{ block.settings.tagline }}&lt;/p&gt;{%- endif -%}
+        {%- if block.settings.info != blank -%}&lt;p class=&quot;ed24-chap__info&quot;&gt;{{ block.settings.info | escape }}&lt;/p&gt;{%- endif -%}
+        {%- if p != blank -%}
+          &lt;a class=&quot;ed24-chap__buy&quot; href=&quot;{{ p.url }}&quot;&gt;
+            {%- if p.price_varies %}ab {% endif -%}{{ p.price_min | money }} · {{ block.settings.button_label | escape }}
+            &lt;svg width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.4&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M4 12h16m-6-6 6 6-6 6&quot;/&gt;&lt;/svg&gt;
+          &lt;/a&gt;
+        {%- elsif request.design_mode -%}
+          &lt;span class=&quot;ed24-chap__buy ed24-chap__buy--hint&quot;&gt;Produkt im Editor auswählen&lt;/span&gt;
+        {%- endif -%}
+      &lt;/article&gt;
+    {%- endfor -%}
+    {%- if section.settings.show_progress and chapter_count &gt; 1 -%}
+      &lt;div class=&quot;ed24-prog&quot; aria-hidden=&quot;true&quot;&gt;
+        &lt;span data-ed24-num&gt;01&lt;/span&gt;&lt;small&gt; / {% if chapter_count &lt; 10 %}0{% endif %}{{ chapter_count }}&lt;/small&gt;
+        &lt;i&gt;&lt;b data-ed24-bar style=&quot;transform: scaleX({{ 1.0 | divided_by: chapter_count }});&quot;&gt;&lt;/b&gt;&lt;/i&gt;
+      &lt;/div&gt;
+    {%- endif -%}
+  &lt;/ed24-showcase&gt;
+&lt;/div&gt;
+
+{% stylesheet %}
+  .ed24-show{position:relative}
+  .ed24-show__stage{position:sticky;top:0;display:block;height:100vh;height:100svh;overflow:hidden;color:#fff}
+  .ed24-chap{position:absolute;inset:0;padding:14vh clamp(16px,4vw,64px) 7vh;display:grid;grid-template-columns:minmax(0,1fr) min(360px,28vw);grid-template-rows:auto auto auto auto 1fr auto auto;column-gap:4vw;pointer-events:none;z-index:1}
+  .ed24-chap.is-on{pointer-events:auto}
+  .ed24-chap&gt;*{margin:0;opacity:0;transform:translateY(24px);transition:opacity .5s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1),clip-path .9s cubic-bezier(.2,.8,.2,1)}
+  .ed24-chap.is-on&gt;*{opacity:1;transform:none;transition-delay:.2s}
+  .ed24-show .ed24-chap__eye{grid-column:1;grid-row:1;margin:0 0 12px;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:700;font-style:normal;letter-spacing:.16em;text-transform:uppercase;font-size:14px;line-height:1.3;color:#fff}
+  .ed24-show .ed24-chap__t{grid-column:1;margin:0;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(60px,8.4vw,156px);line-height:.84;letter-spacing:.005em;color:#fff;clip-path:inset(0 -5% 100% -5%);transform:translateY(40%)}
+  .ed24-show .ed24-chap.is-on .ed24-chap__t{clip-path:inset(-10% -5% -10% -5%);transform:none;transition-delay:0s}
+  .ed24-show .ed24-chap.is-on .ed24-chap__t--2{transition-delay:.07s}
+  .ed24-show .ed24-chap.is-past .ed24-chap__t{transform:translateY(-40%);clip-path:inset(100% -5% 0 -5%)}
+  .ed24-show .ed24-chap__sub{grid-column:1;grid-row:4;margin:16px 0 0;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#fff}
+  .ed24-show .ed24-chap__tag{grid-column:2;grid-row:2/5;align-self:center;margin:0;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:clamp(22px,2.05vw,31px);line-height:1.18;font-weight:500;color:#fff}
+  .ed24-show .ed24-chap__tag em,.ed24-show .ed24-chap__tag strong{font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-style:italic;font-weight:800;text-transform:uppercase;font-size:1.22em}
+  .ed24-show .ed24-chap__info{grid-column:1;grid-row:6;max-width:330px;margin:0;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:13px;line-height:1.5;color:var(--c)}
+  .ed24-show .ed24-chap__buy{grid-column:1;grid-row:7;justify-self:start;margin-top:14px;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;background:var(--c);color:#fff;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:normal;text-transform:uppercase;letter-spacing:.06em;font-size:15px;text-decoration:none;transition-delay:.3s}
+  .ed24-chap__buy--hint{background:#0006 !important}
+  .ed24-prog{position:absolute;z-index:1;right:clamp(16px,5vw,80px);bottom:7vh;color:#111;text-align:right;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;font-size:56px;line-height:.9}
+  .ed24-prog small{font-size:22px;opacity:.45}
+  .ed24-prog i{display:block;width:160px;height:3px;margin:10px 0 0 auto;background:#0002;overflow:hidden;border-radius:3px}
+  .ed24-prog b{display:block;height:100%;background:#111;transform-origin:left;transition:transform .4s}
+  html.ed24-nogl .ed24-show{background:#efece6}
+  html.ed24-nogl .ed24-show .ed24-chap__eye,html.ed24-nogl .ed24-show .ed24-chap__t,html.ed24-nogl .ed24-show .ed24-chap__sub,html.ed24-nogl .ed24-show .ed24-chap__tag{color:var(--c)}
+  @media (max-width:749px){
+    .ed24-chap{padding:84px 16px 24px;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto 1fr auto auto;text-align:center}
+    .ed24-show .ed24-chap__t{font-size:clamp(50px,15vw,96px)}
+    .ed24-show .ed24-chap__sub,.ed24-show .ed24-chap__info,.ed24-prog{display:none}
+    .ed24-show .ed24-chap__tag{grid-column:1;grid-row:5;color:#111;font-size:19px}
+    .ed24-show .ed24-chap__buy{grid-row:6;justify-self:center}
+  }
+  @media (prefers-reduced-motion:reduce){.ed24-chap&gt;*,.ed24-show .ed24-chap__t{transition:none}}
+{% endstylesheet %}
+
+{% javascript %}
+  // Produkt-Showcase: zeigt das Kapitel passend zur Scroll-Position; im Theme-Editor springt die Ansicht zum gewählten Kapitel.
+  var ed24Clamp = function (v) { return Math.min(1, Math.max(0, v)); };
+  class Ed24Showcase extends HTMLElement {
+    connectedCallback() {
+      var self = this;
+      this.ctrl = new AbortController();
+      var opts = { signal: this.ctrl.signal, passive: true };
+      this.section = this.closest(&#x27;[data-ed24-showcase]&#x27;) || this;
+      this.chapters = Array.prototype.slice.call(this.querySelectorAll(&#x27;[data-ed24-chapter]&#x27;));
+      this.num = this.querySelector(&#x27;[data-ed24-num]&#x27;);
+      this.bar = this.querySelector(&#x27;[data-ed24-bar]&#x27;);
+      this.active = -2;
+      this.chapters.forEach(function (el) { el.inert = true; });
+      var queue = function () {
+        if (self.tick) return;
+        self.tick = requestAnimationFrame(function () { self.tick = 0; self.update(); });
+      };
+      window.addEventListener(&#x27;scroll&#x27;, queue, opts);
+      window.addEventListener(&#x27;resize&#x27;, queue, opts);
+      document.addEventListener(&#x27;shopify:block:select&#x27;, function (e) {
+        var i = self.chapters.findIndex(function (el) { return el.dataset.blockId === (e.detail &amp;&amp; e.detail.blockId); });
+        if (i &lt; 0) return;
+        var top = self.section.getBoundingClientRect().top + window.scrollY;
+        var span = Math.max(1, self.section.offsetHeight - window.innerHeight);
+        window.scrollTo({ top: top + span * ((i + 0.5) / self.chapters.length), behavior: &#x27;auto&#x27; });
+      }, { signal: this.ctrl.signal });
+      this.update();
+    }
+
+    disconnectedCallback() {
+      if (this.ctrl) this.ctrl.abort();
+      cancelAnimationFrame(this.tick);
+      this.tick = 0;
+    }
+
+    update() {
+      var n = this.chapters.length;
+      if (!n) return;
+      var r = this.section.getBoundingClientRect();
+      var span = Math.max(1, r.height - window.innerHeight);
+      var progress = ed24Clamp(-r.top / span);
+      var current = r.top &gt; window.innerHeight * 0.35 ? -1 : Math.min(n - 1, Math.floor(progress * n + 1e-6));
+      if (current === this.active) return;
+      this.active = current;
+      this.chapters.forEach(function (el, i) {
+        el.classList.toggle(&#x27;is-on&#x27;, i === current);
+        el.classList.toggle(&#x27;is-past&#x27;, current &gt; -1 &amp;&amp; i &lt; current);
+        el.inert = i !== current;
+      });
+      if (current &lt; 0) return;
+      if (this.num) this.num.textContent = (current + 1 &lt; 10 ? &#x27;0&#x27; : &#x27;&#x27;) + (current + 1);
+      if (this.bar) this.bar.style.transform = &#x27;scaleX(&#x27; + (current + 1) / n + &#x27;)&#x27;;
+    }
+  }
+  if (!customElements.get(&#x27;ed24-showcase&#x27;)) customElements.define(&#x27;ed24-showcase&#x27;, Ed24Showcase);
+{% endjavascript %}
+
+{% schema %}
+{
+  &quot;name&quot;: &quot;ED24 Produkt-Showcase&quot;,
+  &quot;tag&quot;: &quot;section&quot;,
+  &quot;class&quot;: &quot;ed24-section&quot;,
+  &quot;max_blocks&quot;: 6,
+  &quot;settings&quot;: [
+    { &quot;type&quot;: &quot;paragraph&quot;, &quot;content&quot;: &quot;Direkt unter „ED24 Hero 3D“ platzieren. Pro Kapitel scrollt die Seite einen Bildschirm weiter.&quot; },
+    { &quot;type&quot;: &quot;checkbox&quot;, &quot;id&quot;: &quot;show_progress&quot;, &quot;label&quot;: &quot;Kapitel-Zähler anzeigen&quot;, &quot;default&quot;: true }
+  ],
+  &quot;blocks&quot;: [
+    {
+      &quot;type&quot;: &quot;chapter&quot;,
+      &quot;name&quot;: &quot;Kapitel&quot;,
+      &quot;settings&quot;: [
+        { &quot;type&quot;: &quot;product&quot;, &quot;id&quot;: &quot;product&quot;, &quot;label&quot;: &quot;Produkt&quot;, &quot;info&quot;: &quot;Preis und Link kommen automatisch aus dem Produkt.&quot; },
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;button_label&quot;, &quot;label&quot;: &quot;Button-Text&quot;, &quot;default&quot;: &quot;Zum Produkt&quot; },
+        { &quot;type&quot;: &quot;header&quot;, &quot;content&quot;: &quot;3D-Dose&quot; },
+        { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;color&quot;, &quot;label&quot;: &quot;Kapitelfarbe&quot;, &quot;default&quot;: &quot;#e30613&quot; },
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;label_1&quot;, &quot;label&quot;: &quot;Etikett Zeile 1&quot;, &quot;default&quot;: &quot;Whey&quot; },
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;label_2&quot;, &quot;label&quot;: &quot;Etikett Zeile 2&quot;, &quot;default&quot;: &quot;Protein&quot; },
+        {
+          &quot;type&quot;: &quot;select&quot;,
+          &quot;id&quot;: &quot;tub&quot;,
+          &quot;label&quot;: &quot;Dosenfarbe&quot;,
+          &quot;default&quot;: &quot;dark&quot;,
+          &quot;options&quot;: [
+            { &quot;value&quot;: &quot;dark&quot;, &quot;label&quot;: &quot;Schwarz&quot; },
+            { &quot;value&quot;: &quot;light&quot;, &quot;label&quot;: &quot;Weiß&quot; }
+          ]
+        },
+        { &quot;type&quot;: &quot;header&quot;, &quot;content&quot;: &quot;Texte&quot; },
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;eyebrow&quot;, &quot;label&quot;: &quot;Kleine Überschrift&quot;, &quot;default&quot;: &quot;01 · Muskelaufbau&quot; },
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;title_1&quot;, &quot;label&quot;: &quot;Titel Zeile 1&quot;, &quot;default&quot;: &quot;Classic&quot; },
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;title_2&quot;, &quot;label&quot;: &quot;Titel Zeile 2&quot;, &quot;default&quot;: &quot;Whey Protein&quot; },
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;sub&quot;, &quot;label&quot;: &quot;Unterzeile&quot;, &quot;default&quot;: &quot;Wheyprotein · Eiweissdealer24 Eigenmarke&quot; },
+        { &quot;type&quot;: &quot;inline_richtext&quot;, &quot;id&quot;: &quot;tagline&quot;, &quot;label&quot;: &quot;Slogan&quot;, &quot;info&quot;: &quot;Kursiv gesetzte Wörter werden groß hervorgehoben.&quot;, &quot;default&quot;: &quot;Muskeln brauchen &lt;em&gt;Material.&lt;/em&gt; Hier ist es.&quot; },
+        { &quot;type&quot;: &quot;textarea&quot;, &quot;id&quot;: &quot;info&quot;, &quot;label&quot;: &quot;Info-Text&quot;, &quot;default&quot;: &quot;Protein trägt zu einer Zunahme an Muskelmasse bei. Als Cookies &amp; Cream, Vanille oder Schokolade.&quot; }
+      ]
+    }
+  ],
+  &quot;presets&quot;: [
+    {
+      &quot;name&quot;: &quot;ED24 Produkt-Showcase&quot;,
+      &quot;blocks&quot;: [
+        { &quot;type&quot;: &quot;chapter&quot;, &quot;settings&quot;: { &quot;color&quot;: &quot;#e30613&quot;, &quot;label_1&quot;: &quot;Whey&quot;, &quot;label_2&quot;: &quot;Protein&quot;, &quot;tub&quot;: &quot;dark&quot;, &quot;eyebrow&quot;: &quot;01 · Muskelaufbau&quot;, &quot;title_1&quot;: &quot;Classic&quot;, &quot;title_2&quot;: &quot;Whey Protein&quot;, &quot;sub&quot;: &quot;Wheyprotein · Eiweissdealer24 Eigenmarke&quot;, &quot;tagline&quot;: &quot;Muskeln brauchen &lt;em&gt;Material.&lt;/em&gt; Hier ist es.&quot;, &quot;info&quot;: &quot;Protein trägt zu einer Zunahme an Muskelmasse bei. Als Cookies &amp; Cream, Vanille oder Schokolade.&quot; } },
+        { &quot;type&quot;: &quot;chapter&quot;, &quot;settings&quot;: { &quot;color&quot;: &quot;#ff5a00&quot;, &quot;label_1&quot;: &quot;Creatin&quot;, &quot;label_2&quot;: &quot;Monohydrat&quot;, &quot;tub&quot;: &quot;dark&quot;, &quot;eyebrow&quot;: &quot;02 · Kraft&quot;, &quot;title_1&quot;: &quot;Creatin&quot;, &quot;title_2&quot;: &quot;Monohydrat&quot;, &quot;sub&quot;: &quot;Kreatin · Eiweissdealer24 Eigenmarke&quot;, &quot;tagline&quot;: &quot;Für den &lt;em&gt;letzten Satz,&lt;/em&gt; der eigentlich zu viel ist.&quot;, &quot;info&quot;: &quot;Kreatin erhöht die körperliche Leistung bei Schnellkrafttraining im Rahmen kurzzeitiger intensiver Belastungen (bei täglich 3 g Kreatin).&quot; } },
+        { &quot;type&quot;: &quot;chapter&quot;, &quot;settings&quot;: { &quot;color&quot;: &quot;#2b3bff&quot;, &quot;label_1&quot;: &quot;EAA&quot;, &quot;label_2&quot;: &quot;Pulver&quot;, &quot;tub&quot;: &quot;light&quot;, &quot;eyebrow&quot;: &quot;03 · Training&quot;, &quot;title_1&quot;: &quot;EAA&quot;, &quot;title_2&quot;: &quot;Pulver&quot;, &quot;sub&quot;: &quot;Aminosäuren · Eiweissdealer24 Eigenmarke&quot;, &quot;tagline&quot;: &quot;Für alle, die nach dem &lt;em&gt;Warm-up&lt;/em&gt; erst anfangen.&quot;, &quot;info&quot;: &quot;Essentielle Aminosäuren als Pulver mit Pfirsich-Eistee-Geschmack – einfach in Wasser einrühren und mit ins Gym nehmen.&quot; } },
+        { &quot;type&quot;: &quot;chapter&quot;, &quot;settings&quot;: { &quot;color&quot;: &quot;#0d9e63&quot;, &quot;label_1&quot;: &quot;L-Glutamin&quot;, &quot;label_2&quot;: &quot;Pulver&quot;, &quot;tub&quot;: &quot;light&quot;, &quot;eyebrow&quot;: &quot;04 · Regeneration&quot;, &quot;title_1&quot;: &quot;L-Glutamin&quot;, &quot;title_2&quot;: &quot;Pulver&quot;, &quot;sub&quot;: &quot;Aminosäure · Eiweissdealer24 Eigenmarke&quot;, &quot;tagline&quot;: &quot;Für die Tage nach dem &lt;em&gt;Beintag.&lt;/em&gt;&quot;, &quot;info&quot;: &quot;Pur oder im Shake. Frag uns im Laden, wie es in deinen Plan passt.&quot; } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+</code></pre>
+        </details>
+      </article>
+      <article class="file" id="f-ed24-story">
+        <div class="file__head">
+          <div class="file__meta">
+            <span class="file__no">4/9</span>
+            <h3 class="file__name">ed24-story</h3>
+            <p class="file__desc">Stempel-Schrift mit vorbeischwebenden 3D-Objekten. Im Editor heißt der Abschnitt „ED24 Story“.</p>
+          </div>
+          <div class="file__acts">
+            <button class="btn btn--primary" type="button" data-copy="code-ed24-story">Code kopieren</button>
+            <label class="done"><input type="checkbox" id="done-ed24-story" data-done> Eingefügt</label>
+          </div>
+        </div>
+        <details class="file__code">
+          <summary>Code ansehen (143 Zeilen)</summary>
+          <pre><code id="code-ed24-story">{%- comment -%}
+  ED24 Story – Eiweissdealer24
+  Stempel-Schrift über dem hellen Farbverlauf; 3D-Objekte aus „ED24 Hero 3D“ schweben vorbei.
+  Unter „ED24 Produkt-Showcase“ platzieren.
+{%- endcomment -%}
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap&quot;&gt;
+
+&lt;div class=&quot;ed24-story&quot; data-ed24-story style=&quot;--ed24-accent: {{ section.settings.accent }};&quot;&gt;
+  &lt;ed24-story class=&quot;ed24-story__grid&quot;&gt;
+    {%- if section.settings.small_title != blank or section.settings.small_text != blank -%}
+      &lt;p class=&quot;ed24-story__small ed24-rv&quot;&gt;
+        &lt;strong&gt;{{ section.settings.small_title | escape }}&lt;/strong&gt;
+        {{ section.settings.small_text | escape }}
+      &lt;/p&gt;
+    {%- endif -%}
+    {%- if section.settings.stamp_1 != blank -%}&lt;h2 class=&quot;ed24-story__stamp ed24-story__stamp--end ed24-rv&quot;&gt;{{ section.settings.stamp_1 | escape }}&lt;/h2&gt;{%- endif -%}
+    {%- if section.settings.text_1 != blank -%}&lt;p class=&quot;ed24-story__para ed24-story__para--end ed24-rv&quot;&gt;{{ section.settings.text_1 | escape }}&lt;/p&gt;{%- endif -%}
+    {%- if section.settings.stamp_2 != blank -%}&lt;h2 class=&quot;ed24-story__stamp ed24-story__stamp--start ed24-rv&quot;&gt;{{ section.settings.stamp_2 | escape }}&lt;/h2&gt;{%- endif -%}
+    {%- if section.settings.text_2 != blank -%}&lt;p class=&quot;ed24-story__para ed24-story__para--start ed24-rv&quot;&gt;{{ section.settings.text_2 | escape }}&lt;/p&gt;{%- endif -%}
+    {%- if section.blocks.size &gt; 0 -%}
+      &lt;div class=&quot;ed24-story__facts ed24-rv&quot;&gt;
+        {%- for block in section.blocks -%}
+          &lt;p class=&quot;ed24-story__fact&quot; {{ block.shopify_attributes }}&gt;
+            &lt;strong&gt;{{ block.settings.value | escape }}&lt;/strong&gt;
+            &lt;span&gt;{{ block.settings.label | escape }}&lt;/span&gt;
+          &lt;/p&gt;
+        {%- endfor -%}
+      &lt;/div&gt;
+    {%- endif -%}
+  &lt;/ed24-story&gt;
+&lt;/div&gt;
+
+{% stylesheet %}
+  .ed24-story{position:relative;padding:22vh clamp(16px,4vw,64px) 30vh;color:#111}
+  .ed24-story__grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px;row-gap:12vh}
+  .ed24-story .ed24-rv{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(.2,.8,.2,1),transform 1s cubic-bezier(.2,.8,.2,1)}
+  .ed24-story .ed24-rv.is-in{opacity:1;transform:none}
+  .ed24-story .ed24-story__small{grid-column:1/4;margin:0;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:14px;line-height:1.55;font-weight:500;color:#111}
+  .ed24-story .ed24-story__small strong{display:block;margin-bottom:8px;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--ed24-accent,#e30613)}
+  .ed24-story .ed24-story__stamp{margin:0;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(66px,11.5vw,210px);line-height:.84;letter-spacing:.005em;color:var(--ed24-accent,#e30613);-webkit-mask-image:var(--ed24-grain);mask-image:var(--ed24-grain);-webkit-mask-size:150px;mask-size:150px}
+  .ed24-story .ed24-story__stamp--end{grid-column:4/13}
+  .ed24-story .ed24-story__stamp--start{grid-column:1/11}
+  .ed24-story .ed24-story__para{margin:0;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:16px;line-height:1.6;color:#2a2a2c}
+  .ed24-story .ed24-story__para--end{grid-column:8/12}
+  .ed24-story .ed24-story__para--start{grid-column:2/6}
+  .ed24-story .ed24-story__facts{grid-column:1/13;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:2px solid #111}
+  .ed24-story .ed24-story__fact{margin:0;padding:18px 18px 0 0;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:14px;color:#6b6b70}
+  .ed24-story .ed24-story__fact strong{display:block;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;font-size:clamp(44px,5vw,80px);line-height:1;color:#111}
+  html.ed24-nogl .ed24-story{background:#efece6}
+  @media (max-width:749px){
+    .ed24-story__grid{row-gap:8vh}
+    .ed24-story .ed24-story__small,.ed24-story .ed24-story__stamp--end,.ed24-story .ed24-story__stamp--start,.ed24-story .ed24-story__para--end,.ed24-story .ed24-story__para--start{grid-column:1/13}
+    .ed24-story .ed24-story__facts{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:18px}
+  }
+  @media (prefers-reduced-motion:reduce){.ed24-story .ed24-rv{opacity:1;transform:none;transition:none}}
+{% endstylesheet %}
+
+{% javascript %}
+  // Story: blendet Inhalte beim Scrollen ein und erzeugt die Stempel-Struktur der großen Überschriften.
+  class Ed24Story extends HTMLElement {
+    connectedCallback() {
+      var self = this;
+      try {
+        var c = document.createElement(&#x27;canvas&#x27;);
+        c.width = c.height = 150;
+        var x = c.getContext(&#x27;2d&#x27;);
+        x.fillStyle = &#x27;#000&#x27;;
+        x.fillRect(0, 0, 150, 150);
+        x.globalCompositeOperation = &#x27;destination-out&#x27;;
+        for (var i = 0; i &lt; 520; i++) {
+          x.globalAlpha = 0.35 + Math.random() * 0.65;
+          x.beginPath();
+          x.arc(Math.random() * 150, Math.random() * 150, Math.random() * 1.6 + 0.3, 0, 7);
+          x.fill();
+        }
+        this.style.setProperty(&#x27;--ed24-grain&#x27;, &#x27;url(&#x27; + c.toDataURL() + &#x27;)&#x27;);
+      } catch (e) {
+        // Ohne Canvas bleiben die Überschriften einfach vollflächig.
+      }
+      var items = this.querySelectorAll(&#x27;.ed24-rv&#x27;);
+      if (!(&#x27;IntersectionObserver&#x27; in window)) {
+        items.forEach(function (el) { el.classList.add(&#x27;is-in&#x27;); });
+        return;
+      }
+      this.observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add(&#x27;is-in&#x27;);
+          self.observer.unobserve(e.target);
+        });
+      }, { threshold: 0.15, rootMargin: &#x27;0px 0px -8% 0px&#x27; });
+      items.forEach(function (el) { self.observer.observe(el); });
+    }
+
+    disconnectedCallback() {
+      if (this.observer) this.observer.disconnect();
+    }
+  }
+  if (!customElements.get(&#x27;ed24-story&#x27;)) customElements.define(&#x27;ed24-story&#x27;, Ed24Story);
+{% endjavascript %}
+
+{% schema %}
+{
+  &quot;name&quot;: &quot;ED24 Story&quot;,
+  &quot;tag&quot;: &quot;section&quot;,
+  &quot;class&quot;: &quot;ed24-section&quot;,
+  &quot;max_blocks&quot;: 4,
+  &quot;settings&quot;: [
+    { &quot;type&quot;: &quot;paragraph&quot;, &quot;content&quot;: &quot;Unter „ED24 Produkt-Showcase“ platzieren.&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;small_title&quot;, &quot;label&quot;: &quot;Kleine Überschrift&quot;, &quot;default&quot;: &quot;Wo kommt dein Eiweiß her?&quot; },
+    { &quot;type&quot;: &quot;textarea&quot;, &quot;id&quot;: &quot;small_text&quot;, &quot;label&quot;: &quot;Kleiner Text&quot;, &quot;default&quot;: &quot;Aus einem 120-m²-Laden in der Doberaner Straße. Von Leuten, die wissen, wie sich der letzte Satz anfühlt.&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;stamp_1&quot;, &quot;label&quot;: &quot;Große Überschrift 1&quot;, &quot;default&quot;: &quot;Seit 2007 in Rostock.&quot; },
+    { &quot;type&quot;: &quot;textarea&quot;, &quot;id&quot;: &quot;text_1&quot;, &quot;label&quot;: &quot;Text 1&quot;, &quot;default&quot;: &quot;Manu, Franzi und Mario führen den Fitness- und Diätshop Rostock seit 2007. Über 40 Marken, eine eigene Eiweissdealer-Marke und eine Beratung, die sich Zeit nimmt.&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;stamp_2&quot;, &quot;label&quot;: &quot;Große Überschrift 2&quot;, &quot;default&quot;: &quot;Seit 2016 auf der Bühne.&quot; },
+    { &quot;type&quot;: &quot;textarea&quot;, &quot;id&quot;: &quot;text_2&quot;, &quot;label&quot;: &quot;Text 2&quot;, &quot;default&quot;: &quot;Wir treten selbst bei Bodybuilding-Wettkämpfen an und haben viele Athletinnen und Athleten auf die Bühne vorbereitet. Und keine Sorge: Mit unseren Plänen isst du nicht jeden Tag nur Reis und Hühnchen.&quot; },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;accent&quot;, &quot;label&quot;: &quot;Markenfarbe&quot;, &quot;default&quot;: &quot;#e30613&quot; }
+  ],
+  &quot;blocks&quot;: [
+    {
+      &quot;type&quot;: &quot;fact&quot;,
+      &quot;name&quot;: &quot;Kennzahl&quot;,
+      &quot;settings&quot;: [
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;value&quot;, &quot;label&quot;: &quot;Zahl&quot;, &quot;default&quot;: &quot;2007&quot; },
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;label&quot;, &quot;label&quot;: &quot;Beschreibung&quot;, &quot;default&quot;: &quot;Laden in Rostock&quot; }
+      ]
+    }
+  ],
+  &quot;presets&quot;: [
+    {
+      &quot;name&quot;: &quot;ED24 Story&quot;,
+      &quot;blocks&quot;: [
+        { &quot;type&quot;: &quot;fact&quot;, &quot;settings&quot;: { &quot;value&quot;: &quot;2007&quot;, &quot;label&quot;: &quot;Laden in Rostock&quot; } },
+        { &quot;type&quot;: &quot;fact&quot;, &quot;settings&quot;: { &quot;value&quot;: &quot;40+&quot;, &quot;label&quot;: &quot;Marken im Sortiment&quot; } },
+        { &quot;type&quot;: &quot;fact&quot;, &quot;settings&quot;: { &quot;value&quot;: &quot;120 m²&quot;, &quot;label&quot;: &quot;zum Stöbern &amp; Probieren&quot; } },
+        { &quot;type&quot;: &quot;fact&quot;, &quot;settings&quot;: { &quot;value&quot;: &quot;10 %&quot;, &quot;label&quot;: &quot;beim 9. Einkauf mit Treuekarte&quot; } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+</code></pre>
+        </details>
+      </article>
+      <article class="file" id="f-ed24-coaching">
+        <div class="file__head">
+          <div class="file__meta">
+            <span class="file__no">5/9</span>
+            <h3 class="file__name">ed24-coaching</h3>
+            <p class="file__desc">Panel, das sich beim Scrollen aufzieht. Im Editor heißt der Abschnitt „ED24 Coaching-Panel“.</p>
+          </div>
+          <div class="file__acts">
+            <button class="btn btn--primary" type="button" data-copy="code-ed24-coaching">Code kopieren</button>
+            <label class="done"><input type="checkbox" id="done-ed24-coaching" data-done> Eingefügt</label>
+          </div>
+        </div>
+        <details class="file__code">
+          <summary>Code ansehen (172 Zeilen)</summary>
+          <pre><code id="code-ed24-coaching">{%- comment -%}
+  ED24 Coaching-Panel – Eiweissdealer24
+  Dunkles Panel, das sich beim Scrollen von einer Karte zur vollen Fläche aufzieht.
+  Unter „ED24 Story“ platzieren. Danach endet die 3D-Bühne.
+{%- endcomment -%}
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap&quot;&gt;
+
+{%- liquid
+  assign phone_link = section.settings.phone | remove: &#x27; &#x27; | remove: &#x27;–&#x27; | remove: &#x27;-&#x27; | remove: &#x27;/&#x27; | remove: &#x27;(&#x27; | remove: &#x27;)&#x27;
+-%}
+&lt;div class=&quot;ed24-coach&quot; data-ed24-coach style=&quot;--ed24-accent: {{ section.settings.accent }};&quot;&gt;
+  &lt;div class=&quot;ed24-coach__sticky&quot;&gt;
+    &lt;ed24-coach class=&quot;ed24-coach__panel&quot; style=&quot;background-color: {{ section.settings.background }};&quot;&gt;
+      &lt;div class=&quot;ed24-coach__ghost&quot; data-ed24-ghost aria-hidden=&quot;true&quot;&gt;{{ section.settings.ghost | escape }}&lt;/div&gt;
+      &lt;div class=&quot;ed24-coach__inner&quot; data-ed24-inner&gt;
+        {%- if section.settings.eyebrow != blank -%}&lt;p class=&quot;ed24-coach__eye&quot;&gt;{{ section.settings.eyebrow | escape }}&lt;/p&gt;{%- endif -%}
+        &lt;h2 class=&quot;ed24-coach__title&quot;&gt;
+          {{- section.settings.title_1 | escape -}}
+          {%- if section.settings.title_2 != blank -%}&lt;br&gt;&lt;em&gt;{{ section.settings.title_2 | escape }}&lt;/em&gt;{%- endif -%}
+        &lt;/h2&gt;
+        {%- if section.settings.text != blank -%}&lt;p class=&quot;ed24-coach__lead&quot;&gt;{{ section.settings.text | escape }}&lt;/p&gt;{%- endif -%}
+        {%- if section.blocks.size &gt; 0 -%}
+          &lt;div class=&quot;ed24-coach__svcs&quot;&gt;
+            {%- for block in section.blocks -%}
+              &lt;div class=&quot;ed24-coach__svc&quot; style=&quot;--i: {{ forloop.index0 }};&quot; {{ block.shopify_attributes }}&gt;
+                &lt;span class=&quot;ed24-coach__no&quot;&gt;{% if forloop.index &lt; 10 %}0{% endif %}{{ forloop.index }}&lt;/span&gt;
+                &lt;strong&gt;{{ block.settings.title | escape }}&lt;/strong&gt;
+                &lt;span class=&quot;ed24-coach__svctext&quot;&gt;{{ block.settings.text | escape }}&lt;/span&gt;
+              &lt;/div&gt;
+            {%- endfor -%}
+          &lt;/div&gt;
+        {%- endif -%}
+        &lt;div class=&quot;ed24-coach__ctas&quot;&gt;
+          {%- if section.settings.button_label != blank -%}
+            &lt;a class=&quot;ed24-coach__btn&quot; href=&quot;{{ section.settings.button_link | default: routes.all_products_collection_url }}&quot;&gt;
+              {{- section.settings.button_label | escape -}}
+              &lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2.4&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M4 12h16m-6-6 6 6-6 6&quot;/&gt;&lt;/svg&gt;
+            &lt;/a&gt;
+          {%- endif -%}
+          {%- if section.settings.phone != blank -%}
+            &lt;a class=&quot;ed24-coach__btn ed24-coach__btn--line&quot; href=&quot;tel:{{ phone_link }}&quot;&gt;{{ section.settings.phone | escape }}&lt;/a&gt;
+          {%- endif -%}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/ed24-coach&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+{% stylesheet %}
+  .ed24-coach{position:relative;z-index:2;height:250vh;height:250svh}
+  .ed24-coach__sticky{position:sticky;top:0;height:100vh;height:100svh}
+  .ed24-coach__panel{position:absolute;inset:0;display:block;overflow:hidden;color:#fff;border-radius:28px;transform:scale(.7);will-change:transform;background-image:radial-gradient(ellipse 60% 55% at 80% 20%,rgba(227,6,19,.4),transparent 70%)}
+  .ed24-coach__panel.is-flush{border-radius:0}
+  .ed24-coach__ghost{position:absolute;top:50%;left:0;white-space:nowrap;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;font-size:32vw;line-height:.8;text-transform:uppercase;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.08);transform:translateY(-50%);will-change:transform;pointer-events:none}
+  .ed24-coach__inner{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 clamp(16px,5vw,80px);will-change:transform}
+  .ed24-coach .ed24-coach__eye{margin:0 0 14px;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:700;font-style:normal;letter-spacing:.16em;text-transform:uppercase;font-size:13px;color:var(--ed24-accent,#e30613)}
+  .ed24-coach .ed24-coach__title{margin:0;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(52px,9vw,160px);line-height:.86;letter-spacing:.005em;color:#fff}
+  .ed24-coach .ed24-coach__title em{font-style:italic;color:var(--ed24-accent,#e30613)}
+  .ed24-coach .ed24-coach__lead{max-width:520px;margin:22px 0 0;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:18px;line-height:1.5;color:#d4d4d8}
+  .ed24-coach__svcs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:5vh}
+  .ed24-coach__svc{padding:20px;border:1px solid rgba(255,255,255,.14);border-radius:18px;background:rgba(255,255,255,.03);font-family:&#x27;Barlow&#x27;,sans-serif;font-size:14px;color:#a6a6ad;opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0) * 90ms)}
+  .ed24-coach__svc strong{display:block;margin-bottom:8px;overflow-wrap:anywhere;-webkit-hyphens:auto;hyphens:auto;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:26px;line-height:1;color:#fff}
+  .ed24-coach__no{display:block;margin-bottom:20px;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;color:var(--ed24-accent,#e30613);letter-spacing:.1em}
+  .ed24-coach__panel.is-full .ed24-coach__svc{opacity:1;transform:none}
+  .ed24-coach__ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:4vh;opacity:0;transition:opacity .8s .4s}
+  .ed24-coach__panel.is-full .ed24-coach__ctas{opacity:1}
+  .ed24-coach .ed24-coach__btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 26px;border-radius:999px;background:var(--ed24-accent,#e30613);color:#fff;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-size:18px;text-transform:uppercase;letter-spacing:.04em;text-decoration:none;border:1.5px solid transparent;transition:transform .15s}
+  .ed24-coach .ed24-coach__btn:active{transform:scale(.97)}
+  .ed24-coach .ed24-coach__btn--line{background:transparent;border-color:rgba(255,255,255,.35)}
+  @media (max-width:900px){
+    .ed24-coach__svcs{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .ed24-coach__svc{padding:14px}
+    .ed24-coach__svc strong{font-size:20px}
+    .ed24-coach__svctext{display:none}
+    .ed24-coach__no{margin-bottom:8px}
+  }
+  @media (max-width:749px){
+    .ed24-coach__inner{justify-content:flex-start;padding-top:92px}
+    .ed24-coach .ed24-coach__title{font-size:12.5vw}
+    .ed24-coach .ed24-coach__lead{font-size:15px;margin-top:14px}
+    .ed24-coach .ed24-coach__btn{min-height:46px;font-size:16px}
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  // Coaching-Panel: zieht sich beim Scrollen auf volle Fläche auf (nur transform, daher flüssig).
+  var ed24CoachClamp = function (v) { return Math.min(1, Math.max(0, v)); };
+  class Ed24Coach extends HTMLElement {
+    connectedCallback() {
+      var self = this;
+      this.ctrl = new AbortController();
+      var opts = { signal: this.ctrl.signal, passive: true };
+      this.section = this.closest(&#x27;[data-ed24-coach]&#x27;) || this;
+      this.inner = this.querySelector(&#x27;[data-ed24-inner]&#x27;);
+      this.ghost = this.querySelector(&#x27;[data-ed24-ghost]&#x27;);
+      this.still = window.matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;).matches;
+      var queue = function () {
+        if (self.tick) return;
+        self.tick = requestAnimationFrame(function () { self.tick = 0; self.update(); });
+      };
+      window.addEventListener(&#x27;scroll&#x27;, queue, opts);
+      window.addEventListener(&#x27;resize&#x27;, queue, opts);
+      this.update();
+    }
+
+    disconnectedCallback() {
+      if (this.ctrl) this.ctrl.abort();
+      cancelAnimationFrame(this.tick);
+      this.tick = 0;
+    }
+
+    update() {
+      var r = this.section.getBoundingClientRect(), vh = window.innerHeight;
+      if (r.bottom &lt; 0 || r.top &gt; vh) return;
+      var t = ed24CoachClamp((-r.top + vh * 0.25) / (vh * 1.05));
+      var p = this.still ? 1 : 1 - Math.pow(1 - t, 3);
+      var from = window.innerWidth &lt; 750 ? 0.88 : 0.7;
+      this.style.transform = &#x27;scale(&#x27; + (from + (1 - from) * p) + &#x27;)&#x27;;
+      this.classList.toggle(&#x27;is-flush&#x27;, p &gt; 0.995);
+      this.classList.toggle(&#x27;is-full&#x27;, p &gt; 0.82);
+      if (this.inner) this.inner.style.transform = &#x27;translate3d(0,&#x27; + (1 - p) * 60 + &#x27;px,0)&#x27;;
+      if (this.ghost) this.ghost.style.transform = &#x27;translate3d(&#x27; + r.top * 0.35 + &#x27;px,-50%,0)&#x27;;
+    }
+  }
+  if (!customElements.get(&#x27;ed24-coach&#x27;)) customElements.define(&#x27;ed24-coach&#x27;, Ed24Coach);
+{% endjavascript %}
+
+{% schema %}
+{
+  &quot;name&quot;: &quot;ED24 Coaching-Panel&quot;,
+  &quot;tag&quot;: &quot;section&quot;,
+  &quot;class&quot;: &quot;ed24-section&quot;,
+  &quot;max_blocks&quot;: 4,
+  &quot;settings&quot;: [
+    { &quot;type&quot;: &quot;paragraph&quot;, &quot;content&quot;: &quot;Unter „ED24 Story“ platzieren.&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;eyebrow&quot;, &quot;label&quot;: &quot;Kleine Überschrift&quot;, &quot;default&quot;: &quot;Ernährungs- &amp; Trainingscoaching&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;title_1&quot;, &quot;label&quot;: &quot;Titel Zeile 1&quot;, &quot;default&quot;: &quot;Kein Plan?&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;title_2&quot;, &quot;label&quot;: &quot;Titel Zeile 2 (rot)&quot;, &quot;default&quot;: &quot;Wir schreiben dir einen.&quot; },
+    { &quot;type&quot;: &quot;textarea&quot;, &quot;id&quot;: &quot;text&quot;, &quot;label&quot;: &quot;Text&quot;, &quot;default&quot;: &quot;Individuell für deinen Alltag – ob Schichtarbeit, vegan, Leistungssport oder einfach gesünder leben. Und wir bleiben dein Ansprechpartner.&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;ghost&quot;, &quot;label&quot;: &quot;Hintergrund-Schriftzug&quot;, &quot;default&quot;: &quot;Coaching · Coaching · Coaching ·&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;button_label&quot;, &quot;label&quot;: &quot;Button-Text&quot;, &quot;default&quot;: &quot;Coaching ansehen&quot; },
+    { &quot;type&quot;: &quot;url&quot;, &quot;id&quot;: &quot;button_link&quot;, &quot;label&quot;: &quot;Button-Link&quot;, &quot;info&quot;: &quot;Zum Beispiel die Kollektion „Coaching“.&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;phone&quot;, &quot;label&quot;: &quot;Telefonnummer&quot;, &quot;default&quot;: &quot;0381 – 203 38 71&quot; },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;background&quot;, &quot;label&quot;: &quot;Hintergrund&quot;, &quot;default&quot;: &quot;#0b0b0c&quot; },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;accent&quot;, &quot;label&quot;: &quot;Markenfarbe&quot;, &quot;default&quot;: &quot;#e30613&quot; }
+  ],
+  &quot;blocks&quot;: [
+    {
+      &quot;type&quot;: &quot;service&quot;,
+      &quot;name&quot;: &quot;Leistung&quot;,
+      &quot;settings&quot;: [
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;title&quot;, &quot;label&quot;: &quot;Titel&quot;, &quot;default&quot;: &quot;Ernährungs- &amp; Trainingsplan&quot; },
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;text&quot;, &quot;label&quot;: &quot;Text&quot;, &quot;default&quot;: &quot;Nach Maß, ohne Hungern.&quot; }
+      ]
+    }
+  ],
+  &quot;presets&quot;: [
+    {
+      &quot;name&quot;: &quot;ED24 Coaching-Panel&quot;,
+      &quot;blocks&quot;: [
+        { &quot;type&quot;: &quot;service&quot;, &quot;settings&quot;: { &quot;title&quot;: &quot;Ernährungs- &amp; Trainingsplan&quot;, &quot;text&quot;: &quot;Nach Maß, ohne Hungern.&quot; } },
+        { &quot;type&quot;: &quot;service&quot;, &quot;settings&quot;: { &quot;title&quot;: &quot;Personal- &amp; Posingtraining&quot;, &quot;text&quot;: &quot;1:1 mit uns in Rostock.&quot; } },
+        { &quot;type&quot;: &quot;service&quot;, &quot;settings&quot;: { &quot;title&quot;: &quot;Fettmessung&quot;, &quot;text&quot;: &quot;Fortschritt sichtbar machen.&quot; } },
+        { &quot;type&quot;: &quot;service&quot;, &quot;settings&quot;: { &quot;title&quot;: &quot;Wettkampfvorbereitung&quot;, &quot;text&quot;: &quot;Seit 2016 auf der Bühne.&quot; } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+</code></pre>
+        </details>
+      </article>
+      <article class="file" id="f-ed24-ziele">
+        <div class="file__head">
+          <div class="file__meta">
+            <span class="file__no">6/9</span>
+            <h3 class="file__name">ed24-ziele</h3>
+            <p class="file__desc">„Was ist dein Ziel?“ – Kacheln zu den Kollektionen. Im Editor heißt der Abschnitt „ED24 Ziele“.</p>
+          </div>
+          <div class="file__acts">
+            <button class="btn btn--primary" type="button" data-copy="code-ed24-ziele">Code kopieren</button>
+            <label class="done"><input type="checkbox" id="done-ed24-ziele" data-done> Eingefügt</label>
+          </div>
+        </div>
+        <details class="file__code">
+          <summary>Code ansehen (100 Zeilen)</summary>
+          <pre><code id="code-ed24-ziele">{%- comment -%}
+  ED24 Ziele – Eiweissdealer24
+  „Was ist dein Ziel?“: große Kacheln, die direkt in die passende Kollektion führen.
+{%- endcomment -%}
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap&quot;&gt;
+
+&lt;div class=&quot;ed24-goals&quot; style=&quot;background-color: {{ section.settings.background }}; --ed24-accent: {{ section.settings.accent }};&quot;&gt;
+  &lt;div class=&quot;ed24-goals__wrap&quot;&gt;
+    {%- if section.settings.eyebrow != blank -%}&lt;p class=&quot;ed24-goals__eye&quot;&gt;{{ section.settings.eyebrow | escape }}&lt;/p&gt;{%- endif -%}
+    &lt;h2 class=&quot;ed24-goals__title&quot;&gt;{{ section.settings.title | escape }}&lt;/h2&gt;
+    &lt;div class=&quot;ed24-goals__grid&quot;&gt;
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign c = block.settings.collection
+          assign href = block.settings.link
+          if c != blank
+            assign href = c.url
+          endif
+          if href == blank
+            assign href = routes.all_products_collection_url
+          endif
+        -%}
+        &lt;a class=&quot;ed24-goal&quot; href=&quot;{{ href }}&quot; {{ block.shopify_attributes }}&gt;
+          &lt;span class=&quot;ed24-goal__num&quot;&gt;
+            {%- if forloop.index &lt; 10 %}0{% endif %}{{ forloop.index -}}
+            {%- if c != blank %} · {{ c.products_count }} {% if c.products_count == 1 %}Produkt{% else %}Produkte{% endif %}{% endif -%}
+          &lt;/span&gt;
+          &lt;span class=&quot;ed24-goal__body&quot;&gt;
+            &lt;span class=&quot;ed24-goal__h&quot;&gt;{{ block.settings.title | escape }}&lt;/span&gt;
+            {%- if block.settings.text != blank -%}&lt;span class=&quot;ed24-goal__t&quot;&gt;{{ block.settings.text | escape }}&lt;/span&gt;{%- endif -%}
+          &lt;/span&gt;
+        &lt;/a&gt;
+      {%- endfor -%}
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+{% stylesheet %}
+  .ed24-goals{padding:clamp(56px,9vw,104px) 0;color:#f5f5f4}
+  .ed24-goals__wrap{max-width:1280px;margin:0 auto;padding:0 clamp(16px,3vw,28px)}
+  .ed24-goals .ed24-goals__eye{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:700;font-style:normal;text-transform:uppercase;letter-spacing:.14em;font-size:13px;color:var(--ed24-accent,#e30613)}
+  .ed24-goals .ed24-goals__eye::before{content:&quot;&quot;;width:28px;height:3px;background:var(--ed24-accent,#e30613);transform:skewX(-20deg)}
+  .ed24-goals .ed24-goals__title{margin:0 0 26px;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(36px,5.6vw,62px);line-height:.92;letter-spacing:.005em;color:#f5f5f4}
+  .ed24-goals__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .ed24-goal{border-radius:14px;background:#131315;border:1px solid #2c2c32;padding:18px;min-height:140px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;color:#f5f5f4;text-decoration:none;transition:border-color .2s,transform .2s}
+  .ed24-goal:hover{border-color:var(--ed24-accent,#e30613);transform:translateY(-3px)}
+  .ed24-goal:first-child{grid-column:span 2;background:linear-gradient(135deg,var(--ed24-accent,#e30613),#8d040c);border-color:transparent}
+  .ed24-goal__num{font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;font-size:15px;color:#7a7a82}
+  .ed24-goal:first-child .ed24-goal__num,.ed24-goal:first-child .ed24-goal__t{color:#ffd6d8}
+  .ed24-goal__h{display:block;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:28px;line-height:.92}
+  .ed24-goal__t{display:block;margin-top:6px;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:13px;color:#a6a6ad}
+  @media (min-width:990px){
+    .ed24-goals__grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+    .ed24-goal{min-height:190px;padding:22px}
+    .ed24-goal:first-child{grid-column:auto}
+    .ed24-goal__h{font-size:32px}
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  &quot;name&quot;: &quot;ED24 Ziele&quot;,
+  &quot;tag&quot;: &quot;section&quot;,
+  &quot;class&quot;: &quot;ed24-section&quot;,
+  &quot;max_blocks&quot;: 6,
+  &quot;settings&quot;: [
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;eyebrow&quot;, &quot;label&quot;: &quot;Kleine Überschrift&quot;, &quot;default&quot;: &quot;Finde schneller, was du brauchst&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;title&quot;, &quot;label&quot;: &quot;Überschrift&quot;, &quot;default&quot;: &quot;Was ist dein Ziel?&quot; },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;background&quot;, &quot;label&quot;: &quot;Hintergrund&quot;, &quot;default&quot;: &quot;#0a0a0b&quot; },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;accent&quot;, &quot;label&quot;: &quot;Markenfarbe&quot;, &quot;default&quot;: &quot;#e30613&quot; }
+  ],
+  &quot;blocks&quot;: [
+    {
+      &quot;type&quot;: &quot;goal&quot;,
+      &quot;name&quot;: &quot;Ziel&quot;,
+      &quot;settings&quot;: [
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;title&quot;, &quot;label&quot;: &quot;Titel&quot;, &quot;default&quot;: &quot;Muskelaufbau&quot; },
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;text&quot;, &quot;label&quot;: &quot;Text&quot;, &quot;default&quot;: &quot;Protein · Whey · Isolat&quot; },
+        { &quot;type&quot;: &quot;collection&quot;, &quot;id&quot;: &quot;collection&quot;, &quot;label&quot;: &quot;Kollektion&quot;, &quot;info&quot;: &quot;Die Produktanzahl wird automatisch angezeigt.&quot; },
+        { &quot;type&quot;: &quot;url&quot;, &quot;id&quot;: &quot;link&quot;, &quot;label&quot;: &quot;Oder eigener Link&quot; }
+      ]
+    }
+  ],
+  &quot;presets&quot;: [
+    {
+      &quot;name&quot;: &quot;ED24 Ziele&quot;,
+      &quot;blocks&quot;: [
+        { &quot;type&quot;: &quot;goal&quot;, &quot;settings&quot;: { &quot;title&quot;: &quot;Muskelaufbau&quot;, &quot;text&quot;: &quot;Protein · Whey · Isolat&quot; } },
+        { &quot;type&quot;: &quot;goal&quot;, &quot;settings&quot;: { &quot;title&quot;: &quot;Definition&quot;, &quot;text&quot;: &quot;Burner · Low Carb · Clear&quot; } },
+        { &quot;type&quot;: &quot;goal&quot;, &quot;settings&quot;: { &quot;title&quot;: &quot;Pump &amp; Power&quot;, &quot;text&quot;: &quot;Booster · Pump · Fokus&quot; } },
+        { &quot;type&quot;: &quot;goal&quot;, &quot;settings&quot;: { &quot;title&quot;: &quot;Gesundheit&quot;, &quot;text&quot;: &quot;Vitamine · Omega 3 · Magnesium&quot; } },
+        { &quot;type&quot;: &quot;goal&quot;, &quot;settings&quot;: { &quot;title&quot;: &quot;Kampfsport&quot;, &quot;text&quot;: &quot;Handschuhe · Bandagen · Shorts&quot; } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+</code></pre>
+        </details>
+      </article>
+      <article class="file" id="f-ed24-marken">
+        <div class="file__head">
+          <div class="file__meta">
+            <span class="file__no">7/9</span>
+            <h3 class="file__name">ed24-marken</h3>
+            <p class="file__desc">Alle Marken als Pillen zum Werfen. Im Editor heißt der Abschnitt „ED24 Marken (Physik)“.</p>
+          </div>
+          <div class="file__acts">
+            <button class="btn btn--primary" type="button" data-copy="code-ed24-marken">Code kopieren</button>
+            <label class="done"><input type="checkbox" id="done-ed24-marken" data-done> Eingefügt</label>
+          </div>
+        </div>
+        <details class="file__code">
+          <summary>Code ansehen (164 Zeilen)</summary>
+          <pre><code id="code-ed24-marken">{%- comment -%}
+  ED24 Marken (Physik) – Eiweissdealer24
+  Alle Marken (Hersteller) des Shops fallen als Pillen in eine Box und lassen sich mit der Maus werfen.
+  Die Marken kommen automatisch aus den Produkten.
+{%- endcomment -%}
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap&quot;&gt;
+
+&lt;div class=&quot;ed24-brands&quot; style=&quot;background-color: {{ section.settings.background }}; --ed24-accent: {{ section.settings.accent }};&quot;&gt;
+  &lt;div class=&quot;ed24-brands__head&quot;&gt;
+    &lt;h2 class=&quot;ed24-brands__title&quot;&gt;
+      {{- section.settings.title_1 | escape -}}
+      {%- if section.settings.title_2 != blank -%}&lt;br&gt;&lt;em&gt;{{ section.settings.title_2 | escape }}&lt;/em&gt;{%- endif -%}
+    &lt;/h2&gt;
+    {%- if section.settings.text != blank -%}&lt;p class=&quot;ed24-brands__lead&quot;&gt;{{ section.settings.text | escape }}&lt;/p&gt;{%- endif -%}
+  &lt;/div&gt;
+  &lt;ed24-pit class=&quot;ed24-pit&quot; aria-hidden=&quot;true&quot;&gt;
+    {%- if section.settings.hint != blank -%}&lt;span class=&quot;ed24-pit__hint&quot;&gt;{{ section.settings.hint | escape }}&lt;/span&gt;{%- endif -%}
+    {%- for vendor in shop.vendors limit: section.settings.limit -%}
+      &lt;span class=&quot;ed24-pill&quot; data-pill&gt;{{ vendor | escape }}&lt;/span&gt;
+    {%- else -%}
+      {%- if request.design_mode -%}&lt;span class=&quot;ed24-pit__empty&quot;&gt;Die Marken erscheinen hier automatisch, sobald Produkte importiert sind.&lt;/span&gt;{%- endif -%}
+    {%- endfor -%}
+  &lt;/ed24-pit&gt;
+  {%- if shop.vendors.size &gt; 0 -%}
+    &lt;ul class=&quot;ed24-visually-hidden&quot;&gt;
+      {%- for vendor in shop.vendors limit: section.settings.limit -%}
+        &lt;li&gt;{{ vendor | link_to_vendor }}&lt;/li&gt;
+      {%- endfor -%}
+    &lt;/ul&gt;
+  {%- endif -%}
+&lt;/div&gt;
+
+{% stylesheet %}
+  .ed24-brands{position:relative;padding:16vh clamp(16px,4vw,64px) 10vh;color:#111}
+  .ed24-brands__head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:28px}
+  .ed24-brands .ed24-brands__title{margin:0;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(52px,8vw,130px);line-height:.86;letter-spacing:.005em;color:#111}
+  .ed24-brands .ed24-brands__title em{font-style:italic;color:var(--ed24-accent,#e30613)}
+  .ed24-brands .ed24-brands__lead{margin:0;max-width:340px;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:16px;line-height:1.5;color:#3a3a3d}
+  .ed24-pit{position:relative;display:block;height:min(72vh,640px);border-radius:28px;background:rgba(255,255,255,.65);border:1px solid rgba(0,0,0,.05);overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+  .ed24-pit__hint{position:absolute;left:50%;top:22px;transform:translateX(-50%);font-family:&#x27;Barlow&#x27;,sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(0,0,0,.4);white-space:nowrap}
+  .ed24-pit__empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font-family:&#x27;Barlow&#x27;,sans-serif;color:#6b6b70}
+  .ed24-pill{position:absolute;left:0;top:0;padding:.42em .9em .38em;border-radius:999px;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(20px,2.5vw,36px);line-height:1;white-space:nowrap;will-change:transform;cursor:grab;visibility:hidden;background:var(--ed24-accent,#e30613);color:#fff}
+  .ed24-pill:active{cursor:grabbing}
+  .ed24-pill.is-live{visibility:visible}
+  .ed24-pill:nth-of-type(4n+2){background:#111;color:#fff}
+  .ed24-pill:nth-of-type(4n+3){background:#fff;color:#111;box-shadow:inset 0 0 0 2px #111}
+  .ed24-pill:nth-of-type(4n){background:transparent;color:var(--ed24-accent,#e30613);box-shadow:inset 0 0 0 2px var(--ed24-accent,#e30613)}
+  .ed24-pit.is-static{display:flex;flex-wrap:wrap;gap:10px;align-content:center;justify-content:center;padding:56px 24px 24px}
+  .ed24-pit.is-static .ed24-pill{position:static;visibility:visible;transform:none !important}
+  .ed24-visually-hidden{position:absolute !important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  @media (pointer:coarse){.ed24-pill{cursor:default}}
+{% endstylesheet %}
+
+{% javascript %}
+  // Marken-Box: die Hersteller fallen mit Physik (Matter.js) hinein; mit der Maus lassen sie sich werfen.
+  var MATTER_URL = &#x27;https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js&#x27;;
+  var matterPromise = null;
+  function ed24LoadMatter() {
+    if (window.Matter) return Promise.resolve();
+    if (!matterPromise) {
+      matterPromise = new Promise(function (res, rej) {
+        var s = document.createElement(&#x27;script&#x27;);
+        s.src = MATTER_URL;
+        s.async = true;
+        s.onload = res;
+        s.onerror = function () { matterPromise = null; rej(new Error(&#x27;matter&#x27;)); };
+        document.head.appendChild(s);
+      });
+    }
+    return matterPromise;
+  }
+  class Ed24Pit extends HTMLElement {
+    connectedCallback() {
+      var self = this;
+      this.pills = Array.prototype.slice.call(this.querySelectorAll(&#x27;[data-pill]&#x27;));
+      this.timers = [];
+      if (!this.pills.length) return;
+      if (window.matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;).matches || !(&#x27;IntersectionObserver&#x27; in window)) {
+        this.classList.add(&#x27;is-static&#x27;);
+        return;
+      }
+      this.observer = new IntersectionObserver(function (entries) {
+        self.visible = entries[0].isIntersecting;
+        if (self.visible &amp;&amp; !self.started) {
+          self.started = true;
+          ed24LoadMatter().then(function () { self.start(); }).catch(function () { self.classList.add(&#x27;is-static&#x27;); });
+        }
+      }, { threshold: 0.25 });
+      this.observer.observe(this);
+    }
+
+    disconnectedCallback() {
+      if (this.observer) this.observer.disconnect();
+      cancelAnimationFrame(this.raf);
+      this.timers.forEach(clearTimeout);
+      if (this.engine &amp;&amp; window.Matter) window.Matter.Engine.clear(this.engine);
+    }
+
+    start() {
+      if (!this.isConnected) return;
+      var self = this, M = window.Matter;
+      var W = this.clientWidth, H = this.clientHeight;
+      var engine = (this.engine = M.Engine.create({ gravity: { y: 1.1 }, enableSleeping: true }));
+      M.Composite.add(engine.world, [
+        M.Bodies.rectangle(W / 2, H + 40, W * 3, 80, { isStatic: true }),
+        M.Bodies.rectangle(-40, H / 2, 80, H * 4, { isStatic: true }),
+        M.Bodies.rectangle(W + 40, H / 2, 80, H * 4, { isStatic: true })
+      ]);
+      var items = [];
+      this.pills.forEach(function (el, i) {
+        var w = el.offsetWidth, h = el.offsetHeight;
+        self.timers.push(setTimeout(function () {
+          var x = Math.min(W - w / 2 - 10, Math.max(w / 2 + 10, W * (0.15 + Math.random() * 0.7)));
+          var b = M.Bodies.rectangle(x, -h - Math.random() * 200, w, h, { chamfer: { radius: h / 2 - 1 }, restitution: 0.35, friction: 0.2, density: 0.002, angle: (Math.random() - 0.5) * 0.8 });
+          M.Body.setAngularVelocity(b, (Math.random() - 0.5) * 0.08);
+          M.Composite.add(engine.world, b);
+          items.push({ el: el, b: b, w: w, h: h });
+          el.classList.add(&#x27;is-live&#x27;);
+        }, 120 + i * 140));
+      });
+      if (window.matchMedia(&#x27;(pointer: fine)&#x27;).matches) {
+        var mouse = M.Mouse.create(this);
+        mouse.element.removeEventListener(&#x27;mousewheel&#x27;, mouse.mousewheel);
+        mouse.element.removeEventListener(&#x27;DOMMouseScroll&#x27;, mouse.mousewheel);
+        mouse.element.removeEventListener(&#x27;wheel&#x27;, mouse.mousewheel);
+        M.Composite.add(engine.world, M.MouseConstraint.create(engine, { mouse: mouse, constraint: { stiffness: 0.2, render: { visible: false } } }));
+      }
+      var loop = function () {
+        self.raf = requestAnimationFrame(loop);
+        if (!self.visible) return;
+        M.Engine.update(engine, 1000 / 60);
+        for (var i = 0; i &lt; items.length; i++) {
+          var it = items[i];
+          if (it.b.isSleeping &amp;&amp; it.drawn) continue;
+          it.drawn = true;
+          it.el.style.transform = &#x27;translate3d(&#x27; + (it.b.position.x - it.w / 2) + &#x27;px,&#x27; + (it.b.position.y - it.h / 2) + &#x27;px,0) rotate(&#x27; + it.b.angle + &#x27;rad)&#x27;;
+        }
+      };
+      this.raf = requestAnimationFrame(loop);
+    }
+  }
+  if (!customElements.get(&#x27;ed24-pit&#x27;)) customElements.define(&#x27;ed24-pit&#x27;, Ed24Pit);
+{% endjavascript %}
+
+{% schema %}
+{
+  &quot;name&quot;: &quot;ED24 Marken (Physik)&quot;,
+  &quot;tag&quot;: &quot;section&quot;,
+  &quot;class&quot;: &quot;ed24-section&quot;,
+  &quot;settings&quot;: [
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;title_1&quot;, &quot;label&quot;: &quot;Titel Zeile 1&quot;, &quot;default&quot;: &quot;40+ Marken.&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;title_2&quot;, &quot;label&quot;: &quot;Titel Zeile 2 (rot)&quot;, &quot;default&quot;: &quot;Ein Laden.&quot; },
+    { &quot;type&quot;: &quot;textarea&quot;, &quot;id&quot;: &quot;text&quot;, &quot;label&quot;: &quot;Text&quot;, &quot;default&quot;: &quot;Von Optimum Nutrition bis zur eigenen Eiweissdealer-Marke. Schnapp dir eine Marke und wirf sie durch die Gegend.&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;hint&quot;, &quot;label&quot;: &quot;Hinweis in der Box&quot;, &quot;default&quot;: &quot;Ziehen &amp; werfen&quot; },
+    { &quot;type&quot;: &quot;range&quot;, &quot;id&quot;: &quot;limit&quot;, &quot;label&quot;: &quot;Anzahl Marken&quot;, &quot;min&quot;: 6, &quot;max&quot;: 60, &quot;step&quot;: 1, &quot;default&quot;: 24 },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;background&quot;, &quot;label&quot;: &quot;Hintergrund&quot;, &quot;default&quot;: &quot;#efece6&quot; },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;accent&quot;, &quot;label&quot;: &quot;Markenfarbe&quot;, &quot;default&quot;: &quot;#e30613&quot; }
+  ],
+  &quot;presets&quot;: [{ &quot;name&quot;: &quot;ED24 Marken (Physik)&quot; }]
+}
+{% endschema %}
+</code></pre>
+        </details>
+      </article>
+      <article class="file" id="f-ed24-laden">
+        <div class="file__head">
+          <div class="file__meta">
+            <span class="file__no">8/9</span>
+            <h3 class="file__name">ed24-laden</h3>
+            <p class="file__desc">Team, Live-Öffnungsstatus, Adresse, Vorteile. Im Editor heißt der Abschnitt „ED24 Laden &amp; Team“.</p>
+          </div>
+          <div class="file__acts">
+            <button class="btn btn--primary" type="button" data-copy="code-ed24-laden">Code kopieren</button>
+            <label class="done"><input type="checkbox" id="done-ed24-laden" data-done> Eingefügt</label>
+          </div>
+        </div>
+        <details class="file__code">
+          <summary>Code ansehen (225 Zeilen)</summary>
+          <pre><code id="code-ed24-laden">{%- comment -%}
+  ED24 Laden &amp; Team – Eiweissdealer24
+  Team, Live-Öffnungsstatus, Öffnungszeiten, Adresse mit Route, Telefon und Vorteile (Treuekarte, Überraschung ab 100 €).
+{%- endcomment -%}
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap&quot;&gt;
+
+{%- liquid
+  assign s = section.settings
+  assign phone_link = s.phone | remove: &#x27; &#x27; | remove: &#x27;–&#x27; | remove: &#x27;-&#x27; | remove: &#x27;/&#x27; | remove: &#x27;(&#x27; | remove: &#x27;)&#x27;
+  assign address_query = s.address | newline_to_br | strip_html | url_encode
+  assign route_url = &#x27;https://www.google.com/maps/search/?api=1&amp;query=&#x27; | append: address_query
+  if s.map_link != blank
+    assign route_url = s.map_link
+  endif
+-%}
+&lt;div class=&quot;ed24-store&quot; style=&quot;background-color: {{ s.background }}; --ed24-accent: {{ s.accent }};&quot;&gt;
+  &lt;div class=&quot;ed24-store__wrap&quot;&gt;
+    &lt;div class=&quot;ed24-store__grid&quot;&gt;
+      &lt;div class=&quot;ed24-store__card&quot;&gt;
+        {%- if s.eyebrow != blank -%}&lt;p class=&quot;ed24-store__eye&quot;&gt;{{ s.eyebrow | escape }}&lt;/p&gt;{%- endif -%}
+        &lt;h2 class=&quot;ed24-store__title&quot;&gt;{{ s.title | escape }}&lt;/h2&gt;
+        {%- if s.text != blank -%}&lt;p class=&quot;ed24-store__text&quot;&gt;{{ s.text | escape }}&lt;/p&gt;{%- endif -%}
+        &lt;div class=&quot;ed24-store__team&quot;&gt;
+          {%- for block in section.blocks -%}
+            {%- if block.type == &#x27;member&#x27; -%}
+              &lt;div class=&quot;ed24-mate&quot; {{ block.shopify_attributes }}&gt;
+                &lt;div class=&quot;ed24-mate__av&quot;&gt;
+                  {%- if block.settings.image != blank -%}
+                    {{ block.settings.image | image_url: width: 600 | image_tag: loading: &#x27;lazy&#x27;, alt: block.settings.name, class: &#x27;ed24-mate__img&#x27;, widths: &#x27;200,400,600&#x27;, sizes: &#x27;(min-width: 990px) 200px, 30vw&#x27; }}
+                  {%- else -%}
+                    &lt;span&gt;{{ block.settings.name | slice: 0 }}&lt;/span&gt;
+                  {%- endif -%}
+                &lt;/div&gt;
+                &lt;strong&gt;{{ block.settings.name | escape }}&lt;/strong&gt;
+                &lt;span&gt;{{ block.settings.role | escape }}&lt;/span&gt;
+              &lt;/div&gt;
+            {%- endif -%}
+          {%- endfor -%}
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;ed24-store__card&quot;&gt;
+        &lt;ed24-open
+          class=&quot;ed24-open&quot;
+          data-wd-open=&quot;{{ s.wd_open }}&quot;
+          data-wd-close=&quot;{{ s.wd_close }}&quot;
+          data-sa-open=&quot;{{ s.sa_open }}&quot;
+          data-sa-close=&quot;{{ s.sa_close }}&quot;
+          data-open-text=&quot;{{ s.open_text | escape }}&quot;
+          data-closed-text=&quot;{{ s.closed_text | escape }}&quot;
+        &gt;&lt;i&gt;&lt;/i&gt;&lt;span&gt;{{ s.closed_text | escape }}&lt;/span&gt;&lt;/ed24-open&gt;
+        &lt;h3 class=&quot;ed24-store__title ed24-store__title--sm&quot;&gt;{{ s.card_title | escape }}&lt;/h3&gt;
+        &lt;div class=&quot;ed24-store__hours&quot;&gt;
+          {%- if s.hours_1_label != blank -%}&lt;div&gt;&lt;span&gt;{{ s.hours_1_label | escape }}&lt;/span&gt;&lt;b&gt;{{ s.hours_1 | escape }}&lt;/b&gt;&lt;/div&gt;{%- endif -%}
+          {%- if s.hours_2_label != blank -%}&lt;div&gt;&lt;span&gt;{{ s.hours_2_label | escape }}&lt;/span&gt;&lt;b&gt;{{ s.hours_2 | escape }}&lt;/b&gt;&lt;/div&gt;{%- endif -%}
+          {%- if s.hours_3_label != blank -%}&lt;div&gt;&lt;span&gt;{{ s.hours_3_label | escape }}&lt;/span&gt;&lt;b&gt;{{ s.hours_3 | escape }}&lt;/b&gt;&lt;/div&gt;{%- endif -%}
+        &lt;/div&gt;
+        {%- if s.address != blank -%}
+          &lt;p class=&quot;ed24-store__addr&quot;&gt;
+            &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linejoin=&quot;round&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12Z&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;9&quot; r=&quot;2.5&quot;/&gt;&lt;/svg&gt;
+            &lt;span&gt;{{ s.address | escape | newline_to_br }}&lt;/span&gt;
+          &lt;/p&gt;
+        {%- endif -%}
+        {%- if s.phone != blank -%}
+          &lt;p class=&quot;ed24-store__addr&quot;&gt;
+            &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linejoin=&quot;round&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z&quot;/&gt;&lt;/svg&gt;
+            &lt;span&gt;{{ s.phone | escape }}&lt;/span&gt;
+          &lt;/p&gt;
+        {%- endif -%}
+        &lt;div class=&quot;ed24-store__acts&quot;&gt;
+          {%- if s.address != blank -%}&lt;a class=&quot;ed24-store__btn&quot; href=&quot;{{ route_url }}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;{{ s.route_label | escape }}&lt;/a&gt;{%- endif -%}
+          {%- if s.phone != blank -%}&lt;a class=&quot;ed24-store__btn ed24-store__btn--line&quot; href=&quot;tel:{{ phone_link }}&quot;&gt;{{ s.call_label | escape }}&lt;/a&gt;{%- endif -%}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;ed24-store__perks&quot;&gt;
+      {%- for block in section.blocks -%}
+        {%- if block.type == &#x27;perk&#x27; -%}
+          &lt;div class=&quot;ed24-perk&quot; {{ block.shopify_attributes }}&gt;
+            &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linejoin=&quot;round&quot; aria-hidden=&quot;true&quot;&gt;&lt;rect x=&quot;4&quot; y=&quot;9&quot; width=&quot;16&quot; height=&quot;11&quot; rx=&quot;1.5&quot;/&gt;&lt;path d=&quot;M3 9h18M12 9v11M12 9c-2-4-6-4-6-1.5S10 9 12 9c2 0 6-.5 6-3S14 5 12 9Z&quot;/&gt;&lt;/svg&gt;
+            &lt;div&gt;&lt;strong&gt;{{ block.settings.title | escape }}&lt;/strong&gt;&lt;span&gt;{{ block.settings.text | escape }}&lt;/span&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        {%- endif -%}
+      {%- endfor -%}
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+{% stylesheet %}
+  .ed24-store{padding:clamp(56px,9vw,104px) 0;color:#f5f5f4}
+  .ed24-store__wrap{max-width:1280px;margin:0 auto;padding:0 clamp(16px,3vw,28px)}
+  .ed24-store__grid{display:grid;gap:14px}
+  .ed24-store__card{border-radius:22px;background:#131315;border:1px solid #2c2c32;padding:26px}
+  .ed24-store .ed24-store__eye{margin:0 0 14px;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:700;font-style:normal;text-transform:uppercase;letter-spacing:.14em;font-size:13px;color:var(--ed24-accent,#e30613)}
+  .ed24-store .ed24-store__title{margin:0;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(38px,5vw,56px);line-height:.92;letter-spacing:.005em;color:#f5f5f4}
+  .ed24-store .ed24-store__title--sm{margin-top:14px;font-size:44px}
+  .ed24-store .ed24-store__text{margin:14px 0 0;max-width:520px;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:16px;line-height:1.5;color:#a6a6ad}
+  .ed24-store__team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:24px}
+  .ed24-mate strong{display:block;margin-top:10px;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-size:20px;font-weight:800;font-style:italic;text-transform:uppercase;color:#f5f5f4}
+  .ed24-mate&gt;span{font-family:&#x27;Barlow&#x27;,sans-serif;font-size:13px;color:#a6a6ad}
+  .ed24-mate__av{aspect-ratio:4/5;border-radius:12px;overflow:hidden;background:linear-gradient(160deg,#2a2a30,#141417);display:flex;align-items:center;justify-content:center;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;font-size:42px;color:rgba(255,255,255,.2)}
+  .ed24-mate__img{width:100%;height:100%;object-fit:cover;display:block}
+  .ed24-open{display:inline-flex;align-items:center;gap:8px;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:13px;font-weight:600;color:#a6a6ad;background:#1b1b1f;border:1px solid #2c2c32;padding:5px 12px;border-radius:99px}
+  .ed24-open i{width:8px;height:8px;border-radius:50%;background:#75757d}
+  .ed24-open.is-open{color:#22c55e;background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25)}
+  .ed24-open.is-open i{background:#22c55e}
+  .ed24-store__hours{margin:18px 0 22px}
+  .ed24-store__hours div{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #2c2c32;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:15px}
+  .ed24-store__hours b{font-weight:600}
+  .ed24-store .ed24-store__addr{display:flex;gap:12px;align-items:flex-start;margin:0 0 8px;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:15px;color:#a6a6ad}
+  .ed24-store__addr svg{width:20px;height:20px;flex-shrink:0;margin-top:2px;color:var(--ed24-accent,#e30613)}
+  .ed24-store__acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .ed24-store .ed24-store__btn{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:var(--ed24-accent,#e30613);color:#fff;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.04em;text-decoration:none;border:1.5px solid transparent}
+  .ed24-store .ed24-store__btn--line{background:transparent;border-color:rgba(255,255,255,.35)}
+  .ed24-store__perks{display:grid;gap:10px;margin-top:14px}
+  .ed24-perk{display:flex;gap:14px;align-items:flex-start;padding:18px;border-radius:14px;border:1px dashed #44444c;font-family:&#x27;Barlow&#x27;,sans-serif}
+  .ed24-perk svg{width:26px;height:26px;flex-shrink:0;color:var(--ed24-accent,#e30613)}
+  .ed24-perk strong{display:block;font-size:15px;color:#f5f5f4}
+  .ed24-perk span{font-size:13px;color:#a6a6ad}
+  @media (min-width:750px){.ed24-store__perks{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media (min-width:990px){.ed24-store__grid{grid-template-columns:1.2fr 1fr}.ed24-store__card{padding:34px}}
+{% endstylesheet %}
+
+{% javascript %}
+  // Live-Öffnungsstatus: vergleicht die aktuelle Uhrzeit mit den Öffnungszeiten aus den Einstellungen.
+  class Ed24Open extends HTMLElement {
+    connectedCallback() {
+      var self = this;
+      this.render();
+      this.timer = setInterval(function () { self.render(); }, 60000);
+    }
+
+    disconnectedCallback() {
+      clearInterval(this.timer);
+    }
+
+    render() {
+      var d = this.dataset, now = new Date(), day = now.getDay(), h = now.getHours() + now.getMinutes() / 60;
+      var wo = parseFloat(d.wdOpen), wc = parseFloat(d.wdClose), so = parseFloat(d.saOpen), sc = parseFloat(d.saClose);
+      var open = false, until = 0;
+      if (day &gt;= 1 &amp;&amp; day &lt;= 5 &amp;&amp; h &gt;= wo &amp;&amp; h &lt; wc) { open = true; until = wc; }
+      if (day === 6 &amp;&amp; h &gt;= so &amp;&amp; h &lt; sc) { open = true; until = sc; }
+      this.classList.toggle(&#x27;is-open&#x27;, open);
+      var label = this.querySelector(&#x27;span&#x27;);
+      if (label) label.textContent = open ? String(d.openText || &#x27;&#x27;).replace(&#x27;[zeit]&#x27;, String(until)) : d.closedText || &#x27;&#x27;;
+    }
+  }
+  if (!customElements.get(&#x27;ed24-open&#x27;)) customElements.define(&#x27;ed24-open&#x27;, Ed24Open);
+{% endjavascript %}
+
+{% schema %}
+{
+  &quot;name&quot;: &quot;ED24 Laden &amp; Team&quot;,
+  &quot;tag&quot;: &quot;section&quot;,
+  &quot;class&quot;: &quot;ed24-section&quot;,
+  &quot;max_blocks&quot;: 9,
+  &quot;settings&quot;: [
+    { &quot;type&quot;: &quot;header&quot;, &quot;content&quot;: &quot;Team&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;eyebrow&quot;, &quot;label&quot;: &quot;Kleine Überschrift&quot;, &quot;default&quot;: &quot;Das Team hinter dem Shop&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;title&quot;, &quot;label&quot;: &quot;Überschrift&quot;, &quot;default&quot;: &quot;Manu, Franzi &amp; Mario&quot; },
+    { &quot;type&quot;: &quot;textarea&quot;, &quot;id&quot;: &quot;text&quot;, &quot;label&quot;: &quot;Text&quot;, &quot;default&quot;: &quot;Wir führen den Fitness- und Diätshop Rostock seit 2007 – und stehen seit 2016 selbst im Bodybuilding auf der Bühne.&quot; },
+    { &quot;type&quot;: &quot;header&quot;, &quot;content&quot;: &quot;Laden&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;card_title&quot;, &quot;label&quot;: &quot;Überschrift Laden&quot;, &quot;default&quot;: &quot;Komm vorbei&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;hours_1_label&quot;, &quot;label&quot;: &quot;Zeile 1: Tage&quot;, &quot;default&quot;: &quot;Montag – Freitag&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;hours_1&quot;, &quot;label&quot;: &quot;Zeile 1: Zeiten&quot;, &quot;default&quot;: &quot;10 – 19 Uhr&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;hours_2_label&quot;, &quot;label&quot;: &quot;Zeile 2: Tage&quot;, &quot;default&quot;: &quot;Samstag&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;hours_2&quot;, &quot;label&quot;: &quot;Zeile 2: Zeiten&quot;, &quot;default&quot;: &quot;10 – 15 Uhr&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;hours_3_label&quot;, &quot;label&quot;: &quot;Zeile 3: Tage&quot;, &quot;default&quot;: &quot;Sonntag&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;hours_3&quot;, &quot;label&quot;: &quot;Zeile 3: Zeiten&quot;, &quot;default&quot;: &quot;geschlossen&quot; },
+    { &quot;type&quot;: &quot;textarea&quot;, &quot;id&quot;: &quot;address&quot;, &quot;label&quot;: &quot;Adresse&quot;, &quot;default&quot;: &quot;Doberaner Straße 110–112\n18057 Rostock&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;phone&quot;, &quot;label&quot;: &quot;Telefonnummer&quot;, &quot;default&quot;: &quot;0381 – 203 38 71&quot; },
+    { &quot;type&quot;: &quot;url&quot;, &quot;id&quot;: &quot;map_link&quot;, &quot;label&quot;: &quot;Eigener Karten-Link&quot;, &quot;info&quot;: &quot;Leer lassen: Google Maps mit der Adresse wird automatisch verwendet.&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;route_label&quot;, &quot;label&quot;: &quot;Button Route&quot;, &quot;default&quot;: &quot;Route planen&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;call_label&quot;, &quot;label&quot;: &quot;Button Anrufen&quot;, &quot;default&quot;: &quot;Anrufen&quot; },
+    { &quot;type&quot;: &quot;header&quot;, &quot;content&quot;: &quot;Live-Öffnungsstatus&quot; },
+    { &quot;type&quot;: &quot;range&quot;, &quot;id&quot;: &quot;wd_open&quot;, &quot;label&quot;: &quot;Mo–Fr öffnet um&quot;, &quot;min&quot;: 0, &quot;max&quot;: 24, &quot;step&quot;: 1, &quot;unit&quot;: &quot;h&quot;, &quot;default&quot;: 10 },
+    { &quot;type&quot;: &quot;range&quot;, &quot;id&quot;: &quot;wd_close&quot;, &quot;label&quot;: &quot;Mo–Fr schließt um&quot;, &quot;min&quot;: 0, &quot;max&quot;: 24, &quot;step&quot;: 1, &quot;unit&quot;: &quot;h&quot;, &quot;default&quot;: 19 },
+    { &quot;type&quot;: &quot;range&quot;, &quot;id&quot;: &quot;sa_open&quot;, &quot;label&quot;: &quot;Samstag öffnet um&quot;, &quot;min&quot;: 0, &quot;max&quot;: 24, &quot;step&quot;: 1, &quot;unit&quot;: &quot;h&quot;, &quot;default&quot;: 10 },
+    { &quot;type&quot;: &quot;range&quot;, &quot;id&quot;: &quot;sa_close&quot;, &quot;label&quot;: &quot;Samstag schließt um&quot;, &quot;min&quot;: 0, &quot;max&quot;: 24, &quot;step&quot;: 1, &quot;unit&quot;: &quot;h&quot;, &quot;default&quot;: 15 },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;open_text&quot;, &quot;label&quot;: &quot;Text „geöffnet“&quot;, &quot;info&quot;: &quot;[zeit] wird durch die Schließzeit ersetzt.&quot;, &quot;default&quot;: &quot;Jetzt geöffnet · bis [zeit] Uhr&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;closed_text&quot;, &quot;label&quot;: &quot;Text „geschlossen“&quot;, &quot;default&quot;: &quot;Gerade geschlossen&quot; },
+    { &quot;type&quot;: &quot;header&quot;, &quot;content&quot;: &quot;Farben&quot; },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;background&quot;, &quot;label&quot;: &quot;Hintergrund&quot;, &quot;default&quot;: &quot;#0a0a0b&quot; },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;accent&quot;, &quot;label&quot;: &quot;Markenfarbe&quot;, &quot;default&quot;: &quot;#e30613&quot; }
+  ],
+  &quot;blocks&quot;: [
+    {
+      &quot;type&quot;: &quot;member&quot;,
+      &quot;name&quot;: &quot;Teammitglied&quot;,
+      &quot;limit&quot;: 3,
+      &quot;settings&quot;: [
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;name&quot;, &quot;label&quot;: &quot;Name&quot;, &quot;default&quot;: &quot;Manu&quot; },
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;role&quot;, &quot;label&quot;: &quot;Untertitel&quot;, &quot;default&quot;: &quot;Manuela Willms&quot; },
+        { &quot;type&quot;: &quot;image_picker&quot;, &quot;id&quot;: &quot;image&quot;, &quot;label&quot;: &quot;Foto&quot; }
+      ]
+    },
+    {
+      &quot;type&quot;: &quot;perk&quot;,
+      &quot;name&quot;: &quot;Vorteil&quot;,
+      &quot;limit&quot;: 6,
+      &quot;settings&quot;: [
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;title&quot;, &quot;label&quot;: &quot;Titel&quot;, &quot;default&quot;: &quot;Überraschung ab 100 €&quot; },
+        { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;text&quot;, &quot;label&quot;: &quot;Text&quot;, &quot;default&quot;: &quot;Im Laden und online (außer reduzierte Ware)&quot; }
+      ]
+    }
+  ],
+  &quot;presets&quot;: [
+    {
+      &quot;name&quot;: &quot;ED24 Laden &amp; Team&quot;,
+      &quot;blocks&quot;: [
+        { &quot;type&quot;: &quot;member&quot;, &quot;settings&quot;: { &quot;name&quot;: &quot;Manu&quot;, &quot;role&quot;: &quot;Manuela Willms&quot; } },
+        { &quot;type&quot;: &quot;member&quot;, &quot;settings&quot;: { &quot;name&quot;: &quot;Franzi&quot;, &quot;role&quot;: &quot;Franziska Plötz&quot; } },
+        { &quot;type&quot;: &quot;member&quot;, &quot;settings&quot;: { &quot;name&quot;: &quot;Mario&quot;, &quot;role&quot;: &quot;Mario Plötz&quot; } },
+        { &quot;type&quot;: &quot;perk&quot;, &quot;settings&quot;: { &quot;title&quot;: &quot;Überraschung ab 100 €&quot;, &quot;text&quot;: &quot;Im Laden und online (außer reduzierte Ware)&quot; } },
+        { &quot;type&quot;: &quot;perk&quot;, &quot;settings&quot;: { &quot;title&quot;: &quot;Treuekarte&quot;, &quot;text&quot;: &quot;10 % Rabatt beim 9. Einkauf im Laden&quot; } },
+        { &quot;type&quot;: &quot;perk&quot;, &quot;settings&quot;: { &quot;title&quot;: &quot;Fragen? Einfach schreiben&quot;, &quot;text&quot;: &quot;WhatsApp, Instagram, Telefon oder vor Ort&quot; } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+</code></pre>
+        </details>
+      </article>
+      <article class="file" id="f-ed24-laufschrift">
+        <div class="file__head">
+          <div class="file__meta">
+            <span class="file__no">9/9</span>
+            <h3 class="file__name">ed24-laufschrift</h3>
+            <p class="file__desc">Riesige Laufschrift mit E-Mail- und Telefon-Sticker. Im Editor heißt der Abschnitt „ED24 Laufschrift“.</p>
+          </div>
+          <div class="file__acts">
+            <button class="btn btn--primary" type="button" data-copy="code-ed24-laufschrift">Code kopieren</button>
+            <label class="done"><input type="checkbox" id="done-ed24-laufschrift" data-done> Eingefügt</label>
+          </div>
+        </div>
+        <details class="file__code">
+          <summary>Code ansehen (102 Zeilen)</summary>
+          <pre><code id="code-ed24-laufschrift">{%- comment -%}
+  ED24 Laufschrift – Eiweissdealer24
+  Riesige Laufschrift (wird beim Scrollen schneller) mit zwei Stickern: E-Mail und Telefon.
+  Ideal als letzter Abschnitt über dem Footer.
+{%- endcomment -%}
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap&quot;&gt;
+
+{%- liquid
+  assign s = section.settings
+  assign phone_link = s.phone | remove: &#x27; &#x27; | remove: &#x27;–&#x27; | remove: &#x27;-&#x27; | remove: &#x27;/&#x27; | remove: &#x27;(&#x27; | remove: &#x27;)&#x27;
+-%}
+&lt;div class=&quot;ed24-mq&quot; style=&quot;background-color: {{ s.background }}; --ed24-accent: {{ s.accent }};&quot;&gt;
+  &lt;ed24-marquee class=&quot;ed24-mq__band&quot; role=&quot;img&quot; aria-label=&quot;{{ s.text | escape }}&quot;&gt;
+    &lt;div class=&quot;ed24-mq__track&quot; data-ed24-track aria-hidden=&quot;true&quot;&gt;
+      {%- for i in (1..4) -%}&lt;span&gt;{{ s.text | escape }} ✦&lt;/span&gt;{%- endfor -%}
+    &lt;/div&gt;
+  &lt;/ed24-marquee&gt;
+  {%- if s.email != blank and s.sticker_1 != blank -%}
+    &lt;a class=&quot;ed24-mq__sticker ed24-mq__sticker--1&quot; href=&quot;mailto:{{ s.email | escape }}&quot;&gt;{{ s.sticker_1 | escape | replace: &#x27; &#x27;, &#x27;&lt;br&gt;&#x27; }}&lt;/a&gt;
+  {%- endif -%}
+  {%- if s.phone != blank and s.sticker_2 != blank -%}
+    &lt;a class=&quot;ed24-mq__sticker ed24-mq__sticker--2&quot; href=&quot;tel:{{ phone_link }}&quot;&gt;{{ s.sticker_2 | escape | replace: &#x27; &#x27;, &#x27;&lt;br&gt;&#x27; }}&lt;/a&gt;
+  {%- endif -%}
+  {%- if s.note != blank -%}
+    &lt;div class=&quot;ed24-mq__foot&quot;&gt;&lt;p class=&quot;ed24-mq__note&quot;&gt;{{ s.note | escape }}&lt;/p&gt;&lt;/div&gt;
+  {%- endif -%}
+&lt;/div&gt;
+
+{% stylesheet %}
+  .ed24-mq{position:relative;overflow:hidden;padding-top:6vh;color:#111}
+  .ed24-mq__band{display:block;white-space:nowrap;padding:2vh 0;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(90px,17vw,300px);line-height:.95;color:var(--ed24-accent,#e30613)}
+  .ed24-mq__track{display:inline-flex;will-change:transform}
+  .ed24-mq__track span{padding-right:.35em}
+  .ed24-mq .ed24-mq__sticker{position:absolute;z-index:2;display:flex;align-items:center;justify-content:center;padding:18px 26px;border-radius:50%;background:var(--ed24-accent,#e30613);color:#fff;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;text-transform:uppercase;font-size:clamp(13px,1.2vw,17px);letter-spacing:.06em;text-align:center;line-height:1.05;text-decoration:none;box-shadow:0 14px 30px -12px rgba(0,0,0,.4);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+  .ed24-mq .ed24-mq__sticker--1{left:4vw;top:12%;transform:rotate(-12deg)}
+  .ed24-mq .ed24-mq__sticker--2{right:6vw;bottom:30%;transform:rotate(10deg)}
+  .ed24-mq .ed24-mq__sticker:hover{transform:rotate(0) scale(1.08)}
+  .ed24-mq__foot{padding:10vh clamp(16px,4vw,64px) 22px;text-align:center;background:linear-gradient(180deg,transparent,rgba(227,6,19,.35) 20%,var(--ed24-accent,#e30613) 70%)}
+  .ed24-mq .ed24-mq__note{margin:0;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:12px;color:rgba(255,255,255,.85)}
+{% endstylesheet %}
+
+{% javascript %}
+  // Laufschrift: läuft dauerhaft und wird mit der Scroll-Geschwindigkeit schneller.
+  class Ed24Marquee extends HTMLElement {
+    connectedCallback() {
+      var self = this;
+      this.track = this.querySelector(&#x27;[data-ed24-track]&#x27;);
+      if (!this.track || window.matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;).matches || !(&#x27;IntersectionObserver&#x27; in window)) return;
+      this.x = 0;
+      this.lastY = window.scrollY;
+      this.last = performance.now();
+      this.observer = new IntersectionObserver(function (entries) {
+        cancelAnimationFrame(self.raf);
+        if (entries[0].isIntersecting) {
+          self.half = self.track.scrollWidth / 2 || 1;
+          self.last = performance.now();
+          self.raf = requestAnimationFrame(function (t) { self.frame(t); });
+        }
+      });
+      this.observer.observe(this);
+    }
+
+    disconnectedCallback() {
+      if (this.observer) this.observer.disconnect();
+      cancelAnimationFrame(this.raf);
+    }
+
+    frame(now) {
+      var self = this;
+      this.raf = requestAnimationFrame(function (t) { self.frame(t); });
+      var dt = Math.min(0.05, (now - this.last) / 1000);
+      this.last = now;
+      var v = Math.abs(window.scrollY - this.lastY) / Math.max(dt, 0.001);
+      this.lastY = window.scrollY;
+      this.x = (this.x + (40 + Math.min(v, 4000) * 0.08) * dt) % this.half;
+      this.track.style.transform = &#x27;translate3d(&#x27; + -this.x + &#x27;px,0,0)&#x27;;
+    }
+  }
+  if (!customElements.get(&#x27;ed24-marquee&#x27;)) customElements.define(&#x27;ed24-marquee&#x27;, Ed24Marquee);
+{% endjavascript %}
+
+{% schema %}
+{
+  &quot;name&quot;: &quot;ED24 Laufschrift&quot;,
+  &quot;tag&quot;: &quot;section&quot;,
+  &quot;class&quot;: &quot;ed24-section&quot;,
+  &quot;settings&quot;: [
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;text&quot;, &quot;label&quot;: &quot;Laufschrift&quot;, &quot;default&quot;: &quot;info@eiweissdealer24.de&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;email&quot;, &quot;label&quot;: &quot;E-Mail für Sticker 1&quot;, &quot;default&quot;: &quot;info@eiweissdealer24.de&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;sticker_1&quot;, &quot;label&quot;: &quot;Sticker 1&quot;, &quot;default&quot;: &quot;Schreib uns&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;phone&quot;, &quot;label&quot;: &quot;Telefon für Sticker 2&quot;, &quot;default&quot;: &quot;0381 – 203 38 71&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;sticker_2&quot;, &quot;label&quot;: &quot;Sticker 2&quot;, &quot;default&quot;: &quot;Ruf an&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;note&quot;, &quot;label&quot;: &quot;Text im roten Streifen&quot;, &quot;default&quot;: &quot;Eiweissdealer24 · Supplements &amp; Coaching aus Rostock · seit 2007&quot; },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;background&quot;, &quot;label&quot;: &quot;Hintergrund&quot;, &quot;default&quot;: &quot;#efece6&quot; },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;accent&quot;, &quot;label&quot;: &quot;Markenfarbe&quot;, &quot;default&quot;: &quot;#e30613&quot; }
+  ],
+  &quot;presets&quot;: [{ &quot;name&quot;: &quot;ED24 Laufschrift&quot; }]
+}
+{% endschema %}
+</code></pre>
+        </details>
+      </article>
+    </div>
+  </section>
+
+  <section class="step" id="schritt-4">
+    <div class="step__no">4</div>
+    <div class="step__body">
+      <h2>Startseite zusammenbauen</h2>
+      <p>Bei der Theme-Kopie auf <span class="path">Anpassen</span> tippen. Oben ist die Startseite ausgewählt.</p>
+      <ol>
+        <li>Vorhandene Abschnitte der Startseite, die du nicht brauchst (z. B. Bild-Banner, Diashow), ausblenden (Auge-Symbol) oder löschen</li>
+        <li>In der <b>Kopfzeile</b> (Header-Bereich oben) <span class="path">Abschnitt hinzufügen → ED24 Topbar</span></li>
+        <li>In der <b>Vorlage</b> (Startseite) die Abschnitte in dieser Reihenfolge hinzufügen und mit dem Griff ⠿ sortieren:</li>
+      </ol>
+      <ol class="order">
+        <li><span><b>ED24 Hero 3D</b> <em>ganz oben</em></span></li>
+        <li><span><b>ED24 Produkt-Showcase</b> <em>direkt darunter</em></span></li>
+        <li><span><b>ED24 Story</b></span></li>
+        <li><span><b>ED24 Coaching-Panel</b> <em>hier endet die 3D-Bühne</em></span></li>
+        <li><span>Theme-Abschnitt <b>Ausgewählte Kollektion</b> (bei neueren Themes „Produktliste“) <em>z. B. „Eigenmarke“ oder „Angebote“</em></span></li>
+        <li><span><b>ED24 Ziele</b></span></li>
+        <li><span><b>ED24 Marken (Physik)</b></span></li>
+        <li><span><b>ED24 Laden &amp; Team</b></span></li>
+        <li><span><b>ED24 Laufschrift</b> <em>als letzter Abschnitt</em></span></li>
+      </ol>
+      <p class="note note--warn"><strong>Reihenfolge 1–4 nicht unterbrechen.</strong> Hero, Showcase, Story und Coaching-Panel teilen sich eine 3D-Bühne. Ein anderer Abschnitt dazwischen würde von ihr überdeckt.</p>
+      <p>Speichern nicht vergessen (oben rechts).</p>
+    </div>
+  </section>
+
+  <section class="step" id="schritt-5">
+    <div class="step__no">5</div>
+    <div class="step__body">
+      <h2>Farben einstellen</h2>
+      <p>Im Theme-Editor links unten auf das Pinsel- oder Zahnrad-Symbol → <span class="path">Theme-Einstellungen → Farben</span>. Im ersten Farbschema (meist „Schema 1“) eintragen:</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Feld</th><th>Farbe</th></tr></thead>
+        <tbody>
+          <tr><td>Hintergrund</td><td><span class="swatch" style="background:#0b0b0c"></span><code class="inline">#0B0B0C</code></td></tr>
+          <tr><td>Text</td><td><span class="swatch" style="background:#f5f5f4"></span><code class="inline">#F5F5F4</code></td></tr>
+          <tr><td>Button / Akzent</td><td><span class="swatch" style="background:#e30613"></span><code class="inline">#E30613</code></td></tr>
+          <tr><td>Button-Beschriftung</td><td><span class="swatch" style="background:#ffffff"></span><code class="inline">#FFFFFF</code></td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Die Überschriften im ganzen Shop setzt die <b>ED24 Topbar</b> automatisch in die Markenschrift. Abschalten kannst du das in ihren Einstellungen.</p>
+    </div>
+  </section>
+
+  <section class="step" id="schritt-6">
+    <div class="step__no">6</div>
+    <div class="step__body">
+      <h2>Kollektionen anlegen</h2>
+      <p>Für jede Zeile: <span class="path">Produkte → Kollektionen → Kollektion erstellen</span> → Titel eintragen → Typ <b>Automatisiert</b> → Bedingung <span class="path">Produkt-Tag ist gleich</span> + Tag aus der Tabelle → Speichern.</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Titel</th><th>Tag (genau so)</th><th class="num">Produkte</th></tr></thead>
+        <tbody>
+          <tr><td>Protein</td><td><code class="inline">Eiweiß/ Protein</code></td><td class="num">49</td></tr>
+          <tr><td>Kreatin</td><td><code class="inline">Kreatin</code></td><td class="num">26</td></tr>
+          <tr><td>Aminosäuren</td><td><code class="inline">Aminosäuren</code></td><td class="num">64</td></tr>
+          <tr><td>Booster</td><td><code class="inline">Trainings- und NO-Booster</code></td><td class="num">32</td></tr>
+          <tr><td>Weight Gainer</td><td><code class="inline">Weight Gainer/ Kohlenhydrate</code></td><td class="num">27</td></tr>
+          <tr><td>Testo Booster</td><td><code class="inline">Testo Booster</code></td><td class="num">11</td></tr>
+          <tr><td>Gesundheit</td><td><code class="inline">Vital fit und gesund</code></td><td class="num">151</td></tr>
+          <tr><td>Low Carb</td><td><code class="inline">Low Carb-Ecke</code></td><td class="num">31</td></tr>
+          <tr><td>Snacks</td><td><code class="inline">Nasch-Ecke</code></td><td class="num">31</td></tr>
+          <tr><td>Burner</td><td><code class="inline">Burner</code></td><td class="num">5</td></tr>
+          <tr><td>Fightwear</td><td><code class="inline">Fightwear</code></td><td class="num">28</td></tr>
+          <tr><td>Zubehör</td><td><code class="inline">Zubehör</code></td><td class="num">42</td></tr>
+          <tr><td>Coaching</td><td><code class="inline">Coaching</code></td><td class="num">15</td></tr>
+          <tr><td>Eigenmarke</td><td><code class="inline">Eigenmarke</code></td><td class="num">27</td></tr>
+          <tr><td>Angebote</td><td><code class="inline">Angebot</code></td><td class="num">16</td></tr>
+        </tbody>
+      </table></div>
+      <p><b>Menü:</b> <span class="path">Onlineshop → Navigation → Hauptmenü</span>. Sinnvoll: Shop (mit Untermenü Protein, Kreatin, Aminosäuren, Booster, Gesundheit, Snacks), Fightwear, Zubehör, Coaching, Angebote.</p>
+    </div>
+  </section>
+
+  <section class="step" id="schritt-7">
+    <div class="step__no">7</div>
+    <div class="step__body">
+      <h2>Inhalte verknüpfen</h2>
+      <p>Im Theme-Editor die Abschnitte antippen und einstellen:</p>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Abschnitt</th><th>Einstellung</th><th>Auswahl</th></tr></thead>
+        <tbody>
+          <tr><td>Produkt-Showcase · Kapitel 1</td><td>Produkt</td><td>Eiweissdealer 24 Classic Whey Protein</td></tr>
+          <tr><td>Produkt-Showcase · Kapitel 2</td><td>Produkt</td><td>Classic Creatin Monohydrat Pulver</td></tr>
+          <tr><td>Produkt-Showcase · Kapitel 3</td><td>Produkt</td><td>Classic EAA Pulver</td></tr>
+          <tr><td>Produkt-Showcase · Kapitel 4</td><td>Produkt</td><td>Classic L-Glutamin Pulver</td></tr>
+          <tr><td>Coaching-Panel</td><td>Button-Link</td><td>Kollektion „Coaching“</td></tr>
+          <tr><td>Ziele · Muskelaufbau / Definition / Pump &amp; Power / Gesundheit / Kampfsport</td><td>Kollektion</td><td>Protein / Burner / Booster / Gesundheit / Fightwear</td></tr>
+          <tr><td>Laden &amp; Team</td><td>Foto</td><td>Teamfotos hochladen (optional)</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Im Showcase springt die Vorschau automatisch zum Kapitel, das du links auswählst. Preis und „Zum Produkt“-Button erscheinen, sobald ein Produkt gewählt ist.</p>
+    </div>
+  </section>
+
+  <section class="step" id="schritt-8">
+    <div class="step__no">8</div>
+    <div class="step__body">
+      <h2>Vor Freitag prüfen</h2>
+      <ul>
+        <li><b>Passwortschutz bleibt an:</b> <span class="path">Onlineshop → Einstellungen → Passwortschutz</span>. So sieht nur, wer das Passwort hat, den Shop, bis Eiweissdealer24 zugestimmt hat.</li>
+        <li><b>Fightwear nur zur Abholung:</b> Fightwear gibt es bei Eiweissdealer24 nur im Laden. Unter <span class="path">Einstellungen → Versand und Zustellung</span> zuerst <b>Abholung vor Ort</b> aktivieren. Dann ein <b>benutzerdefiniertes Versandprofil</b> „Fightwear“ anlegen, die Fightwear-Produkte hinzufügen und <b>keine</b> Versandtarife eintragen. So kann man sie nur abholen.</li>
+        <li><b>Live schalten der Kopie:</b> <span class="path">Onlineshop → Themes</span> → bei der Kopie <span class="path">Veröffentlichen</span>. Das alte Theme bleibt erhalten.</li>
+        <li><b>Einmal durchscrollen</b> auf dem iPad und am Handy: Hero, alle 4 Kapitel, Story, Coaching-Panel, Marken werfen, Laufschrift.</li>
+      </ul>
+      <p class="note"><b>Wenn die 3D-Effekte fehlen:</b> Im Abschnitt „ED24 Hero 3D“ muss „3D-Effekte und Farbverlauf anzeigen“ an sein. Ohne WebGL (sehr alte Geräte) zeigt die Seite automatisch einen ruhigen Farbverlauf. Inhalte und Kauf-Buttons funktionieren trotzdem.</p>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+  var toast = document.getElementById('toast'), tt;
+  function say(msg) { toast.textContent = msg; toast.classList.add('show'); clearTimeout(tt); tt = setTimeout(function () { toast.classList.remove('show'); }, 2200); }
+  function selectText(el) {
+    var d = el.closest('details'); if (d) d.open = true;
+    var r = document.createRange(); r.selectNodeContents(el);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-copy]'); if (!b) return;
+    var el = document.getElementById(b.getAttribute('data-copy'));
+    var text = el.textContent;
+    var done = function () { b.classList.add('is-copied'); b.textContent = 'Kopiert ✓'; say('Code kopiert – jetzt in Shopify einfügen'); setTimeout(function () { b.classList.remove('is-copied'); b.textContent = 'Code kopieren'; }, 2500); };
+    var fallback = function () { selectText(el); say('Code ist markiert – jetzt über „Kopieren“ übernehmen'); };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+      else fallback();
+    } catch (err) { fallback(); }
+  });
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('[data-done]'));
+  function update() {
+    var n = boxes.filter(function (b) { return b.checked; }).length;
+    document.getElementById('bar').style.width = (n / boxes.length * 100) + '%';
+    document.getElementById('progress-text').textContent = n + ' von ' + boxes.length + ' Abschnitten eingefügt';
+  }
+  boxes.forEach(function (b) {
+    try { b.checked = localStorage.getItem('ed24-' + b.id) === '1'; } catch (err) {}
+    b.addEventListener('change', function () { try { localStorage.setItem('ed24-' + b.id, b.checked ? '1' : '0'); } catch (err) {} update(); });
+  });
+  update();
+})();
+</script>

@@ -1,0 +1,201 @@
+{%- comment -%}
+  ED24 Produkt-Showcase – Eiweissdealer24
+  Fixierter Showcase: pro Kapitel dreht sich die 3D-Dose aus „ED24 Hero 3D“, wechselt Etikett und Hintergrundfarbe.
+  Direkt unter „ED24 Hero 3D“ platzieren. Je Kapitel ein Produkt auswählen, dann erscheinen Preis und Link automatisch.
+{%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
+
+{%- assign chapter_count = section.blocks.size -%}
+<div
+  class="ed24-show"
+  id="ed24-showcase"
+  data-ed24-showcase
+  style="height: {{ chapter_count | plus: 1 | times: 100 }}svh;"
+>
+  <ed24-showcase class="ed24-show__stage">
+    {%- for block in section.blocks -%}
+      {%- assign p = block.settings.product -%}
+      <article
+        class="ed24-chap{% if forloop.first %} is-first{% endif %}"
+        data-ed24-chapter
+        data-block-id="{{ block.id }}"
+        data-color="{{ block.settings.color }}"
+        data-label1="{{ block.settings.label_1 | escape }}"
+        data-label2="{{ block.settings.label_2 | escape }}"
+        data-body="{{ block.settings.tub }}"
+        style="--c: {{ block.settings.color }};"
+        {{ block.shopify_attributes }}
+      >
+        {%- if block.settings.eyebrow != blank -%}<p class="ed24-chap__eye">{{ block.settings.eyebrow | escape }}</p>{%- endif -%}
+        <h2 class="ed24-chap__t">{{ block.settings.title_1 | escape }}</h2>
+        {%- if block.settings.title_2 != blank -%}<p class="ed24-chap__t ed24-chap__t--2">{{ block.settings.title_2 | escape }}</p>{%- endif -%}
+        {%- if block.settings.sub != blank -%}<p class="ed24-chap__sub">{{ block.settings.sub | escape }}</p>{%- endif -%}
+        {%- if block.settings.tagline != blank -%}<p class="ed24-chap__tag">{{ block.settings.tagline }}</p>{%- endif -%}
+        {%- if block.settings.info != blank -%}<p class="ed24-chap__info">{{ block.settings.info | escape }}</p>{%- endif -%}
+        {%- if p != blank -%}
+          <a class="ed24-chap__buy" href="{{ p.url }}">
+            {%- if p.price_varies %}ab {% endif -%}{{ p.price_min | money }} · {{ block.settings.button_label | escape }}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg>
+          </a>
+        {%- elsif request.design_mode -%}
+          <span class="ed24-chap__buy ed24-chap__buy--hint">Produkt im Editor auswählen</span>
+        {%- endif -%}
+      </article>
+    {%- endfor -%}
+    {%- if section.settings.show_progress and chapter_count > 1 -%}
+      <div class="ed24-prog" aria-hidden="true">
+        <span data-ed24-num>01</span><small> / {% if chapter_count < 10 %}0{% endif %}{{ chapter_count }}</small>
+        <i><b data-ed24-bar style="transform: scaleX({{ 1.0 | divided_by: chapter_count }});"></b></i>
+      </div>
+    {%- endif -%}
+  </ed24-showcase>
+</div>
+
+{% stylesheet %}
+  .ed24-show{position:relative}
+  .ed24-show__stage{position:sticky;top:0;display:block;height:100vh;height:100svh;overflow:hidden;color:#fff}
+  .ed24-chap{position:absolute;inset:0;padding:14vh clamp(16px,4vw,64px) 7vh;display:grid;grid-template-columns:minmax(0,1fr) min(360px,28vw);grid-template-rows:auto auto auto auto 1fr auto auto;column-gap:4vw;pointer-events:none;z-index:1}
+  .ed24-chap.is-on{pointer-events:auto}
+  .ed24-chap>*{margin:0;opacity:0;transform:translateY(24px);transition:opacity .5s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1),clip-path .9s cubic-bezier(.2,.8,.2,1)}
+  .ed24-chap.is-on>*{opacity:1;transform:none;transition-delay:.2s}
+  .ed24-show .ed24-chap__eye{grid-column:1;grid-row:1;margin:0 0 12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-style:normal;letter-spacing:.16em;text-transform:uppercase;font-size:14px;line-height:1.3;color:#fff}
+  .ed24-show .ed24-chap__t{grid-column:1;margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(60px,8.4vw,156px);line-height:.84;letter-spacing:.005em;color:#fff;clip-path:inset(0 -5% 100% -5%);transform:translateY(40%)}
+  .ed24-show .ed24-chap.is-on .ed24-chap__t{clip-path:inset(-10% -5% -10% -5%);transform:none;transition-delay:0s}
+  .ed24-show .ed24-chap.is-on .ed24-chap__t--2{transition-delay:.07s}
+  .ed24-show .ed24-chap.is-past .ed24-chap__t{transform:translateY(-40%);clip-path:inset(100% -5% 0 -5%)}
+  .ed24-show .ed24-chap__sub{grid-column:1;grid-row:4;margin:16px 0 0;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#fff}
+  .ed24-show .ed24-chap__tag{grid-column:2;grid-row:2/5;align-self:center;margin:0;font-family:'Barlow',sans-serif;font-size:clamp(22px,2.05vw,31px);line-height:1.18;font-weight:500;color:#fff}
+  .ed24-show .ed24-chap__tag em,.ed24-show .ed24-chap__tag strong{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;text-transform:uppercase;font-size:1.22em}
+  .ed24-show .ed24-chap__info{grid-column:1;grid-row:6;max-width:330px;margin:0;font-family:'Barlow',sans-serif;font-size:13px;line-height:1.5;color:var(--c)}
+  .ed24-show .ed24-chap__buy{grid-column:1;grid-row:7;justify-self:start;margin-top:14px;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;background:var(--c);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:normal;text-transform:uppercase;letter-spacing:.06em;font-size:15px;text-decoration:none;transition-delay:.3s}
+  .ed24-chap__buy--hint{background:#0006 !important}
+  .ed24-prog{position:absolute;z-index:1;right:clamp(16px,5vw,80px);bottom:7vh;color:#111;text-align:right;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;font-size:56px;line-height:.9}
+  .ed24-prog small{font-size:22px;opacity:.45}
+  .ed24-prog i{display:block;width:160px;height:3px;margin:10px 0 0 auto;background:#0002;overflow:hidden;border-radius:3px}
+  .ed24-prog b{display:block;height:100%;background:#111;transform-origin:left;transition:transform .4s}
+  html.ed24-nogl .ed24-show{background:#efece6}
+  html.ed24-nogl .ed24-show .ed24-chap__eye,html.ed24-nogl .ed24-show .ed24-chap__t,html.ed24-nogl .ed24-show .ed24-chap__sub,html.ed24-nogl .ed24-show .ed24-chap__tag{color:var(--c)}
+  @media (max-width:749px){
+    .ed24-chap{padding:84px 16px 24px;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto 1fr auto auto;text-align:center}
+    .ed24-show .ed24-chap__t{font-size:clamp(50px,15vw,96px)}
+    .ed24-show .ed24-chap__sub,.ed24-show .ed24-chap__info,.ed24-prog{display:none}
+    .ed24-show .ed24-chap__tag{grid-column:1;grid-row:5;color:#111;font-size:19px}
+    .ed24-show .ed24-chap__buy{grid-row:6;justify-self:center}
+  }
+  @media (prefers-reduced-motion:reduce){.ed24-chap>*,.ed24-show .ed24-chap__t{transition:none}}
+{% endstylesheet %}
+
+{% javascript %}
+  // Produkt-Showcase: zeigt das Kapitel passend zur Scroll-Position; im Theme-Editor springt die Ansicht zum gewählten Kapitel.
+  var ed24Clamp = function (v) { return Math.min(1, Math.max(0, v)); };
+  class Ed24Showcase extends HTMLElement {
+    connectedCallback() {
+      var self = this;
+      this.ctrl = new AbortController();
+      var opts = { signal: this.ctrl.signal, passive: true };
+      this.section = this.closest('[data-ed24-showcase]') || this;
+      this.chapters = Array.prototype.slice.call(this.querySelectorAll('[data-ed24-chapter]'));
+      this.num = this.querySelector('[data-ed24-num]');
+      this.bar = this.querySelector('[data-ed24-bar]');
+      this.active = -2;
+      this.chapters.forEach(function (el) { el.inert = true; });
+      var queue = function () {
+        if (self.tick) return;
+        self.tick = requestAnimationFrame(function () { self.tick = 0; self.update(); });
+      };
+      window.addEventListener('scroll', queue, opts);
+      window.addEventListener('resize', queue, opts);
+      document.addEventListener('shopify:block:select', function (e) {
+        var i = self.chapters.findIndex(function (el) { return el.dataset.blockId === (e.detail && e.detail.blockId); });
+        if (i < 0) return;
+        var top = self.section.getBoundingClientRect().top + window.scrollY;
+        var span = Math.max(1, self.section.offsetHeight - window.innerHeight);
+        window.scrollTo({ top: top + span * ((i + 0.5) / self.chapters.length), behavior: 'auto' });
+      }, { signal: this.ctrl.signal });
+      this.update();
+    }
+
+    disconnectedCallback() {
+      if (this.ctrl) this.ctrl.abort();
+      cancelAnimationFrame(this.tick);
+      this.tick = 0;
+    }
+
+    update() {
+      var n = this.chapters.length;
+      if (!n) return;
+      var r = this.section.getBoundingClientRect();
+      var span = Math.max(1, r.height - window.innerHeight);
+      var progress = ed24Clamp(-r.top / span);
+      var current = r.top > window.innerHeight * 0.35 ? -1 : Math.min(n - 1, Math.floor(progress * n + 1e-6));
+      if (current === this.active) return;
+      this.active = current;
+      this.chapters.forEach(function (el, i) {
+        el.classList.toggle('is-on', i === current);
+        el.classList.toggle('is-past', current > -1 && i < current);
+        el.inert = i !== current;
+      });
+      if (current < 0) return;
+      if (this.num) this.num.textContent = (current + 1 < 10 ? '0' : '') + (current + 1);
+      if (this.bar) this.bar.style.transform = 'scaleX(' + (current + 1) / n + ')';
+    }
+  }
+  if (!customElements.get('ed24-showcase')) customElements.define('ed24-showcase', Ed24Showcase);
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "ED24 Produkt-Showcase",
+  "tag": "section",
+  "class": "ed24-section",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "paragraph", "content": "Direkt unter „ED24 Hero 3D“ platzieren. Pro Kapitel scrollt die Seite einen Bildschirm weiter." },
+    { "type": "checkbox", "id": "show_progress", "label": "Kapitel-Zähler anzeigen", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "chapter",
+      "name": "Kapitel",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Produkt", "info": "Preis und Link kommen automatisch aus dem Produkt." },
+        { "type": "text", "id": "button_label", "label": "Button-Text", "default": "Zum Produkt" },
+        { "type": "header", "content": "3D-Dose" },
+        { "type": "color", "id": "color", "label": "Kapitelfarbe", "default": "#e30613" },
+        { "type": "text", "id": "label_1", "label": "Etikett Zeile 1", "default": "Whey" },
+        { "type": "text", "id": "label_2", "label": "Etikett Zeile 2", "default": "Protein" },
+        {
+          "type": "select",
+          "id": "tub",
+          "label": "Dosenfarbe",
+          "default": "dark",
+          "options": [
+            { "value": "dark", "label": "Schwarz" },
+            { "value": "light", "label": "Weiß" }
+          ]
+        },
+        { "type": "header", "content": "Texte" },
+        { "type": "text", "id": "eyebrow", "label": "Kleine Überschrift", "default": "01 · Muskelaufbau" },
+        { "type": "text", "id": "title_1", "label": "Titel Zeile 1", "default": "Classic" },
+        { "type": "text", "id": "title_2", "label": "Titel Zeile 2", "default": "Whey Protein" },
+        { "type": "text", "id": "sub", "label": "Unterzeile", "default": "Wheyprotein · Eiweissdealer24 Eigenmarke" },
+        { "type": "inline_richtext", "id": "tagline", "label": "Slogan", "info": "Kursiv gesetzte Wörter werden groß hervorgehoben.", "default": "Muskeln brauchen <em>Material.</em> Hier ist es." },
+        { "type": "textarea", "id": "info", "label": "Info-Text", "default": "Protein trägt zu einer Zunahme an Muskelmasse bei. Als Cookies & Cream, Vanille oder Schokolade." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "ED24 Produkt-Showcase",
+      "blocks": [
+        { "type": "chapter", "settings": { "color": "#e30613", "label_1": "Whey", "label_2": "Protein", "tub": "dark", "eyebrow": "01 · Muskelaufbau", "title_1": "Classic", "title_2": "Whey Protein", "sub": "Wheyprotein · Eiweissdealer24 Eigenmarke", "tagline": "Muskeln brauchen <em>Material.</em> Hier ist es.", "info": "Protein trägt zu einer Zunahme an Muskelmasse bei. Als Cookies & Cream, Vanille oder Schokolade." } },
+        { "type": "chapter", "settings": { "color": "#ff5a00", "label_1": "Creatin", "label_2": "Monohydrat", "tub": "dark", "eyebrow": "02 · Kraft", "title_1": "Creatin", "title_2": "Monohydrat", "sub": "Kreatin · Eiweissdealer24 Eigenmarke", "tagline": "Für den <em>letzten Satz,</em> der eigentlich zu viel ist.", "info": "Kreatin erhöht die körperliche Leistung bei Schnellkrafttraining im Rahmen kurzzeitiger intensiver Belastungen (bei täglich 3 g Kreatin)." } },
+        { "type": "chapter", "settings": { "color": "#2b3bff", "label_1": "EAA", "label_2": "Pulver", "tub": "light", "eyebrow": "03 · Training", "title_1": "EAA", "title_2": "Pulver", "sub": "Aminosäuren · Eiweissdealer24 Eigenmarke", "tagline": "Für alle, die nach dem <em>Warm-up</em> erst anfangen.", "info": "Essentielle Aminosäuren als Pulver mit Pfirsich-Eistee-Geschmack – einfach in Wasser einrühren und mit ins Gym nehmen." } },
+        { "type": "chapter", "settings": { "color": "#0d9e63", "label_1": "L-Glutamin", "label_2": "Pulver", "tub": "light", "eyebrow": "04 · Regeneration", "title_1": "L-Glutamin", "title_2": "Pulver", "sub": "Aminosäure · Eiweissdealer24 Eigenmarke", "tagline": "Für die Tage nach dem <em>Beintag.</em>", "info": "Pur oder im Shake. Frag uns im Laden, wie es in deinen Plan passt." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,34 +1,60 @@
-# Eiweissdealer24 – Shopify-Test-Store
+# Eiweissdealer24 – Shopify-Einbau
 
-Für das Redesign gibt es einen eigenen, passwortgeschützten Shopify-Test-Store („Eiweissdealer24 Konzept“), getrennt von WEAX.
+Das Redesign als 9 Shopify-Abschnitte (Online Store 2.0) zum Einfügen in ein bestehendes Theme (Dawn, Horizon und andere OS2-Themes), dazu das komplette Sortiment als CSV-Import.
 
-## Was im Theme steckt
+**Schritt-für-Schritt:** `anleitung.html` im Browser öffnen. Sie enthält alle Abschnitte mit Kopieren-Knopf, die Reihenfolge auf der Startseite, Farben, Kollektionen und eine Checkliste.
 
-Auf Basis von Shopifys „Base Theme“ (Blocks + Liquid-Templates):
+## Abschnitte (`sections/`)
 
-| Block | Effekt |
-|---|---|
-| `ed24-hero` | Riesen-Schriftzug, WebGL-Farbverlauf und schwebende 3D-Dosen, Hantel und Messlöffel. Hier sitzt die 3D-Bühne für die ganze Seite. |
-| `ed24-showcase` + `ed24-chapter` | Fixierter Produkt-Showcase: Die 3D-Dose dreht sich pro Kapitel und wechselt Etikett und Hintergrundfarbe. Jedes Kapitel hat einen Produkt-Picker (Preis und Link kommen automatisch). |
-| `ed24-story` | Stempel-Typo mit vorbeischwebenden 3D-Objekten |
-| `ed24-coach` | Coaching-Panel, das sich beim Scrollen auf volle Fläche aufzieht |
-| `ed24-brands` | Alle Marken des Shops als Physik-Pillen zum Werfen (Matter.js) |
-| `ed24-marquee` | Laufschrift, die mit der Scroll-Geschwindigkeit schneller wird, dazu Sticker |
+| Datei | Name im Theme-Editor | Effekt |
+|---|---|---|
+| `ed24-topbar.liquid` | ED24 Topbar | Rote Infoleiste (Laden, Überraschung ab 100 €, Beratung). Setzt außerdem die Überschriften im ganzen Shop in die Markenschrift. Gehört in die Kopfzeile. |
+| `ed24-hero.liquid` | ED24 Hero 3D | Riesen-Schriftzug, WebGL-Farbverlauf, schwebende 3D-Dosen, Hantel und Messlöffel. Hier sitzt die 3D-Bühne für Hero, Showcase und Story. |
+| `ed24-showcase.liquid` | ED24 Produkt-Showcase | Fixierter Showcase mit bis zu 6 Kapiteln. Die Dose dreht sich, Etikett und Hintergrund wechseln. Pro Kapitel ein Produkt-Picker, Preis und Link kommen automatisch. |
+| `ed24-story.liquid` | ED24 Story | Stempel-Typo mit vorbeischwebenden 3D-Objekten und Fakten. |
+| `ed24-coaching.liquid` | ED24 Coaching-Panel | Coaching-Panel, das sich beim Scrollen aufzieht. Hier endet die 3D-Bühne. |
+| `ed24-ziele.liquid` | ED24 Ziele | „Was ist dein Ziel?“: Kacheln mit Kollektion und automatischer Produktanzahl. |
+| `ed24-marken.liquid` | ED24 Marken (Physik) | Alle Marken des Shops als Physik-Pillen zum Werfen (Matter.js). |
+| `ed24-laden.liquid` | ED24 Laden & Team | Team, Live-Öffnungsstatus, Adresse, Route und Vorteile. |
+| `ed24-laufschrift.liquid` | ED24 Laufschrift | Laufschrift, die mit der Scroll-Geschwindigkeit schneller wird, dazu Sticker für E-Mail und Telefon. |
 
-Texte stehen in `locales/de.json` (Schlüssel `ed24.*`). Farben, Produkte und Etiketten sind im Theme-Editor einstellbar. Das Farbschema des Shops ist Schwarz und Rot.
+Reihenfolge auf der Startseite: Hero → Showcase → Story → Coaching-Panel lückenlos hintereinander, danach beliebige Theme-Abschnitte, Ziele, Marken, Laden & Team, Laufschrift.
 
-Die Bibliotheken kommen vom CDN: Three.js r149 (jsDelivr) und Matter.js 0.19 (cdnjs).
+Technik:
+- Bibliotheken vom CDN: Three.js r149 (jsDelivr), Matter.js 0.19 (cdnjs), Schriften Barlow und Barlow Condensed (Google Fonts).
+- Die 3D-Bühne schneidet sich pro Frame auf den Bereich zwischen Kopfzeile und Coaching-Panel zu und überdeckt so nie Header oder andere Abschnitte.
+- Ohne WebGL oder bei „Bewegung reduzieren“ erscheint ein ruhiger Farbverlauf. Inhalte und Buttons funktionieren immer.
+- Im Theme-Editor werden die Abschnitte beim Bearbeiten, Verschieben und Löschen neu aufgebaut.
 
-## Produkte importieren
+## Produkte (`produkte-import.csv`)
 
-`produkte-import.csv`: 472 Produkte, mit Bildern, Beschreibungen, Tags und Typ, erzeugt aus dem Sortiment von eiweissdealer24.de (Stand Nov. 2026).
+472 Produkte mit 1.249 Varianten, Bildern, Beschreibungen, Tags und Typ, erzeugt aus dem Sortiment von eiweissdealer24.de (Stand Nov. 2026).
 
-1. Test-Store in dein Shopify-Konto übernehmen (Link „speichern“ aus dem Chat)
-2. Shopify-Admin → **Produkte** → **Importieren** → `produkte-import.csv` wählen → **Importieren**
-3. Danach Bescheid geben. Dann lege ich die Kollektionen an und verknüpfe die Showcase-Kapitel mit den Eigenmarke-Produkten.
+Import: Shopify-Admin → **Produkte** → **Importieren** → Datei wählen → **Produkte importieren**.
 
-**Hinweise:**
-- Alle Varianten haben den „ab“-Preis des Originals. Preise einzelner Größen sind nicht bekannt.
-- Bestand wird nicht verfolgt, alles ist bestellbar. Coaching-Leistungen sind ohne Versand angelegt.
+Hinweise:
+- Alle Varianten haben den „ab“-Preis des Originals, die Preise einzelner Größen sind dort nicht angegeben. Vor echten Bestellungen nachtragen.
+- Der Bestand wird nicht verfolgt, alles ist bestellbar. Coaching-Leistungen sind ohne Versand angelegt.
 - Pro Produkt sind bis zu 3 Bilder hinterlegt, Shopify lädt sie beim Import von eiweissdealer24.de.
 - Bei Produkten mit mehr als 3 Optionsgruppen werden nur die ersten 3 übernommen (Shopify-Limit).
+- Fightwear gibt es nur im Laden: Abholung vor Ort aktivieren und für Fightwear ein Versandprofil ohne Versandtarife anlegen.
+
+Kollektionen als automatisierte Kollektionen mit der Bedingung „Produkt-Tag ist gleich“:
+
+| Tag | Produkte |
+|---|---:|
+| Eiweiß/ Protein | 49 |
+| Kreatin | 26 |
+| Aminosäuren | 64 |
+| Trainings- und NO-Booster | 32 |
+| Weight Gainer/ Kohlenhydrate | 27 |
+| Testo Booster | 11 |
+| Vital fit und gesund | 151 |
+| Low Carb-Ecke | 31 |
+| Nasch-Ecke | 31 |
+| Burner | 5 |
+| Fightwear | 28 |
+| Zubehör | 42 |
+| Coaching | 15 |
+| Eigenmarke | 27 |
+| Angebot | 16 |

@@ -1,0 +1,99 @@
+{%- comment -%}
+  ED24 Ziele – Eiweissdealer24
+  „Was ist dein Ziel?“: große Kacheln, die direkt in die passende Kollektion führen.
+{%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
+
+<div class="ed24-goals" style="background-color: {{ section.settings.background }}; --ed24-accent: {{ section.settings.accent }};">
+  <div class="ed24-goals__wrap">
+    {%- if section.settings.eyebrow != blank -%}<p class="ed24-goals__eye">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+    <h2 class="ed24-goals__title">{{ section.settings.title | escape }}</h2>
+    <div class="ed24-goals__grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign c = block.settings.collection
+          assign href = block.settings.link
+          if c != blank
+            assign href = c.url
+          endif
+          if href == blank
+            assign href = routes.all_products_collection_url
+          endif
+        -%}
+        <a class="ed24-goal" href="{{ href }}" {{ block.shopify_attributes }}>
+          <span class="ed24-goal__num">
+            {%- if forloop.index < 10 %}0{% endif %}{{ forloop.index -}}
+            {%- if c != blank %} · {{ c.products_count }} {% if c.products_count == 1 %}Produkt{% else %}Produkte{% endif %}{% endif -%}
+          </span>
+          <span class="ed24-goal__body">
+            <span class="ed24-goal__h">{{ block.settings.title | escape }}</span>
+            {%- if block.settings.text != blank -%}<span class="ed24-goal__t">{{ block.settings.text | escape }}</span>{%- endif -%}
+          </span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .ed24-goals{padding:clamp(56px,9vw,104px) 0;color:#f5f5f4}
+  .ed24-goals__wrap{max-width:1280px;margin:0 auto;padding:0 clamp(16px,3vw,28px)}
+  .ed24-goals .ed24-goals__eye{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-style:normal;text-transform:uppercase;letter-spacing:.14em;font-size:13px;color:var(--ed24-accent,#e30613)}
+  .ed24-goals .ed24-goals__eye::before{content:"";width:28px;height:3px;background:var(--ed24-accent,#e30613);transform:skewX(-20deg)}
+  .ed24-goals .ed24-goals__title{margin:0 0 26px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(36px,5.6vw,62px);line-height:.92;letter-spacing:.005em;color:#f5f5f4}
+  .ed24-goals__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .ed24-goal{border-radius:14px;background:#131315;border:1px solid #2c2c32;padding:18px;min-height:140px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;color:#f5f5f4;text-decoration:none;transition:border-color .2s,transform .2s}
+  .ed24-goal:hover{border-color:var(--ed24-accent,#e30613);transform:translateY(-3px)}
+  .ed24-goal:first-child{grid-column:span 2;background:linear-gradient(135deg,var(--ed24-accent,#e30613),#8d040c);border-color:transparent}
+  .ed24-goal__num{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;font-size:15px;color:#7a7a82}
+  .ed24-goal:first-child .ed24-goal__num,.ed24-goal:first-child .ed24-goal__t{color:#ffd6d8}
+  .ed24-goal__h{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:28px;line-height:.92}
+  .ed24-goal__t{display:block;margin-top:6px;font-family:'Barlow',sans-serif;font-size:13px;color:#a6a6ad}
+  @media (min-width:990px){
+    .ed24-goals__grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+    .ed24-goal{min-height:190px;padding:22px}
+    .ed24-goal:first-child{grid-column:auto}
+    .ed24-goal__h{font-size:32px}
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "ED24 Ziele",
+  "tag": "section",
+  "class": "ed24-section",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Kleine Überschrift", "default": "Finde schneller, was du brauchst" },
+    { "type": "text", "id": "title", "label": "Überschrift", "default": "Was ist dein Ziel?" },
+    { "type": "color", "id": "background", "label": "Hintergrund", "default": "#0a0a0b" },
+    { "type": "color", "id": "accent", "label": "Markenfarbe", "default": "#e30613" }
+  ],
+  "blocks": [
+    {
+      "type": "goal",
+      "name": "Ziel",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titel", "default": "Muskelaufbau" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Protein · Whey · Isolat" },
+        { "type": "collection", "id": "collection", "label": "Kollektion", "info": "Die Produktanzahl wird automatisch angezeigt." },
+        { "type": "url", "id": "link", "label": "Oder eigener Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "ED24 Ziele",
+      "blocks": [
+        { "type": "goal", "settings": { "title": "Muskelaufbau", "text": "Protein · Whey · Isolat" } },
+        { "type": "goal", "settings": { "title": "Definition", "text": "Burner · Low Carb · Clear" } },
+        { "type": "goal", "settings": { "title": "Pump & Power", "text": "Booster · Pump · Fokus" } },
+        { "type": "goal", "settings": { "title": "Gesundheit", "text": "Vitamine · Omega 3 · Magnesium" } },
+        { "type": "goal", "settings": { "title": "Kampfsport", "text": "Handschuhe · Bandagen · Shorts" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
