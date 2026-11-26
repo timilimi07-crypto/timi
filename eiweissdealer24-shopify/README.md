@@ -8,29 +8,31 @@ Das Redesign als 9 Shopify-Abschnitte (Online Store 2.0) zum Einfügen in ein be
 
 Bereits eingerichtet (Nov. 2026):
 
-- Theme **„Eiweissdealer24 – echte Produkte“**: die fertige Version mit den echten, schwebenden Produkten, im Shop geprüft und bereit zum Veröffentlichen. Veröffentlicht ist noch der Vorgänger „Eiweissdealer24 Redesign“ (bleibt als Sicherung). Das frühere Theme mit der „ABI Shop 2027“-Seite heißt „Horizon“ und ist unverändert, nur nicht mehr veröffentlicht.
+- Theme **„Eiweissdealer24 – echte Produkte“** ist veröffentlicht (hinter dem Passwort). Der Vorgänger „Eiweissdealer24 Redesign“ bleibt als Sicherung. Das frühere Theme mit der „ABI Shop 2027“-Seite heißt „Horizon“ und ist unverändert, nur nicht mehr veröffentlicht.
   - 9 ED24-Abschnitte, byte-gleich mit `sections/` (MD5 geprüft)
-  - Startseite in der richtigen Reihenfolge; Showcase-Kapitel mit den 4 Eigenmarke-Produkten und ihren freigestellten Fotos verknüpft
-  - Hero mit 10 schwebenden echten Produkten (Blöcke mit Bild und Produkt), Bilder unter Inhalte → Dateien (`ed24-…png`)
+  - Startseite in der richtigen Reihenfolge; Showcase-Kapitel mit den 4 Eigenmarke-Produkten verknüpft
+  - Hero mit 3D-Produkten (Dosen mit Eiweissdealer-Etikett, Hantel, Kettlebell, Shaker, Messlöffel). Die Etiketten der großen Dose kommen aus den Kapiteltiteln.
+  - Menü nur mit Text (ohne Kollektionsbilder)
+  - Markenschriften im ganzen Shop: Texte in Barlow, Überschriften in Barlow Condensed
   - Ziele-Kacheln mit Kollektionen verknüpft, Coaching-Button auf `/collections/coaching`
   - Topbar und Logo (`eiweissdealer24-logo.png`, liegt unter Inhalte → Dateien), dunkles Farbschema mit Rot
   - Menü „Eiweissdealer24 Hauptmenü“ (`ed24-hauptmenue`); das bestehende Hauptmenü ist unverändert
-- 472 Produkte importiert, alle Produktbilder einheitlich (siehe `bilder/`)
+- 472 Produkte importiert, alle Produktbilder einheitlich auf schwarzem Hintergrund (siehe `bilder/`)
 - 15 automatische Kollektionen (siehe Tabelle unten), im Onlineshop sichtbar
 - Passwortschutz des Shops ist an
 
 Noch offen:
 
 - Fightwear nur zur Abholung: Abholung vor Ort und ein Versandprofil ohne Tarife einrichten.
-- „Eiweissdealer24 – echte Produkte“ veröffentlichen: Onlineshop → Themes → beim Theme „…“ → Veröffentlichen. Das muss im Shopify-Admin passieren, über die Schnittstelle lässt Shopify das bei diesem Theme nicht zu.
+- Mehr Filter in den Kollektionen: in der kostenlosen Shopify-App „Search & Discovery“ unter Filter (Marke, Produkttyp, Größe, Geschmack). Shopify erlaubt das nur dort, nicht über die Schnittstelle.
 
 ## Abschnitte (`sections/`)
 
 | Datei | Name im Theme-Editor | Effekt |
 |---|---|---|
-| `ed24-topbar.liquid` | ED24 Topbar | Rote Infoleiste (Laden, Überraschung ab 100 €, Beratung). Setzt außerdem die Überschriften im ganzen Shop in die Markenschrift. Gehört in die Kopfzeile. |
-| `ed24-hero.liquid` | ED24 Hero 3D | Riesen-Schriftzug, WebGL-Farbverlauf und echte, freigestellte Produktfotos, die schweben (Blöcke „Schwebendes Produkt“). Hier sitzt die Effekt-Bühne für Hero, Showcase und Story. |
-| `ed24-showcase.liquid` | ED24 Produkt-Showcase | Fixierter Showcase mit bis zu 6 Kapiteln. Das Produkt dreht sich um und zeigt das nächste, der Hintergrund wechselt die Farbe. Pro Kapitel Produkt und freigestelltes Bild, Preis und Link kommen automatisch. |
+| `ed24-topbar.liquid` | ED24 Topbar | Rote Infoleiste (Laden, Überraschung ab 100 €, Beratung). Setzt außerdem die Markenschriften im ganzen Shop (Texte Barlow, Überschriften Barlow Condensed). Gehört in die Kopfzeile. |
+| `ed24-hero.liquid` | ED24 Hero 3D | Riesen-Schriftzug, WebGL-Farbverlauf und schwebende 3D-Produkte (Three.js). Hier sitzt die Effekt-Bühne für Hero, Showcase und Story. |
+| `ed24-showcase.liquid` | ED24 Produkt-Showcase | Fixierter Showcase mit bis zu 6 Kapiteln. Die 3D-Dose dreht sich und wechselt das Etikett, der Hintergrund wechselt die Farbe. Pro Kapitel ein Produkt, Preis und Link kommen automatisch. Etikett und Dosenfarbe einstellbar (leer: Kapiteltitel, Farbe abwechselnd). |
 | `ed24-story.liquid` | ED24 Story | Stempel-Typo mit vorbeischwebenden Produkten und Fakten. |
 | `ed24-coaching.liquid` | ED24 Coaching-Panel | Coaching-Panel, das sich beim Scrollen aufzieht. Hier endet die 3D-Bühne. |
 | `ed24-ziele.liquid` | ED24 Ziele | „Was ist dein Ziel?“: Kacheln mit Kollektion und automatischer Produktanzahl. |
@@ -41,15 +43,17 @@ Noch offen:
 Reihenfolge auf der Startseite: Hero → Showcase → Story → Coaching-Panel lückenlos hintereinander, danach beliebige Theme-Abschnitte, Ziele, Marken, Laden & Team, Laufschrift.
 
 Technik:
-- Der Farbverlauf ist ein eigener kleiner WebGL-Shader (ohne Three.js). Die schwebenden Produkte sind normale Bilder, die per CSS-Transform bewegt werden, deshalb flüssig auch auf iPad und Handy.
-- Bibliothek vom CDN: Matter.js 0.19 (cdnjs) für die Marken-Box. Schriften Barlow und Barlow Condensed (Google Fonts).
+- Der Farbverlauf ist ein eigener kleiner WebGL-Shader. Die 3D-Produkte zeichnet Three.js in einer einzigen Leinwand, deshalb bleibt es auch mit vielen Objekten flüssig.
+- Bibliotheken vom CDN: Three.js 0.149 (jsDelivr) für die 3D-Produkte, Matter.js 0.19 (cdnjs) für die Marken-Box. Schriften Barlow und Barlow Condensed (Google Fonts).
 - Die 3D-Bühne liegt in einem Rahmen von der Hero-Oberkante bis zum Coaching-Panel und klebt darin oben am Bildschirm (`overflow: clip` + `position: sticky`). Ränder und Kleben erledigt der Browser selbst, deshalb laufen sie auch auf iPad und iPhone ohne Ruckeln mit der Seite mit und überdecken nie Header oder andere Abschnitte.
 - Alle Abschnitte rechnen mit derselben festen Bildschirmhöhe (`100svh`). Wenn Safari beim Scrollen die Adressleiste ein- oder ausblendet, wird nichts neu berechnet, Produkte und Kapitel bleiben ruhig.
-- Ohne WebGL kommt der Farbverlauf aus CSS, die Produkte schweben trotzdem. Bei „Bewegung reduzieren“ stehen sie still. Inhalte und Buttons funktionieren immer.
+- Ohne WebGL kommt der Farbverlauf aus CSS. Bei „Bewegung reduzieren“ stehen die Produkte still. Inhalte und Buttons funktionieren immer.
 
 ## Produktbilder (`produktbilder/`)
 
 Echte Produktfotos aus dem Shop, mit einem KI-Hintergrund-Entferner (rembg, ISNet) freigestellt und als PNG ohne Hintergrund gespeichert. In „Mein Shop“ liegen sie unter Inhalte → Dateien mit demselben Namen.
+
+Derzeit nicht auf der Startseite im Einsatz (dort laufen die 3D-Produkte), sie bleiben als Reserve.
 
 | Datei | Verwendung | Produkt |
 |---|---|---|
@@ -67,8 +71,8 @@ Weitere Produkte: Foto freistellen, als PNG unter Inhalte → Dateien hochladen 
 Alle 669 Produktbilder in einem Format, damit Kollektionen, Suche und Produktseiten ruhig aussehen (Vorschau: `vorschau-produktbilder.jpg`):
 
 - 1200 × 1200 Pixel, JPG
-- Hintergrund überall `#EFECE6` (das helle Beige der Seite), Produkt mittig, füllt 80 % der Fläche, mit weichem Schatten
-- Produktfotos sind freigestellt (rembg, ISNet). Nährwerttabellen und Grafiken, bei denen das Freistellen Text zerstört hätte, liegen als ganzes Bild auf dem Beige (86 %). Jedes Bild wurde auf Übersichtsblättern geprüft.
+- Hintergrund überall schwarz wie der Shop (`#0B0B0C` am Rand, in der Mitte ein leichter Spot), Produkt mittig, füllt 80 % der Fläche, mit weichem Lichtsaum und Bodenschatten, damit auch schwarze Dosen sich abheben
+- Produktfotos sind freigestellt (rembg, ISNet; Fotos auf weißem Grund, bei denen das Freistellen Teile zerstört hätte, per Farbschlüssel). Nährwerttabellen und Grafiken liegen als Karte mit abgerundeten Ecken auf dem Schwarz (84 %). Jedes Bild wurde auf Übersichtsblättern geprüft.
 - Dateiname `<handle>__<position>.jpg`, passend zur CSV
 - 11 falsche Bilder aus dem Original-Shop (Vorschaubilder anderer Produkte) sind entfernt. `posingslip`, `handtuch` und `body-attack-iso-whey-drink` haben im Original kein Bild und bekommen einen neutralen Platzhalter.
 
