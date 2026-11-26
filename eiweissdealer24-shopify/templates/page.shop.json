@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "main": {
+      "type": "ed24-shop",
+      "settings": {
+        "eyebrow": "Eiweissdealer24 · Rostock",
+        "title": "Shop<strong>24</strong>",
+        "collections": ["eigenmarke", "protein", "kreatin", "aminosaeuren", "booster", "weight-gainer", "testo-booster", "burner", "gesundheit", "low-carb", "snacks", "angebote", "fightwear", "zubehoer", "coaching"],
+        "per_cat": 8,
+        "accent": "#e30613"
+      }
+    }
+  },
+  "order": ["main"]
+}

@@ -1,6 +1,6 @@
 # Eiweissdealer24 – Shopify-Einbau
 
-Das Redesign als 9 Shopify-Abschnitte (Online Store 2.0) zum Einfügen in ein bestehendes Theme (Dawn, Horizon und andere OS2-Themes), dazu das komplette Sortiment als CSV-Import.
+Das Redesign als 10 Shopify-Abschnitte (Online Store 2.0) zum Einfügen in ein bestehendes Theme (Dawn, Horizon und andere OS2-Themes), dazu das komplette Sortiment als CSV-Import.
 
 **Schritt-für-Schritt:** `anleitung.html` im Browser öffnen. Sie enthält alle Abschnitte mit Kopieren-Knopf, die Reihenfolge auf der Startseite, Farben, Kollektionen und eine Checkliste.
 
@@ -9,16 +9,19 @@ Das Redesign als 9 Shopify-Abschnitte (Online Store 2.0) zum Einfügen in ein be
 Bereits eingerichtet (Nov. 2026):
 
 - Theme **„Eiweissdealer24 – echte Produkte“** ist veröffentlicht (hinter dem Passwort). Der Vorgänger „Eiweissdealer24 Redesign“ bleibt als Sicherung. Das frühere Theme mit der „ABI Shop 2027“-Seite heißt „Horizon“ und ist unverändert, nur nicht mehr veröffentlicht.
-  - 9 ED24-Abschnitte, byte-gleich mit `sections/` (MD5 geprüft)
+  - 10 ED24-Abschnitte und die Vorlage `templates/page.shop.json`, byte-gleich mit dem Repository (MD5 geprüft)
   - Startseite in der richtigen Reihenfolge; Showcase-Kapitel mit den 4 Eigenmarke-Produkten verknüpft
   - Hero mit 3D-Produkten (Dosen mit Eiweissdealer-Etikett, Hantel, Kettlebell, Shaker, Messlöffel). Die Etiketten der großen Dose kommen aus den Kapiteltiteln.
-  - Menü nur mit Text (ohne Kollektionsbilder)
+  - Menü nur mit Text (ohne Kollektionsbilder), mit drei Ebenen wie im Original-Shop: „Shop“ öffnet ein großes Menü mit den Kategorien (fett, roter Strich) und ihren Unterkategorien darunter, in Spalten. Fightwear und Zubehör haben eigene Unterpunkte.
+  - Seite „Shop“ (`/pages/shop`, Vorlage `page.shop`): alle Kategorien untereinander mit klebender Kategorie-Leiste, je 8 Produkte und „Alle ansehen“
+  - Effekte im ganzen Shop (an der ED24 Topbar abschaltbar): roter Scroll-Fortschritt oben, Produkte blenden beim Scrollen ein, roter Glow und Zoom auf Produktkarten, Glanz auf Buttons, rote Linie unter Menüpunkten
   - Markenschriften im ganzen Shop: Texte in Barlow, Überschriften in Barlow Condensed
   - Ziele-Kacheln mit Kollektionen verknüpft, Coaching-Button auf `/collections/coaching`
   - Topbar und Logo (`eiweissdealer24-logo.png`, liegt unter Inhalte → Dateien), dunkles Farbschema mit Rot
   - Menü „Eiweissdealer24 Hauptmenü“ (`ed24-hauptmenue`); das bestehende Hauptmenü ist unverändert
 - 472 Produkte importiert, alle Produktbilder einheitlich auf schwarzem Hintergrund (siehe `bilder/`)
-- 15 automatische Kollektionen (siehe Tabelle unten), im Onlineshop sichtbar
+- 15 automatische Kollektionen (siehe Tabelle unten) und 61 Unterkategorien (z. B. Wheyprotein, Booster mit Koffein, Boxhandschuhe), alle im Onlineshop sichtbar
+- Alle Kollektionen sortieren die Produkte nach Titel von A bis Z
 - Passwortschutz des Shops ist an
 
 Noch offen:
@@ -30,7 +33,7 @@ Noch offen:
 
 | Datei | Name im Theme-Editor | Effekt |
 |---|---|---|
-| `ed24-topbar.liquid` | ED24 Topbar | Rote Infoleiste (Laden, Überraschung ab 100 €, Beratung). Setzt außerdem die Markenschriften im ganzen Shop (Texte Barlow, Überschriften Barlow Condensed). Gehört in die Kopfzeile. |
+| `ed24-topbar.liquid` | ED24 Topbar | Rote Infoleiste (Laden, Überraschung ab 100 €, Beratung). Setzt außerdem die Markenschriften im ganzen Shop (Texte Barlow, Überschriften Barlow Condensed), den Stil des großen Produkt-Menüs und die Effekte im ganzen Shop. Gehört in die Kopfzeile. |
 | `ed24-hero.liquid` | ED24 Hero 3D | Riesen-Schriftzug, WebGL-Farbverlauf und schwebende 3D-Produkte (Three.js). Hier sitzt die Effekt-Bühne für Hero, Showcase und Story. |
 | `ed24-showcase.liquid` | ED24 Produkt-Showcase | Fixierter Showcase mit bis zu 6 Kapiteln. Die 3D-Dose dreht sich und wechselt das Etikett, der Hintergrund wechselt die Farbe. Pro Kapitel ein Produkt, Preis und Link kommen automatisch. Etikett und Dosenfarbe einstellbar (leer: Kapiteltitel, Farbe abwechselnd). |
 | `ed24-story.liquid` | ED24 Story | Stempel-Typo mit vorbeischwebenden Produkten und Fakten. |
@@ -39,6 +42,7 @@ Noch offen:
 | `ed24-marken.liquid` | ED24 Marken (Physik) | Alle Marken des Shops als Physik-Pillen zum Werfen (Matter.js). |
 | `ed24-laden.liquid` | ED24 Laden & Team | Team, Live-Öffnungsstatus, Adresse, Route und Vorteile. |
 | `ed24-laufschrift.liquid` | ED24 Laufschrift | Laufschrift, die mit der Scroll-Geschwindigkeit schneller wird, dazu Sticker für E-Mail und Telefon. |
+| `ed24-shop.liquid` | ED24 Shop-Übersicht | Shop-Seite: alle gewählten Kategorien untereinander, klebende Kategorie-Leiste, die beim Scrollen mitläuft, Produktkarten mit 3D-Kippen und Einblenden. Gehört in die Vorlage `templates/page.shop.json`. |
 
 Reihenfolge auf der Startseite: Hero → Showcase → Story → Coaching-Panel lückenlos hintereinander, danach beliebige Theme-Abschnitte, Ziele, Marken, Laden & Team, Laufschrift.
 
@@ -110,3 +114,5 @@ Kollektionen als automatisierte Kollektionen mit der Bedingung „Produkt-Tag is
 | Coaching | 15 |
 | Eigenmarke | 27 |
 | Angebot | 16 |
+
+Unterkategorien als automatisierte Kollektionen mit „alle Bedingungen“: Tag der Hauptkategorie **und** Tag der Unterkategorie (Beispiel Wheyprotein: `Eiweiß/ Protein` + `Wheyprotein`). Ausnahmen: Ashwagandha (Titel enthält „Ashwagandha“), CLA / MCT-Öl (nur Tag `CLA / MCT Öl`). Casein gibt es im Sortiment derzeit nicht, deshalb fehlt es im Menü.

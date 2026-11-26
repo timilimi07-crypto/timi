@@ -80,10 +80,10 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
   <header class="top">
     <p class="kicker">Eiweissdealer24 · Shopify · „Mein Shop“</p>
     <h1>Shopify-Einbau in 8 Schritten</h1>
-    <p class="lead">Alles, was du für den Termin am Freitag brauchst: 472 Produkte importieren, 9 Effekt-Abschnitte einfügen und die Startseite zusammenbauen. Rechne mit etwa einer Stunde.</p>
+    <p class="lead">Alles, was du für den Termin am Freitag brauchst: 472 Produkte importieren, 10 Effekt-Abschnitte einfügen und die Startseite zusammenbauen. Rechne mit etwa einer Stunde.</p>
     <p class="note note--warn"><strong>Im Browser arbeiten, nicht in der Shopify-App.</strong> Den Code-Editor gibt es nur auf admin.shopify.com. Auf dem iPad also in Safari öffnen, am PC in Chrome oder Edge.</p>
-    <div class="facts"><span>472 Produkte</span><span>1.249 Varianten</span><span>9 Abschnitte</span><span>ohne App, ohne Programmieren</span></div>
-    <div class="progress" aria-live="polite"><div class="bar"><i id="bar"></i></div><span id="progress-text">0 von 9 Abschnitten eingefügt</span></div>
+    <div class="facts"><span>472 Produkte</span><span>1.249 Varianten</span><span>10 Abschnitte</span><span>ohne App, ohne Programmieren</span></div>
+    <div class="progress" aria-live="polite"><div class="bar"><i id="bar"></i></div><span id="progress-text">0 von 10 Abschnitten eingefügt</span></div>
   </header>
 
   <section class="step" id="schritt-1">
@@ -115,7 +115,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
   <section class="step" id="schritt-3">
     <div class="step__no">3</div>
     <div class="step__body">
-      <h2>9 Abschnitte einfügen</h2>
+      <h2>10 Abschnitte einfügen</h2>
       <p>Für jede Datei unten wiederholst du diese vier Handgriffe:</p>
       <ol>
         <li>Im Code-Editor links den Ordner <span class="path">sections</span> öffnen → <span class="path"><b>+</b> Neuen Abschnitt hinzufügen</span> (bzw. „Datei hinzufügen“)</li>
@@ -128,9 +128,9 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-topbar">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">1/9</span>
+            <span class="file__no">1/10</span>
             <h3 class="file__name">ed24-topbar</h3>
-            <p class="file__desc">Rote Infoleiste ganz oben + Markenschrift im ganzen Shop. Im Editor heißt der Abschnitt „ED24 Topbar“.</p>
+            <p class="file__desc">Rote Infoleiste ganz oben, Markenschrift, Effekte und der Stil des Produkt-Menüs im ganzen Shop. Im Editor heißt der Abschnitt „ED24 Topbar“.</p>
           </div>
           <div class="file__acts">
             <button class="btn btn--primary" type="button" data-copy="code-ed24-topbar">Code kopieren</button>
@@ -138,7 +138,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
           </div>
         </div>
         <details class="file__code">
-          <summary>Code ansehen (92 Zeilen)</summary>
+          <summary>Code ansehen (199 Zeilen)</summary>
           <pre><code id="code-ed24-topbar">{%- comment -%}
   ED24 Topbar – Eiweissdealer24
   Rote Infoleiste ganz oben (Laden, Überraschung ab 100 €, Beratung) und die Markenschriften für den ganzen Shop.
@@ -176,7 +176,113 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       text-transform: uppercase;
       letter-spacing: .005em;
     }
+    /* Produkt-Menü wie im Original-Shop: Kategorien fett, Unterkategorien darunter, in Spalten */
+    .mega-menu .mega-menu__link--parent,
+    .mega-menu .mega-menu__list:has(.mega-menu__link--parent) .mega-menu__column &gt; div &gt; .mega-menu__link {
+      position: relative;
+      font-family: &#x27;Barlow Condensed&#x27;, sans-serif;
+      font-weight: 800;
+      font-style: italic;
+      font-size: 17px;
+      line-height: 1.1;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      color: #fff;
+      padding: 0 0 8px;
+      margin-bottom: 6px;
+    }
+    .mega-menu .mega-menu__link--parent::after {
+      content: &quot;&quot;;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 24px;
+      height: 2px;
+      background: {{ s.accent }};
+      transition: width .3s cubic-bezier(.2,.8,.2,1);
+    }
+    .mega-menu .mega-menu__link--parent:hover::after { width: 100%; }
+    .mega-menu .mega-menu__list:has(.mega-menu__link--parent) .mega-menu__column &gt; div + div { margin-top: 10px; }
+    .mega-menu .mega-menu__column ul .mega-menu__link {
+      font-family: &#x27;Barlow&#x27;, sans-serif;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      text-transform: none;
+      color: #b4b4ba;
+      padding: 3px 0;
+      transition: color .2s, transform .25s cubic-bezier(.2,.8,.2,1);
+    }
+    .mega-menu .mega-menu__column ul .mega-menu__link:hover { color: #fff; transform: translateX(4px); }
   &lt;/style&gt;
+{%- endif -%}
+{%- if s.effects -%}
+  &lt;div class=&quot;ed24-progress&quot; aria-hidden=&quot;true&quot;&gt;&lt;/div&gt;
+  &lt;style&gt;
+    /* Effekte im ganzen Shop: nur transform, opacity und Farben, damit es auch auf iPad und Handy flüssig bleibt. */
+    .ed24-progress{position:fixed;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,{{ s.accent }},#ff5a00);transform-origin:0 50%;transform:scaleX(0);z-index:40;pointer-events:none}
+    ::selection{background:{{ s.accent }};color:#fff}
+    html{scrollbar-color:{{ s.accent }} #0b0b0c}
+    product-card.product-card .card-gallery{border-radius:12px;overflow:hidden}
+    product-card.product-card .card-gallery img{transition:transform .6s cubic-bezier(.2,.8,.2,1),filter .4s}
+    @media (hover:hover){
+      product-card.product-card{border-radius:14px;transition:box-shadow .35s,background-color .35s}
+      product-card.product-card:hover{box-shadow:0 24px 48px -24px rgba(227,6,19,.7),0 0 0 1px rgba(227,6,19,.4);background-color:#121214}
+      product-card.product-card:hover .card-gallery img{transform:scale(1.07);filter:brightness(1.08)}
+    }
+    .ed24-rv{opacity:0;transform:translateY(28px)}
+    .ed24-rv.is-in{opacity:1;transform:none;transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--ed24-d,0) * 70ms)}
+    .menu-list__link-title{position:relative}
+    .menu-list__link-title::after{content:&quot;&quot;;position:absolute;left:0;right:0;bottom:-6px;height:2px;background:{{ s.accent }};transform:scaleX(0);transform-origin:100% 50%;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+    .menu-list__link:hover .menu-list__link-title::after,.menu-list__link--active .menu-list__link-title::after{transform:scaleX(1);transform-origin:0 50%}
+    .button:not(.button-unstyled):not(.button-secondary){background-image:linear-gradient(110deg,transparent 38%,rgba(255,255,255,.32) 50%,transparent 62%);background-size:260% 100%;background-position:130% 0;background-repeat:no-repeat;transition:background-position .8s cubic-bezier(.2,.8,.2,1),transform .2s}
+    @media (hover:hover){.button:not(.button-unstyled):not(.button-secondary):hover{background-position:-30% 0}}
+    .button:not(.button-unstyled):active{transform:scale(.97)}
+    @media (prefers-reduced-motion:reduce){.ed24-rv{opacity:1;transform:none}.ed24-progress{display:none}}
+  &lt;/style&gt;
+  &lt;script&gt;
+    (function () {
+      if (window.ed24Fx) return;
+      window.ed24Fx = true;
+      var still = window.matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;).matches;
+      // Roter Scroll-Fortschritt oben
+      var bar = document.querySelector(&#x27;.ed24-progress&#x27;), tick = 0;
+      var upd = function () {
+        tick = 0;
+        var max = document.documentElement.scrollHeight - window.innerHeight;
+        if (bar) bar.style.transform = &#x27;scaleX(&#x27; + (max &gt; 0 ? Math.min(1, window.scrollY / max) : 0).toFixed(4) + &#x27;)&#x27;;
+      };
+      if (!still) {
+        window.addEventListener(&#x27;scroll&#x27;, function () { if (!tick) tick = requestAnimationFrame(upd); }, { passive: true });
+        upd();
+      }
+      // Produkte beim Scrollen weich einblenden (auch nach Filtern und Nachladen)
+      if (still || !(&#x27;IntersectionObserver&#x27; in window)) return;
+      var io = new IntersectionObserver(function (entries) {
+        var n = 0;
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.style.setProperty(&#x27;--ed24-d&#x27;, Math.min(n++, 6));
+          e.target.classList.add(&#x27;is-in&#x27;);
+          io.unobserve(e.target);
+        });
+      }, { rootMargin: &#x27;0px 0px -6% 0px&#x27; });
+      var scan = function (root) {
+        (root || document).querySelectorAll(&#x27;product-card.product-card:not([data-ed24-rv])&#x27;).forEach(function (el) {
+          el.setAttribute(&#x27;data-ed24-rv&#x27;, &#x27;&#x27;);
+          el.classList.add(&#x27;ed24-rv&#x27;);
+          io.observe(el);
+        });
+      };
+      var start = function () {
+        scan();
+        new MutationObserver(function (list) {
+          for (var i = 0; i &lt; list.length; i++) if (list[i].addedNodes.length) { scan(); break; }
+        }).observe(document.body, { childList: true, subtree: true });
+      };
+      if (document.readyState === &#x27;loading&#x27;) document.addEventListener(&#x27;DOMContentLoaded&#x27;, start, { once: true }); else start();
+    })();
+  &lt;/script&gt;
 {%- endif -%}
 &lt;div class=&quot;ed24-topbar&quot; style=&quot;background-color: {{ s.accent }};&quot;&gt;
   &lt;div class=&quot;ed24-topbar__inner&quot;&gt;
@@ -225,7 +331,8 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
     { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;right&quot;, &quot;label&quot;: &quot;Text rechts&quot;, &quot;default&quot;: &quot;Beratung: 0381 – 203 38 71&quot; },
     { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;phone&quot;, &quot;label&quot;: &quot;Telefonnummer (für den Link rechts)&quot;, &quot;default&quot;: &quot;0381 – 203 38 71&quot; },
     { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;accent&quot;, &quot;label&quot;: &quot;Farbe&quot;, &quot;default&quot;: &quot;#e30613&quot; },
-    { &quot;type&quot;: &quot;checkbox&quot;, &quot;id&quot;: &quot;brand_fonts&quot;, &quot;label&quot;: &quot;Markenschriften im ganzen Shop&quot;, &quot;info&quot;: &quot;Überschriften kursiv, fett und in Großbuchstaben (Barlow Condensed), alle anderen Texte in Barlow.&quot;, &quot;default&quot;: true }
+    { &quot;type&quot;: &quot;checkbox&quot;, &quot;id&quot;: &quot;brand_fonts&quot;, &quot;label&quot;: &quot;Markenschriften im ganzen Shop&quot;, &quot;info&quot;: &quot;Überschriften kursiv, fett und in Großbuchstaben (Barlow Condensed), alle anderen Texte in Barlow.&quot;, &quot;default&quot;: true },
+    { &quot;type&quot;: &quot;checkbox&quot;, &quot;id&quot;: &quot;effects&quot;, &quot;label&quot;: &quot;Effekte im ganzen Shop&quot;, &quot;info&quot;: &quot;Roter Scroll-Fortschritt, Produkte blenden beim Scrollen ein, Glow auf Produktkarten, Glanz auf Buttons, rote Menü-Linie.&quot;, &quot;default&quot;: true }
   ],
   &quot;presets&quot;: [{ &quot;name&quot;: &quot;ED24 Topbar&quot; }]
 }
@@ -236,7 +343,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-hero">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">2/9</span>
+            <span class="file__no">2/10</span>
             <h3 class="file__name">ed24-hero</h3>
             <p class="file__desc">Schriftzug, Farbverlauf und echte, freigestellte Produkte, die schweben. Steuert auch Showcase und Story. Im Editor heißt der Abschnitt „ED24 Hero 3D“.</p>
           </div>
@@ -874,7 +981,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-showcase">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">3/9</span>
+            <span class="file__no">3/10</span>
             <h3 class="file__name">ed24-showcase</h3>
             <p class="file__desc">Fixierter Showcase mit 4 Kapiteln und Produkt-Picker. Im Editor heißt der Abschnitt „ED24 Produkt-Showcase“.</p>
           </div>
@@ -1123,7 +1230,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-story">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">4/9</span>
+            <span class="file__no">4/10</span>
             <h3 class="file__name">ed24-story</h3>
             <p class="file__desc">Stempel-Schrift mit vorbeischwebenden Produkten. Im Editor heißt der Abschnitt „ED24 Story“.</p>
           </div>
@@ -1282,7 +1389,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-coaching">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">5/9</span>
+            <span class="file__no">5/10</span>
             <h3 class="file__name">ed24-coaching</h3>
             <p class="file__desc">Panel, das sich beim Scrollen aufzieht. Im Editor heißt der Abschnitt „ED24 Coaching-Panel“.</p>
           </div>
@@ -1489,7 +1596,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-ziele">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">6/9</span>
+            <span class="file__no">6/10</span>
             <h3 class="file__name">ed24-ziele</h3>
             <p class="file__desc">„Was ist dein Ziel?“ – Kacheln zu den Kollektionen. Im Editor heißt der Abschnitt „ED24 Ziele“.</p>
           </div>
@@ -1605,7 +1712,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-marken">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">7/9</span>
+            <span class="file__no">7/10</span>
             <h3 class="file__name">ed24-marken</h3>
             <p class="file__desc">Alle Marken als Pillen zum Werfen. Im Editor heißt der Abschnitt „ED24 Marken (Physik)“.</p>
           </div>
@@ -1785,7 +1892,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-laden">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">8/9</span>
+            <span class="file__no">8/10</span>
             <h3 class="file__name">ed24-laden</h3>
             <p class="file__desc">Team, Live-Öffnungsstatus, Adresse, Vorteile. Im Editor heißt der Abschnitt „ED24 Laden &amp; Team“.</p>
           </div>
@@ -2026,7 +2133,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-laufschrift">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">9/9</span>
+            <span class="file__no">9/10</span>
             <h3 class="file__name">ed24-laufschrift</h3>
             <p class="file__desc">Riesige Laufschrift mit E-Mail- und Telefon-Sticker. Im Editor heißt der Abschnitt „ED24 Laufschrift“.</p>
           </div>
@@ -2141,6 +2248,197 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
 </code></pre>
         </details>
       </article>
+      <article class="file" id="f-ed24-shop">
+        <div class="file__head">
+          <div class="file__meta">
+            <span class="file__no">10/10</span>
+            <h3 class="file__name">ed24-shop</h3>
+            <p class="file__desc">Shop-Seite: alle Kategorien mit klebender Kategorie-Leiste, Produkte A–Z, Effekte beim Scrollen. Im Editor heißt der Abschnitt „ED24 Shop-Übersicht“.</p>
+          </div>
+          <div class="file__acts">
+            <button class="btn btn--primary" type="button" data-copy="code-ed24-shop">Code kopieren</button>
+            <label class="done"><input type="checkbox" id="done-ed24-shop" data-done> Eingefügt</label>
+          </div>
+        </div>
+        <details class="file__code">
+          <summary>Code ansehen (175 Zeilen)</summary>
+          <pre><code id="code-ed24-shop">{%- comment -%}
+  ED24 Shop – Eiweissdealer24
+  Shop-Übersicht nach Kategorien: klebende Kategorie-Leiste, je Kategorie die ersten Produkte (A–Z) und „Alle ansehen“.
+  Gedacht für die Seite „Shop“ (Vorlage page.shop), erreichbar über das Menü.
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  # Jedes Produkt nur einmal zählen, auch wenn es in mehreren Kategorien liegt
+  assign total = collections.all.products_count
+-%}
+&lt;div class=&quot;ed24-shop&quot; style=&quot;--ed24-acc: {{ s.accent }};&quot;&gt;
+  &lt;header class=&quot;ed24-shop__head&quot;&gt;
+    {%- if s.eyebrow != blank -%}&lt;p class=&quot;ed24-shop__eye&quot;&gt;{{ s.eyebrow | escape }}&lt;/p&gt;{%- endif -%}
+    &lt;h1 class=&quot;ed24-shop__title&quot;&gt;{{ s.title }}&lt;/h1&gt;
+    &lt;p class=&quot;ed24-shop__meta&quot;&gt;{{ s.collections.size }} Kategorien · {{ total }} Produkte · alle von A bis Z sortiert&lt;/p&gt;
+  &lt;/header&gt;
+
+  {%- if s.collections.size &gt; 0 -%}
+    &lt;nav class=&quot;ed24-shop__chips&quot; aria-label=&quot;Kategorien&quot;&gt;
+      &lt;div class=&quot;ed24-shop__chiprow&quot; data-chiprow&gt;
+        {%- for c in s.collections -%}
+          &lt;a class=&quot;ed24-shop__chip&quot; href=&quot;#k-{{ c.handle }}&quot; data-chip=&quot;k-{{ c.handle }}&quot;&gt;{{ c.title | escape }} &lt;span&gt;{{ c.products_count }}&lt;/span&gt;&lt;/a&gt;
+        {%- endfor -%}
+      &lt;/div&gt;
+    &lt;/nav&gt;
+
+    {%- for c in s.collections -%}
+      &lt;section class=&quot;ed24-shop__cat&quot; id=&quot;k-{{ c.handle }}&quot; data-cat&gt;
+        &lt;div class=&quot;ed24-shop__cathead&quot;&gt;
+          &lt;span class=&quot;ed24-shop__num&quot; aria-hidden=&quot;true&quot;&gt;{% if forloop.index &lt; 10 %}0{% endif %}{{ forloop.index }}&lt;/span&gt;
+          &lt;h2 class=&quot;ed24-shop__cattitle&quot;&gt;{{ c.title | escape }}&lt;/h2&gt;
+          &lt;a class=&quot;ed24-shop__all&quot; href=&quot;{{ c.url }}&quot;&gt;Alle {{ c.products_count }} ansehen &lt;span aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;ul class=&quot;ed24-shop__grid&quot; role=&quot;list&quot;&gt;
+          {%- for p in c.products limit: s.per_cat -%}
+            {%- liquid
+              assign name = p.title
+              assign vendor_len = p.vendor | size
+              assign head = p.title | slice: 0, vendor_len
+              if vendor_len &gt; 0 and head == p.vendor
+                assign name = p.title | remove_first: p.vendor | strip
+              endif
+            -%}
+            &lt;li class=&quot;ed24-card&quot; data-card style=&quot;--i: {{ forloop.index0 | modulo: 4 }};&quot;&gt;
+              &lt;a class=&quot;ed24-card__link&quot; href=&quot;{{ p.url }}&quot;&gt;
+                &lt;div class=&quot;ed24-card__media&quot;&gt;
+                  {%- if p.featured_image -%}
+                    {{ p.featured_image | image_url: width: 600 | image_tag: loading: &#x27;lazy&#x27;, widths: &#x27;300, 450, 600&#x27;, sizes: &#x27;(min-width: 990px) 22vw, 46vw&#x27;, alt: p.title, class: &#x27;ed24-card__img&#x27; }}
+                  {%- endif -%}
+                &lt;/div&gt;
+                &lt;p class=&quot;ed24-card__brand&quot;&gt;{{ p.vendor | escape }}&lt;/p&gt;
+                &lt;h3 class=&quot;ed24-card__title&quot;&gt;{{ name | escape }}&lt;/h3&gt;
+                &lt;p class=&quot;ed24-card__price&quot;&gt;{% if p.price_varies %}ab {% endif %}{{ p.price_min | money }}&lt;/p&gt;
+              &lt;/a&gt;
+            &lt;/li&gt;
+          {%- endfor -%}
+        &lt;/ul&gt;
+      &lt;/section&gt;
+    {%- endfor -%}
+  {%- elsif request.design_mode -%}
+    &lt;p class=&quot;ed24-shop__hint&quot;&gt;Rechts unter „Kategorien“ die Kollektionen in der gewünschten Reihenfolge auswählen.&lt;/p&gt;
+  {%- endif -%}
+  &lt;ed24-shop-nav hidden&gt;&lt;/ed24-shop-nav&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+  .ed24-shop{--ed24-acc:#e30613;background:#0b0b0c;color:#f5f5f4;padding:0 clamp(16px,4vw,56px) 96px;font-family:&#x27;Barlow&#x27;,sans-serif}
+  .ed24-shop__head{padding:clamp(48px,8vw,110px) 0 28px;position:relative}
+  .ed24-shop__eye{margin:0 0 14px;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--ed24-acc)}
+  .ed24-shop .ed24-shop__title{margin:0;font-size:clamp(72px,14vw,220px);line-height:.82;color:#fff}
+  .ed24-shop__title strong{color:transparent;-webkit-text-stroke:.025em #fff}
+  .ed24-shop__meta{margin:18px 0 0;font-size:15px;font-weight:600;letter-spacing:.04em;color:#a1a1a6}
+  .ed24-shop__chips{position:sticky;top:calc(var(--header-height,64px) - 1px);z-index:3;margin:0 calc(-1 * clamp(16px,4vw,56px));padding:12px clamp(16px,4vw,56px);background:rgba(11,11,12,.86);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid #222}
+  .ed24-shop__chiprow{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .ed24-shop__chiprow::-webkit-scrollbar{display:none}
+  .ed24-shop__chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;border:1px solid #2c2c30;border-radius:999px;color:#e8e8e8;text-decoration:none;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:700;font-size:16px;letter-spacing:.04em;text-transform:uppercase;transition:background .25s,border-color .25s,color .25s}
+  .ed24-shop__chip span{font-family:&#x27;Barlow&#x27;,sans-serif;font-size:12px;font-weight:600;color:#8a8a90;transition:color .25s}
+  .ed24-shop__chip:hover{border-color:var(--ed24-acc)}
+  .ed24-shop__chip.is-on{background:var(--ed24-acc);border-color:var(--ed24-acc);color:#fff}
+  .ed24-shop__chip.is-on span{color:#ffd9db}
+  .ed24-shop__cat{padding-top:clamp(56px,7vw,96px);scroll-margin-top:calc(var(--header-height,64px) + 72px)}
+  .ed24-shop__cathead{display:flex;align-items:baseline;gap:16px;margin-bottom:22px;border-bottom:1px solid #222;padding-bottom:14px}
+  .ed24-shop__num{font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;font-size:22px;color:var(--ed24-acc)}
+  .ed24-shop .ed24-shop__cattitle{margin:0;flex:1;font-size:clamp(36px,5vw,64px);line-height:.9;color:#fff}
+  .ed24-shop__all{flex:0 0 auto;color:#fff;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;border-bottom:2px solid var(--ed24-acc);padding-bottom:2px;transition:color .2s}
+  .ed24-shop__all:hover{color:var(--ed24-acc)}
+  .ed24-shop__all span{display:inline-block;transition:transform .25s}
+  .ed24-shop__all:hover span{transform:translateX(4px)}
+  .ed24-shop__grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(10px,1.6vw,22px)}
+  .ed24-card{position:relative}
+  .ed24-card__link{display:block;color:inherit;text-decoration:none;border-radius:14px;padding:8px 8px 14px;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,background .35s;transform:perspective(900px) translateY(var(--ty,0)) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+  .ed24-card__media{aspect-ratio:1;overflow:hidden;border-radius:10px;background:#141416}
+  .ed24-card__img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+  .ed24-card__brand{margin:12px 4px 4px;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ed24-acc)}
+  .ed24-shop .ed24-card__title{margin:0 4px;font-family:&#x27;Barlow&#x27;,sans-serif !important;font-style:normal;text-transform:none;font-weight:600;font-size:15px;line-height:1.3;letter-spacing:0;color:#f2f2f2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .ed24-card__price{margin:8px 4px 0;font-weight:700;font-size:15px;color:#fff}
+  @media (hover:hover){
+    .ed24-card__link:hover{--ty:-6px;background:#141416;box-shadow:0 22px 44px -22px rgba(227,6,19,.65),0 0 0 1px rgba(227,6,19,.35)}
+    .ed24-card__link:hover .ed24-card__img{transform:scale(1.07)}
+  }
+  .ed24-card.ed24-rv{opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0) * 70ms)}
+  .ed24-card.ed24-rv.is-in{opacity:1;transform:none}
+  .ed24-shop__hint{padding:40px 0;color:#a1a1a6}
+  @media (max-width:989px){.ed24-shop__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:749px){
+    .ed24-shop__cathead{flex-wrap:wrap}
+    .ed24-shop__all{flex-basis:100%;order:3;align-self:flex-start;justify-self:start;width:max-content}
+    .ed24-shop__chip{min-height:36px;padding:0 13px;font-size:15px}
+  }
+  @media (prefers-reduced-motion:reduce){.ed24-card.ed24-rv{opacity:1;transform:none;transition:none}.ed24-card__link{transition:none}}
+&lt;/style&gt;
+
+&lt;script&gt;
+  (function () {
+    if (customElements.get(&#x27;ed24-shop-nav&#x27;)) return;
+    // Kategorie-Leiste: markiert die Kategorie, die gerade im Bild ist, und scrollt den Chip in Sicht.
+    class Ed24ShopNav extends HTMLElement {
+      connectedCallback() {
+        var root = this.closest(&#x27;.ed24-shop&#x27;) || document, row = root.querySelector(&#x27;[data-chiprow]&#x27;);
+        var chips = {}, current = &#x27;&#x27;;
+        root.querySelectorAll(&#x27;[data-chip]&#x27;).forEach(function (a) { chips[a.dataset.chip] = a; });
+        var setOn = function (id) {
+          if (id === current || !chips[id]) return;
+          if (chips[current]) chips[current].classList.remove(&#x27;is-on&#x27;);
+          current = id; chips[id].classList.add(&#x27;is-on&#x27;);
+          var c = chips[id], left = c.offsetLeft - (row.clientWidth - c.offsetWidth) / 2;
+          row.scrollTo({ left: Math.max(0, left), behavior: &#x27;smooth&#x27; });
+        };
+        var cats = Array.prototype.slice.call(root.querySelectorAll(&#x27;[data-cat]&#x27;));
+        this.io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) setOn(e.target.id); });
+        }, { rootMargin: &#x27;-35% 0px -60% 0px&#x27; });
+        cats.forEach(function (c) { this.io.observe(c); }, this);
+        if (cats[0]) setOn(cats[0].id);
+        // Karten beim Scrollen einblenden (nur mit Bewegung erlaubt)
+        if (!window.matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;).matches &amp;&amp; &#x27;IntersectionObserver&#x27; in window) {
+          var cards = root.querySelectorAll(&#x27;[data-card]&#x27;);
+          this.rv = new IntersectionObserver(function (entries, o) {
+            entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add(&#x27;is-in&#x27;); o.unobserve(e.target); } });
+          }, { rootMargin: &#x27;0px 0px -8% 0px&#x27; });
+          cards.forEach(function (c) { c.classList.add(&#x27;ed24-rv&#x27;); this.rv.observe(c); }, this);
+        }
+        // Leichtes 3D-Kippen der Karten mit der Maus
+        if (window.matchMedia(&#x27;(hover: hover) and (pointer: fine)&#x27;).matches) {
+          root.querySelectorAll(&#x27;.ed24-card__link&#x27;).forEach(function (l) {
+            l.addEventListener(&#x27;pointermove&#x27;, function (e) {
+              var r = l.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+              l.style.setProperty(&#x27;--rx&#x27;, (-y * 6).toFixed(2) + &#x27;deg&#x27;); l.style.setProperty(&#x27;--ry&#x27;, (x * 8).toFixed(2) + &#x27;deg&#x27;);
+            });
+            l.addEventListener(&#x27;pointerleave&#x27;, function () { l.style.setProperty(&#x27;--rx&#x27;, &#x27;0deg&#x27;); l.style.setProperty(&#x27;--ry&#x27;, &#x27;0deg&#x27;); });
+          });
+        }
+      }
+      disconnectedCallback() { if (this.io) this.io.disconnect(); if (this.rv) this.rv.disconnect(); }
+    }
+    customElements.define(&#x27;ed24-shop-nav&#x27;, Ed24ShopNav);
+  })();
+&lt;/script&gt;
+
+{% schema %}
+{
+  &quot;name&quot;: &quot;ED24 Shop-Übersicht&quot;,
+  &quot;tag&quot;: &quot;section&quot;,
+  &quot;class&quot;: &quot;ed24-section&quot;,
+  &quot;settings&quot;: [
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;eyebrow&quot;, &quot;label&quot;: &quot;Kleine Überschrift&quot;, &quot;default&quot;: &quot;Eiweissdealer24 · Rostock&quot; },
+    { &quot;type&quot;: &quot;inline_richtext&quot;, &quot;id&quot;: &quot;title&quot;, &quot;label&quot;: &quot;Titel&quot;, &quot;info&quot;: &quot;Fett gesetzter Text erscheint als Umriss.&quot;, &quot;default&quot;: &quot;Shop&lt;strong&gt;24&lt;/strong&gt;&quot; },
+    { &quot;type&quot;: &quot;collection_list&quot;, &quot;id&quot;: &quot;collections&quot;, &quot;label&quot;: &quot;Kategorien&quot;, &quot;info&quot;: &quot;Reihenfolge hier = Reihenfolge im Shop.&quot;, &quot;limit&quot;: 20 },
+    { &quot;type&quot;: &quot;range&quot;, &quot;id&quot;: &quot;per_cat&quot;, &quot;label&quot;: &quot;Produkte je Kategorie&quot;, &quot;min&quot;: 4, &quot;max&quot;: 16, &quot;step&quot;: 4, &quot;default&quot;: 8 },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;accent&quot;, &quot;label&quot;: &quot;Akzentfarbe&quot;, &quot;default&quot;: &quot;#e30613&quot; }
+  ],
+  &quot;presets&quot;: [{ &quot;name&quot;: &quot;ED24 Shop-Übersicht&quot; }]
+}
+{% endschema %}
+</code></pre>
+        </details>
+      </article>
     </div>
   </section>
 
@@ -2165,6 +2463,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
         <li><span><b>ED24 Laden &amp; Team</b></span></li>
         <li><span><b>ED24 Laufschrift</b> <em>als letzter Abschnitt</em></span></li>
       </ol>
+      <p><b>Shop-Seite</b> (alle Kategorien auf einer Seite, mit klebender Kategorie-Leiste): oben in der Seitenauswahl <span class="path">Seiten → Vorlage erstellen</span> → Name <code class="inline">shop</code> → Abschnitt <b>ED24 Shop-Übersicht</b> hinzufügen und rechts unter „Kategorien“ die Kollektionen in der gewünschten Reihenfolge wählen. Danach <span class="path">Onlineshop → Seiten → Seite hinzufügen</span>: Titel „Shop“, rechts Vorlage <b>shop</b>, sichtbar.</p>
       <p class="note note--warn"><strong>Reihenfolge 1–4 nicht unterbrechen.</strong> Hero, Showcase, Story und Coaching-Panel teilen sich eine Effekt-Bühne mit den schwebenden Produkten. Ein anderer Abschnitt dazwischen würde von ihr überdeckt.</p>
       <p>Speichern nicht vergessen (oben rechts).</p>
     </div>
@@ -2213,7 +2512,9 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
           <tr><td>Angebote</td><td><code class="inline">Angebot</code></td><td class="num">16</td></tr>
         </tbody>
       </table></div>
-      <p><b>Menü:</b> <span class="path">Onlineshop → Navigation → Hauptmenü</span>. Sinnvoll: Shop (mit Untermenü Protein, Kreatin, Aminosäuren, Booster, Gesundheit, Snacks), Fightwear, Zubehör, Coaching, Angebote.</p>
+      <p><b>Alles sortiert:</b> Bei jeder Kollektion rechts unter „Produkte“ die Sortierung <b>Produkttitel A–Z</b> wählen.</p>
+      <p><b>Unterkategorien</b> wie im Original-Shop (Wheyprotein, Wheyisolat, Booster mit Koffein …): genauso als automatisierte Kollektion anlegen, aber mit <b>zwei</b> Bedingungen, „alle Bedingungen“: Tag der Hauptkategorie <b>und</b> Tag der Unterkategorie, z. B. <code class="inline">Eiweiß/ Protein</code> + <code class="inline">Wheyprotein</code>. Die Unterkategorie-Tags stehen schon an den Produkten. In „Mein Shop“ sind alle 61 angelegt.</p>
+      <p><b>Menü mit drei Ebenen</b> (sieht aus wie im Original-Shop: Kategorien fett, Unterkategorien darunter, in Spalten): <span class="path">Onlineshop → Navigation → Menü hinzufügen</span>. Oben <b>Shop</b> (Link auf die Seite „Shop“), darunter die Kategorien (Eiweiß / Protein, Low Carb-Ecke, Weight Gainer, Booster, Vital fit &amp; gesund, Aminosäuren, Kreatin, Testo Booster, Nasch-Ecke, Burner, CLA / MCT-Öl, Eigenmarke) und unter jede Kategorie ihre Unterkategorien ziehen. Daneben Fightwear und Zubehör mit ihren Unterkategorien, Coaching und Angebote. Im Theme-Editor in der Kopfzeile beim Menü dieses Menü wählen. Den Stil (fette Kategorien mit rotem Strich) setzt die ED24 Topbar.</p>
     </div>
   </section>
 

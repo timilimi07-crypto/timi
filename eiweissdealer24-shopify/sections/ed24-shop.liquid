@@ -1,0 +1,174 @@
+{%- comment -%}
+  ED24 Shop – Eiweissdealer24
+  Shop-Übersicht nach Kategorien: klebende Kategorie-Leiste, je Kategorie die ersten Produkte (A–Z) und „Alle ansehen“.
+  Gedacht für die Seite „Shop“ (Vorlage page.shop), erreichbar über das Menü.
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  # Jedes Produkt nur einmal zählen, auch wenn es in mehreren Kategorien liegt
+  assign total = collections.all.products_count
+-%}
+<div class="ed24-shop" style="--ed24-acc: {{ s.accent }};">
+  <header class="ed24-shop__head">
+    {%- if s.eyebrow != blank -%}<p class="ed24-shop__eye">{{ s.eyebrow | escape }}</p>{%- endif -%}
+    <h1 class="ed24-shop__title">{{ s.title }}</h1>
+    <p class="ed24-shop__meta">{{ s.collections.size }} Kategorien · {{ total }} Produkte · alle von A bis Z sortiert</p>
+  </header>
+
+  {%- if s.collections.size > 0 -%}
+    <nav class="ed24-shop__chips" aria-label="Kategorien">
+      <div class="ed24-shop__chiprow" data-chiprow>
+        {%- for c in s.collections -%}
+          <a class="ed24-shop__chip" href="#k-{{ c.handle }}" data-chip="k-{{ c.handle }}">{{ c.title | escape }} <span>{{ c.products_count }}</span></a>
+        {%- endfor -%}
+      </div>
+    </nav>
+
+    {%- for c in s.collections -%}
+      <section class="ed24-shop__cat" id="k-{{ c.handle }}" data-cat>
+        <div class="ed24-shop__cathead">
+          <span class="ed24-shop__num" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+          <h2 class="ed24-shop__cattitle">{{ c.title | escape }}</h2>
+          <a class="ed24-shop__all" href="{{ c.url }}">Alle {{ c.products_count }} ansehen <span aria-hidden="true">→</span></a>
+        </div>
+        <ul class="ed24-shop__grid" role="list">
+          {%- for p in c.products limit: s.per_cat -%}
+            {%- liquid
+              assign name = p.title
+              assign vendor_len = p.vendor | size
+              assign head = p.title | slice: 0, vendor_len
+              if vendor_len > 0 and head == p.vendor
+                assign name = p.title | remove_first: p.vendor | strip
+              endif
+            -%}
+            <li class="ed24-card" data-card style="--i: {{ forloop.index0 | modulo: 4 }};">
+              <a class="ed24-card__link" href="{{ p.url }}">
+                <div class="ed24-card__media">
+                  {%- if p.featured_image -%}
+                    {{ p.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '(min-width: 990px) 22vw, 46vw', alt: p.title, class: 'ed24-card__img' }}
+                  {%- endif -%}
+                </div>
+                <p class="ed24-card__brand">{{ p.vendor | escape }}</p>
+                <h3 class="ed24-card__title">{{ name | escape }}</h3>
+                <p class="ed24-card__price">{% if p.price_varies %}ab {% endif %}{{ p.price_min | money }}</p>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </section>
+    {%- endfor -%}
+  {%- elsif request.design_mode -%}
+    <p class="ed24-shop__hint">Rechts unter „Kategorien“ die Kollektionen in der gewünschten Reihenfolge auswählen.</p>
+  {%- endif -%}
+  <ed24-shop-nav hidden></ed24-shop-nav>
+</div>
+
+<style>
+  .ed24-shop{--ed24-acc:#e30613;background:#0b0b0c;color:#f5f5f4;padding:0 clamp(16px,4vw,56px) 96px;font-family:'Barlow',sans-serif}
+  .ed24-shop__head{padding:clamp(48px,8vw,110px) 0 28px;position:relative}
+  .ed24-shop__eye{margin:0 0 14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--ed24-acc)}
+  .ed24-shop .ed24-shop__title{margin:0;font-size:clamp(72px,14vw,220px);line-height:.82;color:#fff}
+  .ed24-shop__title strong{color:transparent;-webkit-text-stroke:.025em #fff}
+  .ed24-shop__meta{margin:18px 0 0;font-size:15px;font-weight:600;letter-spacing:.04em;color:#a1a1a6}
+  .ed24-shop__chips{position:sticky;top:calc(var(--header-height,64px) - 1px);z-index:3;margin:0 calc(-1 * clamp(16px,4vw,56px));padding:12px clamp(16px,4vw,56px);background:rgba(11,11,12,.86);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid #222}
+  .ed24-shop__chiprow{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .ed24-shop__chiprow::-webkit-scrollbar{display:none}
+  .ed24-shop__chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;border:1px solid #2c2c30;border-radius:999px;color:#e8e8e8;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:.04em;text-transform:uppercase;transition:background .25s,border-color .25s,color .25s}
+  .ed24-shop__chip span{font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;color:#8a8a90;transition:color .25s}
+  .ed24-shop__chip:hover{border-color:var(--ed24-acc)}
+  .ed24-shop__chip.is-on{background:var(--ed24-acc);border-color:var(--ed24-acc);color:#fff}
+  .ed24-shop__chip.is-on span{color:#ffd9db}
+  .ed24-shop__cat{padding-top:clamp(56px,7vw,96px);scroll-margin-top:calc(var(--header-height,64px) + 72px)}
+  .ed24-shop__cathead{display:flex;align-items:baseline;gap:16px;margin-bottom:22px;border-bottom:1px solid #222;padding-bottom:14px}
+  .ed24-shop__num{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;font-size:22px;color:var(--ed24-acc)}
+  .ed24-shop .ed24-shop__cattitle{margin:0;flex:1;font-size:clamp(36px,5vw,64px);line-height:.9;color:#fff}
+  .ed24-shop__all{flex:0 0 auto;color:#fff;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;border-bottom:2px solid var(--ed24-acc);padding-bottom:2px;transition:color .2s}
+  .ed24-shop__all:hover{color:var(--ed24-acc)}
+  .ed24-shop__all span{display:inline-block;transition:transform .25s}
+  .ed24-shop__all:hover span{transform:translateX(4px)}
+  .ed24-shop__grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(10px,1.6vw,22px)}
+  .ed24-card{position:relative}
+  .ed24-card__link{display:block;color:inherit;text-decoration:none;border-radius:14px;padding:8px 8px 14px;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,background .35s;transform:perspective(900px) translateY(var(--ty,0)) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+  .ed24-card__media{aspect-ratio:1;overflow:hidden;border-radius:10px;background:#141416}
+  .ed24-card__img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+  .ed24-card__brand{margin:12px 4px 4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ed24-acc)}
+  .ed24-shop .ed24-card__title{margin:0 4px;font-family:'Barlow',sans-serif !important;font-style:normal;text-transform:none;font-weight:600;font-size:15px;line-height:1.3;letter-spacing:0;color:#f2f2f2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .ed24-card__price{margin:8px 4px 0;font-weight:700;font-size:15px;color:#fff}
+  @media (hover:hover){
+    .ed24-card__link:hover{--ty:-6px;background:#141416;box-shadow:0 22px 44px -22px rgba(227,6,19,.65),0 0 0 1px rgba(227,6,19,.35)}
+    .ed24-card__link:hover .ed24-card__img{transform:scale(1.07)}
+  }
+  .ed24-card.ed24-rv{opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0) * 70ms)}
+  .ed24-card.ed24-rv.is-in{opacity:1;transform:none}
+  .ed24-shop__hint{padding:40px 0;color:#a1a1a6}
+  @media (max-width:989px){.ed24-shop__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:749px){
+    .ed24-shop__cathead{flex-wrap:wrap}
+    .ed24-shop__all{flex-basis:100%;order:3;align-self:flex-start;justify-self:start;width:max-content}
+    .ed24-shop__chip{min-height:36px;padding:0 13px;font-size:15px}
+  }
+  @media (prefers-reduced-motion:reduce){.ed24-card.ed24-rv{opacity:1;transform:none;transition:none}.ed24-card__link{transition:none}}
+</style>
+
+<script>
+  (function () {
+    if (customElements.get('ed24-shop-nav')) return;
+    // Kategorie-Leiste: markiert die Kategorie, die gerade im Bild ist, und scrollt den Chip in Sicht.
+    class Ed24ShopNav extends HTMLElement {
+      connectedCallback() {
+        var root = this.closest('.ed24-shop') || document, row = root.querySelector('[data-chiprow]');
+        var chips = {}, current = '';
+        root.querySelectorAll('[data-chip]').forEach(function (a) { chips[a.dataset.chip] = a; });
+        var setOn = function (id) {
+          if (id === current || !chips[id]) return;
+          if (chips[current]) chips[current].classList.remove('is-on');
+          current = id; chips[id].classList.add('is-on');
+          var c = chips[id], left = c.offsetLeft - (row.clientWidth - c.offsetWidth) / 2;
+          row.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+        };
+        var cats = Array.prototype.slice.call(root.querySelectorAll('[data-cat]'));
+        this.io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) setOn(e.target.id); });
+        }, { rootMargin: '-35% 0px -60% 0px' });
+        cats.forEach(function (c) { this.io.observe(c); }, this);
+        if (cats[0]) setOn(cats[0].id);
+        // Karten beim Scrollen einblenden (nur mit Bewegung erlaubt)
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+          var cards = root.querySelectorAll('[data-card]');
+          this.rv = new IntersectionObserver(function (entries, o) {
+            entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); o.unobserve(e.target); } });
+          }, { rootMargin: '0px 0px -8% 0px' });
+          cards.forEach(function (c) { c.classList.add('ed24-rv'); this.rv.observe(c); }, this);
+        }
+        // Leichtes 3D-Kippen der Karten mit der Maus
+        if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+          root.querySelectorAll('.ed24-card__link').forEach(function (l) {
+            l.addEventListener('pointermove', function (e) {
+              var r = l.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+              l.style.setProperty('--rx', (-y * 6).toFixed(2) + 'deg'); l.style.setProperty('--ry', (x * 8).toFixed(2) + 'deg');
+            });
+            l.addEventListener('pointerleave', function () { l.style.setProperty('--rx', '0deg'); l.style.setProperty('--ry', '0deg'); });
+          });
+        }
+      }
+      disconnectedCallback() { if (this.io) this.io.disconnect(); if (this.rv) this.rv.disconnect(); }
+    }
+    customElements.define('ed24-shop-nav', Ed24ShopNav);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "ED24 Shop-Übersicht",
+  "tag": "section",
+  "class": "ed24-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Kleine Überschrift", "default": "Eiweissdealer24 · Rostock" },
+    { "type": "inline_richtext", "id": "title", "label": "Titel", "info": "Fett gesetzter Text erscheint als Umriss.", "default": "Shop<strong>24</strong>" },
+    { "type": "collection_list", "id": "collections", "label": "Kategorien", "info": "Reihenfolge hier = Reihenfolge im Shop.", "limit": 20 },
+    { "type": "range", "id": "per_cat", "label": "Produkte je Kategorie", "min": 4, "max": 16, "step": 4, "default": 8 },
+    { "type": "color", "id": "accent", "label": "Akzentfarbe", "default": "#e30613" }
+  ],
+  "presets": [{ "name": "ED24 Shop-Übersicht" }]
+}
+{% endschema %}

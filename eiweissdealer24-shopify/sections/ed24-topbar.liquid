@@ -35,7 +35,113 @@
       text-transform: uppercase;
       letter-spacing: .005em;
     }
+    /* Produkt-Menü wie im Original-Shop: Kategorien fett, Unterkategorien darunter, in Spalten */
+    .mega-menu .mega-menu__link--parent,
+    .mega-menu .mega-menu__list:has(.mega-menu__link--parent) .mega-menu__column > div > .mega-menu__link {
+      position: relative;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-style: italic;
+      font-size: 17px;
+      line-height: 1.1;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      color: #fff;
+      padding: 0 0 8px;
+      margin-bottom: 6px;
+    }
+    .mega-menu .mega-menu__link--parent::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 24px;
+      height: 2px;
+      background: {{ s.accent }};
+      transition: width .3s cubic-bezier(.2,.8,.2,1);
+    }
+    .mega-menu .mega-menu__link--parent:hover::after { width: 100%; }
+    .mega-menu .mega-menu__list:has(.mega-menu__link--parent) .mega-menu__column > div + div { margin-top: 10px; }
+    .mega-menu .mega-menu__column ul .mega-menu__link {
+      font-family: 'Barlow', sans-serif;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      text-transform: none;
+      color: #b4b4ba;
+      padding: 3px 0;
+      transition: color .2s, transform .25s cubic-bezier(.2,.8,.2,1);
+    }
+    .mega-menu .mega-menu__column ul .mega-menu__link:hover { color: #fff; transform: translateX(4px); }
   </style>
+{%- endif -%}
+{%- if s.effects -%}
+  <div class="ed24-progress" aria-hidden="true"></div>
+  <style>
+    /* Effekte im ganzen Shop: nur transform, opacity und Farben, damit es auch auf iPad und Handy flüssig bleibt. */
+    .ed24-progress{position:fixed;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,{{ s.accent }},#ff5a00);transform-origin:0 50%;transform:scaleX(0);z-index:40;pointer-events:none}
+    ::selection{background:{{ s.accent }};color:#fff}
+    html{scrollbar-color:{{ s.accent }} #0b0b0c}
+    product-card.product-card .card-gallery{border-radius:12px;overflow:hidden}
+    product-card.product-card .card-gallery img{transition:transform .6s cubic-bezier(.2,.8,.2,1),filter .4s}
+    @media (hover:hover){
+      product-card.product-card{border-radius:14px;transition:box-shadow .35s,background-color .35s}
+      product-card.product-card:hover{box-shadow:0 24px 48px -24px rgba(227,6,19,.7),0 0 0 1px rgba(227,6,19,.4);background-color:#121214}
+      product-card.product-card:hover .card-gallery img{transform:scale(1.07);filter:brightness(1.08)}
+    }
+    .ed24-rv{opacity:0;transform:translateY(28px)}
+    .ed24-rv.is-in{opacity:1;transform:none;transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--ed24-d,0) * 70ms)}
+    .menu-list__link-title{position:relative}
+    .menu-list__link-title::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;background:{{ s.accent }};transform:scaleX(0);transform-origin:100% 50%;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+    .menu-list__link:hover .menu-list__link-title::after,.menu-list__link--active .menu-list__link-title::after{transform:scaleX(1);transform-origin:0 50%}
+    .button:not(.button-unstyled):not(.button-secondary){background-image:linear-gradient(110deg,transparent 38%,rgba(255,255,255,.32) 50%,transparent 62%);background-size:260% 100%;background-position:130% 0;background-repeat:no-repeat;transition:background-position .8s cubic-bezier(.2,.8,.2,1),transform .2s}
+    @media (hover:hover){.button:not(.button-unstyled):not(.button-secondary):hover{background-position:-30% 0}}
+    .button:not(.button-unstyled):active{transform:scale(.97)}
+    @media (prefers-reduced-motion:reduce){.ed24-rv{opacity:1;transform:none}.ed24-progress{display:none}}
+  </style>
+  <script>
+    (function () {
+      if (window.ed24Fx) return;
+      window.ed24Fx = true;
+      var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // Roter Scroll-Fortschritt oben
+      var bar = document.querySelector('.ed24-progress'), tick = 0;
+      var upd = function () {
+        tick = 0;
+        var max = document.documentElement.scrollHeight - window.innerHeight;
+        if (bar) bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, window.scrollY / max) : 0).toFixed(4) + ')';
+      };
+      if (!still) {
+        window.addEventListener('scroll', function () { if (!tick) tick = requestAnimationFrame(upd); }, { passive: true });
+        upd();
+      }
+      // Produkte beim Scrollen weich einblenden (auch nach Filtern und Nachladen)
+      if (still || !('IntersectionObserver' in window)) return;
+      var io = new IntersectionObserver(function (entries) {
+        var n = 0;
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.style.setProperty('--ed24-d', Math.min(n++, 6));
+          e.target.classList.add('is-in');
+          io.unobserve(e.target);
+        });
+      }, { rootMargin: '0px 0px -6% 0px' });
+      var scan = function (root) {
+        (root || document).querySelectorAll('product-card.product-card:not([data-ed24-rv])').forEach(function (el) {
+          el.setAttribute('data-ed24-rv', '');
+          el.classList.add('ed24-rv');
+          io.observe(el);
+        });
+      };
+      var start = function () {
+        scan();
+        new MutationObserver(function (list) {
+          for (var i = 0; i < list.length; i++) if (list[i].addedNodes.length) { scan(); break; }
+        }).observe(document.body, { childList: true, subtree: true });
+      };
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true }); else start();
+    })();
+  </script>
 {%- endif -%}
 <div class="ed24-topbar" style="background-color: {{ s.accent }};">
   <div class="ed24-topbar__inner">
@@ -84,7 +190,8 @@
     { "type": "text", "id": "right", "label": "Text rechts", "default": "Beratung: 0381 – 203 38 71" },
     { "type": "text", "id": "phone", "label": "Telefonnummer (für den Link rechts)", "default": "0381 – 203 38 71" },
     { "type": "color", "id": "accent", "label": "Farbe", "default": "#e30613" },
-    { "type": "checkbox", "id": "brand_fonts", "label": "Markenschriften im ganzen Shop", "info": "Überschriften kursiv, fett und in Großbuchstaben (Barlow Condensed), alle anderen Texte in Barlow.", "default": true }
+    { "type": "checkbox", "id": "brand_fonts", "label": "Markenschriften im ganzen Shop", "info": "Überschriften kursiv, fett und in Großbuchstaben (Barlow Condensed), alle anderen Texte in Barlow.", "default": true },
+    { "type": "checkbox", "id": "effects", "label": "Effekte im ganzen Shop", "info": "Roter Scroll-Fortschritt, Produkte blenden beim Scrollen ein, Glow auf Produktkarten, Glanz auf Buttons, rote Menü-Linie.", "default": true }
   ],
   "presets": [{ "name": "ED24 Topbar" }]
 }
