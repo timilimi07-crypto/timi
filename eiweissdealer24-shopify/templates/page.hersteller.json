@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "ed24-hersteller",
+      "settings": {
+        "eyebrow": "Eiweissdealer24 · Rostock",
+        "title": "Her<strong>steller</strong>",
+        "accent": "#e30613"
+      }
+    }
+  },
+  "order": ["main"]
+}

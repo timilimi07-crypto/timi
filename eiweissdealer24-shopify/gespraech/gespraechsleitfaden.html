@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Eiweissdealer24 – Gesprächsleitfaden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,800&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+  @page { size: A4; margin: 16mm 15mm 16mm; }
+  :root { --red: #e30613; --ink: #141416; --muted: #5d5d66; --line: #e4e4e8; --soft: #f5f5f7; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; font-family: 'Barlow', Arial, sans-serif; font-size: 10.4pt; line-height: 1.5; color: var(--ink); }
+  h1, h2, h3, .cond { font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif; font-style: italic; font-weight: 800; text-transform: uppercase; letter-spacing: .005em; }
+  h2 { font-size: 21pt; line-height: 1.15; margin: 0 0 4mm; padding-top: 2.5mm; }
+  h2 .no { color: var(--red); margin-right: 2mm; }
+  h3 { font-size: 13pt; margin: 5mm 0 2mm; }
+  p { margin: 0 0 2.6mm; }
+  ul, ol { margin: 0 0 3mm; padding-left: 5mm; }
+  li { margin: 0 0 1.2mm; }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  .avoid { break-inside: avoid; }
+  b, strong { font-weight: 700; }
+  .red { color: var(--red); }
+  .muted { color: var(--muted); }
+  .small { font-size: 9pt; }
+
+  /* Titelseite */
+  .cover { height: 262mm; display: flex; flex-direction: column; background: #0b0b0c; color: #fff; border-radius: 4mm; padding: 14mm 12mm 11mm; }
+  .cover .eye { font-weight: 700; letter-spacing: .2em; text-transform: uppercase; font-size: 9pt; color: var(--red); }
+  .cover h1 { font-size: 50pt; line-height: .88; margin: 5mm 0 4mm; }
+  .cover h1 span { color: transparent; -webkit-text-stroke: 1.2px #fff; }
+  .cover .sub { font-size: 13pt; color: #cfcfd4; max-width: 150mm; }
+  .cover .shot { margin: 8mm 0 0; border-radius: 4mm; overflow: hidden; border: 1px solid #2a2a2e; }
+  .cover .shot img { display: block; width: 100%; }
+  .cover .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; margin-top: auto; }
+  .cover .fact { border: 1px solid #2c2c30; border-radius: 3mm; padding: 3mm 3.5mm; }
+  .cover .fact b { display: block; font-family: 'Barlow Condensed', Arial, sans-serif; font-style: italic; font-size: 20pt; line-height: 1; color: #fff; }
+  .cover .fact span { font-size: 8.5pt; color: #a9a9b0; }
+  .cover .meta { display: flex; justify-content: space-between; margin-top: 6mm; font-size: 9pt; color: #9a9aa0; }
+
+  .box { border: 1px solid var(--line); border-radius: 3mm; padding: 4mm 5mm; margin: 0 0 4mm; background: #fff; }
+  .box.accent { border-color: var(--red); border-left-width: 1.6mm; }
+  .box.soft { background: var(--soft); border-color: var(--soft); }
+  .box h3 { margin-top: 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3.5mm; }
+  .tag { display: inline-block; font-family: 'Barlow Condensed', Arial, sans-serif; font-weight: 800; font-style: italic; text-transform: uppercase; font-size: 9pt; letter-spacing: .04em; color: #fff; background: var(--red); border-radius: 1.5mm; padding: .4mm 2mm; margin-right: 1.5mm; }
+  table { width: 100%; border-collapse: collapse; margin: 0 0 4mm; font-size: 9.6pt; }
+  th, td { text-align: left; vertical-align: top; padding: 1.6mm 2.4mm; border-bottom: 1px solid var(--line); }
+  th { font-family: 'Barlow Condensed', Arial, sans-serif; font-style: italic; font-weight: 800; text-transform: uppercase; font-size: 10pt; background: #0b0b0c; color: #fff; }
+  td.num, th.num { text-align: right; white-space: nowrap; }
+  tr.total td { font-weight: 700; border-top: 2px solid var(--ink); }
+  .shot { border-radius: 3mm; overflow: hidden; border: 1px solid var(--line); margin: 0 0 3mm; }
+  .shot img { display: block; width: 100%; }
+  figure { margin: 0 0 4mm; }
+  figcaption { font-size: 8.5pt; color: var(--muted); margin-top: 1.2mm; }
+  .steps { counter-reset: s; list-style: none; padding: 0; }
+  .steps li { counter-increment: s; position: relative; padding: 0 0 0 9mm; margin: 0 0 2.4mm; }
+  .steps li::before { content: counter(s); position: absolute; left: 0; top: .2mm; width: 6mm; height: 6mm; border-radius: 50%; background: var(--red); color: #fff; font-weight: 700; font-size: 8.5pt; display: grid; place-items: center; }
+  .check { list-style: none; padding: 0; }
+  .check li { position: relative; padding-left: 6.5mm; }
+  .check li::before { content: ""; position: absolute; left: 0; top: 1.1mm; width: 3.4mm; height: 3.4mm; border: 1.4px solid var(--ink); border-radius: .8mm; }
+  .qa { margin: 0 0 3mm; }
+  .qa .q { font-weight: 700; }
+  .qa .q::before { content: "„"; color: var(--red); }
+  .qa .q::after { content: "“"; color: var(--red); }
+  .price { text-align: center; border: 1px solid var(--line); border-radius: 3mm; padding: 3mm 3mm; }
+  .price.best { border: 2px solid var(--red); }
+  .price .n { font-family: 'Barlow Condensed', Arial, sans-serif; font-style: italic; font-weight: 800; text-transform: uppercase; font-size: 13pt; }
+  .price ul li { margin-bottom: .6mm; }
+  .price .p { font-family: 'Barlow Condensed', Arial, sans-serif; font-weight: 800; font-size: 25pt; line-height: 1.05; margin: 1.5mm 0; }
+  .price ul { text-align: left; font-size: 8.8pt; margin: 2mm 0 0; }
+  .foot { margin-top: 3mm; font-size: 8.5pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- 1 Titel -->
+<section class="page">
+  <div class="cover">
+    <div class="eye">Gesprächsleitfaden · Freitag, 27.11.2026 · 14:30 Uhr</div>
+    <h1>Eiweissdealer24<br><span>neu auf Shopify</span></h1>
+    <p class="sub">Alles für den Termin: Ablauf, Demo in 10 Schritten, die stärksten Argumente, Antworten auf typische Einwände, die preisliche Einordnung und die nächsten Schritte.</p>
+    <div class="shot"><img src="img/home.jpg" alt="Startseite des neuen Shops"></div>
+    <div class="facts">
+      <div class="fact"><b>472</b><span>Produkte mit 1.249 Varianten</span></div>
+      <div class="fact"><b>669</b><span>Produktbilder einheitlich freigestellt</span></div>
+      <div class="fact"><b>76</b><span>Kategorien (15 + 61 Unterkategorien)</span></div>
+      <div class="fact"><b>64</b><span>Marken mit eigener Seite</span></div>
+    </div>
+    <div class="meta"><span>Vorschau: 1m2xbk-0k.myshopify.com (Passwort bereithalten)</span><span>Stand: 27.11.2026</span></div>
+  </div>
+</section>
+
+<!-- 2 Ziel, Ablauf, Vorbereitung -->
+<section class="page">
+  <h2><span class="no">01</span>Ziel und Ablauf</h2>
+  <div class="box accent avoid">
+    <h3>Das Ziel in einem Satz</h3>
+    <p>Mario soll den neuen Shop selbst in der Hand halten, merken, dass <b>sein Laden, seine Produkte und seine Inhalte</b> schon drin sind, und am Ende einem Umzug auf Shopify mit dir als Umsetzer zustimmen (oder einen festen Folgetermin geben).</p>
+  </div>
+
+  <h3>Ablauf (ca. 45 Minuten)</h3>
+  <table class="avoid">
+    <tr><th>Zeit</th><th>Was</th><th>Worauf achten</th></tr>
+    <tr><td>5 Min</td><td><b>Ankommen und Fragen stellen</b></td><td>Erst zuhören. Was nervt am jetzigen Shop? Wie viel kommt online, wie viel per Telefon und im Laden? Wer pflegt Produkte und Preise?</td></tr>
+    <tr><td>15 Min</td><td><b>Live-Demo auf dem iPad</b></td><td>Mario selbst klicken lassen. Drehbuch auf Seite 3.</td></tr>
+    <tr><td>10 Min</td><td><b>Vorteile und Shopify</b></td><td>Auf seine Antworten aus Minute 1 bis 5 beziehen, nicht alles aufzählen.</td></tr>
+    <tr><td>10 Min</td><td><b>Preis und Pakete</b></td><td>Erst den Wert zeigen, dann den Preis. Empfehlung klar sagen.</td></tr>
+    <tr><td>5 Min</td><td><b>Nächste Schritte</b></td><td>Termin, Zugänge, Anzahlung. Nicht ohne konkrete Vereinbarung gehen.</td></tr>
+  </table>
+
+  <div class="grid2">
+    <div class="box soft avoid">
+      <h3>Gute Fragen zum Einstieg</h3>
+      <ul>
+        <li>Was gefällt dir am jetzigen Shop, was nicht?</li>
+        <li>Wie viele Bestellungen kommen online im Monat?</li>
+        <li>Bestellen die meisten Kunden noch per Telefon?</li>
+        <li>Wer pflegt neue Produkte und Preise, und wie lange dauert das?</li>
+        <li>Was ist dir wichtiger: mehr Online-Umsatz oder weniger Arbeit?</li>
+        <li>Bis wann soll der neue Shop laufen?</li>
+      </ul>
+    </div>
+    <div class="box soft avoid">
+      <h3>Checkliste vor dem Termin</h3>
+      <ul class="check">
+        <li>iPad voll geladen, Helligkeit hoch</li>
+        <li>Shop-Link und Passwort griffbereit</li>
+        <li>Einmal komplett durchklicken (Seite 3)</li>
+        <li>Hotspot vom Handy als WLAN-Ersatz</li>
+        <li>Ein Produkt schon im Warenkorb</li>
+        <li>Diese PDF und Screenshots offline gespeichert</li>
+        <li>Block und Stift für seine Wünsche</li>
+        <li>Angebot mit 3 Paketen ausgedruckt (Seite 7)</li>
+      </ul>
+    </div>
+  </div>
+  <p class="small muted">Tipp: Nicht in Fachbegriffen reden (Theme, Liquid, Sections). Sag lieber „Seite“, „Menü“, „Bilder“, „Kasse“. Und immer wieder den Laden erwähnen: Der Shop soll Kunden in die Doberaner Straße bringen und Telefonbestellungen leichter machen.</p>
+</section>
+
+<!-- 3 Demo -->
+<section class="page">
+  <h2><span class="no">02</span>Demo-Drehbuch in 10 Schritten</h2>
+  <ol class="steps">
+    <li><b>Startseite:</b> großer Schriftzug, schwebende 3D-Dosen mit dem Eiweissdealer-Etikett, rote Infoleiste mit Laden, Überraschung ab 100 € und Beratungsnummer. Langsam scrollen: Showcase mit der Eigenmarke, „Seit 2007 in Rostock“, Coaching-Panel.</li>
+    <li><b>Menü „Shop“:</b> öffnet sich wie im alten Shop mit allen Kategorien und Unterkategorien in Spalten (Protein, Low Carb, Weight Gainer, Booster, Vital, Aminosäuren, Kreatin, Testo, Nasch-Ecke, Burner, CLA/MCT, Eigenmarke).</li>
+    <li><b>Shop-Seite:</b> alle Kategorien auf einer Seite, die rote Kategorie-Leiste läuft beim Scrollen mit. Alles von A bis Z sortiert.</li>
+    <li><b>Kategorie, z. B. „Booster mit Koffein“:</b> 18 Produkte, alle Bilder gleich groß auf Schwarz. Filter und Sortierung zeigen.</li>
+    <li><b>Produktseite:</b> Bild, Preis, Varianten, Warenkorb. Ein Produkt in den Warenkorb legen.</li>
+    <li><b>Hersteller:</b> alle 64 Marken von A bis Z, mit Suchfeld. Eine Marke antippen, z. B. Big Zone.</li>
+    <li><b>Rezepte und Info-Blog:</b> alle 30 Rezepte und 9 Fachartikel aus dem alten Shop sind übernommen.</li>
+    <li><b>Über uns:</b> Geschichte, Philosophie, Franzis Vize-Weltmeistertitel mit dem MV1-Video.</li>
+    <li><b>Footer und Vertrauen:</b> Trusted-Shops-Siegel (5,00 bei 257 Bewertungen), Impressum, AGB, Widerruf, Datenschutz, Versand, „Mein Konto“ zum Registrieren.</li>
+    <li><b>Handy:</b> dieselbe Seite am Smartphone zeigen. Menü, Warenkorb und Kasse sind für den Daumen gebaut.</li>
+  </ol>
+  <div class="grid2">
+    <figure class="avoid"><div class="shot"><img src="img/megamenu.jpg" alt=""></div><figcaption>Das Produkt-Menü: Kategorien fett, Unterkategorien darunter, wie im alten Shop gewohnt.</figcaption></figure>
+    <figure class="avoid"><div class="shot"><img src="img/hersteller.jpg" alt=""></div><figcaption>Hersteller-Seite mit Buchstaben-Leiste und Suche.</figcaption></figure>
+  </div>
+  <div class="box accent avoid small"><b>Wenn etwas hakt:</b> ruhig bleiben, „das ist die Vorschau, das stelle ich ein“ sagen und weitermachen. Wenn der 3D-Bereich am iPad kurz lädt, erst die Shop-Seite zeigen und später zurückgehen.</div>
+</section>
+
+<!-- 4 Vorteile -->
+<section class="page">
+  <h2><span class="no">03</span>Was die neue Seite besser macht</h2>
+  <table class="avoid">
+    <tr><th style="width:22%">Thema</th><th style="width:36%">Bisher (eiweissdealer24.de)</th><th>Neu (Shopify)</th></tr>
+    <tr><td><b>Technik</b></td><td>Shopware 5. Der Hersteller hat die Version eingestellt, es gibt keine Weiterentwicklung mehr.</td><td>Shopify: Hosting, Sicherheit und Updates sind inklusive, nichts veraltet mehr.</td></tr>
+    <tr><td><b>Design</b></td><td>Helle Standard-Optik, wirkt wie viele andere Shops.</td><td>Eigene Marke: Schwarz-Rot, kraftvoll, mit Effekten, die man sich merkt.</td></tr>
+    <tr><td><b>Handy</b></td><td>Mobil nur angepasst.</td><td>Für das Handy gebaut, dort kaufen heute die meisten.</td></tr>
+    <tr><td><b>Produktbilder</b></td><td>Unterschiedliche Größen und Hintergründe.</td><td>669 Bilder freigestellt, alle 1200 × 1200 auf demselben Schwarz.</td></tr>
+    <tr><td><b>Finden</b></td><td>Menü mit Kategorien.</td><td>Dasselbe Menü plus Shop-Seite, Hersteller A–Z, Suche, Filter und A–Z-Sortierung überall.</td></tr>
+    <tr><td><b>Eigenmarke</b></td><td>Geht im Sortiment unter.</td><td>Steht auf der Startseite im Mittelpunkt (Showcase und 3D-Dosen).</td></tr>
+    <tr><td><b>Vertrauen</b></td><td>Trusted Shops vorhanden.</td><td>Trusted Shops bleibt (Siegel und 257 Bewertungen), dazu Laden, Team, Öffnungszeiten.</td></tr>
+    <tr><td><b>Pflege</b></td><td>Backend kompliziert.</td><td>Produkte, Preise, Aktionen per Klick, auch in der Shopify-App am Handy.</td></tr>
+  </table>
+  <div class="grid2">
+    <figure class="avoid"><div class="shot"><img src="img/shopseite.jpg" alt=""></div><figcaption>Shop-Seite: alle Kategorien, A–Z sortiert, mit mitlaufender Kategorie-Leiste.</figcaption></figure>
+    <figure class="avoid"><div class="shot"><img src="img/bilder_vorher_nachher.jpg" alt=""></div><figcaption>Produktbilder vorher (links) und nachher (rechts): sauber freigestellt, einheitlich auf Schwarz.</figcaption></figure>
+  </div>
+</section>
+
+<!-- 5 Shopify -->
+<section class="page">
+  <h2><span class="no">04</span>Warum Shopify</h2>
+  <div class="grid2">
+    <div class="box avoid">
+      <h3><span class="tag">Sicher</span>Keine Technik-Sorgen</h3>
+      <p>Server, SSL, Sicherheits-Updates und Backups macht Shopify. Kein Hoster, kein Update-Stress, kein Ausfall beim Ansturm.</p>
+    </div>
+    <div class="box avoid">
+      <h3><span class="tag">Laden</span>Shopify POS für Rostock</h3>
+      <p>Mit Shopify POS wird das iPad im Laden zur Kasse. Online und im Laden gibt es <b>einen</b> Lagerbestand, Kunden und Umsätze an einem Ort. Abholung im Laden ist eingebaut (wichtig für Fightwear).</p>
+    </div>
+    <div class="box avoid">
+      <h3><span class="tag">Kasse</span>Mehr Zahlarten</h3>
+      <p>PayPal, Karte, Apple Pay, Google Pay, Klarna/Rechnung und Shop Pay mit 1-Klick-Kauf. Weniger Abbrüche an der Kasse.</p>
+    </div>
+    <div class="box avoid">
+      <h3><span class="tag">Kunden</span>Konto und Newsletter</h3>
+      <p>Kundenkonto mit Bestellübersicht, Anmeldung per E-Mail-Code ohne Passwort. Newsletter mit Shopify Email, Rabattcodes und Aktionen ohne Zusatz-Software.</p>
+    </div>
+    <div class="box avoid">
+      <h3><span class="tag">Apps</span>Alles anschließbar</h3>
+      <p>Trusted Shops, DHL-Versandetiketten, Bewertungen, Rechtstexte-Service: alles als App in wenigen Minuten verbunden.</p>
+    </div>
+    <div class="box avoid">
+      <h3><span class="tag">Frei</span>Keine Falle</h3>
+      <p>Produkte, Kunden und Bestellungen lassen sich jederzeit als CSV exportieren. Mario bleibt Herr über seine Daten.</p>
+    </div>
+  </div>
+  <h3>Laufende Kosten bei Shopify (zahlt der Kunde direkt)</h3>
+  <table class="avoid">
+    <tr><th>Tarif</th><th class="num">ca. pro Monat (jährlich)</th><th>Passt für</th></tr>
+    <tr><td><b>Basic</b></td><td class="num">ab ca. 27 €</td><td>Reicht für den Start, inklusive Online-Shop und POS Lite im Laden.</td></tr>
+    <tr><td><b>Grow</b></td><td class="num">ab ca. 79 €</td><td>Mehr Mitarbeiterkonten, bessere Berichte.</td></tr>
+    <tr><td>dazu</td><td class="num">je Zahlung</td><td>Zahlungsgebühren je nach Zahlart (bei PayPal wie bisher).</td></tr>
+  </table>
+  <p class="small muted">Preise aus Shopifys deutscher Preisliste, Stand zuletzt bekannt. Vor dem Termin kurz auf shopify.com/de/preise nachsehen. Zum Vergleich: Ein Shopware-Shop braucht Hosting, Updates und einen Entwickler für jede Änderung.</p>
+</section>
+
+<!-- 6 Einwände -->
+<section class="page">
+  <h2><span class="no">05</span>Einwände und gute Antworten</h2>
+  <div class="grid2">
+    <div>
+      <div class="qa avoid"><p class="q">Das ist mir zu teuer.</p><p>Rechne mit ihm: Wenn der Shop im Monat nur 3 bis 4 Bestellungen mehr bringt, ist er nach einem Jahr bezahlt. Dazu sparst du Hosting und Updates. Und es gibt ein kleineres Paket.</p></div>
+      <div class="qa avoid"><p class="q">Meine Kunden bestellen sowieso per Telefon.</p><p>Gerade deshalb: Der Kunde sieht im Shop Produkt, Preis und Bild und ruft dann an oder holt ab. Und mit Shopify POS gibst du Telefonbestellungen in 30 Sekunden selbst ein.</p></div>
+      <div class="qa avoid"><p class="q">Was ist mit meinem Google-Ranking?</p><p>Alle alten Adressen werden auf die neuen weitergeleitet (301-Weiterleitungen). Kategorien und Produktnamen bleiben gleich, Shopify ist schnell, das hilft eher.</p></div>
+      <div class="qa avoid"><p class="q">Ich kann das nicht bedienen.</p><p>Du bekommst eine Einweisung und eine Anleitung. Produkte und Preise änderst du wie in einem Formular, auch in der App am Handy.</p></div>
+    </div>
+    <div>
+      <div class="qa avoid"><p class="q">Was passiert mit Kunden, Bestellungen, Trusted Shops?</p><p>Produkte sind schon drin. Kunden und alte Bestellungen werden per Export übernommen. Trusted Shops wird per App verbunden, die 257 Bewertungen bleiben.</p></div>
+      <div class="qa avoid"><p class="q">Bin ich dann von Shopify abhängig?</p><p>Nein, alle Daten sind jederzeit exportierbar. Shopify ist der größte Shop-Anbieter weltweit, das ist sicherer als eine eingestellte Shopware-Version.</p></div>
+      <div class="qa avoid"><p class="q">Und die Rechtstexte?</p><p>AGB, Widerruf, Datenschutz und Impressum sind aus dem alten Shop übernommen. Vor dem Start lässt man sie vom bisherigen Rechtstexte-Anbieter für Shopify aktualisieren, das geht meist per App.</p></div>
+      <div class="qa avoid"><p class="q">Ich muss darüber nachdenken.</p><p>Gern. Frag konkret: „Was fehlt dir noch, damit du Ja sagen kannst?“ und mach direkt einen Folgetermin aus (z. B. nächste Woche).</p></div>
+    </div>
+  </div>
+  <div class="box accent avoid">
+    <h3>Ehrlich ansprechen, was vor dem Start noch fehlt</h3>
+    <ul>
+      <li>Preise je Größe/Variante nachtragen (im Original steht nur der „ab“-Preis)</li>
+      <li>Lagerbestand und Versand einrichten (DHL 4,90 €, frei ab 55 €, Abholung, X-Press Rostock)</li>
+      <li>Zahlarten aktivieren, Domain eiweissdealer24.de umziehen, alte Adressen weiterleiten</li>
+      <li>Rechtstexte für Shopify aktualisieren lassen, Trusted Shops per App verbinden, Testbestellung</li>
+    </ul>
+    <p class="small muted" style="margin:0">Das zeigt Erfahrung und schafft Vertrauen. Alles davon steckt im empfohlenen Paket.</p>
+  </div>
+</section>
+
+<!-- 7 Preis -->
+<section class="page">
+  <h2><span class="no">06</span>Preisliche Einordnung</h2>
+  <h3>Was in dem Shop steckt (realistischer Aufwand)</h3>
+  <table class="avoid">
+    <tr><th>Leistung</th><th class="num">Stunden</th></tr>
+    <tr><td>Design und 12 eigene Bereiche (3D-Startseite, Showcase, Shop-Seite, Hersteller, Footer, Effekte)</td><td class="num">45–60</td></tr>
+    <tr><td>472 Produkte mit 1.249 Varianten, Texten, Tags importiert</td><td class="num">15–20</td></tr>
+    <tr><td>669 Produktbilder freigestellt, vereinheitlicht und geprüft</td><td class="num">20–30</td></tr>
+    <tr><td>76 Kategorien, Mega-Menü, Sortierung, Hersteller A–Z</td><td class="num">8–12</td></tr>
+    <tr><td>Inhalte: 30 Rezepte, 9 Fachartikel, Über uns, Rechtstexte, Coaching</td><td class="num">8–10</td></tr>
+    <tr><td>Tests auf iPad, Handy und Desktop, Feinschliff</td><td class="num">10–15</td></tr>
+    <tr class="total"><td>Gesamt</td><td class="num">ca. 105–145 h</td></tr>
+  </table>
+  <div class="grid3 avoid" style="margin-bottom:4mm">
+    <div class="box soft"><p class="cond" style="margin:0;font-size:12pt">Agentur</p><p style="margin:0"><b>10.000–18.000 €</b><br><span class="small muted">80–120 € pro Stunde</span></p></div>
+    <div class="box soft"><p class="cond" style="margin:0;font-size:12pt">Freelancer</p><p style="margin:0"><b>5.000–9.000 €</b><br><span class="small muted">50–70 € pro Stunde</span></p></div>
+    <div class="box accent"><p class="cond" style="margin:0;font-size:12pt">Dein Angebot</p><p style="margin:0"><b>2.900 € empfohlen</b><br><span class="small muted">als Einstiegs- und Referenzprojekt</span></p></div>
+  </div>
+  <h3>Drei Pakete zum Vorlegen (einmalig)</h3>
+  <div class="grid3">
+    <div class="price avoid">
+      <div class="n">Start</div><div class="p">1.900 €</div>
+      <ul><li>Shop wie gezeigt</li><li>Preise und Versand einrichten</li><li>Domain umziehen</li><li>Kurze Einweisung</li></ul>
+    </div>
+    <div class="price best avoid">
+      <div class="tag">Empfehlung</div>
+      <div class="n">Komplett</div><div class="p">2.900 €</div>
+      <ul><li>Alles aus Start</li><li>Kunden und Bestellungen übernehmen</li><li>Alte Adressen weiterleiten (Google)</li><li>Trusted Shops, Zahlarten, Filter</li><li>Einweisung plus Anleitung</li><li>30 Tage Support nach Start</li></ul>
+    </div>
+    <div class="price avoid">
+      <div class="n">Premium</div><div class="p">4.400 €</div>
+      <ul><li>Alles aus Komplett</li><li>Shopify POS im Laden einrichten</li><li>Preise je Größe für alle Produkte</li><li>Newsletter und Aktions-Vorlagen</li><li>3 Monate Support</li></ul>
+    </div>
+  </div>
+  <p class="foot" style="margin-top:1mm">Hinweis: Rechnung als Kleinunternehmer (§ 19 UStG, ohne Umsatzsteuer) ist möglich; Gewerbe und Steuern vorher mit Eltern oder Steuerberater klären. Shopify-Abo und Zahlungsgebühren zahlt der Kunde direkt.</p>
+</section>
+
+<!-- 8 Abschluss -->
+<section class="page">
+  <h2><span class="no">07</span>Abschluss und nächste Schritte</h2>
+  <div class="grid2">
+    <div class="box avoid"><h3>Laufende Betreuung (optional)</h3><p style="margin:0"><b>99 €/Monat:</b> neue Produkte und Preise, Aktionen und Banner, kleine Änderungen, Ansprechpartner bei Problemen. Bringt dir planbares Einkommen.</p></div>
+    <div class="box avoid"><h3>So verhandeln</h3><ul style="margin:0"><li>Zuerst den Marktwert nennen, dann dein Angebot.</li><li>Mit „Komplett“ starten, „Start“ als Rückfallebene.</li><li>50 % Anzahlung bei Zusage, 50 % beim Livegang.</li><li>Nicht unter 1.900 € gehen, die Arbeit ist schon zu großen Teilen fertig, das ist dein Vorteil.</li></ul></div>
+  </div>
+  
+  <div class="box accent avoid">
+    <h3>Diese Punkte vor dem Gehen klären</h3>
+    <ol class="steps">
+      <li><b>Entscheidung</b> für ein Paket (oder ein fester Folgetermin mit Datum).</li>
+      <li><b>Zeitplan:</b> Livegang in 3 bis 4 Wochen, z. B. vor Weihnachten oder zum Jahresstart.</li>
+      <li><b>Zugänge:</b> Shopware-Export (Kunden, Bestellungen), Domain-Zugang, Trusted-Shops-Login, PayPal.</li>
+      <li><b>Preise je Größe:</b> Liste oder Export der Variantenpreise.</li>
+      <li><b>Ansprechpartner:</b> Wer gibt Inhalte frei, Mario oder Franzi?</li>
+      <li><b>Anzahlung</b> und schriftliche Auftragsbestätigung per E-Mail.</li>
+    </ol>
+  </div>
+  <div class="grid2">
+    <div class="box soft avoid">
+      <h3>Spickzettel: Zahlen</h3>
+      <ul>
+        <li>472 Produkte, 1.249 Varianten</li>
+        <li>669 Produktbilder, alle einheitlich</li>
+        <li>15 Kategorien + 61 Unterkategorien</li>
+        <li>64 Marken, Hersteller-Seite A–Z</li>
+        <li>30 Rezepte, 9 Info-Blog-Artikel</li>
+        <li>Trusted Shops: 5,00 bei 257 Bewertungen</li>
+        <li>Laden seit 2007, 120 m², Doberaner Str. 110–112</li>
+      </ul>
+    </div>
+    <figure class="avoid" style="display:flex;gap:4mm;align-items:flex-start">
+      <div class="shot" style="width:30%;flex:0 0 auto"><img src="img/mobil.jpg" alt=""></div>
+      <figcaption style="margin:0">Der Shop am Handy: gleiche Marke, gleiche Effekte, Menü und Warenkorb mit dem Daumen erreichbar.<br><br><b class="red">Satz zum Schluss:</b> „Der Shop ist fertig gebaut. Wenn du willst, ist er in drei bis vier Wochen unter eiweissdealer24.de live.“</figcaption>
+    </figure>
+  </div>
+  <p class="foot">Viel Erfolg, Timi! Ruhig bleiben, zuhören, Mario klicken lassen, und am Ende konkret werden.</p>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,173 @@
+{%- comment -%}
+  ED24 Footer – Eiweissdealer24
+  Kompakter Fußbereich: Laden und Kontakt, drei Linklisten (Menüs aus Onlineshop → Navigation),
+  Newsletter auf Deutsch, Zahlarten, Social Media und das Trusted-Shops-Siegel (offizielles Trustbadge).
+  Gehört in den Footer-Bereich. Blendet auf Wunsch den Standard-Footer des Themes aus.
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign phone_link = s.phone | remove: ' ' | remove: '–' | remove: '-' | remove: '/'
+-%}
+<footer class="ed24-footer" style="--ed24-acc: {{ s.accent }};">
+  <div class="ed24-footer__grid">
+    <div class="ed24-footer__brand">
+      <a class="ed24-footer__logo" href="{{ routes.root_url }}">EIWEISSDEALER<span>24</span></a>
+      {%- if s.claim != blank -%}<p class="ed24-footer__claim">{{ s.claim | escape }}</p>{%- endif -%}
+      <address class="ed24-footer__addr">
+        {{ s.address | newline_to_br }}<br>
+        <a href="tel:{{ phone_link }}">{{ s.phone | escape }}</a><br>
+        <a href="mailto:{{ s.email | escape }}">{{ s.email | escape }}</a>
+      </address>
+      {%- if s.hours != blank -%}<p class="ed24-footer__hours">{{ s.hours | newline_to_br }}</p>{%- endif -%}
+    </div>
+
+    {%- for i in (1..3) -%}
+      {%- liquid
+        case i
+          when 1
+            assign menu = linklists[s.menu_1]
+            assign heading = s.heading_1
+          when 2
+            assign menu = linklists[s.menu_2]
+            assign heading = s.heading_2
+          else
+            assign menu = linklists[s.menu_3]
+            assign heading = s.heading_3
+        endcase
+      -%}
+      {%- if menu.links.size > 0 -%}
+        <nav class="ed24-footer__col" aria-label="{{ heading | escape }}">
+          <p class="ed24-footer__h">{{ heading | escape }}</p>
+          <ul role="list">
+            {%- for link in menu.links -%}
+              <li><a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  <div class="ed24-footer__row">
+    <div class="ed24-footer__nl">
+      <p class="ed24-footer__h">Newsletter</p>
+      {%- form 'customer', id: 'ed24-newsletter', class: 'ed24-footer__form' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <input type="email" name="contact[email]" required placeholder="Deine E-Mail-Adresse" aria-label="E-Mail-Adresse" autocomplete="email">
+        <button type="submit">Anmelden</button>
+        {%- if form.posted_successfully? -%}<p class="ed24-footer__ok" role="status">Danke, du bist dabei!</p>{%- endif -%}
+        {%- if form.errors -%}<p class="ed24-footer__err" role="alert">Bitte prüfe deine E-Mail-Adresse.</p>{%- endif -%}
+      {%- endform -%}
+    </div>
+    <div class="ed24-footer__trust">
+      {%- if s.ts_id != blank -%}
+        <a class="ed24-footer__ts" href="https://www.trustedshops.de/bewertung/info_{{ s.ts_id | escape }}.html" target="_blank" rel="noopener">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>
+          <span><b>Käuferschutz</b> Trusted Shops geprüft</span>
+        </a>
+      {%- endif -%}
+      {%- if s.payments != blank -%}<p class="ed24-footer__pay">{{ s.payments | escape }}</p>{%- endif -%}
+    </div>
+    <div class="ed24-footer__social">
+      {%- if s.facebook != blank -%}<a href="{{ s.facebook }}" target="_blank" rel="noopener" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 8V6.5c0-.7.5-1 1-1h2V2h-3c-2.8 0-4 1.9-4 4.2V8H8v3.5h2V22h4V11.5h2.7L17 8h-3Z"/></svg></a>{%- endif -%}
+      {%- if s.instagram_1 != blank -%}<a href="{{ s.instagram_1 }}" target="_blank" rel="noopener" aria-label="Instagram Mario"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg><span>Mario</span></a>{%- endif -%}
+      {%- if s.instagram_2 != blank -%}<a href="{{ s.instagram_2 }}" target="_blank" rel="noopener" aria-label="Instagram Franzi"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg><span>Franzi</span></a>{%- endif -%}
+    </div>
+  </div>
+
+  <p class="ed24-footer__copy">© {{ 'now' | date: '%Y' }} {{ s.company | escape }} · Alle Preise inkl. MwSt., zzgl. Versand</p>
+</footer>
+
+{%- if s.hide_theme_footer -%}
+  <style>
+    /* Standard-Footer des Themes ausblenden, damit nur dieser deutsche Footer erscheint */
+    .shopify-section-group-footer-group:not(:has(.ed24-footer)){display:none}
+  </style>
+{%- endif -%}
+
+{%- if s.ts_id != blank and s.ts_badge -%}
+  <script>
+    (function () {
+      if (window._ed24ts) return; window._ed24ts = true;
+      // Offizielles Trusted-Shops-Trustbadge (wie im bisherigen Shop), schwebt unten links
+      window._tsConfig = { 'yOffset': '{{ s.ts_offset }}', 'variant': 'reviews', 'customElementId': '', 'trustcardDirection': '', 'disableResponsive': 'false', 'disableTrustbadge': 'false' };
+      var ts = document.createElement('script');
+      ts.async = true; ts.charset = 'utf-8';
+      ts.src = 'https://widgets.trustedshops.com/js/{{ s.ts_id | escape }}.js';
+      document.head.appendChild(ts);
+    })();
+  </script>
+{%- endif -%}
+
+<style>
+  .ed24-footer{--ed24-acc:#e30613;background:#070708;color:#c9c9ce;border-top:3px solid var(--ed24-acc);padding:clamp(40px,6vw,72px) clamp(16px,4vw,56px) 28px;font-family:'Barlow',sans-serif;font-size:15px;line-height:1.55}
+  .ed24-footer a{color:inherit;text-decoration:none;transition:color .2s}
+  .ed24-footer a:hover{color:#fff}
+  .ed24-footer__grid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:clamp(24px,4vw,56px);max-width:1280px;margin:0 auto}
+  .ed24-footer__logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;font-size:28px;letter-spacing:.01em;color:#fff}
+  .ed24-footer__logo span{color:var(--ed24-acc)}
+  .ed24-footer__claim{margin:6px 0 14px;color:#9a9aa0}
+  .ed24-footer__addr{font-style:normal}
+  .ed24-footer__hours{margin:10px 0 0;color:#9a9aa0;font-size:14px}
+  .ed24-footer__h{margin:0 0 12px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;font-size:17px;letter-spacing:.03em;text-transform:uppercase;color:#fff}
+  .ed24-footer__col ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+  .ed24-footer__col a{position:relative}
+  .ed24-footer__col a[aria-current]{color:#fff}
+  .ed24-footer__row{display:grid;grid-template-columns:1.4fr 1fr auto;align-items:end;gap:20px clamp(24px,4vw,56px);max-width:1280px;margin:clamp(28px,4vw,44px) auto 0;padding-top:24px;border-top:1px solid #1d1d20}
+  .ed24-footer__form{display:flex;flex-wrap:wrap;gap:8px;max-width:440px}
+  .ed24-footer__form input[type=email]{flex:1 1 220px;min-height:44px;padding:0 16px;border:1px solid #2c2c30;border-radius:999px;background:#111113;color:#fff;font:inherit}
+  .ed24-footer__form input[type=email]:focus{outline:0;border-color:var(--ed24-acc)}
+  .ed24-footer__form button{min-height:44px;padding:0 20px;border:0;border-radius:999px;background:var(--ed24-acc);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:transform .2s,filter .2s}
+  .ed24-footer__form button:hover{filter:brightness(1.1)}
+  .ed24-footer__form button:active{transform:scale(.97)}
+  .ed24-footer__ok,.ed24-footer__err{flex-basis:100%;margin:2px 0 0;font-size:14px}
+  .ed24-footer__ok{color:#7ee2a0}.ed24-footer__err{color:#ff8a8f}
+  .ed24-footer__ts{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border:1px solid #2c2c30;border-radius:12px;color:#fff}
+  .ed24-footer__ts svg{width:22px;height:22px;color:#ffdc0f;flex:0 0 auto}
+  .ed24-footer__ts span{font-size:14px;line-height:1.25}
+  .ed24-footer__ts b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:16px;letter-spacing:.03em;text-transform:uppercase}
+  .ed24-footer__ts:hover{border-color:var(--ed24-acc)}
+  .ed24-footer__pay{margin:10px 0 0;font-size:13px;color:#9a9aa0}
+  .ed24-footer__social{display:flex;gap:10px}
+  .ed24-footer__social a{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border:1px solid #2c2c30;border-radius:999px;font-size:14px}
+  .ed24-footer__social a:hover{border-color:var(--ed24-acc)}
+  .ed24-footer__social svg{width:18px;height:18px}
+  .ed24-footer__copy{max-width:1280px;margin:24px auto 0;font-size:13px;color:#77777d}
+  @media (max-width:989px){.ed24-footer__grid{grid-template-columns:1fr 1fr}.ed24-footer__brand{grid-column:1 / -1}.ed24-footer__row{grid-template-columns:1fr}}
+  @media (max-width:749px){.ed24-footer__grid{gap:24px 16px}.ed24-footer__social{flex-wrap:wrap}}
+</style>
+
+{% schema %}
+{
+  "name": "ED24 Footer",
+  "tag": "section",
+  "class": "ed24-section",
+  "settings": [
+    { "type": "text", "id": "company", "label": "Firma (Copyright)", "default": "Fitness- und Diätshop Rostock · Eiweissdealer24" },
+    { "type": "text", "id": "claim", "label": "Kurzer Satz unter dem Logo", "default": "Dein Fitness- und Diätshop in Rostock seit 2007." },
+    { "type": "textarea", "id": "address", "label": "Adresse", "default": "Doberaner Straße 110–112\n18057 Rostock" },
+    { "type": "text", "id": "phone", "label": "Telefon", "default": "0381 – 203 38 71" },
+    { "type": "text", "id": "email", "label": "E-Mail", "default": "info@eiweissdealer24.de" },
+    { "type": "textarea", "id": "hours", "label": "Öffnungszeiten", "default": "Mo – Fr 10 – 19 Uhr\nSa 10 – 15 Uhr" },
+    { "type": "header", "content": "Linklisten" },
+    { "type": "text", "id": "heading_1", "label": "Überschrift 1", "default": "Shop" },
+    { "type": "link_list", "id": "menu_1", "label": "Menü 1" },
+    { "type": "text", "id": "heading_2", "label": "Überschrift 2", "default": "Wissen & Team" },
+    { "type": "link_list", "id": "menu_2", "label": "Menü 2" },
+    { "type": "text", "id": "heading_3", "label": "Überschrift 3", "default": "Service & Rechtliches" },
+    { "type": "link_list", "id": "menu_3", "label": "Menü 3" },
+    { "type": "header", "content": "Vertrauen & Zahlung" },
+    { "type": "text", "id": "ts_id", "label": "Trusted Shops ID", "default": "XFB38ED3FF33DE311B3172060C3D43682" },
+    { "type": "checkbox", "id": "ts_badge", "label": "Trustbadge (schwebendes Siegel) anzeigen", "default": true },
+    { "type": "text", "id": "ts_offset", "label": "Abstand des Siegels von unten (px)", "default": "20" },
+    { "type": "text", "id": "payments", "label": "Zahlarten", "default": "Zahlarten: PayPal · Vorkasse · Rechnung · Sofortüberweisung · Bar bei Abholung" },
+    { "type": "header", "content": "Social Media" },
+    { "type": "url", "id": "facebook", "label": "Facebook" },
+    { "type": "url", "id": "instagram_1", "label": "Instagram Mario" },
+    { "type": "url", "id": "instagram_2", "label": "Instagram Franzi" },
+    { "type": "checkbox", "id": "hide_theme_footer", "label": "Standard-Footer des Themes ausblenden", "default": true },
+    { "type": "color", "id": "accent", "label": "Akzentfarbe", "default": "#e30613" }
+  ],
+  "presets": [{ "name": "ED24 Footer" }]
+}
+{% endschema %}

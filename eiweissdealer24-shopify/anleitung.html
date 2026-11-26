@@ -80,10 +80,10 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
   <header class="top">
     <p class="kicker">Eiweissdealer24 · Shopify · „Mein Shop“</p>
     <h1>Shopify-Einbau in 8 Schritten</h1>
-    <p class="lead">Alles, was du für den Termin am Freitag brauchst: 472 Produkte importieren, 10 Effekt-Abschnitte einfügen und die Startseite zusammenbauen. Rechne mit etwa einer Stunde.</p>
+    <p class="lead">Alles, was du für den Termin am Freitag brauchst: 472 Produkte importieren, 12 Effekt-Abschnitte einfügen und die Startseite zusammenbauen. Rechne mit etwa einer Stunde.</p>
     <p class="note note--warn"><strong>Im Browser arbeiten, nicht in der Shopify-App.</strong> Den Code-Editor gibt es nur auf admin.shopify.com. Auf dem iPad also in Safari öffnen, am PC in Chrome oder Edge.</p>
-    <div class="facts"><span>472 Produkte</span><span>1.249 Varianten</span><span>10 Abschnitte</span><span>ohne App, ohne Programmieren</span></div>
-    <div class="progress" aria-live="polite"><div class="bar"><i id="bar"></i></div><span id="progress-text">0 von 10 Abschnitten eingefügt</span></div>
+    <div class="facts"><span>472 Produkte</span><span>1.249 Varianten</span><span>12 Abschnitte</span><span>ohne App, ohne Programmieren</span></div>
+    <div class="progress" aria-live="polite"><div class="bar"><i id="bar"></i></div><span id="progress-text">0 von 12 Abschnitten eingefügt</span></div>
   </header>
 
   <section class="step" id="schritt-1">
@@ -115,7 +115,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
   <section class="step" id="schritt-3">
     <div class="step__no">3</div>
     <div class="step__body">
-      <h2>10 Abschnitte einfügen</h2>
+      <h2>12 Abschnitte einfügen</h2>
       <p>Für jede Datei unten wiederholst du diese vier Handgriffe:</p>
       <ol>
         <li>Im Code-Editor links den Ordner <span class="path">sections</span> öffnen → <span class="path"><b>+</b> Neuen Abschnitt hinzufügen</span> (bzw. „Datei hinzufügen“)</li>
@@ -128,7 +128,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-topbar">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">1/10</span>
+            <span class="file__no">1/12</span>
             <h3 class="file__name">ed24-topbar</h3>
             <p class="file__desc">Rote Infoleiste ganz oben, Markenschrift, Effekte und der Stil des Produkt-Menüs im ganzen Shop. Im Editor heißt der Abschnitt „ED24 Topbar“.</p>
           </div>
@@ -138,7 +138,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
           </div>
         </div>
         <details class="file__code">
-          <summary>Code ansehen (199 Zeilen)</summary>
+          <summary>Code ansehen (204 Zeilen)</summary>
           <pre><code id="code-ed24-topbar">{%- comment -%}
   ED24 Topbar – Eiweissdealer24
   Rote Infoleiste ganz oben (Laden, Überraschung ab 100 €, Beratung) und die Markenschriften für den ganzen Shop.
@@ -214,6 +214,11 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       transition: color .2s, transform .25s cubic-bezier(.2,.8,.2,1);
     }
     .mega-menu .mega-menu__column ul .mega-menu__link:hover { color: #fff; transform: translateX(4px); }
+    /* „Mein Konto“ neben dem Personen-Symbol (Anmelden und Registrieren), wie im bisherigen Shop */
+    @media (min-width: 990px) {
+      .account-button .account-button__text.hidden { display: inline !important; margin-right: 6px; font-weight: 600; font-size: 14px; }
+      .account-button .account-button__text::before { content: &quot;Mein &quot;; }
+    }
   &lt;/style&gt;
 {%- endif -%}
 {%- if s.effects -%}
@@ -343,7 +348,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-hero">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">2/10</span>
+            <span class="file__no">2/12</span>
             <h3 class="file__name">ed24-hero</h3>
             <p class="file__desc">Schriftzug, Farbverlauf und echte, freigestellte Produkte, die schweben. Steuert auch Showcase und Story. Im Editor heißt der Abschnitt „ED24 Hero 3D“.</p>
           </div>
@@ -981,7 +986,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-showcase">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">3/10</span>
+            <span class="file__no">3/12</span>
             <h3 class="file__name">ed24-showcase</h3>
             <p class="file__desc">Fixierter Showcase mit 4 Kapiteln und Produkt-Picker. Im Editor heißt der Abschnitt „ED24 Produkt-Showcase“.</p>
           </div>
@@ -1230,7 +1235,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-story">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">4/10</span>
+            <span class="file__no">4/12</span>
             <h3 class="file__name">ed24-story</h3>
             <p class="file__desc">Stempel-Schrift mit vorbeischwebenden Produkten. Im Editor heißt der Abschnitt „ED24 Story“.</p>
           </div>
@@ -1389,7 +1394,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-coaching">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">5/10</span>
+            <span class="file__no">5/12</span>
             <h3 class="file__name">ed24-coaching</h3>
             <p class="file__desc">Panel, das sich beim Scrollen aufzieht. Im Editor heißt der Abschnitt „ED24 Coaching-Panel“.</p>
           </div>
@@ -1596,7 +1601,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-ziele">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">6/10</span>
+            <span class="file__no">6/12</span>
             <h3 class="file__name">ed24-ziele</h3>
             <p class="file__desc">„Was ist dein Ziel?“ – Kacheln zu den Kollektionen. Im Editor heißt der Abschnitt „ED24 Ziele“.</p>
           </div>
@@ -1712,7 +1717,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-marken">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">7/10</span>
+            <span class="file__no">7/12</span>
             <h3 class="file__name">ed24-marken</h3>
             <p class="file__desc">Alle Marken als Pillen zum Werfen. Im Editor heißt der Abschnitt „ED24 Marken (Physik)“.</p>
           </div>
@@ -1892,7 +1897,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-laden">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">8/10</span>
+            <span class="file__no">8/12</span>
             <h3 class="file__name">ed24-laden</h3>
             <p class="file__desc">Team, Live-Öffnungsstatus, Adresse, Vorteile. Im Editor heißt der Abschnitt „ED24 Laden &amp; Team“.</p>
           </div>
@@ -2133,7 +2138,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-laufschrift">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">9/10</span>
+            <span class="file__no">9/12</span>
             <h3 class="file__name">ed24-laufschrift</h3>
             <p class="file__desc">Riesige Laufschrift mit E-Mail- und Telefon-Sticker. Im Editor heißt der Abschnitt „ED24 Laufschrift“.</p>
           </div>
@@ -2251,7 +2256,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
       <article class="file" id="f-ed24-shop">
         <div class="file__head">
           <div class="file__meta">
-            <span class="file__no">10/10</span>
+            <span class="file__no">10/12</span>
             <h3 class="file__name">ed24-shop</h3>
             <p class="file__desc">Shop-Seite: alle Kategorien mit klebender Kategorie-Leiste, Produkte A–Z, Effekte beim Scrollen. Im Editor heißt der Abschnitt „ED24 Shop-Übersicht“.</p>
           </div>
@@ -2439,6 +2444,324 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
 </code></pre>
         </details>
       </article>
+      <article class="file" id="f-ed24-hersteller">
+        <div class="file__head">
+          <div class="file__meta">
+            <span class="file__no">11/12</span>
+            <h3 class="file__name">ed24-hersteller</h3>
+            <p class="file__desc">Hersteller-Seite: alle Marken A–Z mit Buchstaben-Leiste und Suche. Im Editor heißt der Abschnitt „ED24 Hersteller“.</p>
+          </div>
+          <div class="file__acts">
+            <button class="btn btn--primary" type="button" data-copy="code-ed24-hersteller">Code kopieren</button>
+            <label class="done"><input type="checkbox" id="done-ed24-hersteller" data-done> Eingefügt</label>
+          </div>
+        </div>
+        <details class="file__code">
+          <summary>Code ansehen (112 Zeilen)</summary>
+          <pre><code id="code-ed24-hersteller">{%- comment -%}
+  ED24 Hersteller – Eiweissdealer24
+  Alle Marken des Shops von A bis Z: Buchstaben-Leiste, Suchfeld und kompakte Kacheln.
+  Jede Kachel führt auf die Seite mit allen Produkten dieser Marke (/collections/vendors?q=…).
+  Gedacht für die Seite „Hersteller“ (Vorlage page.hersteller).
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign letters = &#x27;&#x27;
+  for v in shop.vendors
+    assign first = v | slice: 0 | upcase
+    unless letters contains first
+      assign letters = letters | append: first
+    endunless
+  endfor
+  assign letter_list = letters | split: &#x27;&#x27;
+-%}
+&lt;div class=&quot;ed24-brands&quot; style=&quot;--ed24-acc: {{ s.accent }};&quot;&gt;
+  &lt;header class=&quot;ed24-brands__head&quot;&gt;
+    {%- if s.eyebrow != blank -%}&lt;p class=&quot;ed24-brands__eye&quot;&gt;{{ s.eyebrow | escape }}&lt;/p&gt;{%- endif -%}
+    &lt;h1 class=&quot;ed24-brands__title&quot;&gt;{{ s.title }}&lt;/h1&gt;
+    &lt;p class=&quot;ed24-brands__meta&quot;&gt;{{ shop.vendors.size }} Marken · von A bis Z&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;div class=&quot;ed24-brands__bar&quot;&gt;
+    &lt;label class=&quot;ed24-brands__search&quot;&gt;
+      &lt;svg viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; aria-hidden=&quot;true&quot;&gt;&lt;circle cx=&quot;11&quot; cy=&quot;11&quot; r=&quot;7&quot;/&gt;&lt;path d=&quot;m20 20-4-4&quot;/&gt;&lt;/svg&gt;
+      &lt;input type=&quot;search&quot; placeholder=&quot;Marke suchen …&quot; autocomplete=&quot;off&quot; data-brand-search aria-label=&quot;Marke suchen&quot;&gt;
+    &lt;/label&gt;
+    &lt;nav class=&quot;ed24-brands__letters&quot; aria-label=&quot;Buchstaben&quot;&gt;
+      {%- for l in letter_list -%}&lt;a href=&quot;#m-{{ l | handleize | default: &#x27;z&#x27; }}&quot;&gt;{{ l }}&lt;/a&gt;{%- endfor -%}
+    &lt;/nav&gt;
+  &lt;/div&gt;
+
+  {%- for l in letter_list -%}
+    &lt;section class=&quot;ed24-brands__group&quot; id=&quot;m-{{ l | handleize | default: &#x27;z&#x27; }}&quot; data-group&gt;
+      &lt;h2 class=&quot;ed24-brands__letter&quot;&gt;{{ l }}&lt;/h2&gt;
+      &lt;ul class=&quot;ed24-brands__grid&quot; role=&quot;list&quot;&gt;
+        {%- for v in shop.vendors -%}
+          {%- assign first = v | slice: 0 | upcase -%}
+          {%- if first == l -%}
+            &lt;li data-brand=&quot;{{ v | downcase | escape }}&quot;&gt;&lt;a class=&quot;ed24-brand&quot; href=&quot;{{ v | url_for_vendor }}&quot;&gt;&lt;span&gt;{{ v | escape }}&lt;/span&gt;&lt;i aria-hidden=&quot;true&quot;&gt;→&lt;/i&gt;&lt;/a&gt;&lt;/li&gt;
+          {%- endif -%}
+        {%- endfor -%}
+      &lt;/ul&gt;
+    &lt;/section&gt;
+  {%- endfor -%}
+  &lt;p class=&quot;ed24-brands__none&quot; data-brand-none hidden&gt;Keine Marke gefunden.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+  .ed24-brands{--ed24-acc:#e30613;background:#0b0b0c;color:#f5f5f4;padding:0 clamp(16px,4vw,56px) 88px;font-family:&#x27;Barlow&#x27;,sans-serif}
+  .ed24-brands .ed24-brands__head{display:block;padding:clamp(44px,7vw,96px) 0 22px}
+  .ed24-brands__eye{margin:0 0 12px;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--ed24-acc)}
+  .ed24-brands .ed24-brands__title{margin:0;font-size:clamp(56px,11vw,160px);line-height:.85;color:#fff}
+  .ed24-brands__title strong{color:transparent;-webkit-text-stroke:.025em #fff}
+  .ed24-brands__meta{margin:14px 0 0;font-weight:600;color:#a1a1a6}
+  .ed24-brands__bar{position:sticky;top:calc(var(--header-height,64px) - 1px);z-index:3;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin:0 calc(-1 * clamp(16px,4vw,56px));padding:12px clamp(16px,4vw,56px);background:rgba(11,11,12,.88);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid #222}
+  .ed24-brands__search{display:flex;align-items:center;gap:8px;flex:0 1 280px;min-height:40px;padding:0 14px;border:1px solid #2c2c30;border-radius:999px;color:#a1a1a6;transition:border-color .2s}
+  .ed24-brands__search:focus-within{border-color:var(--ed24-acc)}
+  .ed24-brands__search svg{width:16px;height:16px;flex:0 0 auto}
+  .ed24-brands__search input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;font:inherit;font-size:15px}
+  .ed24-brands__letters{display:flex;flex-wrap:wrap;gap:2px}
+  .ed24-brands__letters a{display:inline-grid;place-items:center;min-width:30px;height:30px;border-radius:6px;color:#e8e8e8;text-decoration:none;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:700;font-size:16px;transition:background .2s,color .2s}
+  .ed24-brands__letters a:hover{background:var(--ed24-acc);color:#fff}
+  .ed24-brands__group{display:grid;grid-template-columns:64px 1fr;gap:16px;padding:26px 0;border-bottom:1px solid #1d1d20;scroll-margin-top:calc(var(--header-height,64px) + 70px)}
+  .ed24-brands .ed24-brands__letter{margin:0;font-size:44px;line-height:1;color:var(--ed24-acc)}
+  .ed24-brands__grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+  .ed24-brand{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:52px;padding:0 16px;border:1px solid #232327;border-radius:12px;background:#121214;color:#f2f2f2;text-decoration:none;font-weight:600;font-size:15px;transition:border-color .25s,background .25s,transform .25s cubic-bezier(.2,.8,.2,1)}
+  .ed24-brand i{font-style:normal;color:var(--ed24-acc);transition:transform .25s}
+  @media (hover:hover){.ed24-brand:hover{border-color:var(--ed24-acc);background:#18181b;transform:translateY(-2px)}.ed24-brand:hover i{transform:translateX(4px)}}
+  .ed24-brands__none{padding:40px 0;color:#a1a1a6}
+  @media (max-width:749px){.ed24-brands__group{grid-template-columns:1fr;gap:10px}.ed24-brands .ed24-brands__letter{font-size:32px}.ed24-brands__grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ed24-brands__search{flex-basis:100%}}
+&lt;/style&gt;
+
+&lt;script&gt;
+  (function () {
+    var root = document.currentScript &amp;&amp; document.currentScript.previousElementSibling &amp;&amp; document.currentScript.previousElementSibling.previousElementSibling;
+    if (!root || !root.classList.contains(&#x27;ed24-brands&#x27;)) root = document.querySelector(&#x27;.ed24-brands&#x27;);
+    if (!root) return;
+    var input = root.querySelector(&#x27;[data-brand-search]&#x27;), none = root.querySelector(&#x27;[data-brand-none]&#x27;);
+    if (!input) return;
+    // Marken live filtern; Buchstaben-Gruppen ohne Treffer ausblenden
+    input.addEventListener(&#x27;input&#x27;, function () {
+      var q = input.value.trim().toLowerCase(), any = false;
+      root.querySelectorAll(&#x27;[data-group]&#x27;).forEach(function (g) {
+        var hit = 0;
+        g.querySelectorAll(&#x27;[data-brand]&#x27;).forEach(function (li) {
+          var ok = !q || li.getAttribute(&#x27;data-brand&#x27;).indexOf(q) &gt; -1;
+          li.hidden = !ok; if (ok) hit++;
+        });
+        g.hidden = !hit; if (hit) any = true;
+      });
+      none.hidden = any;
+    });
+  })();
+&lt;/script&gt;
+
+{% schema %}
+{
+  &quot;name&quot;: &quot;ED24 Hersteller&quot;,
+  &quot;tag&quot;: &quot;section&quot;,
+  &quot;class&quot;: &quot;ed24-section&quot;,
+  &quot;settings&quot;: [
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;eyebrow&quot;, &quot;label&quot;: &quot;Kleine Überschrift&quot;, &quot;default&quot;: &quot;Eiweissdealer24 · Rostock&quot; },
+    { &quot;type&quot;: &quot;inline_richtext&quot;, &quot;id&quot;: &quot;title&quot;, &quot;label&quot;: &quot;Titel&quot;, &quot;info&quot;: &quot;Fett gesetzter Text erscheint als Umriss.&quot;, &quot;default&quot;: &quot;Her&lt;strong&gt;steller&lt;/strong&gt;&quot; },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;accent&quot;, &quot;label&quot;: &quot;Akzentfarbe&quot;, &quot;default&quot;: &quot;#e30613&quot; }
+  ],
+  &quot;presets&quot;: [{ &quot;name&quot;: &quot;ED24 Hersteller&quot; }]
+}
+{% endschema %}
+</code></pre>
+        </details>
+      </article>
+      <article class="file" id="f-ed24-footer">
+        <div class="file__head">
+          <div class="file__meta">
+            <span class="file__no">12/12</span>
+            <h3 class="file__name">ed24-footer</h3>
+            <p class="file__desc">Deutscher Footer mit Kontakt, Linklisten, Newsletter, Zahlarten und Trusted-Shops-Siegel. Im Editor heißt der Abschnitt „ED24 Footer“.</p>
+          </div>
+          <div class="file__acts">
+            <button class="btn btn--primary" type="button" data-copy="code-ed24-footer">Code kopieren</button>
+            <label class="done"><input type="checkbox" id="done-ed24-footer" data-done> Eingefügt</label>
+          </div>
+        </div>
+        <details class="file__code">
+          <summary>Code ansehen (174 Zeilen)</summary>
+          <pre><code id="code-ed24-footer">{%- comment -%}
+  ED24 Footer – Eiweissdealer24
+  Kompakter Fußbereich: Laden und Kontakt, drei Linklisten (Menüs aus Onlineshop → Navigation),
+  Newsletter auf Deutsch, Zahlarten, Social Media und das Trusted-Shops-Siegel (offizielles Trustbadge).
+  Gehört in den Footer-Bereich. Blendet auf Wunsch den Standard-Footer des Themes aus.
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign phone_link = s.phone | remove: &#x27; &#x27; | remove: &#x27;–&#x27; | remove: &#x27;-&#x27; | remove: &#x27;/&#x27;
+-%}
+&lt;footer class=&quot;ed24-footer&quot; style=&quot;--ed24-acc: {{ s.accent }};&quot;&gt;
+  &lt;div class=&quot;ed24-footer__grid&quot;&gt;
+    &lt;div class=&quot;ed24-footer__brand&quot;&gt;
+      &lt;a class=&quot;ed24-footer__logo&quot; href=&quot;{{ routes.root_url }}&quot;&gt;EIWEISSDEALER&lt;span&gt;24&lt;/span&gt;&lt;/a&gt;
+      {%- if s.claim != blank -%}&lt;p class=&quot;ed24-footer__claim&quot;&gt;{{ s.claim | escape }}&lt;/p&gt;{%- endif -%}
+      &lt;address class=&quot;ed24-footer__addr&quot;&gt;
+        {{ s.address | newline_to_br }}&lt;br&gt;
+        &lt;a href=&quot;tel:{{ phone_link }}&quot;&gt;{{ s.phone | escape }}&lt;/a&gt;&lt;br&gt;
+        &lt;a href=&quot;mailto:{{ s.email | escape }}&quot;&gt;{{ s.email | escape }}&lt;/a&gt;
+      &lt;/address&gt;
+      {%- if s.hours != blank -%}&lt;p class=&quot;ed24-footer__hours&quot;&gt;{{ s.hours | newline_to_br }}&lt;/p&gt;{%- endif -%}
+    &lt;/div&gt;
+
+    {%- for i in (1..3) -%}
+      {%- liquid
+        case i
+          when 1
+            assign menu = linklists[s.menu_1]
+            assign heading = s.heading_1
+          when 2
+            assign menu = linklists[s.menu_2]
+            assign heading = s.heading_2
+          else
+            assign menu = linklists[s.menu_3]
+            assign heading = s.heading_3
+        endcase
+      -%}
+      {%- if menu.links.size &gt; 0 -%}
+        &lt;nav class=&quot;ed24-footer__col&quot; aria-label=&quot;{{ heading | escape }}&quot;&gt;
+          &lt;p class=&quot;ed24-footer__h&quot;&gt;{{ heading | escape }}&lt;/p&gt;
+          &lt;ul role=&quot;list&quot;&gt;
+            {%- for link in menu.links -%}
+              &lt;li&gt;&lt;a href=&quot;{{ link.url }}&quot;{% if link.current %} aria-current=&quot;page&quot;{% endif %}&gt;{{ link.title | escape }}&lt;/a&gt;&lt;/li&gt;
+            {%- endfor -%}
+          &lt;/ul&gt;
+        &lt;/nav&gt;
+      {%- endif -%}
+    {%- endfor -%}
+  &lt;/div&gt;
+
+  &lt;div class=&quot;ed24-footer__row&quot;&gt;
+    &lt;div class=&quot;ed24-footer__nl&quot;&gt;
+      &lt;p class=&quot;ed24-footer__h&quot;&gt;Newsletter&lt;/p&gt;
+      {%- form &#x27;customer&#x27;, id: &#x27;ed24-newsletter&#x27;, class: &#x27;ed24-footer__form&#x27; -%}
+        &lt;input type=&quot;hidden&quot; name=&quot;contact[tags]&quot; value=&quot;newsletter&quot;&gt;
+        &lt;input type=&quot;email&quot; name=&quot;contact[email]&quot; required placeholder=&quot;Deine E-Mail-Adresse&quot; aria-label=&quot;E-Mail-Adresse&quot; autocomplete=&quot;email&quot;&gt;
+        &lt;button type=&quot;submit&quot;&gt;Anmelden&lt;/button&gt;
+        {%- if form.posted_successfully? -%}&lt;p class=&quot;ed24-footer__ok&quot; role=&quot;status&quot;&gt;Danke, du bist dabei!&lt;/p&gt;{%- endif -%}
+        {%- if form.errors -%}&lt;p class=&quot;ed24-footer__err&quot; role=&quot;alert&quot;&gt;Bitte prüfe deine E-Mail-Adresse.&lt;/p&gt;{%- endif -%}
+      {%- endform -%}
+    &lt;/div&gt;
+    &lt;div class=&quot;ed24-footer__trust&quot;&gt;
+      {%- if s.ts_id != blank -%}
+        &lt;a class=&quot;ed24-footer__ts&quot; href=&quot;https://www.trustedshops.de/bewertung/info_{{ s.ts_id | escape }}.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;
+          &lt;svg width=&quot;22&quot; height=&quot;22&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linejoin=&quot;round&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3Z&quot;/&gt;&lt;path d=&quot;m8.5 12 2.5 2.5 4.5-5&quot;/&gt;&lt;/svg&gt;
+          &lt;span&gt;&lt;b&gt;Käuferschutz&lt;/b&gt; Trusted Shops geprüft&lt;/span&gt;
+        &lt;/a&gt;
+      {%- endif -%}
+      {%- if s.payments != blank -%}&lt;p class=&quot;ed24-footer__pay&quot;&gt;{{ s.payments | escape }}&lt;/p&gt;{%- endif -%}
+    &lt;/div&gt;
+    &lt;div class=&quot;ed24-footer__social&quot;&gt;
+      {%- if s.facebook != blank -%}&lt;a href=&quot;{{ s.facebook }}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; aria-label=&quot;Facebook&quot;&gt;&lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path fill=&quot;currentColor&quot; d=&quot;M14 8V6.5c0-.7.5-1 1-1h2V2h-3c-2.8 0-4 1.9-4 4.2V8H8v3.5h2V22h4V11.5h2.7L17 8h-3Z&quot;/&gt;&lt;/svg&gt;&lt;/a&gt;{%- endif -%}
+      {%- if s.instagram_1 != blank -%}&lt;a href=&quot;{{ s.instagram_1 }}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; aria-label=&quot;Instagram Mario&quot;&gt;&lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;rect x=&quot;3&quot; y=&quot;3&quot; width=&quot;18&quot; height=&quot;18&quot; rx=&quot;5&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot;/&gt;&lt;circle cx=&quot;17.5&quot; cy=&quot;6.5&quot; r=&quot;1.2&quot; fill=&quot;currentColor&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Mario&lt;/span&gt;&lt;/a&gt;{%- endif -%}
+      {%- if s.instagram_2 != blank -%}&lt;a href=&quot;{{ s.instagram_2 }}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; aria-label=&quot;Instagram Franzi&quot;&gt;&lt;svg width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;rect x=&quot;3&quot; y=&quot;3&quot; width=&quot;18&quot; height=&quot;18&quot; rx=&quot;5&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;4&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot;/&gt;&lt;circle cx=&quot;17.5&quot; cy=&quot;6.5&quot; r=&quot;1.2&quot; fill=&quot;currentColor&quot;/&gt;&lt;/svg&gt;&lt;span&gt;Franzi&lt;/span&gt;&lt;/a&gt;{%- endif -%}
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;p class=&quot;ed24-footer__copy&quot;&gt;© {{ &#x27;now&#x27; | date: &#x27;%Y&#x27; }} {{ s.company | escape }} · Alle Preise inkl. MwSt., zzgl. Versand&lt;/p&gt;
+&lt;/footer&gt;
+
+{%- if s.hide_theme_footer -%}
+  &lt;style&gt;
+    /* Standard-Footer des Themes ausblenden, damit nur dieser deutsche Footer erscheint */
+    .shopify-section-group-footer-group:not(:has(.ed24-footer)){display:none}
+  &lt;/style&gt;
+{%- endif -%}
+
+{%- if s.ts_id != blank and s.ts_badge -%}
+  &lt;script&gt;
+    (function () {
+      if (window._ed24ts) return; window._ed24ts = true;
+      // Offizielles Trusted-Shops-Trustbadge (wie im bisherigen Shop), schwebt unten links
+      window._tsConfig = { &#x27;yOffset&#x27;: &#x27;{{ s.ts_offset }}&#x27;, &#x27;variant&#x27;: &#x27;reviews&#x27;, &#x27;customElementId&#x27;: &#x27;&#x27;, &#x27;trustcardDirection&#x27;: &#x27;&#x27;, &#x27;disableResponsive&#x27;: &#x27;false&#x27;, &#x27;disableTrustbadge&#x27;: &#x27;false&#x27; };
+      var ts = document.createElement(&#x27;script&#x27;);
+      ts.async = true; ts.charset = &#x27;utf-8&#x27;;
+      ts.src = &#x27;https://widgets.trustedshops.com/js/{{ s.ts_id | escape }}.js&#x27;;
+      document.head.appendChild(ts);
+    })();
+  &lt;/script&gt;
+{%- endif -%}
+
+&lt;style&gt;
+  .ed24-footer{--ed24-acc:#e30613;background:#070708;color:#c9c9ce;border-top:3px solid var(--ed24-acc);padding:clamp(40px,6vw,72px) clamp(16px,4vw,56px) 28px;font-family:&#x27;Barlow&#x27;,sans-serif;font-size:15px;line-height:1.55}
+  .ed24-footer a{color:inherit;text-decoration:none;transition:color .2s}
+  .ed24-footer a:hover{color:#fff}
+  .ed24-footer__grid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:clamp(24px,4vw,56px);max-width:1280px;margin:0 auto}
+  .ed24-footer__logo{font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;font-size:28px;letter-spacing:.01em;color:#fff}
+  .ed24-footer__logo span{color:var(--ed24-acc)}
+  .ed24-footer__claim{margin:6px 0 14px;color:#9a9aa0}
+  .ed24-footer__addr{font-style:normal}
+  .ed24-footer__hours{margin:10px 0 0;color:#9a9aa0;font-size:14px}
+  .ed24-footer__h{margin:0 0 12px;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-style:italic;font-size:17px;letter-spacing:.03em;text-transform:uppercase;color:#fff}
+  .ed24-footer__col ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+  .ed24-footer__col a{position:relative}
+  .ed24-footer__col a[aria-current]{color:#fff}
+  .ed24-footer__row{display:grid;grid-template-columns:1.4fr 1fr auto;align-items:end;gap:20px clamp(24px,4vw,56px);max-width:1280px;margin:clamp(28px,4vw,44px) auto 0;padding-top:24px;border-top:1px solid #1d1d20}
+  .ed24-footer__form{display:flex;flex-wrap:wrap;gap:8px;max-width:440px}
+  .ed24-footer__form input[type=email]{flex:1 1 220px;min-height:44px;padding:0 16px;border:1px solid #2c2c30;border-radius:999px;background:#111113;color:#fff;font:inherit}
+  .ed24-footer__form input[type=email]:focus{outline:0;border-color:var(--ed24-acc)}
+  .ed24-footer__form button{min-height:44px;padding:0 20px;border:0;border-radius:999px;background:var(--ed24-acc);color:#fff;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-weight:800;font-size:16px;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:transform .2s,filter .2s}
+  .ed24-footer__form button:hover{filter:brightness(1.1)}
+  .ed24-footer__form button:active{transform:scale(.97)}
+  .ed24-footer__ok,.ed24-footer__err{flex-basis:100%;margin:2px 0 0;font-size:14px}
+  .ed24-footer__ok{color:#7ee2a0}.ed24-footer__err{color:#ff8a8f}
+  .ed24-footer__ts{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border:1px solid #2c2c30;border-radius:12px;color:#fff}
+  .ed24-footer__ts svg{width:22px;height:22px;color:#ffdc0f;flex:0 0 auto}
+  .ed24-footer__ts span{font-size:14px;line-height:1.25}
+  .ed24-footer__ts b{display:block;font-family:&#x27;Barlow Condensed&#x27;,sans-serif;font-size:16px;letter-spacing:.03em;text-transform:uppercase}
+  .ed24-footer__ts:hover{border-color:var(--ed24-acc)}
+  .ed24-footer__pay{margin:10px 0 0;font-size:13px;color:#9a9aa0}
+  .ed24-footer__social{display:flex;gap:10px}
+  .ed24-footer__social a{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border:1px solid #2c2c30;border-radius:999px;font-size:14px}
+  .ed24-footer__social a:hover{border-color:var(--ed24-acc)}
+  .ed24-footer__social svg{width:18px;height:18px}
+  .ed24-footer__copy{max-width:1280px;margin:24px auto 0;font-size:13px;color:#77777d}
+  @media (max-width:989px){.ed24-footer__grid{grid-template-columns:1fr 1fr}.ed24-footer__brand{grid-column:1 / -1}.ed24-footer__row{grid-template-columns:1fr}}
+  @media (max-width:749px){.ed24-footer__grid{gap:24px 16px}.ed24-footer__social{flex-wrap:wrap}}
+&lt;/style&gt;
+
+{% schema %}
+{
+  &quot;name&quot;: &quot;ED24 Footer&quot;,
+  &quot;tag&quot;: &quot;section&quot;,
+  &quot;class&quot;: &quot;ed24-section&quot;,
+  &quot;settings&quot;: [
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;company&quot;, &quot;label&quot;: &quot;Firma (Copyright)&quot;, &quot;default&quot;: &quot;Fitness- und Diätshop Rostock · Eiweissdealer24&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;claim&quot;, &quot;label&quot;: &quot;Kurzer Satz unter dem Logo&quot;, &quot;default&quot;: &quot;Dein Fitness- und Diätshop in Rostock seit 2007.&quot; },
+    { &quot;type&quot;: &quot;textarea&quot;, &quot;id&quot;: &quot;address&quot;, &quot;label&quot;: &quot;Adresse&quot;, &quot;default&quot;: &quot;Doberaner Straße 110–112\n18057 Rostock&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;phone&quot;, &quot;label&quot;: &quot;Telefon&quot;, &quot;default&quot;: &quot;0381 – 203 38 71&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;email&quot;, &quot;label&quot;: &quot;E-Mail&quot;, &quot;default&quot;: &quot;info@eiweissdealer24.de&quot; },
+    { &quot;type&quot;: &quot;textarea&quot;, &quot;id&quot;: &quot;hours&quot;, &quot;label&quot;: &quot;Öffnungszeiten&quot;, &quot;default&quot;: &quot;Mo – Fr 10 – 19 Uhr\nSa 10 – 15 Uhr&quot; },
+    { &quot;type&quot;: &quot;header&quot;, &quot;content&quot;: &quot;Linklisten&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;heading_1&quot;, &quot;label&quot;: &quot;Überschrift 1&quot;, &quot;default&quot;: &quot;Shop&quot; },
+    { &quot;type&quot;: &quot;link_list&quot;, &quot;id&quot;: &quot;menu_1&quot;, &quot;label&quot;: &quot;Menü 1&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;heading_2&quot;, &quot;label&quot;: &quot;Überschrift 2&quot;, &quot;default&quot;: &quot;Wissen &amp; Team&quot; },
+    { &quot;type&quot;: &quot;link_list&quot;, &quot;id&quot;: &quot;menu_2&quot;, &quot;label&quot;: &quot;Menü 2&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;heading_3&quot;, &quot;label&quot;: &quot;Überschrift 3&quot;, &quot;default&quot;: &quot;Service &amp; Rechtliches&quot; },
+    { &quot;type&quot;: &quot;link_list&quot;, &quot;id&quot;: &quot;menu_3&quot;, &quot;label&quot;: &quot;Menü 3&quot; },
+    { &quot;type&quot;: &quot;header&quot;, &quot;content&quot;: &quot;Vertrauen &amp; Zahlung&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;ts_id&quot;, &quot;label&quot;: &quot;Trusted Shops ID&quot;, &quot;default&quot;: &quot;XFB38ED3FF33DE311B3172060C3D43682&quot; },
+    { &quot;type&quot;: &quot;checkbox&quot;, &quot;id&quot;: &quot;ts_badge&quot;, &quot;label&quot;: &quot;Trustbadge (schwebendes Siegel) anzeigen&quot;, &quot;default&quot;: true },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;ts_offset&quot;, &quot;label&quot;: &quot;Abstand des Siegels von unten (px)&quot;, &quot;default&quot;: &quot;20&quot; },
+    { &quot;type&quot;: &quot;text&quot;, &quot;id&quot;: &quot;payments&quot;, &quot;label&quot;: &quot;Zahlarten&quot;, &quot;default&quot;: &quot;Zahlarten: PayPal · Vorkasse · Rechnung · Sofortüberweisung · Bar bei Abholung&quot; },
+    { &quot;type&quot;: &quot;header&quot;, &quot;content&quot;: &quot;Social Media&quot; },
+    { &quot;type&quot;: &quot;url&quot;, &quot;id&quot;: &quot;facebook&quot;, &quot;label&quot;: &quot;Facebook&quot; },
+    { &quot;type&quot;: &quot;url&quot;, &quot;id&quot;: &quot;instagram_1&quot;, &quot;label&quot;: &quot;Instagram Mario&quot; },
+    { &quot;type&quot;: &quot;url&quot;, &quot;id&quot;: &quot;instagram_2&quot;, &quot;label&quot;: &quot;Instagram Franzi&quot; },
+    { &quot;type&quot;: &quot;checkbox&quot;, &quot;id&quot;: &quot;hide_theme_footer&quot;, &quot;label&quot;: &quot;Standard-Footer des Themes ausblenden&quot;, &quot;default&quot;: true },
+    { &quot;type&quot;: &quot;color&quot;, &quot;id&quot;: &quot;accent&quot;, &quot;label&quot;: &quot;Akzentfarbe&quot;, &quot;default&quot;: &quot;#e30613&quot; }
+  ],
+  &quot;presets&quot;: [{ &quot;name&quot;: &quot;ED24 Footer&quot; }]
+}
+{% endschema %}
+</code></pre>
+        </details>
+      </article>
     </div>
   </section>
 
@@ -2464,6 +2787,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
         <li><span><b>ED24 Laufschrift</b> <em>als letzter Abschnitt</em></span></li>
       </ol>
       <p><b>Shop-Seite</b> (alle Kategorien auf einer Seite, mit klebender Kategorie-Leiste): oben in der Seitenauswahl <span class="path">Seiten → Vorlage erstellen</span> → Name <code class="inline">shop</code> → Abschnitt <b>ED24 Shop-Übersicht</b> hinzufügen und rechts unter „Kategorien“ die Kollektionen in der gewünschten Reihenfolge wählen. Danach <span class="path">Onlineshop → Seiten → Seite hinzufügen</span>: Titel „Shop“, rechts Vorlage <b>shop</b>, sichtbar.</p>
+      <p><b>Hersteller-Seite:</b> genauso eine Vorlage <code class="inline">hersteller</code> mit dem Abschnitt <b>ED24 Hersteller</b> anlegen und die Seite „Hersteller“ damit verknüpfen. <b>Footer:</b> im Footer-Bereich <span class="path">Abschnitt hinzufügen → ED24 Footer</span>, rechts die drei Menüs wählen (Shop, Wissen &amp; Team, Service &amp; Rechtliches).</p>
       <p class="note note--warn"><strong>Reihenfolge 1–4 nicht unterbrechen.</strong> Hero, Showcase, Story und Coaching-Panel teilen sich eine Effekt-Bühne mit den schwebenden Produkten. Ein anderer Abschnitt dazwischen würde von ihr überdeckt.</p>
       <p>Speichern nicht vergessen (oben rechts).</p>
     </div>
@@ -2549,6 +2873,7 @@ td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
         <li><b>Passwortschutz bleibt an:</b> <span class="path">Onlineshop → Einstellungen → Passwortschutz</span>. So sieht nur, wer das Passwort hat, den Shop, bis Eiweissdealer24 zugestimmt hat.</li>
         <li><b>Fightwear nur zur Abholung:</b> Fightwear gibt es bei Eiweissdealer24 nur im Laden. Unter <span class="path">Einstellungen → Versand und Zustellung</span> zuerst <b>Abholung vor Ort</b> aktivieren. Dann ein <b>benutzerdefiniertes Versandprofil</b> „Fightwear“ anlegen, die Fightwear-Produkte hinzufügen und <b>keine</b> Versandtarife eintragen. So kann man sie nur abholen.</li>
         <li><b>Mehr Filter in den Kollektionen:</b> App <b>Search &amp; Discovery</b> von Shopify installieren (kostenlos) → <span class="path">Filter → Filter hinzufügen</span>: <b>Marke</b> (Anbieter), <b>Produkttyp</b>, <b>Größe</b> und <b>Geschmack</b> (Variantenoptionen), danach <span class="path">Speichern</span>. Verfügbarkeit und Preis sind schon da.</li>
+        <li><b>Rechtstexte:</b> Impressum, AGB, Widerruf, Versand und Datenschutz sind als Seiten angelegt. Für den Livegang unter <span class="path">Einstellungen → Richtlinien</span> eintragen und vom Rechtstexte-Anbieter für Shopify aktualisieren lassen.</li>
         <li><b>Einmal durchscrollen</b> auf dem iPad und am Handy: Hero, alle 4 Kapitel, Story, Coaching-Panel, Marken werfen, Laufschrift.</li>
       </ul>
       <p class="note"><b>Wenn die 3D-Produkte fehlen:</b> Im Abschnitt „ED24 Hero 3D“ muss „Schwebende Produkte und Farbverlauf anzeigen“ an sein. Die 3D-Bibliothek kommt aus dem Netz (jsDelivr); ohne WebGL (sehr alte Geräte) kommt der Farbverlauf aus CSS. Inhalte und Kauf-Buttons funktionieren immer.</p>

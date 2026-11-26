@@ -73,6 +73,11 @@
       transition: color .2s, transform .25s cubic-bezier(.2,.8,.2,1);
     }
     .mega-menu .mega-menu__column ul .mega-menu__link:hover { color: #fff; transform: translateX(4px); }
+    /* „Mein Konto“ neben dem Personen-Symbol (Anmelden und Registrieren), wie im bisherigen Shop */
+    @media (min-width: 990px) {
+      .account-button .account-button__text.hidden { display: inline !important; margin-right: 6px; font-weight: 600; font-size: 14px; }
+      .account-button .account-button__text::before { content: "Mein "; }
+    }
   </style>
 {%- endif -%}
 {%- if s.effects -%}

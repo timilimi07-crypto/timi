@@ -1,6 +1,6 @@
 # Eiweissdealer24 – Shopify-Einbau
 
-Das Redesign als 10 Shopify-Abschnitte (Online Store 2.0) zum Einfügen in ein bestehendes Theme (Dawn, Horizon und andere OS2-Themes), dazu das komplette Sortiment als CSV-Import.
+Das Redesign als 12 Shopify-Abschnitte (Online Store 2.0) zum Einfügen in ein bestehendes Theme (Dawn, Horizon und andere OS2-Themes), dazu das komplette Sortiment als CSV-Import.
 
 **Schritt-für-Schritt:** `anleitung.html` im Browser öffnen. Sie enthält alle Abschnitte mit Kopieren-Knopf, die Reihenfolge auf der Startseite, Farben, Kollektionen und eine Checkliste.
 
@@ -9,7 +9,7 @@ Das Redesign als 10 Shopify-Abschnitte (Online Store 2.0) zum Einfügen in ein b
 Bereits eingerichtet (Nov. 2026):
 
 - Theme **„Eiweissdealer24 – echte Produkte“** ist veröffentlicht (hinter dem Passwort). Der Vorgänger „Eiweissdealer24 Redesign“ bleibt als Sicherung. Das frühere Theme mit der „ABI Shop 2027“-Seite heißt „Horizon“ und ist unverändert, nur nicht mehr veröffentlicht.
-  - 10 ED24-Abschnitte und die Vorlage `templates/page.shop.json`, byte-gleich mit dem Repository (MD5 geprüft)
+  - 12 ED24-Abschnitte und die Vorlagen `templates/page.shop.json` und `templates/page.hersteller.json`, byte-gleich mit dem Repository (MD5 geprüft)
   - Startseite in der richtigen Reihenfolge; Showcase-Kapitel mit den 4 Eigenmarke-Produkten verknüpft
   - Hero mit 3D-Produkten (Dosen mit Eiweissdealer-Etikett, Hantel, Kettlebell, Shaker, Messlöffel). Die Etiketten der großen Dose kommen aus den Kapiteltiteln.
   - Menü nur mit Text (ohne Kollektionsbilder), mit drei Ebenen wie im Original-Shop: „Shop“ öffnet ein großes Menü mit den Kategorien (fett, roter Strich) und ihren Unterkategorien darunter, in Spalten. Fightwear und Zubehör haben eigene Unterpunkte.
@@ -22,6 +22,14 @@ Bereits eingerichtet (Nov. 2026):
 - 472 Produkte importiert, alle Produktbilder einheitlich auf schwarzem Hintergrund (siehe `bilder/`)
 - 15 automatische Kollektionen (siehe Tabelle unten) und 61 Unterkategorien (z. B. Wheyprotein, Booster mit Koffein, Boxhandschuhe), alle im Onlineshop sichtbar
 - Alle Kollektionen sortieren die Produkte nach Titel von A bis Z
+- Hauptmenü wie im Original: Shop (großes Menü), Fightwear, Zubehör, Hersteller (Top-Marken, weitere Marken, alle A–Z), Coaching, Rezepte, Info-Blog, Über uns (Geschichte, Philosophie, Aktivitäten, Kontakt), Angebote
+- Seite „Hersteller“ (`/pages/hersteller`): alle 64 Marken von A bis Z mit Buchstaben-Leiste und Suchfeld, jede Marke führt auf ihre Produkte
+- Blogs „Rezepte“ (30 Rezepte) und „Unser Info-Blog“ (9 Artikel, mit Video) aus dem Original-Shop übernommen
+- Seite „Über uns“ mit Geschichte, Philosophie und Aktivitäten (Franzis Vize-Weltmeistertitel, MV1-Video); Coaching-Kollektion mit dem Originaltext
+- Seiten Impressum, AGB, Widerrufsbelehrung, Versand und Zahlung, Datenschutzerklärung mit den Originaltexten. Die Shopify-Richtlinien selbst lassen sich über die Schnittstelle nicht ändern (fehlende Berechtigung); vor dem Livegang im Admin unter Einstellungen → Richtlinien eintragen und vom Rechtstexte-Anbieter für Shopify aktualisieren lassen (die Datenschutzerklärung nennt noch Dienste des alten Shops).
+- Deutscher Footer (ED24 Footer): Laden und Kontakt, drei Linklisten (Menüs `ed24-footer-shop`, `ed24-footer-wissen`, `ed24-footer-service`), Newsletter, Zahlarten, Facebook und Instagram, Trusted Shops. Der englische Standard-Footer ist ausgeblendet.
+- Trusted Shops: offizielles Trustbadge mit der ID des Shops (wie im Original) und Link zum Bewertungsprofil
+- „Mein Konto“ im Header: neue Shopify-Kundenkonten sind aktiv, Kunden melden sich per E-Mail-Code an und registrieren sich dabei
 - Passwortschutz des Shops ist an
 
 Noch offen:
@@ -42,6 +50,8 @@ Noch offen:
 | `ed24-marken.liquid` | ED24 Marken (Physik) | Alle Marken des Shops als Physik-Pillen zum Werfen (Matter.js). |
 | `ed24-laden.liquid` | ED24 Laden & Team | Team, Live-Öffnungsstatus, Adresse, Route und Vorteile. |
 | `ed24-laufschrift.liquid` | ED24 Laufschrift | Laufschrift, die mit der Scroll-Geschwindigkeit schneller wird, dazu Sticker für E-Mail und Telefon. |
+| `ed24-hersteller.liquid` | ED24 Hersteller | Alle Marken des Shops von A bis Z: Buchstaben-Leiste, Suchfeld, Kacheln mit Link auf die Marken-Seite. Gehört in die Vorlage `templates/page.hersteller.json`. |
+| `ed24-footer.liquid` | ED24 Footer | Deutscher Footer mit Kontakt, drei Linklisten, Newsletter, Zahlarten, Social Media und Trusted-Shops-Trustbadge. Gehört in den Footer-Bereich, blendet den Standard-Footer aus. |
 | `ed24-shop.liquid` | ED24 Shop-Übersicht | Shop-Seite: alle gewählten Kategorien untereinander, klebende Kategorie-Leiste, die beim Scrollen mitläuft, Produktkarten mit 3D-Kippen und Einblenden. Gehört in die Vorlage `templates/page.shop.json`. |
 
 Reihenfolge auf der Startseite: Hero → Showcase → Story → Coaching-Panel lückenlos hintereinander, danach beliebige Theme-Abschnitte, Ziele, Marken, Laden & Team, Laufschrift.
@@ -76,7 +86,7 @@ Alle 669 Produktbilder in einem Format, damit Kollektionen, Suche und Produktsei
 
 - 1200 × 1200 Pixel, JPG
 - Hintergrund überall schwarz wie der Shop (`#0B0B0C` am Rand, in der Mitte ein leichter Spot), Produkt mittig, füllt 80 % der Fläche, mit weichem Lichtsaum und Bodenschatten, damit auch schwarze Dosen sich abheben
-- Produktfotos sind freigestellt (rembg, ISNet; Fotos auf weißem Grund, bei denen das Freistellen Teile zerstört hätte, per Farbschlüssel). Nährwerttabellen und Grafiken liegen als Karte mit abgerundeten Ecken auf dem Schwarz (84 %). Jedes Bild wurde auf Übersichtsblättern geprüft.
+- Produktfotos sind freigestellt (BiRefNet mit Randfarben-Korrektur, vorher ISNet; Problemfälle wie weiße Dosen auf Weiß zeilenweise gefüllt oder per Farbschlüssel; Fotos auf weißem Grund, bei denen das Freistellen Teile zerstört hätte, per Farbschlüssel). Nährwerttabellen und Grafiken liegen als Karte mit abgerundeten Ecken auf dem Schwarz (84 %). Jedes Bild wurde auf Übersichtsblättern geprüft.
 - Dateiname `<handle>__<position>.jpg`, passend zur CSV
 - 11 falsche Bilder aus dem Original-Shop (Vorschaubilder anderer Produkte) sind entfernt. `posingslip`, `handtuch` und `body-attack-iso-whey-drink` haben im Original kein Bild und bekommen einen neutralen Platzhalter.
 
@@ -116,3 +126,7 @@ Kollektionen als automatisierte Kollektionen mit der Bedingung „Produkt-Tag is
 | Angebot | 16 |
 
 Unterkategorien als automatisierte Kollektionen mit „alle Bedingungen“: Tag der Hauptkategorie **und** Tag der Unterkategorie (Beispiel Wheyprotein: `Eiweiß/ Protein` + `Wheyprotein`). Ausnahmen: Ashwagandha (Titel enthält „Ashwagandha“), CLA / MCT-Öl (nur Tag `CLA / MCT Öl`). Casein gibt es im Sortiment derzeit nicht, deshalb fehlt es im Menü.
+
+## Gesprächsleitfaden (`gespraech/`)
+
+`Eiweissdealer24-Gespraechsleitfaden.pdf` (8 Seiten): Ablauf des Termins, Demo in 10 Schritten, Vorteile gegenüber dem alten Shopware-Shop, Argumente für Shopify, Einwände und Antworten, preisliche Einordnung mit drei Paketen, nächste Schritte. Quelle: `gespraechsleitfaden.html` (mit Chromium als PDF gedruckt).

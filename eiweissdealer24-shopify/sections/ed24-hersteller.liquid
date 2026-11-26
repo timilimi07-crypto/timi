@@ -1,0 +1,111 @@
+{%- comment -%}
+  ED24 Hersteller – Eiweissdealer24
+  Alle Marken des Shops von A bis Z: Buchstaben-Leiste, Suchfeld und kompakte Kacheln.
+  Jede Kachel führt auf die Seite mit allen Produkten dieser Marke (/collections/vendors?q=…).
+  Gedacht für die Seite „Hersteller“ (Vorlage page.hersteller).
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign letters = ''
+  for v in shop.vendors
+    assign first = v | slice: 0 | upcase
+    unless letters contains first
+      assign letters = letters | append: first
+    endunless
+  endfor
+  assign letter_list = letters | split: ''
+-%}
+<div class="ed24-brands" style="--ed24-acc: {{ s.accent }};">
+  <header class="ed24-brands__head">
+    {%- if s.eyebrow != blank -%}<p class="ed24-brands__eye">{{ s.eyebrow | escape }}</p>{%- endif -%}
+    <h1 class="ed24-brands__title">{{ s.title }}</h1>
+    <p class="ed24-brands__meta">{{ shop.vendors.size }} Marken · von A bis Z</p>
+  </header>
+
+  <div class="ed24-brands__bar">
+    <label class="ed24-brands__search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      <input type="search" placeholder="Marke suchen …" autocomplete="off" data-brand-search aria-label="Marke suchen">
+    </label>
+    <nav class="ed24-brands__letters" aria-label="Buchstaben">
+      {%- for l in letter_list -%}<a href="#m-{{ l | handleize | default: 'z' }}">{{ l }}</a>{%- endfor -%}
+    </nav>
+  </div>
+
+  {%- for l in letter_list -%}
+    <section class="ed24-brands__group" id="m-{{ l | handleize | default: 'z' }}" data-group>
+      <h2 class="ed24-brands__letter">{{ l }}</h2>
+      <ul class="ed24-brands__grid" role="list">
+        {%- for v in shop.vendors -%}
+          {%- assign first = v | slice: 0 | upcase -%}
+          {%- if first == l -%}
+            <li data-brand="{{ v | downcase | escape }}"><a class="ed24-brand" href="{{ v | url_for_vendor }}"><span>{{ v | escape }}</span><i aria-hidden="true">→</i></a></li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </section>
+  {%- endfor -%}
+  <p class="ed24-brands__none" data-brand-none hidden>Keine Marke gefunden.</p>
+</div>
+
+<style>
+  .ed24-brands{--ed24-acc:#e30613;background:#0b0b0c;color:#f5f5f4;padding:0 clamp(16px,4vw,56px) 88px;font-family:'Barlow',sans-serif}
+  .ed24-brands .ed24-brands__head{display:block;padding:clamp(44px,7vw,96px) 0 22px}
+  .ed24-brands__eye{margin:0 0 12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--ed24-acc)}
+  .ed24-brands .ed24-brands__title{margin:0;font-size:clamp(56px,11vw,160px);line-height:.85;color:#fff}
+  .ed24-brands__title strong{color:transparent;-webkit-text-stroke:.025em #fff}
+  .ed24-brands__meta{margin:14px 0 0;font-weight:600;color:#a1a1a6}
+  .ed24-brands__bar{position:sticky;top:calc(var(--header-height,64px) - 1px);z-index:3;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin:0 calc(-1 * clamp(16px,4vw,56px));padding:12px clamp(16px,4vw,56px);background:rgba(11,11,12,.88);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid #222}
+  .ed24-brands__search{display:flex;align-items:center;gap:8px;flex:0 1 280px;min-height:40px;padding:0 14px;border:1px solid #2c2c30;border-radius:999px;color:#a1a1a6;transition:border-color .2s}
+  .ed24-brands__search:focus-within{border-color:var(--ed24-acc)}
+  .ed24-brands__search svg{width:16px;height:16px;flex:0 0 auto}
+  .ed24-brands__search input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;font:inherit;font-size:15px}
+  .ed24-brands__letters{display:flex;flex-wrap:wrap;gap:2px}
+  .ed24-brands__letters a{display:inline-grid;place-items:center;min-width:30px;height:30px;border-radius:6px;color:#e8e8e8;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;transition:background .2s,color .2s}
+  .ed24-brands__letters a:hover{background:var(--ed24-acc);color:#fff}
+  .ed24-brands__group{display:grid;grid-template-columns:64px 1fr;gap:16px;padding:26px 0;border-bottom:1px solid #1d1d20;scroll-margin-top:calc(var(--header-height,64px) + 70px)}
+  .ed24-brands .ed24-brands__letter{margin:0;font-size:44px;line-height:1;color:var(--ed24-acc)}
+  .ed24-brands__grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+  .ed24-brand{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:52px;padding:0 16px;border:1px solid #232327;border-radius:12px;background:#121214;color:#f2f2f2;text-decoration:none;font-weight:600;font-size:15px;transition:border-color .25s,background .25s,transform .25s cubic-bezier(.2,.8,.2,1)}
+  .ed24-brand i{font-style:normal;color:var(--ed24-acc);transition:transform .25s}
+  @media (hover:hover){.ed24-brand:hover{border-color:var(--ed24-acc);background:#18181b;transform:translateY(-2px)}.ed24-brand:hover i{transform:translateX(4px)}}
+  .ed24-brands__none{padding:40px 0;color:#a1a1a6}
+  @media (max-width:749px){.ed24-brands__group{grid-template-columns:1fr;gap:10px}.ed24-brands .ed24-brands__letter{font-size:32px}.ed24-brands__grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ed24-brands__search{flex-basis:100%}}
+</style>
+
+<script>
+  (function () {
+    var root = document.currentScript && document.currentScript.previousElementSibling && document.currentScript.previousElementSibling.previousElementSibling;
+    if (!root || !root.classList.contains('ed24-brands')) root = document.querySelector('.ed24-brands');
+    if (!root) return;
+    var input = root.querySelector('[data-brand-search]'), none = root.querySelector('[data-brand-none]');
+    if (!input) return;
+    // Marken live filtern; Buchstaben-Gruppen ohne Treffer ausblenden
+    input.addEventListener('input', function () {
+      var q = input.value.trim().toLowerCase(), any = false;
+      root.querySelectorAll('[data-group]').forEach(function (g) {
+        var hit = 0;
+        g.querySelectorAll('[data-brand]').forEach(function (li) {
+          var ok = !q || li.getAttribute('data-brand').indexOf(q) > -1;
+          li.hidden = !ok; if (ok) hit++;
+        });
+        g.hidden = !hit; if (hit) any = true;
+      });
+      none.hidden = any;
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "ED24 Hersteller",
+  "tag": "section",
+  "class": "ed24-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Kleine Überschrift", "default": "Eiweissdealer24 · Rostock" },
+    { "type": "inline_richtext", "id": "title", "label": "Titel", "info": "Fett gesetzter Text erscheint als Umriss.", "default": "Her<strong>steller</strong>" },
+    { "type": "color", "id": "accent", "label": "Akzentfarbe", "default": "#e30613" }
+  ],
+  "presets": [{ "name": "ED24 Hersteller" }]
+}
+{% endschema %}
