@@ -1,6 +1,6 @@
 {%- comment -%}
   ED24 Produkt-Showcase – Eiweissdealer24
-  Fixierter Showcase: pro Kapitel dreht sich die 3D-Dose aus „ED24 Hero 3D“, wechselt Etikett und Hintergrundfarbe.
+  Fixierter Showcase: pro Kapitel dreht sich das Produkt aus „ED24 Hero 3D“ um, zeigt das nächste Produkt und wechselt die Hintergrundfarbe.
   Direkt unter „ED24 Hero 3D“ platzieren. Je Kapitel ein Produkt auswählen, dann erscheinen Preis und Link automatisch.
 {%- endcomment -%}
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,15 +16,22 @@
 >
   <ed24-showcase class="ed24-show__stage">
     {%- for block in section.blocks -%}
-      {%- assign p = block.settings.product -%}
+      {%- liquid
+        assign p = block.settings.product
+        assign img = block.settings.image
+        if img == blank and p != blank
+          assign img = p.featured_image
+        endif
+      -%}
       <article
         class="ed24-chap{% if forloop.first %} is-first{% endif %}"
         data-ed24-chapter
         data-block-id="{{ block.id }}"
         data-color="{{ block.settings.color }}"
-        data-label1="{{ block.settings.label_1 | escape }}"
-        data-label2="{{ block.settings.label_2 | escape }}"
-        data-body="{{ block.settings.tub }}"
+        {%- if img != blank %}
+        data-img="{{ img | image_url: width: 900 }}"
+        data-img-ar="{{ img.aspect_ratio }}"
+        {%- endif %}
         style="--c: {{ block.settings.color }};"
         {{ block.shopify_attributes }}
       >
@@ -161,21 +168,9 @@
       "name": "Kapitel",
       "settings": [
         { "type": "product", "id": "product", "label": "Produkt", "info": "Preis und Link kommen automatisch aus dem Produkt." },
+        { "type": "image_picker", "id": "image", "label": "Freigestelltes Produktbild", "info": "PNG ohne Hintergrund. Leer: Hauptbild des Produkts." },
         { "type": "text", "id": "button_label", "label": "Button-Text", "default": "Zum Produkt" },
-        { "type": "header", "content": "3D-Dose" },
         { "type": "color", "id": "color", "label": "Kapitelfarbe", "default": "#e30613" },
-        { "type": "text", "id": "label_1", "label": "Etikett Zeile 1", "default": "Whey" },
-        { "type": "text", "id": "label_2", "label": "Etikett Zeile 2", "default": "Protein" },
-        {
-          "type": "select",
-          "id": "tub",
-          "label": "Dosenfarbe",
-          "default": "dark",
-          "options": [
-            { "value": "dark", "label": "Schwarz" },
-            { "value": "light", "label": "Weiß" }
-          ]
-        },
         { "type": "header", "content": "Texte" },
         { "type": "text", "id": "eyebrow", "label": "Kleine Überschrift", "default": "01 · Muskelaufbau" },
         { "type": "text", "id": "title_1", "label": "Titel Zeile 1", "default": "Classic" },
@@ -190,10 +185,10 @@
     {
       "name": "ED24 Produkt-Showcase",
       "blocks": [
-        { "type": "chapter", "settings": { "color": "#e30613", "label_1": "Whey", "label_2": "Protein", "tub": "dark", "eyebrow": "01 · Muskelaufbau", "title_1": "Classic", "title_2": "Whey Protein", "sub": "Wheyprotein · Eiweissdealer24 Eigenmarke", "tagline": "Muskeln brauchen <em>Material.</em> Hier ist es.", "info": "Protein trägt zu einer Zunahme an Muskelmasse bei. Als Cookies & Cream, Vanille oder Schokolade." } },
-        { "type": "chapter", "settings": { "color": "#ff5a00", "label_1": "Creatin", "label_2": "Monohydrat", "tub": "dark", "eyebrow": "02 · Kraft", "title_1": "Creatin", "title_2": "Monohydrat", "sub": "Kreatin · Eiweissdealer24 Eigenmarke", "tagline": "Für den <em>letzten Satz,</em> der eigentlich zu viel ist.", "info": "Kreatin erhöht die körperliche Leistung bei Schnellkrafttraining im Rahmen kurzzeitiger intensiver Belastungen (bei täglich 3 g Kreatin)." } },
-        { "type": "chapter", "settings": { "color": "#2b3bff", "label_1": "EAA", "label_2": "Pulver", "tub": "light", "eyebrow": "03 · Training", "title_1": "EAA", "title_2": "Pulver", "sub": "Aminosäuren · Eiweissdealer24 Eigenmarke", "tagline": "Für alle, die nach dem <em>Warm-up</em> erst anfangen.", "info": "Essentielle Aminosäuren als Pulver mit Pfirsich-Eistee-Geschmack – einfach in Wasser einrühren und mit ins Gym nehmen." } },
-        { "type": "chapter", "settings": { "color": "#0d9e63", "label_1": "L-Glutamin", "label_2": "Pulver", "tub": "light", "eyebrow": "04 · Regeneration", "title_1": "L-Glutamin", "title_2": "Pulver", "sub": "Aminosäure · Eiweissdealer24 Eigenmarke", "tagline": "Für die Tage nach dem <em>Beintag.</em>", "info": "Pur oder im Shake. Frag uns im Laden, wie es in deinen Plan passt." } }
+        { "type": "chapter", "settings": { "color": "#e30613", "eyebrow": "01 · Muskelaufbau", "title_1": "Classic", "title_2": "Whey Protein", "sub": "Wheyprotein · Eiweissdealer24 Eigenmarke", "tagline": "Muskeln brauchen <em>Material.</em> Hier ist es.", "info": "Protein trägt zu einer Zunahme an Muskelmasse bei. Als Cookies & Cream, Vanille oder Schokolade." } },
+        { "type": "chapter", "settings": { "color": "#ff5a00", "eyebrow": "02 · Kraft", "title_1": "Creatin", "title_2": "Monohydrat", "sub": "Kreatin · Eiweissdealer24 Eigenmarke", "tagline": "Für den <em>letzten Satz,</em> der eigentlich zu viel ist.", "info": "Kreatin erhöht die körperliche Leistung bei Schnellkrafttraining im Rahmen kurzzeitiger intensiver Belastungen (bei täglich 3 g Kreatin)." } },
+        { "type": "chapter", "settings": { "color": "#2b3bff", "eyebrow": "03 · Training", "title_1": "EAA", "title_2": "Pulver", "sub": "Aminosäuren · Eiweissdealer24 Eigenmarke", "tagline": "Für alle, die nach dem <em>Warm-up</em> erst anfangen.", "info": "Essentielle Aminosäuren als Pulver mit Pfirsich-Eistee-Geschmack – einfach in Wasser einrühren und mit ins Gym nehmen." } },
+        { "type": "chapter", "settings": { "color": "#0d9e63", "eyebrow": "04 · Regeneration", "title_1": "L-Glutamin", "title_2": "Pulver", "sub": "Aminosäure · Eiweissdealer24 Eigenmarke", "tagline": "Für die Tage nach dem <em>Beintag.</em>", "info": "Pur oder im Shake. Frag uns im Laden, wie es in deinen Plan passt." } }
       ]
     }
   ]
