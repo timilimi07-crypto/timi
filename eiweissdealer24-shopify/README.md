@@ -8,21 +8,21 @@ Das Redesign als 9 Shopify-Abschnitte (Online Store 2.0) zum Einfügen in ein be
 
 Bereits eingerichtet (Nov. 2026):
 
-- Theme **„Eiweissdealer24 Redesign“** (Kopie von Horizon). Das frühere Theme mit der „ABI Shop 2027“-Seite heißt „Horizon“ und ist unverändert, nur nicht mehr veröffentlicht.
+- Theme **„Eiweissdealer24 – echte Produkte“**: die fertige Version mit den echten, schwebenden Produkten, im Shop geprüft und bereit zum Veröffentlichen. Veröffentlicht ist noch der Vorgänger „Eiweissdealer24 Redesign“ (bleibt als Sicherung). Das frühere Theme mit der „ABI Shop 2027“-Seite heißt „Horizon“ und ist unverändert, nur nicht mehr veröffentlicht.
   - 9 ED24-Abschnitte, byte-gleich mit `sections/` (MD5 geprüft)
   - Startseite in der richtigen Reihenfolge; Showcase-Kapitel mit den 4 Eigenmarke-Produkten und ihren freigestellten Fotos verknüpft
   - Hero mit 10 schwebenden echten Produkten (Blöcke mit Bild und Produkt), Bilder unter Inhalte → Dateien (`ed24-…png`)
   - Ziele-Kacheln mit Kollektionen verknüpft, Coaching-Button auf `/collections/coaching`
   - Topbar und Logo (`eiweissdealer24-logo.png`, liegt unter Inhalte → Dateien), dunkles Farbschema mit Rot
   - Menü „Eiweissdealer24 Hauptmenü“ (`ed24-hauptmenue`); das bestehende Hauptmenü ist unverändert
-- 472 Produkte importiert
+- 472 Produkte importiert, alle Produktbilder einheitlich (siehe `bilder/`)
 - 15 automatische Kollektionen (siehe Tabelle unten), im Onlineshop sichtbar
 - Passwortschutz des Shops ist an
 
 Noch offen:
 
 - Fightwear nur zur Abholung: Abholung vor Ort und ein Versandprofil ohne Tarife einrichten.
-- Das Theme „Eiweissdealer24 Redesign“ ist seit dem 25.11. veröffentlicht (hinter dem Passwort). Die Version mit den echten Produkten ist gespeichert und wird mit dem nächsten Veröffentlichen sichtbar.
+- „Eiweissdealer24 – echte Produkte“ veröffentlichen: Onlineshop → Themes → beim Theme „…“ → Veröffentlichen. Das muss im Shopify-Admin passieren, über die Schnittstelle lässt Shopify das bei diesem Theme nicht zu.
 
 ## Abschnitte (`sections/`)
 
@@ -61,6 +61,18 @@ Echte Produktfotos aus dem Shop, mit einem KI-Hintergrund-Entferner (rembg, ISNe
 Weitere Produkte: Foto freistellen, als PNG unter Inhalte → Dateien hochladen und im Hero einen Block „Schwebendes Produkt“ hinzufügen (Bild + Produkt).
 - Im Theme-Editor werden die Abschnitte beim Bearbeiten, Verschieben und Löschen neu aufgebaut.
 
+## Einheitliche Produktbilder (`bilder/`)
+
+Alle 669 Produktbilder in einem Format, damit Kollektionen, Suche und Produktseiten ruhig aussehen (Vorschau: `vorschau-produktbilder.jpg`):
+
+- 1200 × 1200 Pixel, JPG
+- Hintergrund überall `#EFECE6` (das helle Beige der Seite), Produkt mittig, füllt 80 % der Fläche, mit weichem Schatten
+- Produktfotos sind freigestellt (rembg, ISNet). Nährwerttabellen und Grafiken, bei denen das Freistellen Text zerstört hätte, liegen als ganzes Bild auf dem Beige (86 %). Jedes Bild wurde auf Übersichtsblättern geprüft.
+- Dateiname `<handle>__<position>.jpg`, passend zur CSV
+- 11 falsche Bilder aus dem Original-Shop (Vorschaubilder anderer Produkte) sind entfernt. `posingslip`, `handtuch` und `body-attack-iso-whey-drink` haben im Original kein Bild und bekommen einen neutralen Platzhalter.
+
+In „Mein Shop“ sind die Bilder schon ersetzt (gleiche Reihenfolge, gleiche Verknüpfung mit den Varianten).
+
 ## Produkte (`produkte-import.csv`)
 
 472 Produkte mit 1.249 Varianten, Bildern, Beschreibungen, Tags und Typ, erzeugt aus dem Sortiment von eiweissdealer24.de (Stand Nov. 2026).
@@ -70,7 +82,7 @@ Import: Shopify-Admin → **Produkte** → **Importieren** → Datei wählen →
 Hinweise:
 - Alle Varianten haben den „ab“-Preis des Originals, die Preise einzelner Größen sind dort nicht angegeben. Vor echten Bestellungen nachtragen.
 - Der Bestand wird nicht verfolgt, alles ist bestellbar. Coaching-Leistungen sind ohne Versand angelegt.
-- Pro Produkt sind bis zu 3 Bilder hinterlegt, Shopify lädt sie beim Import von eiweissdealer24.de.
+- Pro Produkt sind bis zu 3 Bilder hinterlegt, alle aus `bilder/` (einheitlich, siehe oben). Shopify lädt sie beim Import aus diesem Repository (fester Commit, damit sich die Links nie ändern).
 - Bei Produkten mit mehr als 3 Optionsgruppen werden nur die ersten 3 übernommen (Shopify-Limit).
 - Fightwear gibt es nur im Laden: Abholung vor Ort aktivieren und für Fightwear ein Versandprofil ohne Versandtarife anlegen.
 
