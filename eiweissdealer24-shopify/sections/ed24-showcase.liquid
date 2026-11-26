@@ -97,6 +97,25 @@
 {% javascript %}
   // Produkt-Showcase: zeigt das Kapitel passend zur Scroll-Position; im Theme-Editor springt die Ansicht zum gewählten Kapitel.
   var ed24Clamp = function (v) { return Math.min(1, Math.max(0, v)); };
+  // Feste Bildschirmhöhe (100svh): bleibt gleich, wenn Safari beim Scrollen die Adressleiste ein- oder ausblendet.
+  if (!window.ed24Vh) {
+    window.ed24Vh = (function () {
+      var probe, v = 0;
+      window.addEventListener('resize', function () { v = 0; }, { passive: true });
+      return function () {
+        if (!v) {
+          if (!probe) {
+            probe = document.createElement('div');
+            probe.setAttribute('aria-hidden', 'true');
+            probe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:100vh;height:100svh;visibility:hidden;pointer-events:none';
+            (document.body || document.documentElement).appendChild(probe);
+          }
+          v = probe.offsetHeight || window.innerHeight;
+        }
+        return v;
+      };
+    })();
+  }
   class Ed24Showcase extends HTMLElement {
     connectedCallback() {
       var self = this;
@@ -118,7 +137,7 @@
         var i = self.chapters.findIndex(function (el) { return el.dataset.blockId === (e.detail && e.detail.blockId); });
         if (i < 0) return;
         var top = self.section.getBoundingClientRect().top + window.scrollY;
-        var span = Math.max(1, self.section.offsetHeight - window.innerHeight);
+        var span = Math.max(1, self.section.offsetHeight - window.ed24Vh());
         window.scrollTo({ top: top + span * ((i + 0.5) / self.chapters.length), behavior: 'auto' });
       }, { signal: this.ctrl.signal });
       this.update();
@@ -133,10 +152,10 @@
     update() {
       var n = this.chapters.length;
       if (!n) return;
-      var r = this.section.getBoundingClientRect();
-      var span = Math.max(1, r.height - window.innerHeight);
+      var r = this.section.getBoundingClientRect(), vh = window.ed24Vh();
+      var span = Math.max(1, r.height - vh);
       var progress = ed24Clamp(-r.top / span);
-      var current = r.top > window.innerHeight * 0.35 ? -1 : Math.min(n - 1, Math.floor(progress * n + 1e-6));
+      var current = r.top > vh * 0.35 ? -1 : Math.min(n - 1, Math.floor(progress * n + 1e-6));
       if (current === this.active) return;
       this.active = current;
       this.chapters.forEach(function (el, i) {

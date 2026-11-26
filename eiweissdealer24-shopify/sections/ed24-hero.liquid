@@ -58,9 +58,17 @@
 {% stylesheet %}
   .ed24-hero{position:relative;min-height:max(560px,92svh);display:flex;align-items:center;justify-content:center;overflow:clip;color:#fff;text-align:center;padding:48px 16px 150px;background:linear-gradient(180deg,var(--ed24-accent,#e30613) 0%,var(--ed24-dark,#120405) 88%)}
   .ed24-stage{display:contents}
-  .ed24-stage__bg,.ed24-stage__fx{position:fixed;left:0;top:0;width:100vw;height:100vh;margin:0;display:block;pointer-events:none;visibility:hidden}
-  .ed24-stage__bg{z-index:0;height:125vh}
-  .ed24-stage__fx{z-index:2;overflow:hidden;contain:strict}
+  ed24-stage>.ed24-stage__bg,ed24-stage>.ed24-stage__fx{display:none}
+  /* Die Effekt-Ebenen liegen in einem Rahmen von der Hero-Oberkante bis zum Coaching-Panel und kleben darin oben am Bildschirm.
+     Rahmen und Kleben übernimmt der Browser selbst (overflow: clip, position: sticky), deshalb bleiben die Ränder auch auf iPad und iPhone ruhig. */
+  .ed24-stage__clip{position:absolute;left:0;top:0;width:100%;height:0;margin:0;padding:0;overflow:hidden;overflow:clip;pointer-events:none;visibility:hidden}
+  @supports not (overflow:clip){.ed24-stage__clip{overflow:visible;clip-path:inset(0)}}
+  .ed24-stage__clip--bg{z-index:0}
+  .ed24-stage__clip--fx{z-index:2}
+  .ed24-stage__track{position:absolute;left:0;top:0;width:100%;margin:0;padding:0}
+  .ed24-stage__bg,.ed24-stage__fx{position:sticky;top:0;left:0;width:100%;max-width:none;margin:0;display:block;pointer-events:none}
+  .ed24-stage__bg{height:125vh}
+  .ed24-stage__fx{height:100vh;height:100lvh;overflow:hidden;contain:strict}
   html.ed24-nogl .ed24-stage__bg{display:none}
   .ed24-stage__fx .ed24-sprite{position:absolute;left:0;top:0;display:block;max-width:none;width:1px;height:1px;margin:0;object-fit:contain;visibility:hidden;transform-origin:50% 50%;will-change:transform;filter:drop-shadow(0 22px 24px rgba(0,0,0,.34));-webkit-user-drag:none;user-select:none}
   .ed24-stage__fx .ed24-sprite[data-float]{display:none}
@@ -108,6 +116,26 @@
     return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
   }
   function ed24Mix(o, a, b, t) { o[0] = a[0] + (b[0] - a[0]) * t; o[1] = a[1] + (b[1] - a[1]) * t; o[2] = a[2] + (b[2] - a[2]) * t; return o; }
+  // Feste Bildschirmhöhe (100svh): bleibt gleich, wenn Safari beim Scrollen die Adressleiste ein- oder ausblendet.
+  if (!window.ed24Vh) {
+    window.ed24Vh = (function () {
+      var probe, v = 0;
+      window.addEventListener('resize', function () { v = 0; }, { passive: true });
+      return function () {
+        if (!v) {
+          if (!probe) {
+            probe = document.createElement('div');
+            probe.setAttribute('aria-hidden', 'true');
+            probe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:100vh;height:100svh;visibility:hidden;pointer-events:none';
+            (document.body || document.documentElement).appendChild(probe);
+          }
+          v = probe.offsetHeight || window.innerHeight;
+        }
+        return v;
+      };
+    })();
+  }
+  var ed24Vw = function () { return document.documentElement.clientWidth || window.innerWidth; };
   // Positionen: [x, y, Größe, Neigung, –, Drehung] – x und y in Bildschirmhälften, y nach oben.
   var HERO = {
     d: { tubA: [0.66, -0.36, 0.86, 0.22, -0.45, -0.12], tubB: [-0.56, 0.4, 0.74, 0.32, 0.6, 0.42], tubC: [0.73, 0.42, 0.6, -0.2, -0.3, -0.55], dumb: [-0.74, -0.52, 0.62, 0.5, 0.3, 0.28], scoop: [0.06, 0.44, 0.6, 0.7, 0.8, -0.35] },
@@ -117,7 +145,7 @@
   var EXIT = { tubB: [-1.5, 1.5], tubC: [1.5, 1.5], scoop: [0.3, 1.7] };
   var FLOAT = [[0.08, 0.7, 1.3, 0.8, 0.7], [0.2, -0.72, 0.85, 0.8, 0.6], [0.42, 0.74, 1.15, 0.75, 0.55], [0.55, -0.6, 1.4, 0.7, 0.5], [0.75, 0.62, 0.9, 0.7, 0.6], [0.9, -0.66, 1.25, 0.75, 0.55]];
   var QUALITY = [0.4, 0.33, 0.28, 0.22];
-  // Die Farbfläche ragt 25 % unter den Bildschirm: Manche Browser verschieben feste Ebenen neben einer klebenden Kopfzeile, so bleibt nie ein Rand sichtbar.
+  // Die Farbfläche ragt 25 % unter die Bildschirmhöhe: Auch wenn Safari die Adressleiste ausblendet und mehr Fläche zeigt, bleibt kein Rand sichtbar.
   var BG_EXT = 0.25;
   var SPRITE_H = { d: 0.42, m: 0.62 };
   var VERT = 'attribute vec2 aPos; varying vec2 vUv; void main(){ vUv = aPos * 0.5 + 0.5; gl_Position = vec4(aPos, 0.0, 1.0); }';
@@ -182,10 +210,8 @@
         if (ext) ext.loseContext();
         this.G = null;
       }
-      if (this.portaled) {
-        this.bgC.remove();
-        this.fx.remove();
-      }
+      (this.wraps || []).forEach(function (w) { w.clip.remove(); });
+      this.wraps = null;
     }
 
     initGL() {
@@ -231,7 +257,8 @@
       if (this.ro) this.ro.disconnect();
       (this.sprites || []).forEach(function (sp) { sp.el.remove(); });
       this.sprites = [];
-      [this.bgC, this.fx].forEach(function (c) { if (c) c.style.visibility = 'hidden'; });
+      (this.wraps || []).forEach(function (w) { w.clip.style.visibility = 'hidden'; });
+      this.on = null;
     }
 
     sprite(src, ar, tplEl) {
@@ -281,9 +308,7 @@
       this.show = document.querySelector('[data-ed24-showcase]');
       this.story = document.querySelector('[data-ed24-story]');
       this.coach = document.querySelector('[data-ed24-coach]');
-      var hs = document.querySelectorAll('.shopify-section-group-header-group');
-      if (!hs.length) hs = document.querySelectorAll('body > header, .header-wrapper, sticky-header, header-component');
-      this.headers = Array.prototype.slice.call(hs);
+      this.mount();
       var brand = (this.hero && this.hero.dataset.color) || '#e30613';
       var dark = (this.hero && this.hero.dataset.dark) || '#120405';
       var chapters = this.show ? Array.prototype.slice.call(this.show.querySelectorAll('[data-ed24-chapter]')) : [];
@@ -308,32 +333,50 @@
       this.mains = this.ch.map(function (c) { return c.img ? self.sprite(c.img, c.ar, null) : null; });
       this.mouse = { x: 0, y: 0, tx: 0, ty: 0 };
       window.addEventListener('pointermove', function (e) { self.mouse.tx = (e.clientX / window.innerWidth) * 2 - 1; self.mouse.ty = (e.clientY / window.innerHeight) * 2 - 1; }, opts);
-      window.addEventListener('resize', function () { clearTimeout(self.rt); self.rt = setTimeout(function () { if (self.ready) self.resize(); }, 120); }, opts);
+      // Safari meldet das Ein- und Ausblenden der Adressleiste als Größenänderung. Neu gerechnet wird nur, wenn sich Breite oder Bildschirmhöhe wirklich ändern (z. B. beim Drehen).
+      window.addEventListener('resize', function () {
+        clearTimeout(self.rt);
+        self.rt = setTimeout(function () {
+          if (!self.ready) return;
+          if (ed24Vw() === self.lastW && Math.abs(window.ed24Vh() - self.lastH) < 2) return;
+          self.resize();
+        }, 150);
+      }, opts);
       window.addEventListener('load', function () { if (self.ready) self.measure(); }, opts);
       this.ro = new ResizeObserver(function () { if (self.ready) self.measure(); });
       this.ro.observe(document.body);
       this.ready = true;
       this.resize();
-      // Falls das Theme feste Positionierung verhindert (z. B. durch transform), die Ebenen direkt an <body> hängen.
-      var r0 = this.fx.getBoundingClientRect();
-      if (Math.abs(r0.top) > 1 || Math.abs(r0.left) > 1) {
-        document.body.appendChild(this.bgC);
-        document.body.appendChild(this.fx);
-        this.portaled = true;
-      }
       this.readyAt = performance.now();
       this.ema = 16;
       this.qT = performance.now() + 1500;
       this.last = performance.now();
-      this.clipKey = '';
+      this.on = null;
       var loop = function (now) { self.raf = requestAnimationFrame(loop); self.frame(now); };
       this.raf = requestAnimationFrame(loop);
+    }
+
+    mount() {
+      // Die Ebenen kommen direkt hinter den Hero-Abschnitt, damit Text und Produkte wie gewohnt übereinander liegen.
+      if (!this.wraps) {
+        this.wraps = [this.bgC, this.fx].map(function (layer, i) {
+          var clip = document.createElement('div'), track = document.createElement('div');
+          clip.className = 'ed24-stage__clip ed24-stage__clip--' + (i ? 'fx' : 'bg');
+          clip.setAttribute('aria-hidden', 'true');
+          track.className = 'ed24-stage__track';
+          track.appendChild(layer);
+          clip.appendChild(track);
+          return { clip: clip, track: track };
+        });
+      }
+      var anchor = this.hero ? (this.hero.closest('.shopify-section') || this.hero) : this;
+      anchor.after(this.wraps[0].clip, this.wraps[1].clip);
     }
 
     measure() {
       var top = function (el) { return el ? el.getBoundingClientRect().top + window.scrollY : 0; };
       var M = (this.M = this.M || {});
-      M.vh = window.innerHeight; M.mob = window.innerWidth < 750;
+      M.vh = window.ed24Vh(); M.vw = ed24Vw(); M.mob = M.vw < 750;
       M.heroTop = top(this.hero); M.heroH = this.hero ? this.hero.offsetHeight : M.vh;
       M.showTop = this.show ? top(this.show) : M.heroTop + M.heroH;
       M.showH = this.show ? this.show.offsetHeight : 0;
@@ -342,24 +385,39 @@
       M.storyH = this.story ? this.story.offsetHeight : 0;
       M.coachTop = this.coach ? top(this.coach) : M.storyTop + M.storyH;
       M.regionEnd = this.coach ? M.coachTop + M.vh * 0.25 : (this.story ? M.storyTop + M.storyH : (this.show ? M.showTop + M.showH : M.heroTop + M.heroH));
+      // Rahmen: von der Hero-Oberkante bis kurz hinter den Beginn des Coaching-Panels. Die Schiene darin beginnt am Seitenanfang, so klebt die Ebene immer bei 0.
+      (this.wraps || []).forEach(function (w) {
+        var cs = w.clip.style, r = w.clip.getBoundingClientRect();
+        var baseTop = r.top + window.scrollY - (parseFloat(cs.top) || 0), baseLeft = r.left - (parseFloat(cs.left) || 0);
+        cs.top = (M.heroTop - baseTop) + 'px';
+        cs.left = -baseLeft + 'px';
+        cs.width = M.vw + 'px';
+        cs.height = Math.max(0, M.regionEnd - M.heroTop) + 'px';
+        w.track.style.top = -M.heroTop + 'px';
+        w.track.style.height = (M.regionEnd + M.vh * 2) + 'px';
+      });
     }
 
     applyQuality() {
       var q = QUALITY[this.QL];
-      this.bgC.width = Math.max(1, Math.round(window.innerWidth * q));
-      this.bgC.height = Math.max(1, Math.round(window.innerHeight * (1 + BG_EXT) * q));
+      this.bgC.width = Math.max(1, Math.round(this.M.vw * q));
+      this.bgC.height = Math.max(1, Math.round(this.M.vh * (1 + BG_EXT) * q));
     }
 
     resize() {
-      var self = this, w = window.innerWidth, h = window.innerHeight, V = this.V;
+      var self = this, V = this.V;
       this.measure();
+      var w = this.M.vw, h = this.M.vh;
+      this.lastW = w;
+      this.lastH = h;
+      this.bgC.style.height = Math.round(h * (1 + BG_EXT)) + 'px';
       if (this.G) this.applyQuality();
       V.halfW = w / 2;
       V.halfH = h / 2;
       var wide = 3.153 * w / h;
       V.sf = this.M.mob ? clamp(wide / 4.2, 0.3, 0.55) : clamp(wide / 5.6, 0.55, 1);
       this.sprites.forEach(function (sp) { self.sizeSprite(sp); });
-      this.clipKey = '';
+      this.on = null;
     }
 
     hide(sp) {
@@ -377,42 +435,25 @@
       sp.el.style.transform = 'translate3d(' + px.toFixed(1) + 'px,' + py.toFixed(1) + 'px,0) perspective(900px) rotateX(' + rx.toFixed(3) + 'rad) rotateY(' + ry.toFixed(3) + 'rad) rotateZ(' + rz.toFixed(3) + 'rad) scale(' + (s * V.sf).toFixed(4) + ')';
     }
 
-    clipRegion() {
-      // Sichtbarer Bereich: von der Oberkante des Hero bis zum Coaching-Panel, nie unter einer fixierten Kopfzeile.
-      var M = this.M, vh = M.vh, sy = window.scrollY;
-      var headerB = 0;
-      for (var i = 0; i < this.headers.length; i++) {
-        var r = this.headers[i].getBoundingClientRect();
-        if (r.bottom > headerB && r.top < vh * 0.5 && r.height < vh * 0.5) headerB = r.bottom;
-      }
-      var top = Math.max(0, M.heroTop - sy, headerB);
-      var bottom = Math.min(vh, M.regionEnd - sy);
-      if (bottom - top < 1) return null;
-      return [Math.round(top), Math.round(vh - bottom)];
-    }
-
     frame(now) {
       var dt = Math.min(0.05, (now - this.last) / 1000);
       this.last = now;
-      var M = this.M, vh = M.vh, N = this.ch.length, self = this;
-      var clip = this.clipRegion();
-      var key = (clip ? clip[0] + ',' + clip[1] : 'none') + (this.G ? 'g' : '');
-      if (key !== this.clipKey) {
-        this.clipKey = key;
-        [this.bgC, this.fx].forEach(function (c) {
-          var on = clip && (c !== self.bgC || self.G);
-          c.style.visibility = on ? 'visible' : 'hidden';
-          if (clip) c.style.clipPath = 'inset(' + clip[0] + 'px 0 ' + (c === self.bgC ? clip[1] + Math.round(vh * BG_EXT) : clip[1]) + 'px 0)';
-        });
+      var M = this.M, vh = M.vh, N = this.ch.length, self = this, scrollY = window.scrollY;
+      // Gezeichnet wird nur, solange der Bereich Hero bis Coaching-Panel im Bild ist. Die Ränder schneidet der Browser.
+      var on = scrollY + vh * 1.5 > M.heroTop && scrollY < M.regionEnd ? (this.G ? 2 : 1) : 0;
+      if (on !== this.on) {
+        this.on = on;
+        this.wraps[0].clip.style.visibility = on === 2 ? 'visible' : 'hidden';
+        this.wraps[1].clip.style.visibility = on ? 'visible' : 'hidden';
       }
       this.ema = this.ema * 0.95 + dt * 1000 * 0.05;
       if (now - this.qT > 1000) {
         if (this.G && this.ema > 22 && this.QL < QUALITY.length - 1) { this.QL++; this.applyQuality(); }
         this.qT = now;
       }
-      if (!clip) return;
+      if (!on) return;
 
-      var t = this.still ? 0 : now / 1000, scrollY = window.scrollY, sy = scrollY - M.heroTop;
+      var t = this.still ? 0 : now / 1000, sy = scrollY - M.heroTop;
       var showTop = M.showTop - M.heroTop, showEnd = M.showEnd - M.heroTop, storyTop = M.storyTop - M.heroTop, coachTop = M.coachTop - M.heroTop;
       var mo = this.mouse;
       mo.x += (mo.tx - mo.x) * 0.05; mo.y += (mo.ty - mo.y) * 0.05;
@@ -448,7 +489,7 @@
         gl.uniform1f(u.uWipe, uWipe);
         gl.uniform1f(u.uSplit, uSplit);
         gl.uniform1f(u.uExt, BG_EXT);
-        gl.uniform2f(u.uRes, window.innerWidth, window.innerHeight);
+        gl.uniform2f(u.uRes, M.vw, vh);
         gl.uniform3fv(u.uPrev, U.prev);
         gl.uniform3fv(u.uNext, U.next);
         gl.uniform3fv(u.uLight, U.light);

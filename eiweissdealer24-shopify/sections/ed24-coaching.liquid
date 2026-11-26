@@ -87,6 +87,25 @@
 {% javascript %}
   // Coaching-Panel: zieht sich beim Scrollen auf volle Fläche auf (nur transform, daher flüssig).
   var ed24CoachClamp = function (v) { return Math.min(1, Math.max(0, v)); };
+  // Feste Bildschirmhöhe (100svh): bleibt gleich, wenn Safari beim Scrollen die Adressleiste ein- oder ausblendet.
+  if (!window.ed24Vh) {
+    window.ed24Vh = (function () {
+      var probe, v = 0;
+      window.addEventListener('resize', function () { v = 0; }, { passive: true });
+      return function () {
+        if (!v) {
+          if (!probe) {
+            probe = document.createElement('div');
+            probe.setAttribute('aria-hidden', 'true');
+            probe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:100vh;height:100svh;visibility:hidden;pointer-events:none';
+            (document.body || document.documentElement).appendChild(probe);
+          }
+          v = probe.offsetHeight || window.innerHeight;
+        }
+        return v;
+      };
+    })();
+  }
   class Ed24Coach extends HTMLElement {
     connectedCallback() {
       var self = this;
@@ -112,7 +131,7 @@
     }
 
     update() {
-      var r = this.section.getBoundingClientRect(), vh = window.innerHeight;
+      var r = this.section.getBoundingClientRect(), vh = window.ed24Vh();
       if (r.bottom < 0 || r.top > vh) return;
       var t = ed24CoachClamp((-r.top + vh * 0.25) / (vh * 1.05));
       var p = this.still ? 1 : 1 - Math.pow(1 - t, 3);

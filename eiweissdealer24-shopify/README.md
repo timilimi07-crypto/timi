@@ -43,7 +43,8 @@ Reihenfolge auf der Startseite: Hero → Showcase → Story → Coaching-Panel l
 Technik:
 - Der Farbverlauf ist ein eigener kleiner WebGL-Shader (ohne Three.js). Die schwebenden Produkte sind normale Bilder, die per CSS-Transform bewegt werden, deshalb flüssig auch auf iPad und Handy.
 - Bibliothek vom CDN: Matter.js 0.19 (cdnjs) für die Marken-Box. Schriften Barlow und Barlow Condensed (Google Fonts).
-- Die 3D-Bühne schneidet sich pro Frame auf den Bereich zwischen Kopfzeile und Coaching-Panel zu und überdeckt so nie Header oder andere Abschnitte.
+- Die 3D-Bühne liegt in einem Rahmen von der Hero-Oberkante bis zum Coaching-Panel und klebt darin oben am Bildschirm (`overflow: clip` + `position: sticky`). Ränder und Kleben erledigt der Browser selbst, deshalb laufen sie auch auf iPad und iPhone ohne Ruckeln mit der Seite mit und überdecken nie Header oder andere Abschnitte.
+- Alle Abschnitte rechnen mit derselben festen Bildschirmhöhe (`100svh`). Wenn Safari beim Scrollen die Adressleiste ein- oder ausblendet, wird nichts neu berechnet, Produkte und Kapitel bleiben ruhig.
 - Ohne WebGL kommt der Farbverlauf aus CSS, die Produkte schweben trotzdem. Bei „Bewegung reduzieren“ stehen sie still. Inhalte und Buttons funktionieren immer.
 
 ## Produktbilder (`produktbilder/`)
