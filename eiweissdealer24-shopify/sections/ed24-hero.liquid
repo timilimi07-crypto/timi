@@ -1,7 +1,7 @@
 {%- comment -%}
   ED24 Hero 3D – Eiweissdealer24
-  Riesiger Schriftzug, fließender Farbverlauf (WebGL) und echte, freigestellte Produkte, die schweben.
-  Dieser Abschnitt steuert auch die Effekte von „ED24 Produkt-Showcase“ und „ED24 Story“.
+  Riesiger Schriftzug, fließender Farbverlauf (WebGL) und schwebende 3D-Produkte (Dosen, Hantel, Shaker, Messlöffel).
+  Dieser Abschnitt steuert auch die 3D-Effekte von „ED24 Produkt-Showcase“ und „ED24 Story“.
   Reihenfolge auf der Startseite: Hero → Showcase → Story → Coaching-Panel.
 {%- endcomment -%}
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,19 +18,7 @@
   {%- if section.settings.show_3d -%}
     <ed24-stage class="ed24-stage" aria-hidden="true">
       <canvas class="ed24-stage__bg" data-bg></canvas>
-      <div class="ed24-stage__fx" data-fx>
-        {%- for block in section.blocks -%}
-          {%- liquid
-            assign img = block.settings.image
-            if img == blank and block.settings.product != blank
-              assign img = block.settings.product.featured_image
-            endif
-          -%}
-          {%- if img != blank -%}
-            <img class="ed24-sprite" data-float src="{{ img | image_url: width: 600 }}" width="{{ img.width }}" height="{{ img.height }}" alt="" decoding="async" draggable="false" {{ block.shopify_attributes }}>
-          {%- endif -%}
-        {%- endfor -%}
-      </div>
+      <canvas class="ed24-stage__fx" data-fx></canvas>
     </ed24-stage>
   {%- endif -%}
 
@@ -68,10 +56,8 @@
   .ed24-stage__track{position:absolute;left:0;top:0;width:100%;margin:0;padding:0}
   .ed24-stage__bg,.ed24-stage__fx{position:sticky;top:0;left:0;width:100%;max-width:none;margin:0;display:block;pointer-events:none}
   .ed24-stage__bg{height:125vh}
-  .ed24-stage__fx{height:100vh;height:100lvh;overflow:hidden;contain:strict}
-  html.ed24-nogl .ed24-stage__bg{display:none}
-  .ed24-stage__fx .ed24-sprite{position:absolute;left:0;top:0;display:block;max-width:none;width:1px;height:1px;margin:0;object-fit:contain;visibility:hidden;transform-origin:50% 50%;will-change:transform;filter:drop-shadow(0 22px 24px rgba(0,0,0,.34));-webkit-user-drag:none;user-select:none}
-  .ed24-stage__fx .ed24-sprite[data-float]{display:none}
+  .ed24-stage__fx{height:115vh}
+  html.ed24-nogl .ed24-stage__bg,html.ed24-nogl .ed24-stage__fx{display:none}
   .ed24-hero__inner{position:relative;z-index:1;margin:0;display:flex;flex-direction:column;align-items:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(84px,18.5vw,330px);line-height:.8;letter-spacing:-.005em;color:#fff;will-change:transform,opacity}
   .ed24-hero .ed24-hero__inner{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;line-height:.8;color:#fff}
   .ed24-hero__word{display:block;white-space:nowrap}
@@ -102,20 +88,16 @@
 {% endstylesheet %}
 
 {% javascript %}
-  // Bühne für die ED24-Startseite: fließender Farbverlauf (WebGL) und echte, freigestellte Produktbilder, gesteuert über die Scroll-Position.
+  // 3D-Bühne für die ED24-Startseite: Farbverlauf (WebGL) und 3D-Produkte (Three.js), gesteuert über die Scroll-Position.
   // Gezeichnet wird nur im Bereich der ED24-Abschnitte – nie über der Kopfzeile oder anderen Abschnitten.
+  var THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js';
+  var SKY = 'M0 20V14h8v-4h6v4h6V8l3-6 3 6v6h8v-3h8v3h6V6h2V3h2v3h2v8h8V9h8v5h6v-4l4-10 4 10v4h8v-2h8V7h4v7h8v-3h8v9z';
   var clamp = function (v, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return Math.min(b, Math.max(a, v)); };
   var lerp = function (a, b, t) { return a + (b - a) * t; };
   var easeIO = function (t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
   var easeOut = function (t) { return 1 - Math.pow(1 - t, 3); };
   var easeIn = function (t) { return t * t * t; };
   var easeBack = function (t) { return 1 + 2.70158 * Math.pow(t - 1, 3) + 1.70158 * Math.pow(t - 1, 2); };
-  function ed24Rgb(h) {
-    var n = parseInt(String(h || '').replace('#', '').slice(0, 6), 16);
-    if (isNaN(n)) n = 0xe30613;
-    return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
-  }
-  function ed24Mix(o, a, b, t) { o[0] = a[0] + (b[0] - a[0]) * t; o[1] = a[1] + (b[1] - a[1]) * t; o[2] = a[2] + (b[2] - a[2]) * t; return o; }
   // Feste Bildschirmhöhe (100svh): bleibt gleich, wenn Safari beim Scrollen die Adressleiste ein- oder ausblendet.
   if (!window.ed24Vh) {
     window.ed24Vh = (function () {
@@ -136,19 +118,36 @@
     })();
   }
   var ed24Vw = function () { return document.documentElement.clientWidth || window.innerWidth; };
-  // Positionen: [x, y, Größe, Neigung, –, Drehung] – x und y in Bildschirmhälften, y nach oben.
+  var threePromise = null;
+  function loadThree() {
+    if (window.THREE) return Promise.resolve();
+    if (!threePromise) {
+      threePromise = new Promise(function (res, rej) {
+        var s = document.createElement('script');
+        s.src = THREE_URL;
+        s.async = true;
+        s.onload = res;
+        s.onerror = function () { threePromise = null; rej(new Error('three')); };
+        document.head.appendChild(s);
+      });
+    }
+    return threePromise;
+  }
+  function hex2v(T, h) {
+    var n = parseInt(String(h || '').replace('#', '').slice(0, 6), 16);
+    if (isNaN(n)) n = 0xe30613;
+    return new T.Vector3(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
+  }
   var HERO = {
-    d: { tubA: [0.66, -0.36, 0.86, 0.22, -0.45, -0.12], tubB: [-0.56, 0.4, 0.74, 0.32, 0.6, 0.42], tubC: [0.73, 0.42, 0.6, -0.2, -0.3, -0.55], dumb: [-0.74, -0.52, 0.62, 0.5, 0.3, 0.28], scoop: [0.06, 0.44, 0.6, 0.7, 0.8, -0.35] },
-    m: { tubA: [0.42, -0.68, 0.85, 0.22, -0.45, -0.16], tubB: [-0.52, 0.42, 0.7, 0.32, 0.6, 0.42], tubC: [0.56, 0.46, 0.56, -0.2, -0.3, -0.55], dumb: [-0.5, -0.8, 0.66, 0.5, 0.3, 0.28], scoop: [0.0, 0.3, 0.5, 0.7, 0.8, -0.35] }
+    d: { tubA: [0.52, -0.3, 0.86, 0.22, -0.45, -0.16], tubB: [-0.56, 0.4, 0.74, 0.32, 0.6, 0.42], tubC: [0.73, 0.5, 0.6, -0.2, -0.3, -0.55], dumb: [-0.6, -0.56, 0.74, 0.5, 0.3, 0.28], scoop: [0.08, 0.62, 0.62, 0.7, 0.8, -0.35] },
+    m: { tubA: [0.42, -0.68, 0.85, 0.22, -0.45, -0.16], tubB: [-0.55, 0.62, 0.7, 0.32, 0.6, 0.42], tubC: [0.64, 0.6, 0.56, -0.2, -0.3, -0.55], dumb: [-0.5, -0.8, 0.66, 0.5, 0.3, 0.28], scoop: [-0.62, 0.3, 0.5, 0.7, 0.8, -0.35] }
   };
   var SHOW = { d: { tub: [0.16, -0.06, 1.12], comp: [-0.14, -0.5, 0.82] }, m: { tub: [0, -0.04, 1.45], comp: [0.5, -0.34, 0.8] } };
   var EXIT = { tubB: [-1.5, 1.5], tubC: [1.5, 1.5], scoop: [0.3, 1.7] };
-  var FLOAT = [[0.08, 0.7, 1.3, 0.8, 0.7], [0.2, -0.72, 0.85, 0.8, 0.6], [0.42, 0.74, 1.15, 0.75, 0.55], [0.55, -0.6, 1.4, 0.7, 0.5], [0.75, 0.62, 0.9, 0.7, 0.6], [0.9, -0.66, 1.25, 0.75, 0.55]];
-  var QUALITY = [0.4, 0.33, 0.28, 0.22];
-  // Die Farbfläche ragt 25 % unter die Bildschirmhöhe: Auch wenn Safari die Adressleiste ausblendet und mehr Fläche zeigt, bleibt kein Rand sichtbar.
-  var BG_EXT = 0.25;
-  var SPRITE_H = { d: 0.42, m: 0.62 };
-  var VERT = 'attribute vec2 aPos; varying vec2 vUv; void main(){ vUv = aPos * 0.5 + 0.5; gl_Position = vec4(aPos, 0.0, 1.0); }';
+  var FLOAT = [['f1', 0.08, 0.7, 1.3, 0.8, 0.7], ['f2', 0.2, -0.72, 0.85, 0.8, 0.6], ['f3', 0.42, 0.74, 1.15, 0.75, 0.55], ['f4', 0.55, -0.6, 1.4, 0.7, 0.5], ['f5', 0.75, 0.62, 0.9, 0.7, 0.6], ['f6', 0.9, -0.66, 1.25, 0.75, 0.55]];
+  var QUALITY = [{ fx: 1.5, bg: 0.4 }, { fx: 1.25, bg: 0.33 }, { fx: 1, bg: 0.28 }, { fx: 0.8, bg: 0.22 }];
+  // Farbfläche und 3D-Ebene ragen unter die Bildschirmhöhe: Auch wenn Safari die Adressleiste ausblendet und mehr Fläche zeigt, bleibt kein Rand und kein abgeschnittenes Produkt.
+  var BG_EXT = 0.25, FX_EXT = 0.15;
   var FRAG = [
     'precision mediump float; varying vec2 vUv;',
     'uniform float uTime,uWipe,uSplit,uExt; uniform vec2 uRes; uniform vec3 uPrev,uNext,uLight;',
@@ -170,8 +169,7 @@
       var self = this;
       this.ctrl = new AbortController();
       this.bgC = this.querySelector('[data-bg]');
-      this.fx = this.querySelector('[data-fx]');
-      this.tpl = Array.prototype.slice.call(this.fx.querySelectorAll('[data-float]'));
+      this.fxC = this.querySelector('[data-fx]');
       this.still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var rebuild = function () {
         clearTimeout(self.rbT);
@@ -184,69 +182,24 @@
       ['shopify:section:load', 'shopify:section:unload', 'shopify:section:reorder'].forEach(function (e) {
         document.addEventListener(e, rebuild, { signal: self.ctrl.signal });
       });
-      this.bgC.addEventListener('webglcontextlost', function (e) {
-        e.preventDefault();
-        self.G = null;
-        document.documentElement.classList.add('ed24-nogl');
-      }, { signal: this.ctrl.signal });
-      this.bgC.addEventListener('webglcontextrestored', function () {
-        self.noGL = false;
-        self.initGL();
-        if (self.ready) self.resize();
-      }, { signal: this.ctrl.signal });
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function () { self.setup(); }, { once: true, signal: this.ctrl.signal });
-      } else {
-        this.setup();
-      }
+      loadThree()
+        .then(function () { return document.fonts && document.fonts.ready ? document.fonts.ready : null; })
+        .then(function () { self.setup(); })
+        .catch(function () { self.fail(); });
     }
 
     disconnectedCallback() {
       if (this.ctrl) this.ctrl.abort();
       clearTimeout(this.rbT);
       this.teardown();
-      if (this.G) {
-        var ext = this.G.gl.getExtension('WEBGL_lose_context');
-        if (ext) ext.loseContext();
-        this.G = null;
-      }
       (this.wraps || []).forEach(function (w) { w.clip.remove(); });
       this.wraps = null;
     }
 
-    initGL() {
-      if (this.G || this.noGL) return;
-      try {
-        var gl = this.bgC.getContext('webgl', { alpha: false, antialias: false, depth: false, stencil: false, powerPreference: 'high-performance' });
-        if (!gl) throw new Error('webgl');
-        var shader = function (type, src) {
-          var s = gl.createShader(type);
-          gl.shaderSource(s, src);
-          gl.compileShader(s);
-          if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error('shader');
-          return s;
-        };
-        var prog = gl.createProgram();
-        gl.attachShader(prog, shader(gl.VERTEX_SHADER, VERT));
-        gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, FRAG));
-        gl.linkProgram(prog);
-        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error('link');
-        gl.useProgram(prog);
-        gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
-        var at = gl.getAttribLocation(prog, 'aPos');
-        gl.enableVertexAttribArray(at);
-        gl.vertexAttribPointer(at, 2, gl.FLOAT, false, 0, 0);
-        var u = {};
-        ['uTime', 'uWipe', 'uSplit', 'uExt', 'uRes', 'uPrev', 'uNext', 'uLight'].forEach(function (n) { u[n] = gl.getUniformLocation(prog, n); });
-        this.G = { gl: gl, u: u };
-        document.documentElement.classList.remove('ed24-nogl');
-      } catch (e) {
-        // Ohne WebGL bleibt der Farbverlauf aus CSS; die Produkte schweben trotzdem.
-        this.noGL = true;
-        this.G = null;
-        document.documentElement.classList.add('ed24-nogl');
-      }
+    fail() {
+      // Ohne WebGL bleibt der Farbverlauf aus CSS, Inhalte und Buttons funktionieren trotzdem.
+      document.documentElement.classList.add('ed24-nogl');
+      (this.wraps || []).forEach(function (w) { w.clip.style.visibility = 'hidden'; });
     }
 
     teardown() {
@@ -255,53 +208,31 @@
       this.ready = false;
       if (this.loopCtrl) this.loopCtrl.abort();
       if (this.ro) this.ro.disconnect();
-      (this.sprites || []).forEach(function (sp) { sp.el.remove(); });
-      this.sprites = [];
+      var disposeScene = function (scene) {
+        if (!scene) return;
+        scene.traverse(function (o) {
+          if (o.geometry) o.geometry.dispose();
+          if (o.material) {
+            (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) {
+              if (m.map) m.map.dispose();
+              m.dispose();
+            });
+          }
+        });
+      };
+      disposeScene(this.scene);
+      disposeScene(this.bgScene);
+      if (this.envTex) this.envTex.dispose();
+      if (this.R) this.R.dispose();
+      if (this.BR) this.BR.dispose();
+      this.R = this.BR = this.scene = this.bgScene = this.envTex = null;
       (this.wraps || []).forEach(function (w) { w.clip.style.visibility = 'hidden'; });
       this.on = null;
     }
 
-    sprite(src, ar, tplEl) {
-      var self = this, el;
-      if (tplEl) {
-        el = tplEl.cloneNode(false);
-        el.removeAttribute('data-float');
-        el.removeAttribute('data-shopify-editor-block');
-      } else {
-        el = document.createElement('img');
-        el.className = 'ed24-sprite';
-        el.alt = '';
-        el.decoding = 'async';
-        el.draggable = false;
-        el.src = src;
-      }
-      var w = parseFloat(el.getAttribute('width')), h = parseFloat(el.getAttribute('height'));
-      el.setAttribute('data-ed24-sprite', '');
-      var sp = { el: el, ar: ar || (w > 0 && h > 0 ? w / h : 1), vis: false, ready: false };
-      var done = function () {
-        sp.ready = el.naturalWidth > 0;
-        if (sp.ready) { sp.ar = el.naturalWidth / el.naturalHeight; self.sizeSprite(sp); }
-      };
-      this.fx.appendChild(el);
-      if (el.complete) done(); else el.addEventListener('load', done, { once: true });
-      this.sprites.push(sp);
-      this.sizeSprite(sp);
-      return sp;
-    }
-
-    sizeSprite(sp) {
-      if (!this.M) return;
-      var h = (this.M.mob ? SPRITE_H.m : SPRITE_H.d) * this.M.vh, ar = Math.min(sp.ar, 1.5), w = h * ar;
-      if (sp.ar > 1.5) h = w / sp.ar;
-      sp.w = w;
-      sp.h = h;
-      sp.el.style.width = w + 'px';
-      sp.el.style.height = h + 'px';
-    }
-
     setup() {
-      if (!this.isConnected) return;
-      var self = this;
+      if (!this.isConnected || !window.THREE) return;
+      var T = window.THREE, self = this;
       this.loopCtrl = new AbortController();
       var opts = { signal: this.loopCtrl.signal, passive: true };
       this.hero = this.closest('[data-ed24-hero]');
@@ -311,26 +242,56 @@
       this.mount();
       var brand = (this.hero && this.hero.dataset.color) || '#e30613';
       var dark = (this.hero && this.hero.dataset.dark) || '#120405';
-      var chapters = this.show ? Array.prototype.slice.call(this.show.querySelectorAll('[data-ed24-chapter]')) : [];
-      this.ch = chapters.map(function (el) { return { col: el.dataset.color || brand, img: el.dataset.img || '', ar: parseFloat(el.dataset.imgAr) || 0 }; });
-      if (!this.ch.length) this.ch = [{ col: brand, img: '', ar: 0 }];
-      this.initGL();
-      this.COL = this.ch.map(function (c) { return ed24Rgb(c.col); });
-      this.C_RED = ed24Rgb(brand);
-      this.C_DARK = ed24Rgb(dark);
-      this.C_PAPER = ed24Rgb('#efece6');
-      this.U = { prev: [0, 0, 0], next: [0, 0, 0], light: [0, 0, 0] };
-      this.V = { halfW: 1, halfH: 1, sf: 1 };
+      this.ch = this.show ? Array.prototype.slice.call(this.show.querySelectorAll('[data-ed24-chapter]')).map(function (el) {
+        return { col: el.dataset.color || brand, l1: (el.dataset.label1 || '').toUpperCase(), l2: (el.dataset.label2 || '').toUpperCase(), body: el.dataset.body === 'light' ? '#f1f1f1' : '#121212' };
+      }) : [];
+      if (!this.ch.length) this.ch = [{ col: brand, l1: 'PROTEIN', l2: '', body: '#121212' }];
+      try {
+        if (T.ColorManagement) T.ColorManagement.legacyMode = false;
+        this.R = new T.WebGLRenderer({ canvas: this.fxC, antialias: window.devicePixelRatio < 1.5 && window.innerWidth >= 750, alpha: true, powerPreference: 'high-performance' });
+        this.R.outputEncoding = T.sRGBEncoding;
+        this.R.toneMapping = T.ACESFilmicToneMapping;
+        this.R.toneMappingExposure = 1.05;
+        this.BR = new T.WebGLRenderer({ canvas: this.bgC, powerPreference: 'high-performance' });
+      } catch (e) {
+        this.fail();
+        return;
+      }
+      this.COL = this.ch.map(function (c) { return hex2v(T, c.col); });
+      this.C_RED = hex2v(T, brand);
+      this.C_DARK = hex2v(T, dark);
+      this.C_PAPER = hex2v(T, '#efece6');
+      this.bgScene = new T.Scene();
+      this.bgCam = new T.Camera();
+      this.bgMat = new T.ShaderMaterial({
+        uniforms: { uTime: { value: 0 }, uRes: { value: new T.Vector2(1, 1) }, uPrev: { value: this.C_RED.clone() }, uNext: { value: this.C_RED.clone() }, uLight: { value: this.C_DARK.clone() }, uWipe: { value: -1 }, uSplit: { value: 0.4 }, uExt: { value: BG_EXT } },
+        vertexShader: 'varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.,1.); }',
+        fragmentShader: FRAG
+      });
+      this.bgScene.add(new T.Mesh(new T.PlaneGeometry(2, 2), this.bgMat));
+      this.scene = new T.Scene();
+      this.cam = new T.PerspectiveCamera(35, 1, 0.1, 100);
+      this.cam.position.set(0, 0, 10);
+      this.scene.add(new T.HemisphereLight(0xffffff, 0x3a3a3a, 0.9));
+      var key = new T.DirectionalLight(0xffffff, 2.4); key.position.set(4, 6, 8); this.scene.add(key);
+      this.rim = new T.DirectionalLight(0xe30613, 3.2); this.rim.position.set(-6, 3, -5); this.scene.add(this.rim);
+      var fill = new T.DirectionalLight(0xffffff, 0.6); fill.position.set(-5, -2, 6); this.scene.add(fill);
+      var pm = new T.PMREMGenerator(this.R);
+      var es = new T.Scene();
+      es.background = new T.Color(0x2a2a2a);
+      [[0xffffff, 0, 6, 5, 9, 3], [0xffffff, -7, 1, 2, 3, 7], [0xff3b30, 7, 1, -2, 3, 7], [0x888888, 0, -6, 0, 12, 12]].forEach(function (a) {
+        var m = new T.Mesh(new T.PlaneGeometry(a[4], a[5]), new T.MeshBasicMaterial({ color: a[0], side: T.DoubleSide }));
+        m.position.set(a[1], a[2], a[3]);
+        m.lookAt(0, 0, 0);
+        es.add(m);
+      });
+      this.envTex = pm.fromScene(es, 0.04).texture;
+      this.scene.environment = this.envTex;
+      pm.dispose();
+      this.labels = this.ch.map(function (c) { return self.makeLabel(T, c); });
+      this.buildObjects(T);
+      this.V = { halfW: 5, halfH: 3, sf: 1 };
       this.QL = window.innerWidth < 750 || (navigator.hardwareConcurrency || 8) <= 4 ? 1 : 0;
-      this.measure();
-      // Ebenen von hinten nach vorne: Story-Produkte, Showcase-Begleiter, Hero-Produkte, Hauptprodukt.
-      var F = this.tpl, N = this.ch.length;
-      var pick = function (i) { return F.length ? F[i % F.length] : null; };
-      this.sprites = [];
-      this.floats = FLOAT.map(function (f, j) { var t = pick(3 + N + j); return t ? self.sprite(null, 0, t) : null; });
-      this.comps = this.ch.map(function (c, j) { var t = pick(3 + j); return t ? self.sprite(null, 0, t) : null; });
-      this.side = [0, 1, 2].map(function (j) { var t = pick(j); return t ? self.sprite(null, 0, t) : null; });
-      this.mains = this.ch.map(function (c) { return c.img ? self.sprite(c.img, c.ar, null) : null; });
       this.mouse = { x: 0, y: 0, tx: 0, ty: 0 };
       window.addEventListener('pointermove', function (e) { self.mouse.tx = (e.clientX / window.innerWidth) * 2 - 1; self.mouse.ty = (e.clientY / window.innerHeight) * 2 - 1; }, opts);
       // Safari meldet das Ein- und Ausblenden der Adressleiste als Größenänderung. Neu gerechnet wird nur, wenn sich Breite oder Bildschirmhöhe wirklich ändern (z. B. beim Drehen).
@@ -351,15 +312,115 @@
       this.ema = 16;
       this.qT = performance.now() + 1500;
       this.last = performance.now();
+      this.lastVis = 1;
       this.on = null;
       var loop = function (now) { self.raf = requestAnimationFrame(loop); self.frame(now); };
       this.raf = requestAnimationFrame(loop);
     }
 
+    makeLabel(T, c) {
+      var W = 1536, H = 540, cv = document.createElement('canvas');
+      cv.width = W; cv.height = H;
+      var x = cv.getContext('2d'), dark = c.body === '#121212', fg = dark ? '#fff' : '#121212', cx = W / 2, i;
+      x.fillStyle = c.body; x.fillRect(0, 0, W, H);
+      x.fillStyle = c.col; x.fillRect(0, 150, W, 280);
+      x.save(); x.globalAlpha = 0.09; x.fillStyle = '#fff';
+      for (i = -300; i < W; i += 54) { x.beginPath(); x.moveTo(i, 150); x.lineTo(i + 22, 150); x.lineTo(i + 122, 430); x.lineTo(i + 100, 430); x.fill(); }
+      x.restore();
+      x.save(); x.translate(cx - 120, 42); x.scale(2, 2); x.fillStyle = fg; x.fill(new Path2D(SKY)); x.restore();
+      x.textAlign = 'center'; x.fillStyle = fg;
+      x.font = 'italic 800 46px "Barlow Condensed", sans-serif'; x.fillText('EIWEISSDEALER24', cx, 132);
+      var fit = function (txt, size, maxW) {
+        x.font = 'italic 800 ' + size + 'px "Barlow Condensed", sans-serif';
+        var w = x.measureText(txt).width;
+        if (w > maxW) x.font = 'italic 800 ' + (size * maxW) / w + 'px "Barlow Condensed", sans-serif';
+      };
+      x.fillStyle = '#fff';
+      fit(c.l1, 160, 500); x.fillText(c.l1, cx, 318);
+      fit(c.l2, 74, 420); x.fillText(c.l2, cx, 400);
+      x.fillStyle = dark ? '#bdbdbd' : '#555'; x.font = '600 24px Barlow, sans-serif'; x.fillText('EIGENMARKE  ·  ROSTOCK  ·  SEIT 2007', cx, 482);
+      x.font = 'italic 800 230px "Barlow Condensed", sans-serif'; x.fillStyle = '#ffffff22';
+      x.fillText('24', 120, 400); x.fillText('24', W - 120, 400);
+      var tx = new T.CanvasTexture(cv);
+      tx.encoding = T.sRGBEncoding;
+      tx.anisotropy = this.R.capabilities.getMaxAnisotropy();
+      return tx;
+    }
+
+    buildObjects(T) {
+      var self = this;
+      var mat = function (c, r, m, extra) { return new T.MeshStandardMaterial(Object.assign({ color: c, roughness: r === undefined ? 0.5 : r, metalness: m || 0 }, extra || {})); };
+      var tub = function (i) {
+        i = i % self.ch.length;
+        var g = new T.Group();
+        var side = new T.MeshStandardMaterial({ map: self.labels[i], roughness: 0.38, envMapIntensity: 0.7 });
+        var cap = mat(self.ch[i].body, 0.5);
+        g.add(new T.Mesh(new T.CylinderGeometry(1, 1, 2.2, 56, 1, false, Math.PI, Math.PI * 2), [side, cap, cap]));
+        var lid = new T.Mesh(new T.CylinderGeometry(1.05, 1.05, 0.46, 48), mat('#151515', 0.55, 0.1)); lid.position.y = 1.33; g.add(lid);
+        var ring = new T.Mesh(new T.TorusGeometry(1.05, 0.035, 8, 48), mat('#0a0a0a', 0.6)); ring.rotation.x = Math.PI / 2; ring.position.y = 1.16; g.add(ring);
+        g.userData = { side: side, cap: cap, i: i };
+        return g;
+      };
+      var dumbbell = function () {
+        var g = new T.Group(), metal = mat('#c9c9c9', 0.22, 1), rub = mat('#161616', 0.75), red = mat('#e30613', 0.45);
+        var h = new T.Mesh(new T.CylinderGeometry(0.11, 0.11, 2.9, 24), metal); h.rotation.z = Math.PI / 2; g.add(h);
+        [-1, 1].forEach(function (s) {
+          [[0.82, 0.22, 0.98], [0.64, 0.2, 1.2]].forEach(function (a) { var p = new T.Mesh(new T.CylinderGeometry(a[0], a[0], a[1], 48), rub); p.rotation.z = Math.PI / 2; p.position.x = s * a[2]; g.add(p); });
+          var band = new T.Mesh(new T.CylinderGeometry(0.83, 0.83, 0.05, 48), red); band.rotation.z = Math.PI / 2; band.position.x = s * 0.86; g.add(band);
+          var col = new T.Mesh(new T.CylinderGeometry(0.19, 0.19, 0.14, 24), metal); col.rotation.z = Math.PI / 2; col.position.x = s * 0.8; g.add(col);
+        });
+        return g;
+      };
+      var kettlebell = function () {
+        var w = new T.Group(), g = new T.Group(), blk = mat('#171717', 0.55, 0.25), red = mat('#e30613', 0.45);
+        var b = new T.Mesh(new T.SphereGeometry(0.92, 40, 28), blk); b.scale.y = 0.93; g.add(b);
+        var h = new T.Mesh(new T.TorusGeometry(0.56, 0.14, 16, 40, Math.PI), blk); h.position.y = 0.72; g.add(h);
+        [-1, 1].forEach(function (s) { var l = new T.Mesh(new T.CylinderGeometry(0.14, 0.14, 0.3, 16), blk); l.position.set(s * 0.56, 0.66, 0); g.add(l); });
+        var st = new T.Mesh(new T.TorusGeometry(0.9, 0.045, 10, 56), red); st.rotation.x = Math.PI / 2; st.position.y = 0.12; g.add(st);
+        g.position.y = -0.1; w.add(g);
+        return w;
+      };
+      var shaker = function (liq) {
+        var g = new T.Group();
+        g.add(new T.Mesh(new T.CylinderGeometry(0.56, 0.48, 1.8, 40, 1, true), mat('#e9edf2', 0.15, 0, { transparent: true, opacity: 0.42, side: T.DoubleSide })));
+        var l = new T.Mesh(new T.CylinderGeometry(0.51, 0.46, 1.05, 40), mat(liq, 0.3, 0, { emissive: liq, emissiveIntensity: 0.12 })); l.position.y = -0.35; g.add(l);
+        var cap = new T.Mesh(new T.CylinderGeometry(0.6, 0.6, 0.44, 40), mat('#e30613', 0.4)); cap.position.y = 1.1; g.add(cap);
+        var sp = new T.Mesh(new T.CylinderGeometry(0.13, 0.18, 0.28, 20), mat('#e30613', 0.4)); sp.position.y = 1.45; g.add(sp);
+        return g;
+      };
+      var scoop = function (powder) {
+        var g = new T.Group(), w = mat('#f6f6f6', 0.35);
+        g.add(new T.Mesh(new T.CylinderGeometry(0.5, 0.42, 0.6, 40, 1, true), mat('#f6f6f6', 0.35, 0, { side: T.DoubleSide })));
+        var bt = new T.Mesh(new T.CircleGeometry(0.42, 40), w); bt.rotation.x = Math.PI / 2; bt.position.y = -0.3; g.add(bt);
+        var hd = new T.Mesh(new T.BoxGeometry(1.5, 0.09, 0.24), w); hd.position.set(1.15, 0.22, 0); hd.rotation.z = 0.22; g.add(hd);
+        if (powder) { var p = new T.Mesh(new T.SphereGeometry(0.5, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), mat(powder, 1)); p.scale.y = 0.55; p.position.y = 0.26; g.add(p); }
+        return g;
+      };
+      var O = (this.O = {});
+      var add = function (k, g) { O[k] = { g: g }; self.scene.add(g); return O[k]; };
+      add('tubA', tub(0)); add('tubB', tub(1)); add('tubC', tub(2)); add('scoop', scoop());
+      var kinds = [
+        function () { return add('dumb', dumbbell()); },
+        function () { return add('c1', kettlebell()); },
+        function () { return add('c2', shaker(self.ch[2 % self.ch.length].col)); },
+        function () { return add('c3', scoop('#f4efe3')); }
+      ];
+      O.comps = this.ch.map(function (c, j) { return j < 4 ? kinds[j]() : add('cx' + j, j % 2 ? kettlebell() : dumbbell()); });
+      add('f1', tub(3)); add('f2', kettlebell()); add('f3', shaker('#e30613')); add('f4', tub(1)); add('f5', scoop('#f4efe3')); add('f6', dumbbell());
+    }
+
+    setLabel(g, i) {
+      if (g.userData.i === i) return;
+      g.userData.i = i;
+      g.userData.side.map = this.labels[i];
+      g.userData.side.needsUpdate = true;
+      g.userData.cap.color.set(this.ch[i].body);
+    }
+
     mount() {
       // Die Ebenen kommen direkt hinter den Hero-Abschnitt, damit Text und Produkte wie gewohnt übereinander liegen.
       if (!this.wraps) {
-        this.wraps = [this.bgC, this.fx].map(function (layer, i) {
+        this.wraps = [this.bgC, this.fxC].map(function (layer, i) {
           var clip = document.createElement('div'), track = document.createElement('div');
           clip.className = 'ed24-stage__clip ed24-stage__clip--' + (i ? 'fx' : 'bg');
           clip.setAttribute('aria-hidden', 'true');
@@ -399,58 +460,54 @@
     }
 
     applyQuality() {
-      var q = QUALITY[this.QL];
-      this.bgC.width = Math.max(1, Math.round(this.M.vw * q));
-      this.bgC.height = Math.max(1, Math.round(this.M.vh * (1 + BG_EXT) * q));
+      var q = QUALITY[this.QL], M = this.M;
+      this.R.setPixelRatio(Math.min(window.devicePixelRatio || 1, q.fx));
+      this.BR.setPixelRatio(q.bg);
+      this.R.setSize(M.vw, Math.round(M.vh * (1 + FX_EXT)), false);
+      this.BR.setSize(M.vw, Math.round(M.vh * (1 + BG_EXT)), false);
     }
 
     resize() {
-      var self = this, V = this.V;
       this.measure();
-      var w = this.M.vw, h = this.M.vh;
+      var M = this.M, w = M.vw, h = M.vh, V = this.V;
       this.lastW = w;
       this.lastH = h;
       this.bgC.style.height = Math.round(h * (1 + BG_EXT)) + 'px';
-      if (this.G) this.applyQuality();
-      V.halfW = w / 2;
-      V.halfH = h / 2;
-      var wide = 3.153 * w / h;
-      V.sf = this.M.mob ? clamp(wide / 4.2, 0.3, 0.55) : clamp(wide / 5.6, 0.55, 1);
-      this.sprites.forEach(function (sp) { self.sizeSprite(sp); });
+      this.fxC.style.height = Math.round(h * (1 + FX_EXT)) + 'px';
+      this.applyQuality();
+      this.bgMat.uniforms.uRes.value.set(w, h);
+      // Kamera wie für einen Bildschirm der Höhe h, die Leinwand zeigt zusätzlich den Streifen darunter.
+      this.cam.aspect = w / h;
+      this.cam.setViewOffset(w, h, 0, 0, w, Math.round(h * (1 + FX_EXT)));
+      this.cam.updateProjectionMatrix();
+      V.halfH = Math.tan((this.cam.fov / 2) * (Math.PI / 180)) * this.cam.position.z;
+      V.halfW = V.halfH * this.cam.aspect;
+      V.sf = M.mob ? clamp(V.halfW / 4.2, 0.3, 0.55) : clamp(V.halfW / 5.6, 0.55, 1);
       this.on = null;
     }
 
-    hide(sp) {
-      if (sp && sp.vis) { sp.vis = false; sp.el.style.visibility = 'hidden'; }
-    }
-
-    place(sp, x, y, s, rx, ry, rz) {
-      if (!sp) return;
-      if (!sp.ready || s <= 0.001 || Math.abs(x) > 2.2 || Math.abs(y) > 2.4) { this.hide(sp); return; }
-      var V = this.V, cx = V.halfW + x * V.halfW, cy = V.halfH - y * V.halfH, r = Math.max(sp.w, sp.h) * s * V.sf * 0.75;
-      // Komplett außerhalb des Bildschirms: ausblenden, damit der Browser nichts unnötig zeichnet.
-      if (cx < -r || cx > V.halfW * 2 + r || cy < -r || cy > V.halfH * 2 + r) { this.hide(sp); return; }
-      if (!sp.vis) { sp.vis = true; sp.el.style.visibility = 'inherit'; }
-      var px = cx - sp.w / 2, py = cy - sp.h / 2;
-      sp.el.style.transform = 'translate3d(' + px.toFixed(1) + 'px,' + py.toFixed(1) + 'px,0) perspective(900px) rotateX(' + rx.toFixed(3) + 'rad) rotateY(' + ry.toFixed(3) + 'rad) rotateZ(' + rz.toFixed(3) + 'rad) scale(' + (s * V.sf).toFixed(4) + ')';
+    place(o, x, y, s, rx, ry, rz, z) {
+      var g = o.g, vis = s > 0.001 && Math.abs(x) < 2.2 && Math.abs(y) < 2.4;
+      g.visible = vis;
+      if (!vis) return;
+      this.visCount++;
+      g.position.set(x * this.V.halfW, y * this.V.halfH, z || 0);
+      g.scale.setScalar(s * this.V.sf);
+      g.rotation.set(rx, ry, rz);
     }
 
     frame(now) {
       var dt = Math.min(0.05, (now - this.last) / 1000);
       this.last = now;
-      var M = this.M, vh = M.vh, N = this.ch.length, self = this, scrollY = window.scrollY;
+      var M = this.M, vh = M.vh, N = this.ch.length, O = this.O, self = this, scrollY = window.scrollY;
       // Gezeichnet wird nur, solange der Bereich Hero bis Coaching-Panel im Bild ist. Die Ränder schneidet der Browser.
-      var on = scrollY + vh * 1.5 > M.heroTop && scrollY < M.regionEnd ? (this.G ? 2 : 1) : 0;
+      var on = scrollY + vh * 1.5 > M.heroTop && scrollY < M.regionEnd ? 1 : 0;
       if (on !== this.on) {
         this.on = on;
-        this.wraps[0].clip.style.visibility = on === 2 ? 'visible' : 'hidden';
-        this.wraps[1].clip.style.visibility = on ? 'visible' : 'hidden';
+        this.wraps.forEach(function (w) { w.clip.style.visibility = on ? 'visible' : 'hidden'; });
       }
       this.ema = this.ema * 0.95 + dt * 1000 * 0.05;
-      if (now - this.qT > 1000) {
-        if (this.G && this.ema > 22 && this.QL < QUALITY.length - 1) { this.QL++; this.applyQuality(); }
-        this.qT = now;
-      }
+      if (now - this.qT > 1000) { if (this.ema > 22 && this.QL < QUALITY.length - 1) { this.QL++; this.applyQuality(); } this.qT = now; }
       if (!on) return;
 
       var t = this.still ? 0 : now / 1000, sy = scrollY - M.heroTop;
@@ -463,88 +520,67 @@
       var half = 0.055, prevI = Math.min(N - 1, Math.floor(sp * N)), nextI = prevI, wipe = -1, i;
       for (i = 1; i < N; i++) { var c = i / N; if (Math.abs(sp - c) < half) { prevI = i - 1; nextI = i; wipe = (sp - (c - half)) / (2 * half); } }
 
-      if (this.G) {
-        var U = this.U, uWipe = -1, uSplit;
-        if (sy < showTop) {
-          ed24Mix(U.prev, this.C_RED, this.COL[0], heroP);
-          ed24Mix(U.next, this.COL[0], this.COL[0], 0);
-          ed24Mix(U.light, this.C_DARK, this.C_PAPER, easeIO(heroP));
-          uSplit = lerp(0.36, 0.6, easeIO(heroP));
-        } else if (sy < storyTop - vh * 0.2) {
-          ed24Mix(U.prev, this.COL[prevI], this.COL[prevI], 0);
-          ed24Mix(U.next, this.COL[nextI], this.COL[nextI], 0);
-          uWipe = wipe < 0 ? -1 : lerp(-0.15, 1.15, wipe);
-          ed24Mix(U.light, this.C_PAPER, this.C_PAPER, 0);
-          uSplit = 0.6;
-        } else {
-          var k = easeIO(clamp((sy - (storyTop - vh * 0.2)) / (vh * 0.9)));
-          ed24Mix(U.prev, this.COL[N - 1], this.C_RED, k);
-          ed24Mix(U.next, U.prev, U.prev, 0);
-          ed24Mix(U.light, this.C_PAPER, this.C_PAPER, 0);
-          uSplit = lerp(0.6, 0.93, k) + clamp((sy - coachTop) / vh) * 0.5;
-        }
-        var gl = this.G.gl, u = this.G.u;
-        gl.viewport(0, 0, this.bgC.width, this.bgC.height);
-        gl.uniform1f(u.uTime, t);
-        gl.uniform1f(u.uWipe, uWipe);
-        gl.uniform1f(u.uSplit, uSplit);
-        gl.uniform1f(u.uExt, BG_EXT);
-        gl.uniform2f(u.uRes, M.vw, vh);
-        gl.uniform3fv(u.uPrev, U.prev);
-        gl.uniform3fv(u.uNext, U.next);
-        gl.uniform3fv(u.uLight, U.light);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      var U = this.bgMat.uniforms;
+      U.uTime.value = t;
+      if (sy < showTop) {
+        U.uPrev.value.copy(this.C_RED).lerp(this.COL[0], heroP); U.uNext.value.copy(this.COL[0]); U.uWipe.value = -1;
+        U.uLight.value.copy(this.C_DARK).lerp(this.C_PAPER, easeIO(heroP));
+        U.uSplit.value = lerp(0.36, 0.6, easeIO(heroP));
+      } else if (sy < storyTop - vh * 0.2) {
+        U.uPrev.value.copy(this.COL[prevI]); U.uNext.value.copy(this.COL[nextI]);
+        U.uWipe.value = wipe < 0 ? -1 : lerp(-0.15, 1.15, wipe);
+        U.uLight.value.copy(this.C_PAPER); U.uSplit.value = 0.6;
+      } else {
+        var k = easeIO(clamp((sy - (storyTop - vh * 0.2)) / (vh * 0.9)));
+        U.uPrev.value.copy(this.COL[N - 1]).lerp(this.C_RED, k); U.uNext.value.copy(U.uPrev.value); U.uWipe.value = -1;
+        U.uLight.value.copy(this.C_PAPER);
+        U.uSplit.value = lerp(0.6, 0.93, k) + clamp((sy - coachTop) / vh) * 0.5;
       }
+      this.BR.render(this.bgScene, this.bgCam);
+      this.rim.color.setRGB(U.uNext.value.x, U.uNext.value.y, U.uNext.value.z).convertSRGBToLinear();
 
+      this.visCount = 0;
       var L = M.mob ? 'm' : 'd', H0 = HERO[L], S0 = SHOW[L];
       var pop = function (d) { return easeBack(clamp((intro - d) / 0.9)); };
       var bob = function (ph) { return Math.sin(t * 0.9 + ph) * 0.018; };
       var mx = mo.x * 0.03, my = -mo.y * 0.03, hp = easeIO(heroP);
-      // Hauptprodukt: im Hero groß, im Showcase in der Mitte; beim Kapitelwechsel dreht es sich und zeigt das nächste Produkt.
       (function () {
-        var a = H0.tubA, s0 = S0.tub;
-        var x = lerp(a[0], s0[0], hp), y = lerp(a[1], s0[1], hp);
-        var sc = lerp(a[2], s0[2], hp) * pop(0.15);
-        var ry = lerp(Math.sin(t * 0.6) * 0.32, Math.sin(t * 0.5) * 0.16, hp);
-        var idx = sy < showTop ? 0 : prevI;
-        if (wipe >= 0) {
-          var f = easeIO(wipe);
-          ry += f < 0.5 ? f * Math.PI : (f - 1) * Math.PI;
-          idx = f < 0.5 ? prevI : nextI;
-        }
+        var a = H0.tubA, s = S0.tub;
+        var x = lerp(a[0], s[0], hp), y = lerp(a[1], s[1], hp);
+        var sc = lerp(a[2], s[2], hp) * pop(0.15);
+        var ry = lerp(a[4] + t * 0.35, Math.sin(t * 0.5) * 0.35, hp);
+        if (wipe >= 0) ry += easeIO(wipe) * Math.PI * 2;
+        self.setLabel(O.tubA.g, wipe >= 0 ? (wipe < 0.5 ? prevI : nextI) : sy < showTop ? 0 : prevI);
         if (sy > showEnd) y += (sy - showEnd) / (vh / 2);
-        self.mains.forEach(function (m, j) { if (j !== idx) self.hide(m); });
-        self.place(self.mains[idx], x + mx, y + bob(0) + my, sc, lerp(a[3] * 0.4, 0.04, hp), ry, lerp(a[5], 0, hp));
+        self.place(O.tubA, x + mx, y + bob(0) + my, sc, lerp(a[3], 0.1, hp), ry, lerp(a[5], 0, hp));
       })();
-      ['tubB', 'tubC', 'scoop'].forEach(function (k2, j) {
-        var a = H0[k2], ex = EXIT[k2], q = easeIn(heroP);
-        self.place(self.side[j], lerp(a[0], ex[0], q) + mx * (1 + j * 0.5), lerp(a[1], ex[1], q) + bob(j + 1) + my, a[2] * pop(0.3 + j * 0.15), Math.sin(t * 0.45 + j) * 0.14, Math.sin(t * 0.55 + j * 1.7) * 0.38, a[5] + q * 1.5);
+      [['tubB', 0.3], ['tubC', 0.45], ['scoop', 0.6]].forEach(function (e2, j) {
+        var k2 = e2[0], a = H0[k2], ex = EXIT[k2], q = easeIn(heroP);
+        self.place(O[k2], lerp(a[0], ex[0], q) + mx * (1 + j * 0.5), lerp(a[1], ex[1], q) + bob(j + 1) + my, a[2] * pop(e2[1]), a[3] + q * 2, a[4] + t * 0.3 * (j % 2 ? -1 : 1), a[5] + q * 1.5);
       });
-      this.comps.forEach(function (o, j) {
-        if (!o) return;
-        var r = S0.comp, x, y, s = r[2], rx = Math.sin(t * 0.4 + j) * 0.12, ry = Math.sin(t * 0.5 + j) * 0.3, rz = -0.2;
+      O.comps.forEach(function (o, j) {
+        var r = S0.comp, x, y, s = r[2], rx = 0.3, ry = t * 0.4 + j, rz = -0.2;
         var enter = j === 0 ? 1 : clamp((sp - (j / N - half)) / (2 * half));
         var exit = j === N - 1 ? 0 : clamp((sp - ((j + 1) / N - half)) / (2 * half));
         if (j === 0 && sy < showTop) {
-          var a = H0.dumb;
-          x = lerp(a[0], r[0], hp); y = lerp(a[1], r[1], hp); s = lerp(a[2], r[2], hp) * pop(0.75); rz = lerp(a[5], -0.2, hp);
-        } else if (sy < showTop || enter <= 0 || exit >= 1) { self.hide(o); return; }
+          var a = H0.dumb; x = lerp(a[0], r[0], hp); y = lerp(a[1], r[1], hp); s = lerp(a[2], r[2], hp) * pop(0.75); rx = lerp(a[3], 0.3, hp); rz = lerp(a[5], -0.2, hp);
+        } else if (sy < showTop || enter <= 0 || exit >= 1) { o.g.visible = false; return; }
         else {
           var ee = easeOut(enter), xe = easeIn(exit);
-          x = lerp(1.5, r[0], ee); y = lerp(-1.4, r[1], ee); rz += (1 - ee) * 1.2;
-          x = lerp(x, -1.6, xe); y = lerp(y, 1.3, xe); rx += xe * 1.1;
+          x = lerp(1.5, r[0], ee); y = lerp(-1.4, r[1], ee); rz += (1 - ee) * 2;
+          x = lerp(x, -1.6, xe); y = lerp(y, 1.3, xe); rx += xe * 2.5;
         }
         if (j === N - 1 && sy > showEnd) y += (sy - showEnd) / (vh / 2);
-        self.place(o, x + mx * 1.6, y + bob(j + 4) + my, s, rx, ry, rz);
+        self.place(o, x + mx * 1.6, y + bob(j + 4) + my, s, rx, ry, rz, 0.8);
       });
       FLOAT.forEach(function (f, j) {
-        var o = self.floats[j];
-        if (!o) return;
-        var anchor = M.storyTop + f[0] * M.storyH;
-        var y = (-(anchor - vh / 2 - scrollY) * f[2]) / (vh / 2);
-        if (!self.story || Math.abs(y) > 2.2) { self.hide(o); return; }
-        self.place(o, (M.mob ? f[1] * 1.3 : f[1]) + mx * 1.3, y, f[3] * (M.mob ? 0.6 : 0.85), Math.sin(t * 0.4 + j) * 0.12, Math.sin(t * 0.5 + j * 2) * 0.35, 0.3 * Math.sin(j) + scrollY * 0.0004 * f[4]);
+        var o = O[f[0]], anchor = M.storyTop + f[1] * M.storyH;
+        var y = (-(anchor - vh / 2 - scrollY) * f[3]) / (vh / 2);
+        if (!self.story || Math.abs(y) > 2.2) { o.g.visible = false; return; }
+        self.place(o, (M.mob ? f[2] * 1.3 : f[2]) + mx * 1.3, y, f[4] * (M.mob ? 0.7 : 1), 0.4 + scrollY * 0.0009 * f[5], scrollY * 0.0012 * f[5] + j, 0.3 * Math.sin(j) + scrollY * 0.0004 * f[5], -0.5);
       });
+      if (this.visCount || this.lastVis) this.R.render(this.scene, this.cam);
+      this.lastVis = this.visCount;
     }
   }
   if (!customElements.get('ed24-stage')) customElements.define('ed24-stage', Ed24Stage);
@@ -566,14 +602,14 @@
     { "type": "text", "id": "scroll_label", "label": "Beschriftung Scroll-Kreis (Screenreader)", "default": "Weiter zum Produkt-Showcase" },
     { "type": "header", "content": "Effekte & Farben" },
     { "type": "checkbox", "id": "show_3d", "label": "Schwebende Produkte und Farbverlauf anzeigen", "default": true },
-    { "type": "paragraph", "content": "Die schwebenden Produkte fügst du unten als Blöcke hinzu. Das große Produkt in der Mitte kommt aus den Kapiteln im „ED24 Produkt-Showcase“." },
+    { "type": "paragraph", "content": "Die 3D-Produkte sind fest eingebaut. Etikett und Dosenfarbe der großen Dose stellst du in den Kapiteln im „ED24 Produkt-Showcase“ ein." },
     { "type": "color", "id": "accent", "label": "Markenfarbe", "default": "#e30613" },
     { "type": "color", "id": "dark", "label": "Dunkle Farbe", "default": "#120405" }
   ],
   "blocks": [
     {
       "type": "floater",
-      "name": "Schwebendes Produkt",
+      "name": "Bild (nicht angezeigt)",
       "settings": [
         { "type": "image_picker", "id": "image", "label": "Freigestelltes Produktbild", "info": "PNG ohne Hintergrund, dann schwebt das Produkt frei." },
         { "type": "product", "id": "product", "label": "Produkt", "info": "Ohne eigenes Bild wird das Hauptbild dieses Produkts verwendet." }
