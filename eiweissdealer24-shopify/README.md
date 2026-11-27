@@ -23,7 +23,7 @@ Bereits eingerichtet (Nov. 2026):
 - 15 automatische Kollektionen (siehe Tabelle unten) und 61 Unterkategorien (z. B. Wheyprotein, Booster mit Koffein, Boxhandschuhe), alle im Onlineshop sichtbar
 - Alle Kollektionen sortieren die Produkte nach Titel von A bis Z
 - Hauptmenü wie im Original: Shop (großes Menü), Fightwear, Zubehör, Hersteller (Top-Marken, weitere Marken, alle A–Z), Coaching, Rezepte, Info-Blog, Über uns (Geschichte, Philosophie, Aktivitäten, Kontakt), Angebote
-- Seite „Hersteller“ (`/pages/hersteller`): alle 64 Marken von A bis Z mit Buchstaben-Leiste und Suchfeld, jede Marke führt auf ihre Produkte
+- Seite „Hersteller“ (`/pages/hersteller`): alle 62 Marken von A bis Z mit Buchstaben-Leiste und Suchfeld, jede Marke führt auf ihre Produkte
 - Blogs „Rezepte“ (30 Rezepte) und „Unser Info-Blog“ (9 Artikel, mit Video) aus dem Original-Shop übernommen
 - Seite „Über uns“ mit Geschichte, Philosophie und Aktivitäten (Franzis Vize-Weltmeistertitel, MV1-Video); Coaching-Kollektion mit dem Originaltext
 - Seiten Impressum, AGB, Widerrufsbelehrung, Versand und Zahlung, Datenschutzerklärung mit den Originaltexten. Die Shopify-Richtlinien selbst lassen sich über die Schnittstelle nicht ändern (fehlende Berechtigung); vor dem Livegang im Admin unter Einstellungen → Richtlinien eintragen und vom Rechtstexte-Anbieter für Shopify aktualisieren lassen (die Datenschutzerklärung nennt noch Dienste des alten Shops).
