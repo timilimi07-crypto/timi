@@ -148,6 +148,29 @@
     })();
   </script>
 {%- endif -%}
+{%- if template.name == 'blog' and blog.handle == 'athleten' -%}
+  <style>
+    /* Athleten-Übersicht: gleichmäßiges Raster, Fotos im Hochformat mit ganzer Person */
+    .blog-posts-container{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:28px 14px !important}
+    .blog-posts-container > .blog-post-item{grid-column:auto !important;grid-row:auto !important}
+    .blog-post-item--horizontal > *{flex-direction:column !important}
+    .blog-post-item--horizontal .blog-post-card__image-container,.blog-post-item--horizontal .blog-post-card__content{width:100% !important;max-width:none !important}
+    .blog-post-card__image{height:auto !important;aspect-ratio:3/4;object-position:50% 12% !important;border-radius:14px}
+    @media (min-width:750px){.blog-posts-container{grid-template-columns:repeat(3,minmax(0,1fr)) !important}}
+    @media (min-width:1100px){.blog-posts-container{grid-template-columns:repeat(4,minmax(0,1fr)) !important}}
+  </style>
+{%- endif -%}
+{%- if template.name == 'article' -%}
+  <style>
+    /* Fotogalerie in Athleten-Profilen */
+    .ed24-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:24px 0 8px}
+    .ed24-gallery img{width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:50% 15%;border-radius:12px;margin:0 !important}
+    @media (min-width:750px){.ed24-gallery{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    {%- if blog.handle == 'athleten' -%}
+    .blog-post-featured-image__image{max-height:78vh;object-fit:contain !important}
+    {%- endif -%}
+  </style>
+{%- endif -%}
 {%- if template.name == 'product' -%}
   <style>
     /* Nährwerttabellen in Produktbeschreibungen (aus dem alten Shop als Zeilen mit „|“ übernommen) */
