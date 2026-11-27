@@ -28,7 +28,7 @@ Bereits eingerichtet (Nov. 2026):
 - Seite „Über uns“ mit Geschichte, Philosophie und Aktivitäten (Franzis Vize-Weltmeistertitel, MV1-Video); Coaching-Kollektion mit dem Originaltext
 - Seiten Impressum, AGB, Widerrufsbelehrung, Versand und Zahlung, Datenschutzerklärung mit den Originaltexten. Die Shopify-Richtlinien selbst lassen sich über die Schnittstelle nicht ändern (fehlende Berechtigung); vor dem Livegang im Admin unter Einstellungen → Richtlinien eintragen und vom Rechtstexte-Anbieter für Shopify aktualisieren lassen (die Datenschutzerklärung nennt noch Dienste des alten Shops).
 - Deutscher Footer (ED24 Footer): Laden und Kontakt, drei Linklisten (Menüs `ed24-footer-shop`, `ed24-footer-wissen`, `ed24-footer-service`), Newsletter, Zahlarten, Facebook und Instagram, Trusted Shops. Der englische Standard-Footer ist ausgeblendet.
-- Trusted Shops: offizielles Trustbadge mit der ID des Shops (wie im Original) und Link zum Bewertungsprofil
+- Trusted Shops: „Käuferschutz“-Hinweis im Footer mit Link zum Bewertungsprofil. Das schwebende Trustbadge ist eingebaut, aber ausgeschaltet (zeigt außerhalb von eiweissdealer24.de nur „DEMO“). Nach dem Umzug auf die echte Domain unter Footer → „Trustbadge (schwebendes Siegel) anzeigen“ einschalten.
 - „Mein Konto“ im Header: neue Shopify-Kundenkonten sind aktiv, Kunden melden sich per E-Mail-Code an und registrieren sich dabei
 - Passwortschutz des Shops ist an
 
