@@ -153,7 +153,8 @@
     /* Athleten-Übersicht: gleichmäßiges Raster, Fotos im Hochformat mit ganzer Person */
     .blog-posts-container{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:28px 14px !important}
     .blog-posts-container > .blog-post-item{grid-column:auto !important;grid-row:auto !important}
-    .blog-post-item--horizontal > *{flex-direction:column !important}
+    .blog-post-item--horizontal .blog-post-card{flex-direction:column !important}
+    .blog-post-item--horizontal .blog-post-card > *{flex-basis:auto !important}
     .blog-post-item--horizontal .blog-post-card__image-container,.blog-post-item--horizontal .blog-post-card__content{width:100% !important;max-width:none !important}
     .blog-post-card__image{height:auto !important;aspect-ratio:3/4;object-position:50% 12% !important;border-radius:14px}
     @media (min-width:750px){.blog-posts-container{grid-template-columns:repeat(3,minmax(0,1fr)) !important}}
