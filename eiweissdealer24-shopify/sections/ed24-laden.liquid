@@ -29,12 +29,13 @@
               {%- assign mi = mi | plus: 1 -%}
               {%- assign bio_key = 'bio_' | append: mi -%}
               {%- assign story = block.settings.story | default: section.settings[bio_key] -%}
+          {%- assign img_key = 'bio_img_' | append: mi -%}{%- assign img_name = section.settings[img_key] -%}{%- assign photo = block.settings.image -%}{%- if photo == blank and img_name != blank -%}{%- assign photo = images[img_name] -%}{%- endif -%}
               {%- assign has_story = false -%}
               {%- if story != blank -%}{%- assign has_story = true -%}{%- endif -%}
               <{% if has_story %}button type="button" data-ed24-bio-open="ed24-bio-{{ block.id }}" aria-haspopup="dialog" aria-label="Geschichte von {{ block.settings.name | escape }} lesen"{% else %}div{% endif %} class="ed24-mate{% if has_story %} ed24-mate--btn{% endif %}" {{ block.shopify_attributes }}>
                 <div class="ed24-mate__av">
-                  {%- if block.settings.image != blank -%}
-                    {{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', alt: block.settings.name, class: 'ed24-mate__img', widths: '200,400,600', sizes: '(min-width: 990px) 200px, 30vw' }}
+                  {%- if photo != blank -%}
+                    {{ photo | image_url: width: 600 | image_tag: loading: 'lazy', alt: block.settings.name, class: 'ed24-mate__img', widths: '200,400,600', sizes: '(min-width: 990px) 200px, 30vw' }}
                   {%- else -%}
                     <span>{{ block.settings.name | slice: 0 }}</span>
                   {%- endif -%}
@@ -53,6 +54,7 @@
           {%- assign link_key = 'bio_link_' | append: mi -%}
           {%- assign label_key = 'bio_label_' | append: mi -%}
           {%- assign story = block.settings.story | default: section.settings[bio_key] -%}
+          {%- assign img_key = 'bio_img_' | append: mi -%}{%- assign img_name = section.settings[img_key] -%}{%- assign photo = block.settings.image -%}{%- if photo == blank and img_name != blank -%}{%- assign photo = images[img_name] -%}{%- endif -%}
           {%- assign story_link = block.settings.link | default: section.settings[link_key] -%}
           {%- assign story_label = section.settings[label_key] | default: 'Mehr erfahren' -%}
           {%- if block.settings.link != blank -%}{%- assign story_label = block.settings.link_label | default: 'Mehr erfahren' -%}{%- endif -%}
@@ -61,8 +63,8 @@
               <div class="ed24-bio__in">
                 <button type="button" class="ed24-bio__x" data-ed24-bio-close aria-label="Schließen">×</button>
                 <div class="ed24-bio__head">
-                  {%- if block.settings.image != blank -%}
-                    {{ block.settings.image | image_url: width: 400 | image_tag: loading: 'lazy', alt: block.settings.name, class: 'ed24-bio__img' }}
+                  {%- if photo != blank -%}
+                    {{ photo | image_url: width: 400 | image_tag: loading: 'lazy', alt: block.settings.name, class: 'ed24-bio__img' }}
                   {%- else -%}
                     <span class="ed24-bio__ini">{{ block.settings.name | slice: 0 }}</span>
                   {%- endif -%}
@@ -178,7 +180,7 @@
   .ed24-mate strong{display:block;margin-top:10px;font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;font-style:italic;text-transform:uppercase;color:#f5f5f4}
   .ed24-mate>span{font-family:'Barlow',sans-serif;font-size:13px;color:#a6a6ad}
   .ed24-mate__av{aspect-ratio:4/5;border-radius:12px;overflow:hidden;background:linear-gradient(160deg,#2a2a30,#141417);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;font-size:42px;color:rgba(255,255,255,.2)}
-  .ed24-mate__img{width:100%;height:100%;object-fit:cover;display:block}
+  .ed24-mate__img{width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block}
   .ed24-open{display:inline-flex;align-items:center;gap:8px;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;color:#a6a6ad;background:#1b1b1f;border:1px solid #2c2c32;padding:5px 12px;border-radius:99px}
   .ed24-open i{width:8px;height:8px;border-radius:50%;background:#75757d}
   .ed24-open.is-open{color:#22c55e;background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25)}
@@ -269,6 +271,9 @@
     {"type": "richtext", "id": "bio_3", "label": "Geschichte 3 (Mario)", "default": "<p>Mario hat den Fitness- und Diätshop Rostock <strong>2007</strong> zusammen mit Manu gegründet. Seit <strong>2009</strong> erstellt das Team Ernährungs- und Trainingspläne, gibt Personal Training und bereitet Athletinnen und Athleten auf die Wettkampfbühne vor.</p><p>Fast jedes Produkt im Regal ist selbst getestet – verkauft wird nur, was man auch selbst nehmen würde. Wer eine Frage hat, ruft einfach an oder kommt vorbei.</p>"},
     {"type": "text", "id": "bio_link_3", "label": "Link 3", "default": "/collections/coaching"},
     {"type": "text", "id": "bio_label_3", "label": "Link-Text 3", "default": "Coaching ansehen"},
+    {"type": "text", "id": "bio_img_1", "label": "Foto 1 (Dateiname aus Inhalte → Dateien)", "info": "Wird genutzt, wenn im Teammitglied kein Foto gewählt ist."},
+    {"type": "text", "id": "bio_img_2", "label": "Foto 2 (Dateiname)", "default": "team-franzi.jpg"},
+    {"type": "text", "id": "bio_img_3", "label": "Foto 3 (Dateiname)", "default": "team-mario.jpg"},
     { "type": "header", "content": "Farben" },
     { "type": "color", "id": "background", "label": "Hintergrund", "default": "#0a0a0b" },
     { "type": "color", "id": "accent", "label": "Markenfarbe", "default": "#e30613" }
