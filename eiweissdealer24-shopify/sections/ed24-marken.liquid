@@ -10,7 +10,8 @@
 <div class="ed24-brands" style="background-color: {{ section.settings.background }}; --ed24-accent: {{ section.settings.accent }};">
   <div class="ed24-brands__head">
     <h2 class="ed24-brands__title">
-      {{- section.settings.title_1 | escape -}}
+      {%- assign ed24_vn = shop.vendors.size | divided_by: 10 | times: 10 -%}{%- assign ed24_vl = ed24_vn | append: '+' -%}
+      {{- section.settings.title_1 | replace: '40+', ed24_vl | escape -}}
       {%- if section.settings.title_2 != blank -%}<br><em>{{ section.settings.title_2 | escape }}</em>{%- endif -%}
     </h2>
     {%- if section.settings.text != blank -%}<p class="ed24-brands__lead">{{ section.settings.text | escape }}</p>{%- endif -%}
@@ -18,11 +19,15 @@
   <ed24-pit class="ed24-pit" aria-hidden="true">
     {%- if section.settings.hint != blank -%}<span class="ed24-pit__hint">{{ section.settings.hint | escape }}</span>{%- endif -%}
     {%- for vendor in shop.vendors limit: section.settings.limit -%}
-      <span class="ed24-pill" data-pill>{{ vendor | escape }}</span>
+      <a class="ed24-pill" data-pill href="{{ vendor | url_for_vendor }}" tabindex="-1" draggable="false">{{ vendor | escape }}</a>
     {%- else -%}
       {%- if request.design_mode -%}<span class="ed24-pit__empty">Die Marken erscheinen hier automatisch, sobald Produkte importiert sind.</span>{%- endif -%}
     {%- endfor -%}
   </ed24-pit>
+  <div class="ed24-brands__foot">
+    <span>Tipp: Marke anklicken und direkt alle Produkte der Marke sehen.</span>
+    <a class="ed24-brands__all" href="/pages/hersteller">Alle {{ shop.vendors.size }} Marken von A bis Z →</a>
+  </div>
   {%- if shop.vendors.size > 0 -%}
     <ul class="ed24-visually-hidden">
       {%- for vendor in shop.vendors limit: section.settings.limit -%}
@@ -50,7 +55,11 @@
   .ed24-pit.is-static{display:flex;flex-wrap:wrap;gap:10px;align-content:center;justify-content:center;padding:56px 24px 24px}
   .ed24-pit.is-static .ed24-pill{position:static;visibility:visible;transform:none !important}
   .ed24-visually-hidden{position:absolute !important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-  @media (pointer:coarse){.ed24-pill{cursor:default}}
+  @media (pointer:coarse){.ed24-pill{cursor:pointer}}
+  a.ed24-pill{text-decoration:none}
+  .ed24-brands__foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px;font-family:'Barlow',sans-serif;font-size:14px;color:#3a3a3d}
+  .ed24-brands .ed24-brands__all{display:inline-flex;align-items:center;min-height:44px;padding:0 20px;border-radius:999px;background:#111;color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:15px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none}
+  .ed24-brands .ed24-brands__all:hover{background:var(--ed24-accent,#e30613)}
 {% endstylesheet %}
 
 {% javascript %}
@@ -76,6 +85,11 @@
       var self = this;
       this.pills = Array.prototype.slice.call(this.querySelectorAll('[data-pill]'));
       this.timers = [];
+      // Klick auf eine Marke öffnet ihre Produkte, Ziehen/Werfen bleibt möglich
+      var downX = 0, downY = 0, moved = false;
+      this.addEventListener('pointerdown', function (e) { downX = e.clientX; downY = e.clientY; moved = false; });
+      this.addEventListener('pointermove', function (e) { if (e.buttons && Math.abs(e.clientX - downX) + Math.abs(e.clientY - downY) > 8) moved = true; });
+      this.addEventListener('click', function (e) { if (moved && e.target.closest('[data-pill]')) e.preventDefault(); }, true);
       if (!this.pills.length) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
         this.classList.add('is-static');

@@ -6,6 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
+{%- assign ed24_vn = shop.vendors.size | divided_by: 10 | times: 10 -%}{%- assign ed24_vl = ed24_vn | append: '+' -%}{%- assign ed24_vt = 'Über ' | append: ed24_vn | append: ' Marken' -%}
 
 <div class="ed24-story" data-ed24-story style="--ed24-accent: {{ section.settings.accent }};">
   <ed24-story class="ed24-story__grid">
@@ -16,14 +17,14 @@
       </p>
     {%- endif -%}
     {%- if section.settings.stamp_1 != blank -%}<h2 class="ed24-story__stamp ed24-story__stamp--end ed24-rv">{{ section.settings.stamp_1 | escape }}</h2>{%- endif -%}
-    {%- if section.settings.text_1 != blank -%}<p class="ed24-story__para ed24-story__para--end ed24-rv">{{ section.settings.text_1 | escape }}</p>{%- endif -%}
+    {%- if section.settings.text_1 != blank -%}<p class="ed24-story__para ed24-story__para--end ed24-rv">{{ section.settings.text_1 | replace: 'Über 40 Marken', ed24_vt | escape }}</p>{%- endif -%}
     {%- if section.settings.stamp_2 != blank -%}<h2 class="ed24-story__stamp ed24-story__stamp--start ed24-rv">{{ section.settings.stamp_2 | escape }}</h2>{%- endif -%}
     {%- if section.settings.text_2 != blank -%}<p class="ed24-story__para ed24-story__para--start ed24-rv">{{ section.settings.text_2 | escape }}</p>{%- endif -%}
     {%- if section.blocks.size > 0 -%}
       <div class="ed24-story__facts ed24-rv">
         {%- for block in section.blocks -%}
           <p class="ed24-story__fact" {{ block.shopify_attributes }}>
-            <strong>{{ block.settings.value | escape }}</strong>
+            <strong>{{ block.settings.value | replace: '40+', ed24_vl | escape }}</strong>
             <span>{{ block.settings.label | escape }}</span>
           </p>
         {%- endfor -%}

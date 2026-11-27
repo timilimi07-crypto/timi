@@ -32,6 +32,12 @@
     <p class="ed24-hero__metatext ed24-hero__metatext--end">{{ section.settings.meta_right | escape }}</p>
   </div>
 
+  {%- assign ed24_c1 = section.settings.cta_label | default: 'Jetzt shoppen' -%}{%- assign ed24_c2 = section.settings.cta2_label | default: 'Angebote' -%}{%- if ed24_c1 != blank or ed24_c2 != blank -%}
+    <div class="ed24-hero__cta">
+      {%- if ed24_c1 != blank -%}<a class="ed24-hero__btn" href="{{ section.settings.cta_link | default: '/pages/shop' }}">{{ ed24_c1 | escape }}</a>{%- endif -%}
+      {%- if ed24_c2 != blank -%}<a class="ed24-hero__btn ed24-hero__btn--line" href="{{ section.settings.cta2_link | default: '/collections/angebote' }}">{{ ed24_c2 | escape }}</a>{%- endif -%}
+    </div>
+  {%- endif -%}
   <a class="ed24-ring" href="#ed24-showcase" aria-label="{{ section.settings.scroll_label | escape }}">
     <svg class="ed24-ring__text" viewBox="0 0 100 100" aria-hidden="true">
       <defs><path id="ed24-circ-{{ section.id }}" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>
@@ -67,6 +73,11 @@
   .ed24-hero__metatext{max-width:220px;margin:0;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;line-height:1.4;letter-spacing:.06em;text-transform:uppercase;color:#fff}
   .ed24-hero__metatext--end{text-align:end}
   .ed24-ring{position:absolute;z-index:1;left:50%;bottom:22px;width:96px;height:96px;margin-left:-48px;color:#fff;text-decoration:none}
+  .ed24-hero{padding-bottom:220px}
+  .ed24-hero__cta{position:absolute;z-index:3;left:0;right:0;bottom:132px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:0 16px}
+  .ed24-hero .ed24-hero__btn{display:inline-flex;align-items:center;min-height:48px;padding:0 24px;border-radius:999px;background:#fff;color:#111;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform .2s}
+  .ed24-hero .ed24-hero__btn:hover{transform:translateY(-2px)}
+  .ed24-hero .ed24-hero__btn--line{background:rgba(0,0,0,.25);color:#fff;border:1.5px solid rgba(255,255,255,.7);box-shadow:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
   .ed24-ring__text{display:block;width:100%;height:100%}
   .ed24-ring text{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11.5px;letter-spacing:3.2px;fill:currentColor;text-transform:uppercase}
   .ed24-ring__arrow{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
@@ -600,6 +611,11 @@
     { "type": "text", "id": "meta_right", "label": "Text unten rechts", "default": "Rostock · Doberaner Str. 110–112 · seit 2007" },
     { "type": "text", "id": "scroll_text", "label": "Text im Scroll-Kreis", "info": "Kurz halten (rund 25 Zeichen), dann passt der Text genau einmal um den Kreis.", "default": "Scroll · Stärker werden · 24 ·" },
     { "type": "text", "id": "scroll_label", "label": "Beschriftung Scroll-Kreis (Screenreader)", "default": "Weiter zum Produkt-Showcase" },
+    { "type": "header", "content": "Buttons" },
+    { "type": "text", "id": "cta_label", "label": "Button 1 Text", "default": "Jetzt shoppen" },
+    { "type": "text", "id": "cta_link", "label": "Button 1 Link", "default": "/pages/shop" },
+    { "type": "text", "id": "cta2_label", "label": "Button 2 Text", "default": "Angebote" },
+    { "type": "text", "id": "cta2_link", "label": "Button 2 Link", "default": "/collections/angebote" },
     { "type": "header", "content": "Effekte & Farben" },
     { "type": "checkbox", "id": "show_3d", "label": "Schwebende Produkte und Farbverlauf anzeigen", "default": true },
     { "type": "paragraph", "content": "Die 3D-Produkte sind fest eingebaut. Etikett und Dosenfarbe der großen Dose stellst du in den Kapiteln im „ED24 Produkt-Showcase“ ein." },

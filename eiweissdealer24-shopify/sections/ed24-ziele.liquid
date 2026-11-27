@@ -34,6 +34,46 @@
         </a>
       {%- endfor -%}
     </div>
+    {%- assign ed24_oh = section.settings.offers_collection | default: 'angebote' -%}{%- assign ed24_oc = collections[ed24_oh] -%}{%- assign ed24_ot = section.settings.offers_title | default: 'Aktuelle Angebote' -%}
+    {%- if section.settings.show_offers != false and ed24_oc.products_count > 0 -%}
+      <div class="ed24-offers">
+        <div class="ed24-offers__head">
+          <h3 class="ed24-offers__title">{{ ed24_ot | escape }}</h3>
+          <a class="ed24-offers__all" href="{{ ed24_oc.url }}">Alle {{ ed24_oc.products_count }} ansehen →</a>
+        </div>
+        <div class="ed24-offers__row">
+          {%- for p in ed24_oc.products limit: 8 -%}
+            <a class="ed24-offer" href="{{ p.url }}">
+              <span class="ed24-offer__img">
+                {%- if p.featured_image -%}{{ p.featured_image | image_url: width: 500 | image_tag: loading: 'lazy', alt: p.title, widths: '250,500', sizes: '(min-width: 990px) 260px, 45vw' }}{%- endif -%}
+                {%- if p.compare_at_price > p.price -%}<em class="ed24-offer__tag">-{{ p.compare_at_price | minus: p.price | times: 100 | divided_by: p.compare_at_price }} %</em>{%- endif -%}
+              </span>
+              <span class="ed24-offer__v">{{ p.vendor | escape }}</span>
+              <span class="ed24-offer__t">{{ p.title | escape }}</span>
+              <span class="ed24-offer__p">{%- if p.compare_at_price > p.price -%}<s>{{ p.compare_at_price | money }}</s> {% endif -%}<b>{{ p.price | money }}</b></span>
+            </a>
+          {%- endfor -%}
+        </div>
+      </div>
+      <style>
+        .ed24-offers{margin-top:clamp(40px,6vw,64px)}
+        .ed24-offers__head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+        .ed24-goals .ed24-offers__title{margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(28px,4vw,44px);line-height:.95;color:#f5f5f4}
+        .ed24-goals .ed24-offers__all{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:15px;letter-spacing:.05em;text-transform:uppercase;color:var(--ed24-accent,#e30613);text-decoration:none}
+        .ed24-offers__row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(160px,44%);gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+        .ed24-offer{scroll-snap-align:start;display:flex;flex-direction:column;gap:4px;color:#f5f5f4;text-decoration:none}
+        .ed24-offer__img{position:relative;display:block;aspect-ratio:1;border-radius:14px;overflow:hidden;background:#131315;margin-bottom:6px}
+        .ed24-offer__img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
+        .ed24-offer:hover .ed24-offer__img img{transform:scale(1.05)}
+        .ed24-offer__tag{position:absolute;left:10px;top:10px;padding:4px 9px;border-radius:999px;background:var(--ed24-accent,#e30613);color:#fff;font-style:normal;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px}
+        .ed24-offer__v{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ed24-accent,#e30613)}
+        .ed24-offer__t{font-family:'Barlow',sans-serif;font-size:14px;line-height:1.3}
+        .ed24-offer__p{font-family:'Barlow',sans-serif;font-size:14px}
+        .ed24-offer__p s{color:#8a8a92;margin-right:4px}
+        @media (min-width:750px){.ed24-offers__row{grid-auto-columns:minmax(200px,30%)}}
+        @media (min-width:990px){.ed24-offers__row{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));overflow:visible}}
+      </style>
+    {%- endif -%}
   </div>
 </div>
 
@@ -68,6 +108,10 @@
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Kleine Überschrift", "default": "Finde schneller, was du brauchst" },
     { "type": "text", "id": "title", "label": "Überschrift", "default": "Was ist dein Ziel?" },
+    { "type": "header", "content": "Angebote-Reihe" },
+    { "type": "checkbox", "id": "show_offers", "label": "Angebote unter den Zielen zeigen", "default": true },
+    { "type": "text", "id": "offers_title", "label": "Überschrift Angebote", "default": "Aktuelle Angebote" },
+    { "type": "text", "id": "offers_collection", "label": "Kollektion (Handle)", "default": "angebote" },
     { "type": "color", "id": "background", "label": "Hintergrund", "default": "#0a0a0b" },
     { "type": "color", "id": "accent", "label": "Markenfarbe", "default": "#e30613" }
   ],

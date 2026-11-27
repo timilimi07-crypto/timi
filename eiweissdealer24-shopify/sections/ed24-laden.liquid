@@ -17,6 +17,28 @@
 -%}
 <div class="ed24-store" style="background-color: {{ s.background }}; --ed24-accent: {{ s.accent }};">
   <div class="ed24-store__wrap">
+    {%- assign ed24_bh = section.settings.athletes_blog | default: 'athleten' -%}{%- assign ed24_ab = blogs[ed24_bh] -%}
+    {%- if section.settings.show_athletes != false and ed24_ab.articles_count > 0 -%}
+      <div class="ed24-ath">
+        <div class="ed24-ath__head">
+          <div>
+            <p class="ed24-store__eye">{{ section.settings.athletes_eyebrow | default: 'Von uns auf die Bühne gebracht' | escape }}</p>
+            <h2 class="ed24-store__title">{{ section.settings.athletes_title | default: 'Unsere Athleten' | escape }}</h2>
+          </div>
+          <a class="ed24-store__btn" href="{{ ed24_ab.url }}">Alle {{ ed24_ab.articles_count }} Athleten →</a>
+        </div>
+        <div class="ed24-ath__row">
+          {%- for a in ed24_ab.articles limit: 10 -%}
+            {%- if a.image -%}
+              <a class="ed24-ath__card" href="{{ a.url }}">
+                {{ a.image | image_url: width: 400 | image_tag: loading: 'lazy', alt: a.title, widths: '200,400', sizes: '200px' }}
+                <span>{{ a.title | escape }}</span>
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
     <div class="ed24-store__grid">
       <div class="ed24-store__card">
         {%- if s.eyebrow != blank -%}<p class="ed24-store__eye">{{ s.eyebrow | escape }}</p>{%- endif -%}
@@ -152,6 +174,13 @@
   .ed24-bio__txt strong{color:#fff}
   .ed24-bio .ed24-store__btn{margin-top:8px}
   @media (prefers-reduced-motion:reduce){.ed24-bio[open]{animation:none}.ed24-store .ed24-mate--btn .ed24-mate__av{transition:none}}
+  .ed24-ath{margin-bottom:clamp(40px,6vw,72px)}
+  .ed24-ath__head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+  .ed24-ath__row{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+  .ed24-ath__card{flex:0 0 clamp(150px,18vw,210px);scroll-snap-align:start;text-decoration:none;color:#f5f5f4}
+  .ed24-ath__card img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:50% 12%;border-radius:14px;transition:transform .35s}
+  .ed24-ath__card:hover img{transform:translateY(-4px)}
+  .ed24-ath__card span{display:block;margin-top:8px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:18px}
 </style>
 <script>
   (function () {
@@ -238,6 +267,10 @@
   "settings": [
     { "type": "header", "content": "Team" },
     { "type": "text", "id": "eyebrow", "label": "Kleine Überschrift", "default": "Das Team hinter dem Shop" },
+    { "type": "checkbox", "id": "show_athletes", "label": "Athleten-Streifen zeigen", "default": true },
+    { "type": "text", "id": "athletes_blog", "label": "Athleten-Blog (Handle)", "default": "athleten" },
+    { "type": "text", "id": "athletes_eyebrow", "label": "Athleten: kleine Überschrift", "default": "Von uns auf die Bühne gebracht" },
+    { "type": "text", "id": "athletes_title", "label": "Athleten: Überschrift", "default": "Unsere Athleten" },
     { "type": "text", "id": "title", "label": "Überschrift", "default": "Manu, Franzi & Mario" },
     { "type": "textarea", "id": "text", "label": "Text", "default": "Wir führen den Fitness- und Diätshop Rostock seit 2007 – und stehen seit 2016 selbst im Bodybuilding auf der Bühne." },
     { "type": "header", "content": "Laden" },
