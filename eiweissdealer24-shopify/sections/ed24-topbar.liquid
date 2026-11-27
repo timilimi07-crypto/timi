@@ -148,6 +148,65 @@
     })();
   </script>
 {%- endif -%}
+{%- if template.name == 'product' -%}
+  <style>
+    /* Nährwerttabellen in Produktbeschreibungen (aus dem alten Shop als Zeilen mit „|“ übernommen) */
+    .ed24-nutri-wrap{overflow-x:auto;margin:10px 0 18px;-webkit-overflow-scrolling:touch}
+    .ed24-nutri{width:100%;min-width:420px;border-collapse:collapse;font-size:14px;line-height:1.35}
+    .ed24-nutri th,.ed24-nutri td{padding:7px 10px;text-align:right;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap}
+    .ed24-nutri th:first-child,.ed24-nutri td:first-child{text-align:left;white-space:normal}
+    .ed24-nutri thead th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:{{ s.accent }};white-space:normal}
+    .ed24-nutri tbody tr:nth-child(even){background:rgba(255,255,255,.04)}
+    .ed24-nutri td.ed24-sub{padding-left:22px;color:#b4b4ba}
+    /* Empfehlungen ausblenden, solange Shopify noch keine berechnet hat (sonst leere Kästen) */
+    .product-recommendations:has(.product-recommendations__skeleton-item){display:none}
+  </style>
+  <script>
+    (function () {
+      function txt(el) { return (el.textContent || '').replace(/\s+/g, ' ').trim(); }
+      function cells(t) { return t.split('|').map(function (c) { return c.trim(); }).filter(Boolean); }
+      function fix(root) {
+        var kids = Array.prototype.slice.call(root.children);
+        for (var i = 0; i < kids.length; i++) {
+          if (kids[i].tagName !== 'P' || txt(kids[i]).charAt(0) !== '|') continue;
+          var head = [], rows = [], cur = null, j = i;
+          for (; j < kids.length; j++) {
+            var el = kids[j], t = txt(el), next = kids[j + 1] ? txt(kids[j + 1]) : '';
+            if (el.tagName !== 'P') break;
+            if (t.charAt(0) === '|') { var c = cells(t); if (!c.length) continue; (cur ? cur.c : head).push.apply(cur ? cur.c : head, c); }
+            else if (t.charAt(0) === '(' && t.length < 90) { var arr = cur ? cur.c : head; if (arr.length) arr[arr.length - 1] += ' ' + t; else if (cur) cur.l += ' ' + t; }
+            else if (t.length <= 70 && next.charAt(0) === '|') { cur = { l: t, c: [] }; rows.push(cur); }
+            else break;
+          }
+          if (rows.length < 2) { i = j; continue; }
+          var n = Math.max(head.length, rows.reduce(function (m, r) { return Math.max(m, r.c.length); }, 0));
+          var h = '<div class="ed24-nutri-wrap"><table class="ed24-nutri">';
+          if (head.length) { h += '<thead><tr><th></th>'; for (var k = 0; k < n; k++) h += '<th>' + (head[k] || '') + '</th>'; h += '</tr></thead>'; }
+          h += '<tbody>';
+          rows.forEach(function (r) {
+            var sub = /^[-–]\s*/.test(r.l);
+            h += '<tr><td' + (sub ? ' class="ed24-sub"' : '') + '>' + r.l.replace(/^[-–]\s*/, '') + '</td>';
+            for (var k = 0; k < n; k++) h += '<td>' + (r.c[k] || '') + '</td>';
+            h += '</tr>';
+          });
+          h += '</tbody></table></div>';
+          var box = document.createElement('div'); box.innerHTML = h;
+          root.insertBefore(box.firstChild, kids[i]);
+          for (var x = i; x < j; x++) kids[x].remove();
+          i = j - 1;
+        }
+      }
+      function run() {
+        document.querySelectorAll('main p').forEach(function (p) {
+          var par = p.parentElement;
+          if (!par || par.dataset.ed24Nutri || txt(p).charAt(0) !== '|') return;
+          par.dataset.ed24Nutri = '1'; fix(par);
+        });
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+    })();
+  </script>
+{%- endif -%}
 <div class="ed24-topbar" style="background-color: {{ s.accent }};">
   <div class="ed24-topbar__inner">
     {%- if s.left != blank -%}
