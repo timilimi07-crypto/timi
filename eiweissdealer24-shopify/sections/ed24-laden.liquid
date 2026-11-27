@@ -25,7 +25,9 @@
         <div class="ed24-store__team">
           {%- for block in section.blocks -%}
             {%- if block.type == 'member' -%}
-              <div class="ed24-mate" {{ block.shopify_attributes }}>
+              {%- assign has_story = false -%}
+              {%- if block.settings.story != blank -%}{%- assign has_story = true -%}{%- endif -%}
+              <{% if has_story %}button type="button" data-ed24-bio-open="ed24-bio-{{ block.id }}" aria-haspopup="dialog" aria-label="Geschichte von {{ block.settings.name | escape }} lesen"{% else %}div{% endif %} class="ed24-mate{% if has_story %} ed24-mate--btn{% endif %}" {{ block.shopify_attributes }}>
                 <div class="ed24-mate__av">
                   {%- if block.settings.image != blank -%}
                     {{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', alt: block.settings.name, class: 'ed24-mate__img', widths: '200,400,600', sizes: '(min-width: 990px) 200px, 30vw' }}
@@ -35,10 +37,35 @@
                 </div>
                 <strong>{{ block.settings.name | escape }}</strong>
                 <span>{{ block.settings.role | escape }}</span>
-              </div>
+                {%- if has_story -%}<em class="ed24-mate__more">Geschichte lesen →</em>{%- endif -%}
+              </{% if has_story %}button{% else %}div{% endif %}>
             {%- endif -%}
           {%- endfor -%}
         </div>
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'member' and block.settings.story != blank -%}
+            <dialog class="ed24-bio" id="ed24-bio-{{ block.id }}" aria-labelledby="ed24-bio-t-{{ block.id }}">
+              <div class="ed24-bio__in">
+                <button type="button" class="ed24-bio__x" data-ed24-bio-close aria-label="Schließen">×</button>
+                <div class="ed24-bio__head">
+                  {%- if block.settings.image != blank -%}
+                    {{ block.settings.image | image_url: width: 400 | image_tag: loading: 'lazy', alt: block.settings.name, class: 'ed24-bio__img' }}
+                  {%- else -%}
+                    <span class="ed24-bio__ini">{{ block.settings.name | slice: 0 }}</span>
+                  {%- endif -%}
+                  <div>
+                    <p class="ed24-bio__eye">{{ block.settings.role | escape }}</p>
+                    <h3 class="ed24-bio__t" id="ed24-bio-t-{{ block.id }}">{{ block.settings.name | escape }}</h3>
+                  </div>
+                </div>
+                <div class="ed24-bio__txt">{{ block.settings.story }}</div>
+                {%- if block.settings.link != blank -%}
+                  <a class="ed24-store__btn" href="{{ block.settings.link }}">{{ block.settings.link_label | default: 'Mehr erfahren' | escape }}</a>
+                {%- endif -%}
+              </div>
+            </dialog>
+          {%- endif -%}
+        {%- endfor -%}
       </div>
 
       <div class="ed24-store__card">
@@ -88,6 +115,42 @@
     </div>
   </div>
 </div>
+
+<style>
+  .ed24-store .ed24-mate--btn{all:unset;box-sizing:border-box;display:block;cursor:pointer;text-align:left;border-radius:14px;-webkit-tap-highlight-color:transparent}
+  .ed24-store .ed24-mate--btn .ed24-mate__av{transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+  .ed24-store .ed24-mate--btn:hover .ed24-mate__av,.ed24-store .ed24-mate--btn:focus-visible .ed24-mate__av{transform:translateY(-4px);box-shadow:0 0 0 2px var(--ed24-accent,#e30613),0 14px 30px rgba(227,6,19,.25)}
+  .ed24-store .ed24-mate--btn:focus-visible{outline:2px solid var(--ed24-accent,#e30613);outline-offset:4px}
+  .ed24-store .ed24-mate__more{display:block;margin-top:6px;font-style:normal;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--ed24-accent,#e30613)}
+  .ed24-bio{width:min(560px,calc(100vw - 32px));max-height:calc(100dvh - 48px);padding:0;border:1px solid #2c2c32;border-radius:22px;background:#131315;color:#f5f5f4;overflow:auto}
+  .ed24-bio::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}
+  .ed24-bio[open]{animation:ed24-bio-in .35s cubic-bezier(.2,.8,.2,1)}
+  @keyframes ed24-bio-in{from{opacity:0;transform:translateY(24px) scale(.97)}}
+  .ed24-bio__in{position:relative;padding:28px}
+  .ed24-bio__x{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:1px solid #2c2c32;background:#1b1b1f;color:#f5f5f4;font-size:24px;line-height:1;cursor:pointer}
+  .ed24-bio__head{display:flex;align-items:center;gap:16px;margin:0 44px 18px 0}
+  .ed24-bio__img,.ed24-bio__ini{width:84px;height:84px;border-radius:14px;object-fit:cover;flex-shrink:0;background:linear-gradient(160deg,#2a2a30,#141417);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;font-size:36px;color:rgba(255,255,255,.25)}
+  .ed24-bio .ed24-bio__eye{margin:0 0 4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.14em;font-size:13px;color:var(--ed24-accent,#e30613)}
+  .ed24-bio .ed24-bio__t{margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:40px;line-height:.95;color:#f5f5f4}
+  .ed24-bio__txt{font-family:'Barlow',sans-serif;font-size:16px;line-height:1.6;color:#c9c9ce}
+  .ed24-bio__txt p{margin:0 0 12px}
+  .ed24-bio__txt strong{color:#fff}
+  .ed24-bio .ed24-store__btn{margin-top:8px}
+  @media (prefers-reduced-motion:reduce){.ed24-bio[open]{animation:none}.ed24-store .ed24-mate--btn .ed24-mate__av{transition:none}}
+</style>
+<script>
+  (function () {
+    if (window._ed24bio) return; window._ed24bio = true;
+    document.addEventListener('click', function (e) {
+      var o = e.target.closest('[data-ed24-bio-open]');
+      if (o) { var d = document.getElementById(o.getAttribute('data-ed24-bio-open')); if (d && d.showModal) { d.showModal(); d._from = o; } return; }
+      if (e.target.closest('[data-ed24-bio-close]') || (e.target.classList && e.target.classList.contains('ed24-bio'))) {
+        var dl = e.target.closest('dialog'); if (dl) dl.close();
+      }
+    });
+    document.addEventListener('close', function (e) { if (e.target._from) e.target._from.focus(); }, true);
+  })();
+</script>
 
 {% stylesheet %}
   .ed24-store{padding:clamp(56px,9vw,104px) 0;color:#f5f5f4}
@@ -194,7 +257,10 @@
       "settings": [
         { "type": "text", "id": "name", "label": "Name", "default": "Manu" },
         { "type": "text", "id": "role", "label": "Untertitel", "default": "Manuela Willms" },
-        { "type": "image_picker", "id": "image", "label": "Foto" }
+        { "type": "image_picker", "id": "image", "label": "Foto" },
+        { "type": "richtext", "id": "story", "label": "Geschichte (öffnet sich beim Antippen)" },
+        { "type": "url", "id": "link", "label": "Link unter der Geschichte" },
+        { "type": "text", "id": "link_label", "label": "Text des Links", "default": "Mehr erfahren" }
       ]
     },
     {
