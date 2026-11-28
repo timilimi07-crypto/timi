@@ -11,7 +11,7 @@ Bereits eingerichtet (Nov. 2026):
 - Theme **„Eiweissdealer24 – echte Produkte“** ist veröffentlicht (hinter dem Passwort). Der Vorgänger „Eiweissdealer24 Redesign“ bleibt als Sicherung. Das frühere Theme mit der „ABI Shop 2027“-Seite heißt „Horizon“ und ist unverändert, nur nicht mehr veröffentlicht.
   - 12 ED24-Abschnitte und die Vorlagen `templates/page.shop.json` und `templates/page.hersteller.json`, byte-gleich mit dem Repository (MD5 geprüft)
   - Startseite in der richtigen Reihenfolge; Showcase-Kapitel mit den 4 Eigenmarke-Produkten verknüpft
-  - Hero mit 3D-Produkten (Dosen mit Eiweissdealer-Etikett, Hantel, Kettlebell, Shaker, Messlöffel). Die Etiketten der großen Dose kommen aus den Kapiteltiteln.
+  - Hero mit echten Produkten statt nachgebauter 3D-Dosen: die meistverkauften Produkte aus dem alten Shop (Sortierung „Beliebtheit“), u. a. Optimum Nutrition Gold Standard Whey, SRS Supreme Whey, Weider Protein 80+ und 60 % Protein Bar. Das große Produkt in der Mitte ist die eigene Classic Whey und wechselt im Showcase pro Kapitel zum jeweiligen Eigenmarke-Produkt.
   - Menü nur mit Text (ohne Kollektionsbilder), mit drei Ebenen wie im Original-Shop: „Shop“ öffnet ein großes Menü mit den Kategorien (fett, roter Strich) und ihren Unterkategorien darunter, in Spalten. Fightwear und Zubehör haben eigene Unterpunkte.
   - Seite „Shop“ (`/pages/shop`, Vorlage `page.shop`): alle Kategorien untereinander mit klebender Kategorie-Leiste, je 8 Produkte und „Alle ansehen“
   - Effekte im ganzen Shop (an der ED24 Topbar abschaltbar): roter Scroll-Fortschritt oben, Produkte blenden beim Scrollen ein, roter Glow und Zoom auf Produktkarten, Glanz auf Buttons, rote Linie unter Menüpunkten
@@ -44,8 +44,8 @@ Noch offen:
 | Datei | Name im Theme-Editor | Effekt |
 |---|---|---|
 | `ed24-topbar.liquid` | ED24 Topbar | Rote Infoleiste (Laden, Überraschung ab 100 €, Beratung). Setzt außerdem die Markenschriften im ganzen Shop (Texte Barlow, Überschriften Barlow Condensed), den Stil des großen Produkt-Menüs und die Effekte im ganzen Shop. Gehört in die Kopfzeile. |
-| `ed24-hero.liquid` | ED24 Hero 3D | Riesen-Schriftzug, WebGL-Farbverlauf und schwebende 3D-Produkte (Three.js). Hier sitzt die Effekt-Bühne für Hero, Showcase und Story. |
-| `ed24-showcase.liquid` | ED24 Produkt-Showcase | Fixierter Showcase mit bis zu 6 Kapiteln. Die 3D-Dose dreht sich und wechselt das Etikett, der Hintergrund wechselt die Farbe. Pro Kapitel ein Produkt, Preis und Link kommen automatisch. Etikett und Dosenfarbe einstellbar (leer: Kapiteltitel, Farbe abwechselnd). |
+| `ed24-hero.liquid` | ED24 Hero 3D | Riesen-Schriftzug, WebGL-Farbverlauf und schwebende echte Produktbilder (freigestellte PNGs, mit Three.js bewegt). Hier sitzt die Effekt-Bühne für Hero, Showcase und Story. |
+| `ed24-showcase.liquid` | ED24 Produkt-Showcase | Fixierter Showcase mit bis zu 6 Kapiteln. Das große Produktbild dreht sich beim Kapitelwechsel wie eine Karte um, der Hintergrund wechselt die Farbe. Pro Kapitel ein Produkt und ein freigestelltes Produktbild, Preis und Link kommen automatisch. |
 | `ed24-story.liquid` | ED24 Story | Stempel-Typo mit vorbeischwebenden Produkten und Fakten. |
 | `ed24-coaching.liquid` | ED24 Coaching-Panel | Coaching-Panel, das sich beim Scrollen aufzieht. Hier endet die 3D-Bühne. |
 | `ed24-ziele.liquid` | ED24 Ziele | „Was ist dein Ziel?“: Kacheln mit Kollektion und automatischer Produktanzahl. |
@@ -69,7 +69,7 @@ Technik:
 
 Echte Produktfotos aus dem Shop, mit einem KI-Hintergrund-Entferner (rembg, ISNet) freigestellt und als PNG ohne Hintergrund gespeichert. In „Mein Shop“ liegen sie unter Inhalte → Dateien mit demselben Namen.
 
-Derzeit nicht auf der Startseite im Einsatz (dort laufen die 3D-Produkte), sie bleiben als Reserve.
+Sie laufen auf der Startseite: Hero, Showcase und Story zeigen diese Bilder. Welche schwebenden Produkte erscheinen, steht im Hero unter „Schwebende Produkte (Dateinamen)“ (leer = Bestseller-Auswahl unten). Reihenfolge: 1–3 Hero, 4–7 Begleiter der vier Showcase-Kapitel, 8–13 Story.
 
 | Datei | Verwendung | Produkt |
 |---|---|---|
@@ -77,9 +77,10 @@ Derzeit nicht auf der Startseite im Einsatz (dort laufen die 3D-Produkte), sie b
 | `ed24-classic-creatin.png` | Showcase Kapitel 2 | Classic Creatin Monohydrat Pulver |
 | `ed24-classic-eaa.png` | Showcase Kapitel 3 | Classic EAA Pulver |
 | `ed24-classic-glutamin.png` | Showcase Kapitel 4 | Classic L-Glutamin Pulver |
-| `ed24-float-*.png` (10 Stück) | Hero, Showcase-Begleiter, Story | Iso Whey Zero, Valhalla, Blender Bottle, Phantom Boxhandschuhe, BCAA Xplode, Hype Pump, V8, Scitec Whey, Yippie Bar, Bloodstorm |
+| Bestseller-Auswahl (13 Stück, in dieser Reihenfolge) | Hero, Showcase-Begleiter, Story | ON Gold Standard Whey, SRS Supreme Whey, Weider 60 % Bar · Weider Protein 80+, Big Zone Bloodstorm, Scitec Ami-NO Xpress, Weider Magnesium · Nutrend Whey Core, BioTech Iso Whey Clear, Vast Total Amino, BioTech Iso Whey Zero, Blender Bottle, Scitec 100 % Whey |
+| weitere `ed24-float-*.png` | Reserve | Valhalla, Phantom Boxhandschuhe, BCAA Xplode, Hype Pump, V8, Yippie Bar |
 
-Weitere Produkte: Foto freistellen, als PNG unter Inhalte → Dateien hochladen und im Hero einen Block „Schwebendes Produkt“ hinzufügen (Bild + Produkt).
+Andere Produkte: Foto freistellen, als PNG unter Inhalte → Dateien hochladen und den Dateinamen im Hero unter „Schwebende Produkte (Dateinamen)“ an die gewünschte Stelle setzen.
 - Im Theme-Editor werden die Abschnitte beim Bearbeiten, Verschieben und Löschen neu aufgebaut.
 
 ## Einheitliche Produktbilder (`bilder/`)
