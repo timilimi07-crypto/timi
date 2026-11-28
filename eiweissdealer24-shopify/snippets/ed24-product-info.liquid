@@ -1,0 +1,117 @@
+{%- comment -%}
+  ED24 Produktinfo – teilt die Produktbeschreibung in aufklappbare Buttons:
+  Nährwerte, Zutaten, Einnahmeempfehlung, Hinweise & Allergene.
+  Überschriften sind kurze Absätze, die mit „:“ enden oder nur fett sind.
+  Text vor der ersten Überschrift bleibt offen sichtbar. Ohne erkennbare Überschriften bleibt die Beschreibung unverändert.
+  Aufruf: {% render 'ed24-product-info', html: product.description %}
+{%- endcomment -%}
+{%- liquid
+  assign intro = ''
+  assign g_ein = ''
+  assign g_nae = ''
+  assign g_zut = ''
+  assign g_hin = ''
+  assign cur = ''
+  assign found = false
+  assign chunks = html | split: '<p>'
+  for chunk in chunks
+    assign piece = ''
+    if forloop.first
+      assign piece = chunk
+    else
+      assign inner = chunk | split: '</p>' | first | default: ''
+      assign rest = chunk | remove_first: inner | remove_first: '</p>'
+      assign t = inner | strip_html | strip
+      assign tl = t | size
+      assign last = t | slice: -1
+      assign ins = inner | strip
+      assign ins_a = ins | slice: 0, 8
+      assign ins_b = ins | slice: -9, 9
+      assign is_head = false
+      if tl > 1 and tl < 70
+        if last == ':'
+          assign is_head = true
+        elsif ins_a == '<strong>' and ins_b == '</strong>'
+          assign is_head = true
+        endif
+      endif
+      if is_head
+        assign tdc = t | downcase
+        assign g = ''
+        if tdc contains 'einnahm' or tdc contains 'verzehr' or tdc contains 'anwendung' or tdc contains 'dosierung' or tdc contains 'zubereitung'
+          assign g = 'ein'
+        elsif tdc contains 'hrwert' or tdc contains 'hwert' or tdc contains 'hrstoff' or tdc contains 'aminos' or tdc contains 'vitaminbilanz'
+          assign g = 'nae'
+        elsif tdc contains 'zutat' or tdc contains 'inhaltsstoff'
+          assign g = 'zut'
+        elsif tdc contains 'hinweis' or tdc contains 'allergi' or tdc contains 'sicherheit' or tdc contains 'warnung'
+          assign g = 'hin'
+        endif
+        if g != ''
+          assign cur = g
+          assign found = true
+        endif
+        assign tn = t | remove: ':' | strip | downcase
+        if tn == 'nährwerte' or tn == 'nährwertangaben' or tn == 'zutaten' or tn == 'hinweis' or tn == 'hinweise'
+          assign piece = rest
+        else
+          assign piece = '<p class="ed24-acc__sub">' | append: t | append: '</p>' | append: rest
+        endif
+      else
+        assign piece = '<p>' | append: chunk
+      endif
+    endif
+    case cur
+      when 'ein'
+        assign g_ein = g_ein | append: piece
+      when 'nae'
+        assign g_nae = g_nae | append: piece
+      when 'zut'
+        assign g_zut = g_zut | append: piece
+      when 'hin'
+        assign g_hin = g_hin | append: piece
+      else
+        assign intro = intro | append: piece
+    endcase
+  endfor
+  assign intro_t = intro | strip_html | strip
+-%}
+{%- if found -%}
+  {%- if intro_t != blank -%}<div class="ed24-pi__intro">{{ intro }}</div>{%- endif -%}
+  <div class="ed24-acc-list">
+    {%- if g_nae != blank -%}
+      <details class="ed24-acc"><summary><span>Nährwerte</span><span class="ed24-acc__i" aria-hidden="true"></span></summary><div class="ed24-acc__body">{{ g_nae }}</div></details>
+    {%- endif -%}
+    {%- if g_zut != blank -%}
+      <details class="ed24-acc"><summary><span>Zutaten</span><span class="ed24-acc__i" aria-hidden="true"></span></summary><div class="ed24-acc__body">{{ g_zut }}</div></details>
+    {%- endif -%}
+    {%- if g_ein != blank -%}
+      <details class="ed24-acc"><summary><span>Einnahmeempfehlung</span><span class="ed24-acc__i" aria-hidden="true"></span></summary><div class="ed24-acc__body">{{ g_ein }}</div></details>
+    {%- endif -%}
+    {%- if g_hin != blank -%}
+      <details class="ed24-acc"><summary><span>Hinweise &amp; Allergene</span><span class="ed24-acc__i" aria-hidden="true"></span></summary><div class="ed24-acc__body">{{ g_hin }}</div></details>
+    {%- endif -%}
+  </div>
+  <style>
+    .ed24-pi__intro{margin-bottom:6px}
+    .ed24-acc-list{display:flex;flex-direction:column;gap:10px;margin:18px 0 6px;text-align:left}
+    .ed24-acc{background:#141416;border:1px solid rgba(255,255,255,.1);border-radius:14px;overflow:hidden;transition:border-color .2s}
+    .ed24-acc[open]{border-color:rgba(227,6,19,.55)}
+    .ed24-acc>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:12px 16px 12px 18px;margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;font-size:20px;line-height:1.1;letter-spacing:.03em;text-transform:uppercase;color:#fff;-webkit-tap-highlight-color:transparent}
+    .ed24-acc>summary::-webkit-details-marker{display:none}
+    .ed24-acc>summary::marker{content:''}
+    .ed24-acc>summary:hover .ed24-acc__i{transform:scale(1.08)}
+    .ed24-acc>summary:focus-visible{outline:2px solid #e30613;outline-offset:-2px;border-radius:14px}
+    .ed24-acc__i{position:relative;flex:none;width:30px;height:30px;border-radius:50%;background:#e30613;transition:transform .2s}
+    .ed24-acc__i::before,.ed24-acc__i::after{content:'';position:absolute;left:50%;top:50%;width:12px;height:2px;border-radius:2px;background:#fff;transform:translate(-50%,-50%)}
+    .ed24-acc__i::after{transform:translate(-50%,-50%) rotate(90deg);transition:transform .25s}
+    .ed24-acc[open] .ed24-acc__i::after{transform:translate(-50%,-50%) rotate(0deg)}
+    .ed24-acc__body{padding:2px 18px 18px;border-top:1px solid rgba(255,255,255,.08)}
+    .ed24-acc__body>:first-child{margin-top:14px}
+    .ed24-acc__sub{font-weight:700;color:#fff;margin:16px 0 4px}
+    .ed24-acc__body .ed24-nutri-wrap{margin:8px 0 12px}
+    @media (max-width:749px){.ed24-acc>summary{font-size:18px;min-height:52px;padding:10px 14px 10px 16px}.ed24-acc__body{padding:2px 14px 16px}}
+  </style>
+{%- else -%}
+  {{ html }}
+{%- endif -%}
