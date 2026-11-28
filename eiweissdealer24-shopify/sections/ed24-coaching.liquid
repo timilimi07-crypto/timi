@@ -5,7 +5,7 @@
 {%- endcomment -%}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Righteous&family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
 
 {%- liquid
   assign phone_link = section.settings.phone | remove: ' ' | remove: '–' | remove: '-' | remove: '/' | remove: '(' | remove: ')'
@@ -53,20 +53,20 @@
   .ed24-coach__sticky{position:sticky;top:0;height:100vh;height:100svh}
   .ed24-coach__panel{position:absolute;inset:0;display:block;overflow:hidden;color:#fff;border-radius:28px;transform:scale(.7);will-change:transform;background-image:radial-gradient(ellipse 60% 55% at 80% 20%,rgba(227,6,19,.4),transparent 70%)}
   .ed24-coach__panel.is-flush{border-radius:0}
-  .ed24-coach__ghost{position:absolute;top:50%;left:0;white-space:nowrap;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;font-size:32vw;line-height:.8;text-transform:uppercase;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.08);transform:translateY(-50%);will-change:transform;pointer-events:none}
+  .ed24-coach__ghost{position:absolute;top:50%;left:0;white-space:nowrap;font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;font-size:24vw;line-height:.9;text-transform:uppercase;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.08);transform:translateY(-50%);will-change:transform;pointer-events:none}
   .ed24-coach__inner{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 clamp(16px,5vw,80px);will-change:transform}
-  .ed24-coach .ed24-coach__eye{margin:0 0 14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-style:normal;letter-spacing:.16em;text-transform:uppercase;font-size:13px;color:var(--ed24-accent,#e30613)}
-  .ed24-coach .ed24-coach__title{margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(52px,9vw,160px);line-height:.86;letter-spacing:.005em;color:#fff}
+  .ed24-coach .ed24-coach__eye{margin:0 0 14px;font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;letter-spacing:.16em;text-transform:uppercase;font-size:12px;color:var(--ed24-accent,#e30613)}
+  .ed24-coach .ed24-coach__title{margin:0;font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;text-transform:uppercase;font-size:clamp(39px,6.75vw,120px);line-height:.9;letter-spacing:.005em;color:#fff}
   .ed24-coach .ed24-coach__title em{font-style:italic;color:var(--ed24-accent,#e30613)}
   .ed24-coach .ed24-coach__lead{max-width:520px;margin:22px 0 0;font-family:'Barlow',sans-serif;font-size:18px;line-height:1.5;color:#d4d4d8}
   .ed24-coach__svcs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:5vh}
   .ed24-coach__svc{padding:20px;border:1px solid rgba(255,255,255,.14);border-radius:18px;background:rgba(255,255,255,.03);font-family:'Barlow',sans-serif;font-size:14px;color:#a6a6ad;opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0) * 90ms)}
-  .ed24-coach__svc strong{display:block;margin-bottom:8px;overflow-wrap:anywhere;-webkit-hyphens:auto;hyphens:auto;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:26px;line-height:1;color:#fff}
-  .ed24-coach__no{display:block;margin-bottom:20px;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--ed24-accent,#e30613);letter-spacing:.1em}
+  .ed24-coach__svc strong{display:block;margin-bottom:8px;overflow-wrap:anywhere;-webkit-hyphens:auto;hyphens:auto;font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;text-transform:uppercase;font-size:20px;line-height:1;color:#fff}
+  .ed24-coach__no{display:block;margin-bottom:20px;font-family:'Righteous',sans-serif;font-weight:400;color:var(--ed24-accent,#e30613);letter-spacing:.1em}
   .ed24-coach__panel.is-full .ed24-coach__svc{opacity:1;transform:none}
   .ed24-coach__ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:4vh;opacity:0;transition:opacity .8s .4s}
   .ed24-coach__panel.is-full .ed24-coach__ctas{opacity:1}
-  .ed24-coach .ed24-coach__btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 26px;border-radius:999px;background:var(--ed24-accent,#e30613);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;text-transform:uppercase;letter-spacing:.04em;text-decoration:none;border:1.5px solid transparent;transition:transform .15s}
+  .ed24-coach .ed24-coach__btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 26px;border-radius:999px;background:var(--ed24-accent,#e30613);color:#fff;font-family:'Righteous',sans-serif;font-weight:400;font-size:17px;text-transform:uppercase;letter-spacing:.04em;text-decoration:none;border:1.5px solid transparent;transition:transform .15s}
   .ed24-coach .ed24-coach__btn:active{transform:scale(.97)}
   .ed24-coach .ed24-coach__btn--line{background:transparent;border-color:rgba(255,255,255,.35)}
   @media (max-width:900px){
@@ -78,7 +78,7 @@
   }
   @media (max-width:749px){
     .ed24-coach__inner{justify-content:flex-start;padding-top:92px}
-    .ed24-coach .ed24-coach__title{font-size:12.5vw}
+    .ed24-coach .ed24-coach__title{font-size:9.4vw}
     .ed24-coach .ed24-coach__lead{font-size:15px;margin-top:14px}
     .ed24-coach .ed24-coach__btn{min-height:46px;font-size:16px}
   }

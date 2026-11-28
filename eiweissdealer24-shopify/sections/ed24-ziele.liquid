@@ -4,7 +4,7 @@
 {%- endcomment -%}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Righteous&family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
 
 <div class="ed24-goals" style="background-color: {{ section.settings.background }}; --ed24-accent: {{ section.settings.accent }};">
   <div class="ed24-goals__wrap">
@@ -58,15 +58,15 @@
       <style>
         .ed24-offers{margin-top:clamp(40px,6vw,64px)}
         .ed24-offers__head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-        .ed24-goals .ed24-offers__title{margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(28px,4vw,44px);line-height:.95;color:#f5f5f4}
-        .ed24-goals .ed24-offers__all{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:15px;letter-spacing:.05em;text-transform:uppercase;color:var(--ed24-accent,#e30613);text-decoration:none}
+        .ed24-goals .ed24-offers__title{margin:0;font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;text-transform:uppercase;font-size:clamp(21px,3vw,33px);line-height:.95;color:#f5f5f4}
+        .ed24-goals .ed24-offers__all{font-family:'Righteous',sans-serif;font-weight:400;font-size:14px;letter-spacing:.05em;text-transform:uppercase;color:var(--ed24-accent,#e30613);text-decoration:none}
         .ed24-offers__row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(160px,44%);gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
         .ed24-offer{scroll-snap-align:start;display:flex;flex-direction:column;gap:4px;color:#f5f5f4;text-decoration:none}
         .ed24-offer__img{position:relative;display:block;aspect-ratio:1;border-radius:14px;overflow:hidden;background:#131315;margin-bottom:6px}
         .ed24-offer__img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
         .ed24-offer:hover .ed24-offer__img img{transform:scale(1.05)}
-        .ed24-offer__tag{position:absolute;left:10px;top:10px;padding:4px 9px;border-radius:999px;background:var(--ed24-accent,#e30613);color:#fff;font-style:normal;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px}
-        .ed24-offer__v{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ed24-accent,#e30613)}
+        .ed24-offer__tag{position:absolute;left:10px;top:10px;padding:4px 9px;border-radius:999px;background:var(--ed24-accent,#e30613);color:#fff;font-style:normal;font-family:'Righteous',sans-serif;font-weight:400;font-size:13px}
+        .ed24-offer__v{font-family:'Righteous',sans-serif;font-weight:400;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ed24-accent,#e30613)}
         .ed24-offer__t{font-family:'Barlow',sans-serif;font-size:14px;line-height:1.3}
         .ed24-offer__p{font-family:'Barlow',sans-serif;font-size:14px}
         .ed24-offer__p s{color:#8a8a92;margin-right:4px}
@@ -80,22 +80,22 @@
 {% stylesheet %}
   .ed24-goals{padding:clamp(56px,9vw,104px) 0;color:#f5f5f4}
   .ed24-goals__wrap{max-width:1280px;margin:0 auto;padding:0 clamp(16px,3vw,28px)}
-  .ed24-goals .ed24-goals__eye{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-style:normal;text-transform:uppercase;letter-spacing:.14em;font-size:13px;color:var(--ed24-accent,#e30613)}
+  .ed24-goals .ed24-goals__eye{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--ed24-accent,#e30613)}
   .ed24-goals .ed24-goals__eye::before{content:"";width:28px;height:3px;background:var(--ed24-accent,#e30613);transform:skewX(-20deg)}
-  .ed24-goals .ed24-goals__title{margin:0 0 26px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(36px,5.6vw,62px);line-height:.92;letter-spacing:.005em;color:#f5f5f4}
+  .ed24-goals .ed24-goals__title{margin:0 0 26px;font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;text-transform:uppercase;font-size:clamp(28px,4.2vw,46px);line-height:.92;letter-spacing:.005em;color:#f5f5f4}
   .ed24-goals__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .ed24-goal{border-radius:14px;background:#131315;border:1px solid #2c2c32;padding:18px;min-height:140px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;color:#f5f5f4;text-decoration:none;transition:border-color .2s,transform .2s}
   .ed24-goal:hover{border-color:var(--ed24-accent,#e30613);transform:translateY(-3px)}
   .ed24-goal:first-child{grid-column:span 2;background:linear-gradient(135deg,var(--ed24-accent,#e30613),#8d040c);border-color:transparent}
-  .ed24-goal__num{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;font-size:15px;color:#7a7a82}
+  .ed24-goal__num{font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;font-size:14px;color:#7a7a82}
   .ed24-goal:first-child .ed24-goal__num,.ed24-goal:first-child .ed24-goal__t{color:#ffd6d8}
-  .ed24-goal__h{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:28px;line-height:.92}
+  .ed24-goal__h{display:block;font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;text-transform:uppercase;font-size:21px;line-height:.92}
   .ed24-goal__t{display:block;margin-top:6px;font-family:'Barlow',sans-serif;font-size:13px;color:#a6a6ad}
   @media (min-width:990px){
     .ed24-goals__grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
     .ed24-goal{min-height:190px;padding:22px}
     .ed24-goal:first-child{grid-column:auto}
-    .ed24-goal__h{font-size:32px}
+    .ed24-goal__h{font-size:24px}
   }
 {% endstylesheet %}
 

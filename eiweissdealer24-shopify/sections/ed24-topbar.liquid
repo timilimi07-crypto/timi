@@ -5,7 +5,7 @@
 {%- endcomment -%}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Righteous&family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
 
 {%- liquid
   assign s = section.settings
@@ -13,7 +13,7 @@
 -%}
 {%- if s.brand_fonts -%}
   <style>
-    /* Markenschriften im ganzen Shop: Texte, Menü, Preise und Buttons in Barlow, Überschriften in Barlow Condensed. */
+    /* Markenschriften im ganzen Shop: Texte, Menü, Preise und Buttons in Barlow, Überschriften und Schlüsseltexte in Righteous (Schrift der Visitenkarte). */
     html:root {
       --font-body--family: 'Barlow', sans-serif;
       --font-body--style: normal;
@@ -21,17 +21,17 @@
       --font-subheading--family: 'Barlow', sans-serif;
       --font-subheading--style: normal;
       --font-subheading--weight: 600;
-      --font-heading--family: 'Barlow Condensed', sans-serif;
-      --font-heading--style: italic;
-      --font-heading--weight: 800;
-      --font-accent--family: 'Barlow Condensed', sans-serif;
+      --font-heading--family: 'Righteous', sans-serif;
+      --font-heading--style: normal;
+      --font-heading--weight: 400;
+      --font-accent--family: 'Righteous', sans-serif;
       --font-accent--style: normal;
-      --font-accent--weight: 700;
+      --font-accent--weight: 400;
     }
     h1, h2, .h0, .h1, .h2 {
-      font-family: 'Barlow Condensed', sans-serif !important;
-      font-weight: 800 !important;
-      font-style: italic;
+      font-family: 'Righteous', sans-serif !important;
+      font-weight: 400 !important;
+      font-style: normal;
       text-transform: uppercase;
       letter-spacing: .005em;
     }
@@ -39,10 +39,10 @@
     .mega-menu .mega-menu__link--parent,
     .mega-menu .mega-menu__list:has(.mega-menu__link--parent) .mega-menu__column > div > .mega-menu__link {
       position: relative;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 800;
-      font-style: italic;
-      font-size: 17px;
+      font-family: 'Righteous', sans-serif;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 16px;
       line-height: 1.1;
       letter-spacing: .02em;
       text-transform: uppercase;
@@ -179,10 +179,10 @@
     .ed24-nutri{width:100%;min-width:420px;border-collapse:collapse;font-size:14px;line-height:1.35}
     .ed24-nutri th,.ed24-nutri td{padding:7px 10px;text-align:right;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap}
     .ed24-nutri th:first-child,.ed24-nutri td:first-child{text-align:left;white-space:normal}
-    .ed24-nutri thead th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:{{ s.accent }};white-space:normal}
+    .ed24-nutri thead th{font-family:'Righteous',sans-serif;font-weight:400;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:{{ s.accent }};white-space:normal}
     .ed24-nutri tbody tr:nth-child(even){background:rgba(255,255,255,.04)}
     .ed24-nutri td.ed24-sub{padding-left:22px;color:#b4b4ba}
-    .ed24-nutri--orig{min-width:0}.ed24-nutri--orig td{white-space:normal}.ed24-nutri--orig tr:first-child td{font-weight:700;color:#fff;border-bottom-color:rgba(255,255,255,.25)}@media (max-width:749px){.ed24-nutri--orig{font-size:12.5px}.ed24-nutri--orig td{padding:6px 7px}}
+    .ed24-nutri--orig{min-width:0}.ed24-nutri--orig td{white-space:normal}.ed24-nutri--orig tr:first-child td{font-weight:700;color:#fff;border-bottom-color:rgba(255,255,255,.25)}@media (max-width:749px){.ed24-nutri--orig{font-size:12px}.ed24-nutri--orig td{padding:6px 7px}}
     /* Empfehlungen ausblenden, solange Shopify noch keine berechnet hat (sonst leere Kästen) */
     .product-recommendations:has(.product-recommendations__skeleton-item){display:none}
   </style>
@@ -279,7 +279,7 @@
     { "type": "text", "id": "right", "label": "Text rechts", "default": "Beratung: 0381 – 203 38 71" },
     { "type": "text", "id": "phone", "label": "Telefonnummer (für den Link rechts)", "default": "0381 – 203 38 71" },
     { "type": "color", "id": "accent", "label": "Farbe", "default": "#e30613" },
-    { "type": "checkbox", "id": "brand_fonts", "label": "Markenschriften im ganzen Shop", "info": "Überschriften kursiv, fett und in Großbuchstaben (Barlow Condensed), alle anderen Texte in Barlow.", "default": true },
+    { "type": "checkbox", "id": "brand_fonts", "label": "Markenschriften im ganzen Shop", "info": "Überschriften und Schlüsseltexte in Righteous (wie auf der Visitenkarte), alle anderen Texte in Barlow.", "default": true },
     { "type": "checkbox", "id": "effects", "label": "Effekte im ganzen Shop", "info": "Roter Scroll-Fortschritt, Produkte blenden beim Scrollen ein, Glow auf Produktkarten, Glanz auf Buttons, rote Menü-Linie.", "default": true }
   ],
   "presets": [{ "name": "ED24 Topbar" }]

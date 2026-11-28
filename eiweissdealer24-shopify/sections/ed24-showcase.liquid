@@ -5,7 +5,7 @@
 {%- endcomment -%}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Righteous&family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
 
 {%- assign chapter_count = section.blocks.size -%}
 <div
@@ -67,18 +67,18 @@
   .ed24-chap.is-on{pointer-events:auto}
   .ed24-chap>*{margin:0;opacity:0;transform:translateY(24px);transition:opacity .5s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1),clip-path .9s cubic-bezier(.2,.8,.2,1)}
   .ed24-chap.is-on>*{opacity:1;transform:none;transition-delay:.2s}
-  .ed24-show .ed24-chap__eye{grid-column:1;grid-row:1;margin:0 0 12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-style:normal;letter-spacing:.16em;text-transform:uppercase;font-size:14px;line-height:1.3;color:#fff}
-  .ed24-show .ed24-chap__t{grid-column:1;margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(60px,8.4vw,156px);line-height:.84;letter-spacing:.005em;color:#fff;clip-path:inset(0 -5% 100% -5%);transform:translateY(40%)}
+  .ed24-show .ed24-chap__eye{grid-column:1;grid-row:1;margin:0 0 12px;font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;letter-spacing:.16em;text-transform:uppercase;font-size:13px;line-height:1.3;color:#fff}
+  .ed24-show .ed24-chap__t{grid-column:1;margin:0;font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;text-transform:uppercase;font-size:clamp(45px,6.3vw,117px);line-height:.9;letter-spacing:.005em;color:#fff;clip-path:inset(0 -5% 100% -5%);transform:translateY(40%)}
   .ed24-show .ed24-chap.is-on .ed24-chap__t{clip-path:inset(-10% -5% -10% -5%);transform:none;transition-delay:0s}
   .ed24-show .ed24-chap.is-on .ed24-chap__t--2{transition-delay:.07s}
   .ed24-show .ed24-chap.is-past .ed24-chap__t{transform:translateY(-40%);clip-path:inset(100% -5% 0 -5%)}
   .ed24-show .ed24-chap__sub{grid-column:1;grid-row:4;margin:16px 0 0;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#fff}
   .ed24-show .ed24-chap__tag{grid-column:2;grid-row:2/5;align-self:center;margin:0;font-family:'Barlow',sans-serif;font-size:clamp(22px,2.05vw,31px);line-height:1.18;font-weight:500;color:#fff}
-  .ed24-show .ed24-chap__tag em,.ed24-show .ed24-chap__tag strong{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;text-transform:uppercase;font-size:1.22em}
+  .ed24-show .ed24-chap__tag em,.ed24-show .ed24-chap__tag strong{font-family:'Righteous',sans-serif;font-style:normal;font-weight:400;text-transform:uppercase;font-size:1.12em}
   .ed24-show .ed24-chap__info{grid-column:1;grid-row:6;max-width:330px;margin:0;font-family:'Barlow',sans-serif;font-size:13px;line-height:1.5;color:var(--c)}
-  .ed24-show .ed24-chap__buy{grid-column:1;grid-row:7;justify-self:start;margin-top:14px;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;background:var(--c);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:normal;text-transform:uppercase;letter-spacing:.06em;font-size:15px;text-decoration:none;transition-delay:.3s}
+  .ed24-show .ed24-chap__buy{grid-column:1;grid-row:7;justify-self:start;margin-top:14px;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;background:var(--c);color:#fff;font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;text-transform:uppercase;letter-spacing:.06em;font-size:14px;text-decoration:none;transition-delay:.3s}
   .ed24-chap__buy--hint{background:#0006 !important}
-  .ed24-prog{position:absolute;z-index:1;right:clamp(16px,5vw,80px);bottom:7vh;color:#111;text-align:right;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;font-size:56px;line-height:.9}
+  .ed24-prog{position:absolute;z-index:1;right:clamp(16px,5vw,80px);bottom:7vh;color:#111;text-align:right;font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;font-size:42px;line-height:.9}
   .ed24-prog small{font-size:22px;opacity:.45}
   .ed24-prog i{display:block;width:160px;height:3px;margin:10px 0 0 auto;background:#0002;overflow:hidden;border-radius:3px}
   .ed24-prog b{display:block;height:100%;background:#111;transform-origin:left;transition:transform .4s}
@@ -86,7 +86,7 @@
   html.ed24-nogl .ed24-show .ed24-chap__eye,html.ed24-nogl .ed24-show .ed24-chap__t,html.ed24-nogl .ed24-show .ed24-chap__sub,html.ed24-nogl .ed24-show .ed24-chap__tag{color:var(--c)}
   @media (max-width:749px){
     .ed24-chap{padding:84px 16px 24px;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto 1fr auto auto;text-align:center}
-    .ed24-show .ed24-chap__t{font-size:clamp(50px,15vw,96px)}
+    .ed24-show .ed24-chap__t{font-size:clamp(36px,11vw,72px)}
     .ed24-show .ed24-chap__sub,.ed24-show .ed24-chap__info,.ed24-prog{display:none}
     .ed24-show .ed24-chap__tag{grid-column:1;grid-row:5;color:#111;font-size:19px}
     .ed24-show .ed24-chap__buy{grid-row:6;justify-self:center}

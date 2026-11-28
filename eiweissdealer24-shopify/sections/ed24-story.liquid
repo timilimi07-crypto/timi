@@ -5,7 +5,7 @@
 {%- endcomment -%}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Righteous&family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Barlow:wght@400;500;600;700&display=swap">
 {%- assign ed24_vn = shop.vendors.size | divided_by: 10 | times: 10 -%}{%- assign ed24_vl = ed24_vn | append: '+' -%}{%- assign ed24_vt = 'Über ' | append: ed24_vn | append: ' Marken' -%}
 
 <div class="ed24-story" data-ed24-story style="--ed24-accent: {{ section.settings.accent }};">
@@ -39,8 +39,8 @@
   .ed24-story .ed24-rv{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(.2,.8,.2,1),transform 1s cubic-bezier(.2,.8,.2,1)}
   .ed24-story .ed24-rv.is-in{opacity:1;transform:none}
   .ed24-story .ed24-story__small{grid-column:1/4;margin:0;font-family:'Barlow',sans-serif;font-size:14px;line-height:1.55;font-weight:500;color:#111}
-  .ed24-story .ed24-story__small strong{display:block;margin-bottom:8px;font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--ed24-accent,#e30613)}
-  .ed24-story .ed24-story__stamp{margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(66px,11.5vw,210px);line-height:.84;letter-spacing:.005em;color:var(--ed24-accent,#e30613);-webkit-mask-image:var(--ed24-grain);mask-image:var(--ed24-grain);-webkit-mask-size:150px;mask-size:150px}
+  .ed24-story .ed24-story__small strong{display:block;margin-bottom:8px;font-family:'Righteous',sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.1em;color:var(--ed24-accent,#e30613)}
+  .ed24-story .ed24-story__stamp{margin:0;font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;text-transform:uppercase;font-size:clamp(50px,8.6vw,158px);line-height:.9;letter-spacing:.005em;color:var(--ed24-accent,#e30613);-webkit-mask-image:var(--ed24-grain);mask-image:var(--ed24-grain);-webkit-mask-size:150px;mask-size:150px}
   .ed24-story .ed24-story__stamp--end{grid-column:4/13}
   .ed24-story .ed24-story__stamp--start{grid-column:1/11}
   .ed24-story .ed24-story__para{margin:0;font-family:'Barlow',sans-serif;font-size:16px;line-height:1.6;color:#2a2a2c}
@@ -48,7 +48,7 @@
   .ed24-story .ed24-story__para--start{grid-column:2/6}
   .ed24-story .ed24-story__facts{grid-column:1/13;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:2px solid #111}
   .ed24-story .ed24-story__fact{margin:0;padding:18px 18px 0 0;font-family:'Barlow',sans-serif;font-size:14px;color:#6b6b70}
-  .ed24-story .ed24-story__fact strong{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-style:italic;font-size:clamp(44px,5vw,80px);line-height:1;color:#111}
+  .ed24-story .ed24-story__fact strong{display:block;font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;font-size:clamp(33px,3.75vw,60px);line-height:1;color:#111}
   html.ed24-nogl .ed24-story{background:#efece6}
   @media (max-width:749px){
     .ed24-story__grid{row-gap:8vh}
