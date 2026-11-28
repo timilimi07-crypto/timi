@@ -11,7 +11,8 @@
 <footer class="ed24-footer" style="--ed24-acc: {{ s.accent }};">
   <div class="ed24-footer__grid">
     <div class="ed24-footer__brand">
-      <a class="ed24-footer__logo" href="{{ routes.root_url }}">EIWEISSDEALER<span>24</span></a>
+      {%- assign ed24_fl = images['eiweissdealer24-logo-original.png'] -%}
+      <a class="ed24-footer__logo" href="{{ routes.root_url }}">{%- if ed24_fl != blank -%}<img src="{{ ed24_fl | image_url: width: 640 }}" alt="Eiweissdealer24 – Fitness- und Diätshop Rostock" width="{{ ed24_fl.width }}" height="{{ ed24_fl.height }}" loading="lazy">{%- else -%}EIWEISSDEALER<span>24</span>{%- endif -%}</a>
       {%- if s.claim != blank -%}<p class="ed24-footer__claim">{{ s.claim | escape }}</p>{%- endif -%}
       <address class="ed24-footer__addr">
         {{ s.address | newline_to_br }}<br>
@@ -106,6 +107,7 @@
   .ed24-footer__grid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:clamp(24px,4vw,56px);max-width:1280px;margin:0 auto}
   .ed24-footer__logo{font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;font-size:21px;letter-spacing:.01em;color:#fff}
   .ed24-footer__logo span{color:var(--ed24-acc)}
+  .ed24-footer__logo img{display:block;width:260px;max-width:100%;height:auto}
   .ed24-footer__claim{margin:6px 0 14px;color:#9a9aa0}
   .ed24-footer__addr{font-style:normal}
   .ed24-footer__hours{margin:10px 0 0;color:#9a9aa0;font-size:14px}

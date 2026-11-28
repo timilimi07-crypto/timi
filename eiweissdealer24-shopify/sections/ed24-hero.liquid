@@ -25,6 +25,10 @@
   {%- endif -%}
 
   <h1 class="ed24-hero__inner">
+    {%- assign ed24_sky = images['ed24-skyline.png'] -%}
+    {%- if ed24_sky != blank and section.settings.show_skyline != false -%}
+      <span class="ed24-hero__sky" aria-hidden="true"><img src="{{ ed24_sky | image_url: width: 1600 }}" alt="" width="{{ ed24_sky.width }}" height="{{ ed24_sky.height }}" fetchpriority="high"></span>
+    {%- endif -%}
     <span class="ed24-hero__word">{{ section.settings.line_1 }}</span>
     <span class="ed24-hero__word">{{ section.settings.line_2 }}</span>
   </h1>
@@ -69,6 +73,10 @@
   .ed24-hero__inner{position:relative;z-index:1;margin:0;display:flex;flex-direction:column;align-items:center;font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;text-transform:uppercase;font-size:clamp(62px,13.8vw,248px);line-height:.9;letter-spacing:-.005em;color:#fff;will-change:transform,opacity}
   .ed24-hero .ed24-hero__inner{font-family:'Righteous',sans-serif;font-weight:400;font-style:normal;text-transform:uppercase;line-height:.9;color:#fff}
   .ed24-hero__word{display:block;white-space:nowrap}
+  /* Rostocker Skyline aus Marios Logo, sitzt direkt auf dem Schriftzug */
+  .ed24-hero__sky{display:block;width:clamp(290px,66vw,1180px);margin:0 auto -.05em;line-height:0}
+  .ed24-hero__sky img{display:block;width:100%;height:auto}
+  @media (prefers-reduced-motion:no-preference){.ed24-hero__sky{animation:ed24-rise 1.1s cubic-bezier(.2,.8,.2,1) both}}
   .ed24-hero__word strong,.ed24-hero__word b{color:transparent;-webkit-text-stroke:.03em #fff;font-weight:800}
   .ed24-hero__word em{font-style:italic}
   .ed24-hero__meta{position:absolute;z-index:1;left:0;right:0;bottom:0;padding:0 clamp(16px,3vw,36px) 26px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;text-align:start}
@@ -589,6 +597,7 @@
     { "type": "text", "id": "cta2_label", "label": "Button 2 Text", "default": "Angebote" },
     { "type": "text", "id": "cta2_link", "label": "Button 2 Link", "default": "/collections/angebote" },
     { "type": "header", "content": "Effekte & Farben" },
+    { "type": "checkbox", "id": "show_skyline", "label": "Rostocker Skyline aus dem Logo über dem Schriftzug", "info": "Bild: ed24-skyline.png unter Inhalte → Dateien.", "default": true },
     { "type": "checkbox", "id": "show_3d", "label": "Schwebende Produkte und Farbverlauf anzeigen", "default": true },
     { "type": "paragraph", "content": "Das große Produkt kommt aus den Kapiteln im „ED24 Produkt-Showcase“ (Feld Produktbild)." },
     { "type": "textarea", "id": "float_files", "label": "Schwebende Produkte (Dateinamen)", "info": "Freigestellte PNGs aus Inhalte → Dateien, mit Komma getrennt. Reihenfolge: 1–3 Hero, 4–7 Begleiter der Showcase-Kapitel, 8–13 Story. Leer lassen für die Bestseller-Auswahl." },
